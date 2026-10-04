@@ -235,9 +235,9 @@ export default function BodyProgressPage() {
             </span>
           </div>
 
-          <div className="flex items-end justify-between gap-2 h-24 pt-3 border-b border-red-950/80">
+          <div className="flex items-end justify-between gap-2 h-24 pt-6 border-b border-red-950/80 mt-2">
             {weights.map((w, idx) => {
-              const heightPixels = Math.max(18, Math.min(80, (w.weight - 165) * 12));
+              const heightPixels = Math.max(16, Math.min(50, (w.weight - 165) * 8));
               return (
                 <div key={idx} className="flex-1 flex flex-col items-center gap-1">
                   <span className="text-[10px] font-mono font-bold text-white">
