@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { useStoic } from "@/context/StoicContext";
 import { calculateTaskPoints, DifficultyTier } from "@/lib/gamification";
 
@@ -287,7 +288,7 @@ export default function TodayCommandCenter() {
             <p className="text-xs text-slate-300 mt-0.5">
               Feeding Window opens at <strong className="text-white font-mono">05:30 PM</strong> (Target: ~1,800 kcal &middot; 140g Protein)
             </p>
-            <div className="mt-2 flex items-center gap-3 text-xs text-slate-200">
+            <div className="mt-2 flex items-center gap-3 text-xs text-slate-200 flex-wrap">
               <span>
                 Protein Target: <strong className="text-amber-400 font-mono font-bold">140g</strong>
               </span>
@@ -295,15 +296,30 @@ export default function TodayCommandCenter() {
               <span>
                 Body Recomp: <strong className="text-white font-mono font-bold">170 &rarr; 155 lbs</strong>
               </span>
+              <span className="text-red-600">&bull;</span>
+              <span className="text-emerald-400 font-semibold">
+                Menu: Fish, Turkey, or Chicken + Rice &amp; Veggies
+              </span>
+            </div>
+            <div className="mt-2 p-2 rounded bg-black/60 border border-red-950 text-[11px] text-slate-300 font-mono">
+              <span className="text-amber-300 font-bold">Tonight&apos;s Blueprint:</span> 14oz Fish or 16oz Turkey/Chicken + 2.5c Rice + 2c Greens + 24oz Lemon Chia Seed Water (1,800 kcal &bull; 140g P)
             </div>
           </div>
         </div>
-        <button
-          onClick={() => awardXp(300, "OMAD Single Feeding Window Logged", "Discipline")}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white border border-red-600/50 text-xs font-bold shadow-lg transition"
-        >
-          Log OMAD Meal (+300 XP)
-        </button>
+        <div className="flex flex-col sm:flex-row items-center gap-2 shrink-0">
+          <Link
+            href="/nutrition"
+            className="px-3.5 py-2 rounded-lg bg-black/80 hover:bg-neutral-900 border border-amber-500/40 text-amber-300 text-xs font-bold transition flex items-center gap-1.5"
+          >
+            <span>🥗</span> View Exact Portions &amp; Drinks &rarr;
+          </Link>
+          <button
+            onClick={() => awardXp(300, "OMAD Single Feeding Window Logged", "Discipline")}
+            className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white border border-red-600/50 text-xs font-bold shadow-lg transition"
+          >
+            Log OMAD Meal (+300 XP)
+          </button>
+        </div>
       </section>
 
       {/* CHRONOLOGICAL TIMELINE (Structured Inspired with Buffers) */}

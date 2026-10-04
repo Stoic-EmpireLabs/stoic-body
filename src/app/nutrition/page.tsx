@@ -3,79 +3,93 @@
 import React, { useState, useEffect } from "react";
 import { useStoic } from "@/context/StoicContext";
 import { calculateDailyMacros, MealLogItem } from "@/lib/health";
-import { calculateAdherenceStatus } from "@/lib/nutrition";
+import {
+  calculateAdherenceStatus,
+  SOVEREIGN_MEAL_BLUEPRINTS,
+  HEALTHY_DRINK_RECIPES,
+  ProteinSourceType,
+  SovereignMealBlueprint,
+  HealthyDrinkRecipe,
+  getMealBlueprintByProtein,
+} from "@/lib/nutrition";
+import { fireBrilliantConfetti } from "@/lib/confetti";
 
 const FOUNDER_PRESET_MEALS: Omit<MealLogItem, "id" | "loggedAt">[] = [
   {
-    name: "16oz Grass-Fed Ribeye + 4 Pasture Eggs",
-    calories: 1150,
-    protein: 105,
-    carbs: 2,
-    fat: 82,
-    sodiumMg: 750,
+    name: "Wild Salmon & Cod Feast + Jasmine Rice & Greens",
+    calories: 1810,
+    protein: 141,
+    carbs: 155,
+    fat: 65,
+    sodiumMg: 960,
   },
   {
-    name: "Whey Isolate + Greek Yogurt Recovery Bowl",
-    calories: 380,
-    protein: 52,
-    carbs: 18,
-    fat: 6,
-    sodiumMg: 180,
+    name: "Lean Ground Turkey (16oz) & Basmati Rice Bowl",
+    calories: 1825,
+    protein: 142,
+    carbs: 148,
+    fat: 67,
+    sodiumMg: 1080,
   },
   {
-    name: "Lean Grass-Fed Beef Mince + Jasmine Rice",
-    calories: 680,
-    protein: 60,
-    carbs: 75,
-    fat: 14,
-    sodiumMg: 520,
+    name: "Grilled Chicken Breast (16oz) & Jasmine Rice Clean Plate",
+    calories: 1785,
+    protein: 141,
+    carbs: 162,
+    fat: 51,
+    sodiumMg: 890,
   },
   {
-    name: "Electrolyte Hydration (Sodium + Potassium + Mg)",
+    name: "Sovereign Lemon Water with Soaked Chia Seeds (24oz)",
+    calories: 95,
+    protein: 5,
+    carbs: 10,
+    fat: 4,
+    sodiumMg: 120,
+  },
+  {
+    name: "Fasting Mineral Electrolyte Shield (Zero-Calorie)",
     calories: 0,
     protein: 0,
     carbs: 0,
     fat: 0,
-    sodiumMg: 1000,
-  },
-  {
-    name: "Wild Sardines, Extra Virgin Olive Oil & Avocado",
-    calories: 440,
-    protein: 26,
-    carbs: 5,
-    fat: 36,
-    sodiumMg: 460,
+    sodiumMg: 500,
   },
 ];
 
 export default function NutritionPage() {
   const { awardXp, playAnvilChime, playBellSound } = useStoic();
 
-  // Targets
+  // Targets for 170 -> 155 lbs recomp
   const targetCalories = 1800;
   const targetProtein = 140;
 
-  // Local-First Meal Ledger State
+  // Selected Blueprint & Drink States
+  const [selectedProtein, setSelectedProtein] = useState<ProteinSourceType>("Chicken");
+  const [activeDrinkId, setActiveDrinkId] = useState<string>("drink-lemon-chia");
+  const [blueprintLoggedFeedback, setBlueprintLoggedFeedback] = useState<string | null>(null);
+
+  // Local-First Meal Ledger State (seeded with the user's Chicken & Rice default feast)
   const [meals, setMeals] = useState<MealLogItem[]>([
     {
       id: "meal-seed-1",
-      name: "16oz Grass-Fed Ribeye + 4 Pasture Eggs",
-      calories: 1150,
-      protein: 105,
-      carbs: 2,
-      fat: 82,
-      sodiumMg: 750,
+      name: "Grilled Chicken Breast (16oz) + Jasmine Rice (2.75c) & Steamed Broccoli",
+      calories: 1690,
+      protein: 136,
+      carbs: 152,
+      fat: 47,
+      sodiumMg: 810,
       loggedAt: "05:45 PM",
     },
     {
       id: "meal-seed-2",
-      name: "Whey Isolate + Greek Yogurt Recovery Bowl",
-      calories: 380,
-      protein: 52,
-      carbs: 18,
-      fat: 6,
-      sodiumMg: 180,
-      loggedAt: "06:15 PM",
+      name: "Sovereign Lemon Water with Soaked Chia Seeds (24oz)",
+      calories: 95,
+      protein: 5,
+      carbs: 10,
+      fat: 4,
+      sodiumMg: 80,
+      loggedAt: "05:15 PM",
     },
   ]);
 
@@ -174,6 +188,50 @@ export default function NutritionPage() {
     saveMeals(next);
     awardXp(150, `Quick Preset Logged: ${item.name}`, "Discipline");
     playAnvilChime();
+  };
+
+  // Log Sovereign 23:1 OMAD Meal Blueprint (Fish / Turkey / Chicken)
+  const handleLogBlueprint = (bp: SovereignMealBlueprint) => {
+    const item: MealLogItem = {
+      id: `meal-bp-${Date.now()}`,
+      name: `${bp.title} (${bp.portionSummary})`,
+      calories: bp.macros.calories,
+      protein: bp.macros.protein,
+      carbs: bp.macros.carbs,
+      fat: bp.macros.fat,
+      sodiumMg: bp.macros.sodiumMg,
+      loggedAt: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+    const next = [...meals, item];
+    saveMeals(next);
+    awardXp(300, `Logged OMAD Feast: ${bp.title}`, "Discipline");
+    playBellSound();
+    fireBrilliantConfetti();
+    setBlueprintLoggedFeedback(`✓ Logged ${bp.title} to today's OMAD ledger (${bp.macros.protein}g Protein · ${bp.macros.calories} kcal)!`);
+    setTimeout(() => setBlueprintLoggedFeedback(null), 5000);
+  };
+
+  // Log Healthy Drink / Elixir
+  const handleLogDrink = (drink: HealthyDrinkRecipe) => {
+    addWater(drink.hydrationOz);
+    if (drink.calories > 0) {
+      const drinkItem: MealLogItem = {
+        id: `drink-${Date.now()}`,
+        name: drink.name,
+        calories: drink.calories,
+        protein: drink.id === "drink-lemon-chia" ? 5 : 0,
+        carbs: drink.id === "drink-lemon-chia" ? 10 : 0,
+        fat: drink.id === "drink-lemon-chia" ? 4 : 0,
+        sodiumMg: drink.id === "drink-electrolytes" ? 500 : 80,
+        loggedAt: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+      const next = [...meals, drinkItem];
+      saveMeals(next);
+    }
+    awardXp(50, `Hydrated with ${drink.name}`, "Recovery");
+    playAnvilChime();
+    setBlueprintLoggedFeedback(`✓ Logged +${drink.hydrationOz} oz hydration from ${drink.name}!`);
+    setTimeout(() => setBlueprintLoggedFeedback(null), 4000);
   };
 
   // Remove Meal
@@ -374,6 +432,301 @@ export default function NutritionPage() {
               {electrolytesTaken ? "✓ Electrolytes Taken" : "Take Electrolytes"}
             </button>
           </div>
+        </div>
+      </section>
+
+      {/* SOVEREIGN MEAL BLUEPRINTS & EXACT PORTIONS */}
+      <section className="bg-[#0A0A0F] border border-amber-500/40 rounded-xl p-5 shadow-2xl space-y-5 relative overflow-hidden">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-red-950 pb-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono uppercase bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded border border-amber-500/40 font-bold">
+                170 &rarr; 155 lbs Recomp &bull; 23:1 OMAD Meal Engine
+              </span>
+              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30 font-bold">
+                Target: 140g Protein &bull; ~1,800 kcal
+              </span>
+            </div>
+            <h3 className="text-base font-bold text-white mt-1.5 flex items-center gap-2">
+              <span>Sovereign Meal Blueprints: Exactly What &amp; How Much to Eat</span>
+            </h3>
+            <p className="text-xs text-slate-300 mt-0.5">
+              Empirical whole-food formulas: <strong className="text-white">Fish, Turkey, or Chicken</strong> with measured rice, vegetables, and paired healthy elixirs.
+            </p>
+          </div>
+
+          {/* PROTEIN SELECTOR BUTTONS */}
+          <div className="flex rounded-lg bg-black border border-red-950 p-1 gap-1">
+            {(["Fish", "Turkey", "Chicken"] as ProteinSourceType[]).map((src) => (
+              <button
+                key={src}
+                onClick={() => setSelectedProtein(src)}
+                className={`px-3.5 py-1.5 rounded text-xs font-bold transition flex items-center gap-1.5 ${
+                  selectedProtein === src
+                    ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow font-black"
+                    : "text-slate-300 hover:text-white"
+                }`}
+              >
+                <span>{src === "Fish" ? "🐟" : src === "Turkey" ? "🦃" : "🍗"}</span>
+                <span>{src} Blueprint</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* FEEDBACK BANNER */}
+        {blueprintLoggedFeedback && (
+          <div className="p-3 rounded-lg bg-emerald-950/80 border border-emerald-500/60 text-emerald-200 text-xs font-mono font-bold flex items-center justify-between">
+            <span>{blueprintLoggedFeedback}</span>
+            <span className="text-[10px] text-emerald-400 uppercase">Synchronized to Food Ledger</span>
+          </div>
+        )}
+
+        {/* ACTIVE BLUEPRINT DISPLAY */}
+        {(() => {
+          const bp = getMealBlueprintByProtein(selectedProtein);
+          return (
+            <div className="space-y-4">
+              {/* BLUEPRINT HERO HEADER */}
+              <div className="p-4 rounded-xl bg-gradient-to-r from-[#140608] via-[#100814] to-[#0A0A0F] border border-amber-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30">
+                      {bp.subtitle}
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400">
+                      Window: 05:30 PM &ndash; 06:30 PM
+                    </span>
+                  </div>
+                  <h4 className="text-base font-bold text-white mt-1">{bp.title}</h4>
+                  <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+                    {bp.description}
+                  </p>
+                  <div className="mt-2 text-xs font-mono font-bold text-amber-400 bg-black/60 px-3 py-1 rounded-md inline-block border border-red-950">
+                    Portion Formula: {bp.portionSummary}
+                  </div>
+                </div>
+
+                {/* LOG TO TODAY BUTTON */}
+                <button
+                  onClick={() => handleLogBlueprint(bp)}
+                  className="px-5 py-3 rounded-xl bg-gradient-to-r from-red-600 via-amber-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white hover:text-black text-xs font-black uppercase tracking-wider transition shadow-2xl flex items-center gap-2 border border-amber-400/50 shrink-0"
+                >
+                  <span>⚡</span>
+                  <span>Log Entire Feast (+300 XP)</span>
+                </button>
+              </div>
+
+              {/* 5 MACRO METRIC TILES */}
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                <div className="p-3 rounded-lg bg-black border border-amber-500/30 text-center">
+                  <span className="text-[10px] font-mono uppercase text-amber-400 font-bold block">Energy</span>
+                  <span className="text-lg font-mono font-black text-white">{bp.macros.calories}</span>
+                  <span className="text-[10px] font-mono text-slate-400 block">kcal (Target: 1,800)</span>
+                </div>
+                <div className="p-3 rounded-lg bg-black border border-emerald-500/30 text-center">
+                  <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold block">Protein</span>
+                  <span className="text-lg font-mono font-black text-emerald-300">{bp.macros.protein}g</span>
+                  <span className="text-[10px] font-mono text-slate-400 block">Target: 140g &bull; 100%</span>
+                </div>
+                <div className="p-3 rounded-lg bg-black border border-blue-500/30 text-center">
+                  <span className="text-[10px] font-mono uppercase text-blue-400 font-bold block">Clean Carbs</span>
+                  <span className="text-lg font-mono font-black text-blue-300">{bp.macros.carbs}g</span>
+                  <span className="text-[10px] font-mono text-slate-400 block">Jasmine/Basmati Rice</span>
+                </div>
+                <div className="p-3 rounded-lg bg-black border border-purple-500/30 text-center">
+                  <span className="text-[10px] font-mono uppercase text-purple-400 font-bold block">Healthy Fat</span>
+                  <span className="text-lg font-mono font-black text-purple-300">{bp.macros.fat}g</span>
+                  <span className="text-[10px] font-mono text-slate-400 block">EVOO &amp; Avocado</span>
+                </div>
+                <div className="p-3 rounded-lg bg-black border border-rose-500/30 text-center col-span-2 sm:col-span-1">
+                  <span className="text-[10px] font-mono uppercase text-rose-400 font-bold block">Dietary Fiber</span>
+                  <span className="text-lg font-mono font-black text-rose-300">{bp.macros.fiber}g</span>
+                  <span className="text-[10px] font-mono text-slate-400 block">Greens &amp; Chia Gel</span>
+                </div>
+              </div>
+
+              {/* EXACT MEASURED INGREDIENTS TABLE */}
+              <div className="p-4 rounded-xl bg-[#121218] border border-red-950/70 space-y-2.5">
+                <span className="text-xs font-mono uppercase text-amber-400 font-bold block">
+                  Measured Ingredients &amp; Scale Weights (Target: ~140g Protein Feast)
+                </span>
+                <div className="divide-y divide-red-950/60">
+                  {bp.ingredients.map((ing, idx) => (
+                    <div key={idx} className="py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
+                        <span className="text-white font-semibold">{ing.item}</span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black text-slate-400 border border-red-950">
+                          {ing.role}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 font-mono text-slate-300 pl-4 sm:pl-0">
+                        <span className="text-amber-300 font-bold">{ing.portion}</span>
+                        <span className="text-slate-500">({ing.weightGramsOrOz})</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* STEP-BY-STEP PREPARATION & FASTING STRATEGY */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl bg-[#0e0e14] border border-red-950/70 space-y-2">
+                  <span className="text-xs font-mono uppercase text-slate-300 font-bold block">
+                    👨‍🍳 Fast Cooking &amp; Meal Prep Steps
+                  </span>
+                  <ul className="text-xs text-slate-300 space-y-1.5 leading-relaxed">
+                    {bp.cookingInstructions.map((st, sIdx) => (
+                      <li key={sIdx} className="flex gap-2">
+                        <span className="text-amber-500 font-mono font-bold select-none">&bull;</span>
+                        <span>{st}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="p-4 rounded-xl bg-[#0e0e14] border border-red-950/70 space-y-2 flex flex-col justify-between">
+                  <div>
+                    <span className="text-xs font-mono uppercase text-emerald-400 font-bold block">
+                      ⚡ 23:1 OMAD Fasting Re-Feed Logic
+                    </span>
+                    <p className="text-xs text-slate-300 leading-relaxed mt-1">
+                      {bp.fastingIntegration}
+                    </p>
+                  </div>
+                  <div className="pt-2 border-t border-red-950/60 flex items-center justify-between text-[11px] font-mono text-slate-400">
+                    <span>Paired Beverage:</span>
+                    <span className="text-amber-300 font-bold">24 oz Lemon Water + Soaked Chia</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+      </section>
+
+      {/* HEALTHY DRINKS & FASTING ELIXIRS LAB */}
+      <section className="bg-[#0A0A0F] border border-blue-950/80 rounded-xl p-5 shadow-2xl space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-red-950 pb-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono uppercase bg-blue-950/80 text-blue-300 px-2.5 py-0.5 rounded border border-blue-500/40 font-bold">
+                Scientific Hydration &middot; Fasting Satiety &middot; Mineral Balance
+              </span>
+              <span className="text-[10px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30 font-bold">
+                Current Hydration: {waterOz} oz
+              </span>
+            </div>
+            <h3 className="text-base font-bold text-white mt-1.5 flex items-center gap-2">
+              <span>Healthy Drinks &amp; Fasting Elixirs Lab</span>
+            </h3>
+            <p className="text-xs text-slate-300 mt-0.5">
+              Science-backed formulations: <strong className="text-white">Lemon water with soaked chia seeds</strong>, fasting mineral electrolytes, EGCG fat oxidation tea, and digestive tonics.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => addWater(24)}
+              className="px-3.5 py-1.5 rounded-lg bg-blue-900/60 hover:bg-blue-800 border border-blue-500/40 text-white font-bold text-xs transition shadow flex items-center gap-1.5"
+            >
+              <span>💧</span> +24 oz Water
+            </button>
+          </div>
+        </div>
+
+        {/* 5 RESEARCHED DRINKS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
+          {HEALTHY_DRINK_RECIPES.map((drink) => {
+            const isChia = drink.id === "drink-lemon-chia";
+            return (
+              <div
+                key={drink.id}
+                className={`p-4 rounded-xl border flex flex-col justify-between transition ${
+                  isChia
+                    ? "bg-gradient-to-b from-[#0f1418] to-[#0A0A0F] border-amber-500/50 shadow-lg ring-1 ring-amber-500/30"
+                    : "bg-[#121218] border-red-950/70 hover:border-amber-500/30"
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-1 mb-2">
+                    <span
+                      className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded font-bold border ${
+                        drink.fastingSafe
+                          ? "bg-emerald-950/70 text-emerald-300 border-emerald-500/40"
+                          : "bg-amber-950/70 text-amber-300 border-amber-500/40"
+                      }`}
+                    >
+                      {drink.category} &bull; {drink.fastingSafe ? "0 kcal Fast-Safe" : `${drink.calories} kcal`}
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400">
+                      {drink.hydrationOz} oz
+                    </span>
+                  </div>
+
+                  <h4 className="text-sm font-bold text-white leading-snug flex items-center gap-1.5">
+                    {isChia && <span>⭐</span>}
+                    <span>{drink.name}</span>
+                  </h4>
+                  <span className="text-[10px] font-mono text-amber-400 block mt-0.5 font-semibold">
+                    Optimal Timing: {drink.timing}
+                  </span>
+
+                  {/* INGREDIENTS LIST */}
+                  <div className="mt-3 pt-2.5 border-t border-red-950/60 space-y-1">
+                    <span className="text-[10px] font-mono uppercase text-slate-400 font-bold block">
+                      Ingredients:
+                    </span>
+                    {drink.ingredients.map((ing, iIdx) => (
+                      <div key={iIdx} className="text-[11px] text-slate-300 flex justify-between gap-2">
+                        <span className="font-semibold text-white">&bull; {ing.item}</span>
+                        <span className="font-mono text-amber-300 shrink-0">{ing.amount}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* PREPARATION STEPS */}
+                  <div className="mt-2.5 pt-2 border-t border-red-950/60 text-[11px] text-slate-300 space-y-1">
+                    <span className="text-[10px] font-mono uppercase text-slate-400 font-bold block">
+                      How to Prepare:
+                    </span>
+                    {drink.preparation.slice(0, 2).map((step, sIdx) => (
+                      <p key={sIdx} className="line-clamp-2 leading-relaxed">
+                        {step}
+                      </p>
+                    ))}
+                    {drink.preparation.length > 2 && (
+                      <p className="text-[10px] text-amber-400/80 italic">
+                        {drink.preparation[3] || drink.preparation[2]}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* SCIENTIFIC MECHANISM */}
+                  <div className="mt-2.5 p-2 rounded bg-black/50 border border-red-950 text-[10px] text-slate-300 leading-relaxed">
+                    <strong className="text-amber-300 block mb-0.5">Scientific Mechanism:</strong>
+                    {drink.scientificBenefits[0]}
+                  </div>
+                </div>
+
+                {/* LOG HYDRATION BUTTON */}
+                <div className="mt-4 pt-3 border-t border-red-950/70">
+                  <button
+                    onClick={() => handleLogDrink(drink)}
+                    className={`w-full py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition flex items-center justify-center gap-1.5 shadow ${
+                      isChia
+                        ? "bg-amber-500 hover:bg-amber-400 text-black font-black"
+                        : "bg-black hover:bg-neutral-900 border border-red-950 hover:border-amber-500 text-white"
+                    }`}
+                  >
+                    <span>💧</span>
+                    <span>Log {drink.hydrationOz} oz &amp; Hydrate (+50 XP)</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
