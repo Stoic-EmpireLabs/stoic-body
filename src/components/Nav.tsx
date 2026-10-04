@@ -27,10 +27,20 @@ export default function Nav() {
       <div className="flex border-b border-red-950/70 gap-1.5 min-w-max">
         {links.map((link) => {
           const isActive = pathname === link.href;
+          const tourId =
+            link.href === "/calendar"
+              ? "tour-target-calendar-link"
+              : link.href === "/nutrition"
+              ? "tour-target-nutrition-link"
+              : link.href === "/learning"
+              ? "tour-target-learning-link"
+              : undefined;
+
           return (
             <Link
               key={link.href}
               href={link.href}
+              id={tourId}
               className={`px-3.5 py-2.5 text-xs font-bold uppercase tracking-wider transition rounded-t-md ${
                 isActive
                   ? "text-amber-400 border-b-2 border-red-500 bg-red-950/20 shadow-sm"

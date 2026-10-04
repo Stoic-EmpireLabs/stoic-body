@@ -164,7 +164,7 @@ export default function TodayCommandCenter() {
     <div className="space-y-6">
 
       {/* MORNING ANCHOR (05:30 AM) */}
-      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl relative overflow-hidden">
+      <section id="tour-target-anchors" className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl relative overflow-hidden">
         <div className="absolute -right-12 -top-12 w-36 h-36 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -252,7 +252,7 @@ export default function TodayCommandCenter() {
       </section>
 
       {/* 23:1 OMAD FASTING PROTOCOL (Zero + MacroFactor Inspired) */}
-      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+      <section id="tour-target-fasting" className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <div className="relative w-20 h-20 flex items-center justify-center">
             <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">

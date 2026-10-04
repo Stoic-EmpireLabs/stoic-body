@@ -51,3 +51,5 @@ export function fireMilestoneConfetti() {
     })();
   } catch (e) {}
 }
+
+export const confettiCelebration = fireMilestoneConfetti;

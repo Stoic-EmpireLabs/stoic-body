@@ -2,6 +2,13 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { calculateLevelProgress, LevelInfo } from "@/lib/gamification";
+import {
+  ClientProfile,
+  FOUNDER_PROFILE,
+  APP_TOUR_STEPS,
+  calibrateClientProfile,
+  QuestionnaireAnswers,
+} from "@/lib/onboarding";
 
 export interface Transaction {
   id: string;
@@ -72,6 +79,8 @@ interface StoicContextType {
   lifeGoals: LifeGoal[];
   calendarEvents: CalendarEvent[];
   userProfile: UserProfile;
+  activeProfile: ClientProfile;
+  allProfiles: ClientProfile[];
   mvdActive: boolean;
   toggleMvd: () => void;
   toggleCalmMode: () => void;
@@ -89,6 +98,19 @@ interface StoicContextType {
   toggleLifeGoal: (id: string) => void;
   addCalendarEvent: (event: Omit<CalendarEvent, "id">) => void;
   updateProfile: (updates: Partial<UserProfile>) => void;
+  switchProfile: (profileId: string) => void;
+  saveNewClientProfile: (answers: QuestionnaireAnswers) => ClientProfile;
+  isTourOpen: boolean;
+  currentTourStep: number;
+  startTour: () => void;
+  nextTourStep: () => void;
+  prevTourStep: () => void;
+  closeTour: () => void;
+  completeTour: () => void;
+  isOnboardingOpen: boolean;
+  setIsOnboardingOpen: (open: boolean) => void;
+  isLoginOpen: boolean;
+  setIsLoginOpen: (open: boolean) => void;
   exportBackup: () => void;
   importBackup: (jsonData: string) => { success: boolean; error?: string };
 }
@@ -100,7 +122,13 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
   const [streakDays, setStreakDays] = useState<number>(14);
   const [calmMode, setCalmMode] = useState<boolean>(false);
   const [mvdActive, setMvdActive] = useState<boolean>(false);
-  const isFounderMode = true; // Permanent Founder Sovereign Mode
+  const [activeProfile, setActiveProfile] = useState<ClientProfile>(FOUNDER_PROFILE);
+  const [allProfiles, setAllProfiles] = useState<ClientProfile[]>([FOUNDER_PROFILE]);
+  const [isTourOpen, setIsTourOpen] = useState<boolean>(false);
+  const [currentTourStep, setCurrentTourStep] = useState<number>(0);
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState<boolean>(false);
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
+  const isFounderMode = activeProfile.role === "founder";
 
   const [userProfile, setUserProfile] = useState<UserProfile>({
     name: "Stoic",
@@ -397,6 +425,30 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
       if (savedProf) try { setUserProfile(JSON.parse(savedProf)); } catch (e) {}
       const savedTx = localStorage.getItem("stoic_transactions");
       if (savedTx) try { setTransactions(JSON.parse(savedTx)); } catch (e) {}
+
+      const savedActive = localStorage.getItem("stoic_active_profile");
+      if (savedActive) {
+        try {
+          const parsed = JSON.parse(savedActive);
+          setActiveProfile(parsed);
+        } catch (e) {}
+      } else {
+        const hasVisited = localStorage.getItem("stoic_has_visited");
+        if (!hasVisited) {
+          setIsOnboardingOpen(true);
+          localStorage.setItem("stoic_has_visited", "true");
+        }
+      }
+
+      const savedAll = localStorage.getItem("stoic_all_profiles");
+      if (savedAll) {
+        try {
+          const parsed = JSON.parse(savedAll);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setAllProfiles(parsed);
+          }
+        } catch (e) {}
+      }
     }
   }, []);
 
@@ -673,6 +725,119 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // TOUR CONTROLS
+  const startTour = () => {
+    setCurrentTourStep(0);
+    setIsTourOpen(true);
+  };
+
+  const nextTourStep = () => {
+    if (currentTourStep < APP_TOUR_STEPS.length - 1) {
+      setCurrentTourStep((prev) => prev + 1);
+    } else {
+      completeTour();
+    }
+  };
+
+  const prevTourStep = () => {
+    if (currentTourStep > 0) {
+      setCurrentTourStep((prev) => prev - 1);
+    }
+  };
+
+  const closeTour = () => {
+    setIsTourOpen(false);
+  };
+
+  const completeTour = () => {
+    setIsTourOpen(false);
+    awardXp(250, "App Walkthrough Tour Completed", "Knowledge");
+    playBellSound();
+    setActiveProfile((prev) => {
+      const updated = { ...prev, tourCompleted: true };
+      if (typeof window !== "undefined") {
+        localStorage.setItem("stoic_active_profile", JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
+
+  // PROFILE SWITCHING & ONBOARDING
+  const switchProfile = (profileId: string) => {
+    const target = allProfiles.find((p) => p.id === profileId) || FOUNDER_PROFILE;
+    setActiveProfile(target);
+    setTotalXp(target.totalXp);
+    setStreakDays(target.streakDays);
+    setUserProfile({
+      name: target.name,
+      age: target.age,
+      currentWeight: target.currentWeight,
+      targetWeight: target.targetWeight,
+      height: target.height,
+      diet: target.fastingProtocol,
+      dailyProtein: target.dailyProtein,
+    });
+    if (typeof window !== "undefined") {
+      localStorage.setItem("stoic_active_profile", JSON.stringify(target));
+      localStorage.setItem("stoic_total_xp", String(target.totalXp));
+      localStorage.setItem(
+        "stoic_user_profile",
+        JSON.stringify({
+          name: target.name,
+          age: target.age,
+          currentWeight: target.currentWeight,
+          targetWeight: target.targetWeight,
+          height: target.height,
+          diet: target.fastingProtocol,
+          dailyProtein: target.dailyProtein,
+        })
+      );
+    }
+    awardXp(50, `Switched Profile: ${target.callsign}`, "Discipline");
+  };
+
+  const saveNewClientProfile = (answers: QuestionnaireAnswers): ClientProfile => {
+    const { profile, initialTasks, initialGoals } = calibrateClientProfile(answers);
+    setActiveProfile(profile);
+    const updatedProfiles = [...allProfiles.filter((p) => p.id !== profile.id), profile];
+    setAllProfiles(updatedProfiles);
+    setTotalXp(profile.totalXp);
+    setStreakDays(profile.streakDays);
+    setUserProfile({
+      name: profile.name,
+      age: profile.age,
+      currentWeight: profile.currentWeight,
+      targetWeight: profile.targetWeight,
+      height: profile.height,
+      diet: profile.fastingProtocol,
+      dailyProtein: profile.dailyProtein,
+    });
+    setDailyTasks(initialTasks);
+    setWeeklyGoals((prev) => [...initialGoals, ...prev]);
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem("stoic_active_profile", JSON.stringify(profile));
+      localStorage.setItem("stoic_all_profiles", JSON.stringify(updatedProfiles));
+      localStorage.setItem("stoic_total_xp", String(profile.totalXp));
+      localStorage.setItem("stoic_daily_tasks", JSON.stringify(initialTasks));
+      localStorage.setItem("stoic_weekly_goals", JSON.stringify([...initialGoals, ...weeklyGoals]));
+      localStorage.setItem(
+        "stoic_user_profile",
+        JSON.stringify({
+          name: profile.name,
+          age: profile.age,
+          currentWeight: profile.currentWeight,
+          targetWeight: profile.targetWeight,
+          height: profile.height,
+          diet: profile.fastingProtocol,
+          dailyProtein: profile.dailyProtein,
+        })
+      );
+    }
+    playBellSound();
+    return profile;
+  };
+
   return (
     <StoicContext.Provider
       value={{
@@ -686,6 +851,8 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
         lifeGoals,
         calendarEvents,
         userProfile,
+        activeProfile,
+        allProfiles,
         mvdActive,
         toggleMvd,
         toggleCalmMode,
@@ -703,6 +870,19 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
         toggleLifeGoal,
         addCalendarEvent,
         updateProfile,
+        switchProfile,
+        saveNewClientProfile,
+        isTourOpen,
+        currentTourStep,
+        startTour,
+        nextTourStep,
+        prevTourStep,
+        closeTour,
+        completeTour,
+        isOnboardingOpen,
+        setIsOnboardingOpen,
+        isLoginOpen,
+        setIsLoginOpen,
         exportBackup,
         importBackup,
       }}

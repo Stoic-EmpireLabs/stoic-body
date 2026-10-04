@@ -3,6 +3,10 @@ import "./globals.css";
 import { StoicProvider } from "@/context/StoicContext";
 import Header from "@/components/Header";
 import Nav from "@/components/Nav";
+import HostOnboardingModal from "@/components/HostOnboardingModal";
+import LoginModal from "@/components/LoginModal";
+import InteractiveTour from "@/components/InteractiveTour";
+import HostGuideWidget from "@/components/HostGuideWidget";
 
 export const metadata: Metadata = {
   title: "Stoic Body — Discipline, Movement & Sovereign Life Game",
@@ -31,6 +35,12 @@ export default function RootLayout({
           <Header />
           <Nav />
           <main className="max-w-4xl mx-auto px-4 mt-6">{children}</main>
+          
+          {/* Autonomous Host System: Onboarding, Walkthrough Tour & Companion */}
+          <HostOnboardingModal />
+          <LoginModal />
+          <InteractiveTour />
+          <HostGuideWidget />
         </StoicProvider>
       </body>
     </html>
