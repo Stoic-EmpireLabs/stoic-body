@@ -24,6 +24,7 @@ const assets: Record<string, [string, string]> = {
   '/learn.js': ['apps/local-pilot/public/learn.js', 'text/javascript'],
   '/access.js': ['apps/local-pilot/public/access.js', 'text/javascript'],
   '/host.js': ['apps/local-pilot/public/host.js', 'text/javascript'],
+  '/recovery.js': ['apps/local-pilot/public/recovery.js', 'text/javascript'],
   '/styles.css': ['apps/local-pilot/public/styles.css', 'text/css'],
   '/base.css': ['prototypes/phase-3/styles.css', 'text/css'],
   '/appearance.js': ['prototypes/phase-3/appearance.js', 'text/javascript'],
@@ -64,7 +65,7 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
       if (request.headers.host !== new URL(origin).host || (request.headers.origin && request.headers.origin !== origin)
         || request.headers['sec-fetch-site'] === 'cross-site') throw new HttpError(403, 'Open this app directly on this computer.');
       const path = new URL(request.url ?? '/', origin).pathname;
-      if (path === '/api/identity' && request.method === 'GET') { json(response, 200, { product: 'Stoic Body', edition: 'desktop-local', version: '0.2.0-local' }); return; }
+      if (path === '/api/identity' && request.method === 'GET') { json(response, 200, { product: 'Stoic Body', edition: 'desktop-local', version: '0.3.0-local' }); return; }
       const cookie = request.headers.cookie?.split(';').map(v => v.trim()).find(v => v.startsWith('stoic_local='))?.slice('stoic_local='.length);
       const session = accounts.authenticate(cookie);
       const signedIn = (account: Account, token: string) => ({ authenticated: true, account, token, snapshot: repository.snapshot(account.id), guide: accounts.readGuide(account.id), mode: 'local' });
@@ -152,3 +153,4 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
     await new Promise<void>((accept, reject) => server.close(error => error ? reject(error) : accept())); repository.close();
   } };
 }
+

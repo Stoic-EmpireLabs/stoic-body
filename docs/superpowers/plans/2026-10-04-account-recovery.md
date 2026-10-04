@@ -13,7 +13,7 @@ Spec: docs/superpowers/specs/2026-10-04-account-recovery-design.md
 ## Global constraints
 
 - Keep the current isolated codex/stoic-body-core worktree and owner data. No new external database account or paid service.
-- Backup is not sync. No networking or public listening change; host selection remains pending.
+- Backup is not sync. No networking or public listening change in this recovery checkpoint. User selected an intermittently available desktop; offline clients and automatic reconnection remain launch work.
 - Fixed allowlisted core records only; no SQL/database-file imports or credentials in exports/logs.
 - 16 MiB raw account payload, 24 MiB encrypted request/file; two concurrent KDF operations; scrypt 32768/8/3 and AES-256-GCM.
 - Seven local points; capture before edits no more than once per hour, and before each restore. Credentials and browser appearance are excluded explicitly.
@@ -59,3 +59,4 @@ Interfaces: Recovery.init(ctx) / render(root) receives API, DOM helpers, busy st
 - [ ] Update checkpoint/requirements/progress with actual hosting answer or missing destination. Publish an authorized GitHub prerelease only after verified package evidence. No public sync deployment or full phase-exit claim.
 
 Completion command: npm test
+

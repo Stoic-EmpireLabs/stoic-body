@@ -14,7 +14,7 @@ export async function buildDesktop({ outputRoot = resolve('private/releases', ne
   await mkdir(outputRoot, { recursive: true });
   await mkdir(folder); // Refuse an existing build instead of overwriting it.
   const entries = [
-    ...['index.html', 'app.js', 'health.js', 'learn.js', 'access.js', 'host.js', 'styles.css'].map(f => [`apps/local-pilot/public/${f}`, `apps/local-pilot/public/${f}`]),
+    ...['index.html', 'app.js', 'health.js', 'learn.js', 'access.js', 'host.js', 'recovery.js', 'styles.css'].map(f => [`apps/local-pilot/public/${f}`, `apps/local-pilot/public/${f}`]),
     ...['styles.css', 'appearance.js'].map(f => [`prototypes/phase-3/${f}`, `prototypes/phase-3/${f}`]),
     ...['Start Stoic Body.cmd', 'Stop Stoic Body.cmd', 'launch.ps1', 'README.txt'].map(f => [`apps/desktop/${f}`, f]),
     [process.execPath, 'runtime/node.exe'], ['apps/desktop/node-LICENSE.txt', 'runtime/LICENSE.txt'],
@@ -41,3 +41,4 @@ export async function buildDesktop({ outputRoot = resolve('private/releases', ne
   return { folder, zip };
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) console.log(JSON.stringify(await buildDesktop()));
+

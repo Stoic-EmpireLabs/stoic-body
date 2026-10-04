@@ -17,7 +17,7 @@ assert.ok(files.includes('server.cjs') && files.includes('runtime\\node.exe'));
 assert.ok(!files.some(file => /sqlite|node_modules|(^|[\\/])private|\.env/i.test(file)));
 const manifest = JSON.parse(await readFile(resolve(folder, 'manifest.json'), 'utf8'));
 assert.equal(manifest.runtime, 'v24.19.0');
-assert.equal(manifest.files.length, 16);
+assert.equal(manifest.files.length, 17);
 for (const file of manifest.files) assert.equal(createHash('sha256').update(await readFile(resolve(folder, file.path))).digest('hex'), file.sha256);
 const listener = createServer();
 await new Promise(done => listener.listen(0, '127.0.0.1', done));
@@ -61,3 +61,4 @@ try {
   // Only this freshly-created test bundle; clean a failed ownership-race probe too.
   await run('powershell.exe',['-NoProfile','-Command',"Get-CimInstance Win32_Process | Where-Object { $_.ExecutablePath -eq $env:STOIC_TEST_RUNTIME } | ForEach-Object { Stop-Process -Id $_.ProcessId }"],{env:{...env,STOIC_TEST_RUNTIME:resolve(folder,'runtime/node.exe')}});
 }
+

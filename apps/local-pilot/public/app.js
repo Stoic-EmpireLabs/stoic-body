@@ -1,4 +1,4 @@
-/* global Appearance, Health, Learn, Access, Host */
+/* global Appearance, Health, Learn, Access, Host, Recovery */
 'use strict';
 const $ = selector => document.querySelector(selector);
 const labels = { today: 'Today', goals: 'Goals', plan: 'Plan', health: 'Health', learn: 'Learn', profile: 'Profile', settings: 'Settings', setup: 'Your guide' };
@@ -249,7 +249,7 @@ function renderProfile() {
 function renderSettings() {
   intro('Make this space yours.', 'Choose the light, the colors and the mood of your daily practice.');
   const appearance = element('div'); appearance.innerHTML = Appearance.markup(); $('#main').append(appearance);
-  const storage = card('Your account'); storage.append(element('p', `Signed in as ${account.displayName} (@${account.username}). Your goals, profile, calendar and XP are saved on this computer. A reload does not erase your progress.`, 'muted'), element('p', 'Sign-in protects access through this app; it does not encrypt the database against someone with access to your operating-system files. Device sync, native alarms and backup/restore are still being built. This pilot does not send your entries to an AI service.', 'muted'),action('Open my guide',Host.help)); $('#main').append(storage);
+  const storage = card('Your account'); storage.append(element('p', `Signed in as ${account.displayName} (@${account.username}). Your goals, profile, calendar and XP are saved on this computer. A reload does not erase your progress.`, 'muted'), element('p', 'Sign-in protects access through this app; it does not encrypt the database against someone with access to your operating-system files. Device sync and native alarms are still being built. This pilot does not send your entries to an AI service.', 'muted'),action('Open my guide',Host.help)); $('#main').append(storage);Recovery.render($('#main'));
 }
 document.addEventListener('click', event => { const b = event.target.closest('button[data-view]'); if (b) navigate(b.dataset.view); });
 $('#retry').addEventListener('click', () => { if (pendingRequest) { const p = pendingRequest; void send(p.path, p.data, p.success); } });
@@ -271,6 +271,7 @@ async function boot() {
 Health.init({ element, action, card, intro, snapshot: () => snapshot, date: () => selectedDate, setDate: d => { selectedDate = d; }, api, command, send, render });
 Learn.init({ element, action, card, intro, snapshot: () => snapshot, api, command, render, navigate });
 Access.init({element,card,api,announceAccountChange});
+Recovery.init({element,card,api,announceAccountChange});
 Host.init({element,action,card,intro,questions,snapshot:()=>snapshot,account:()=>account,guide:()=>guide,api,render,navigate,setBusy});
 let idleTimer;
 function resetIdle() { clearTimeout(idleTimer); if (account) idleTimer = setTimeout(() => { void Access.signOut(); }, 30 * 60 * 1000); }

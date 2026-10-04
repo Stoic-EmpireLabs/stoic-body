@@ -23,3 +23,6 @@ Automatic recovery failures must not silently erase or replace data. Existing pr
 Research Todoist/TickTick recovery and visible sync status through official sources. Produce a provider-independent next-step contract and hosting decision with costs/operational requirements. Do not expose loopback, ULTRON, or a public SQLite endpoint. A sync host, TLS route and authenticated multi-device adapter remain necessary. Current settings must say local-only until real device exchange is implemented and verified.
 
 Acceptance: mixed complete workspace round trip under a different account; no credentials/other-owner leakage; bad-password/tamper/version/foreign-reference/malformed-data refusal; conflict and uncertain retry safety; pre-restore rollback; seven-point retention; browser download/preview/confirm/restore/reload and keyboard/mobile controls; existing regression suite; packaged Windows smoke. Current network hosting question does not block these independent changes.
+
+## Hosting clarification
+The user selected their desktop, then clarified that the app need not always be on. The desktop may be off between syncs. Each future client must retain usable local data and reconcile when the desktop returns. This recovery checkpoint implements portable account transfer and recovery, not automatic sync; no private-network route was changed.

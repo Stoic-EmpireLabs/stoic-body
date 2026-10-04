@@ -26,7 +26,12 @@ Data is saved separately in %LOCALAPPDATA%\StoicBody (paste into File Explorer).
 Stop the app before copying that whole folder to a private backup location.
 Keep your recovery key separately. Recovery replaces your password without
 email and invalidates previous sessions. Losing both password and key has no
-self-service recovery. Automated backup/restore and export are not implemented.
+self-service recovery. Settings > Data & recovery lets you download encrypted
+account backups with a separate passphrase, preview imports, and confirm restore.
+Keep the file off this computer and the backup passphrase separately. Restore
+preserves your sign-in and replaces only your app data; other sessions sign in again.
+Seven local recovery points protect against accidental edits, not disk loss.
+Credentials, recovery keys, other accounts and browser themes are not exported.
 To update: stop using the OLD download's Stop launcher, extract the new ZIP
 into a new folder, then use its Start launcher. Your saved data remains in place.
 Do not delete the data folder to update. Back up first; downgrade is unsupported.
@@ -40,7 +45,7 @@ Plans are reviewed and edited by you. This is not fully automated coaching.
 
 KNOWN LIMITS
 No cross-device sync, native alarms, app-store installer, external AI coach,
-automatic backups, or complete clinical/personalized nutrition prescription.
+off-device automatic backups, or complete clinical/personalized nutrition prescription.
 Theme settings are browser-local. External lessons/resources need internet.
 Accounts and saved work persist after restart, but unsaved text drafts do not.
 

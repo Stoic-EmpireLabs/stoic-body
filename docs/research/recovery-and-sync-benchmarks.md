@@ -11,4 +11,7 @@ No sales ranking, proprietary retention metric or performance claim is invented.
 
 Technical sources: [Node crypto](https://nodejs.org/docs/latest-v24.x/api/crypto.html), [SQLite atomic commit](https://www.sqlite.org/atomiccommit.html), [OWASP password storage](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html). Fixed cost/size limits avoid attacker-selected KDF parameters. GCM authenticates ciphertext, while the application validates decrypted data independently. The documentation's current minor version differs from the installed Node24.19 runtime; executable tests verify used APIs.
 
-Sync hosting remains unresolved under the owner's zero-paid-services/no-external-database-account rule. GitHub distributes a ZIP; it is not the running synchronization service. No credentials, personal records or database files have been uploaded for this research.
+User selected an intermittently available desktop for future sync under the owner's zero-paid-services/no-external-database-account rule. GitHub distributes a ZIP; it is not the running synchronization service. No credentials, personal records or database files have been uploaded for this research.
+
+
+[Tailscale Serve reference](https://tailscale.com/docs/reference/tailscale-cli/serve) documents private sharing and selectable HTTPS ports. Read-only inspection found an existing private route for another app; no routing, firewall or sleep setting was changed. Offline access requires local client storage, not merely a private URL. No public exposure is part of this checkpoint.

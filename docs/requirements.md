@@ -125,3 +125,6 @@ Date: 2026-10-04. 101 requirements including the five learning additions below. 
 | ENTRY02 | User whole-app host request | Explain each module, show next actions and provide replayable tooltips | Twelve-stop real-view tour, checklist and persistent help | Browser tour, keyboard Escape, resume/replay and mobile checks |
 | ENTRY03 | User spouse/GitHub request | Another client downloads a fresh copy and sets independent goals | Allowlisted Windows ZIP, fresh accounts and LOCALAPPDATA persistence | Real bundled concurrent launcher/account/restart smoke; published asset digest, size and HTTP availability verified in guided-entry-checkpoint.md |
 
+
+## Account recovery checkpoint — 2026-10-04
+Portable encrypted account export, previewed owner-scoped restore, seven local recovery points, stale-preview rejection, atomic rollback and credential exclusion are implemented. Evidence: tests/core/account-bundle.test.ts, tests/core/recovery.test.ts, tests/pilot/backup.test.ts and tests/pilot/recovery-ui.test.ts. Automatic iPhone/iPad/Windows sync (B11), standalone offline Apple clients and background alarms remain open; the desktop may be off between syncs.

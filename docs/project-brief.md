@@ -100,3 +100,5 @@ The owner requested research of competitor interfaces, operations and top commer
 ## Phase 2 update
 
 The expanded Phase 1 packet is approved by “carry on.” Phase 2 is ready for review with 96 requirements, including mandatory automatic sync at launch. Five destinations are proposed: Today, Plan, Train, Fuel and Growth. Product behavior, architecture and evidence remain proposals until the checkpoint is approved. The owner profile is not approved for public examples; its separately embedded copies in current source are a documented release blocker.
+
+Sync clarification: the user's desktop is the intended intermittent host. It may be off between syncs. Require independent offline clients and catch-up when the host is available; account backups alone do not satisfy launch sync.

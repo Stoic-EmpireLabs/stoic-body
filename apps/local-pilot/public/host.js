@@ -14,7 +14,7 @@ window.Host = (() => {
     ['health','evidence','#diet-comparison','Understand your options','Compare diet evidence, risks and sources. Meal timing and food choices are different. Selecting OMAD or another approach does not automatically create a daily prescription.'],
     ['learn',null,'#main','Learn, then put it to work','Choose a path, open its learning resource, keep notes and complete practical checkpoints. Add a practice task to Plan. XP comes from the scheduled practice, not repeated checkboxes.'],
     ['profile',null,'#main','Your context can change','Revisit any questionnaire answer here. Skip or mark unknown when needed. Availability can prefill Plan; all recommendations still need your review.'],
-    ['settings',null,'#main','Make this space comfortable','Choose your theme and colors. Your entries are stored locally; device sync, native alarms and backup/restore remain launch work. Help & tour is always available.'],
+    ['settings',null,'#main','Make this space comfortable','Choose your theme and colors. Download an encrypted backup or review local recovery points in Data & recovery. Device sync and native alarms remain launch work. Help & tour is always available.'],
     ['today',null,'.pilot-level','Progress is what you practice','Complete scheduled actions for XP, or record partial progress. Undo corrects the award. Rest counts. Start with one goal and one manageable session; build from there.'],
   ];
   const guide=()=>ctx.guide();
@@ -104,3 +104,4 @@ window.Host = (() => {
   function startTour(step){void run(async()=>{await persist({tourStep:step,tourDone:false});tour=step;showStop();});}
   return {init:context=>{ctx=context;},render,help:()=>{panel='help';ctx.navigate('setup');},dashboard:root=>{if(count()<20||!guide().state.tourDone||!ctx.snapshot().occurrences.length)checklist(root,true);},afterRender:()=>{if(tour>=0)highlight();},resetPanel:()=>{panel='';}};
 })();
+

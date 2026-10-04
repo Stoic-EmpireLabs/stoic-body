@@ -10,8 +10,8 @@ async function key(value:string,salt:Buffer):Promise<Buffer> {
   try{return await new Promise((resolve,reject)=>scrypt(value,salt,32,{N:32768,r:8,p:3,maxmem:64*1024*1024},(err,result)=>err?reject(err):resolve(result)));}finally{active--;}
 }
 function base64(value:unknown,max:number,exact?:number):Buffer {
-  if(typeof value!=='string'||value.length>Math.ceil(max/3)*4||!/^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(value))throw new Error('Damaged backup encoding.');
-  const b=Buffer.from(value,'base64');if(b.length>max||(exact!==undefined&&b.length!==exact))throw new Error('Damaged backup length.');return b;
+  if(typeof value!=='string'||value.length>Math.ceil(max/3)*4||value.length%4!==0||/[^A-Za-z0-9+/=]/.test(value))throw new Error('Damaged backup encoding.');
+  const b=Buffer.from(value,'base64');if(b.toString('base64')!==value||b.length>max||(exact!==undefined&&b.length!==exact))throw new Error('Damaged backup length.');return b;
 }
 export async function sealBackup(bundle:AccountBundle,phrase:unknown):Promise<BackupEnvelope> {
   const password=pass(phrase), data=Buffer.from(JSON.stringify(bundle));if(data.length>MAX_BUNDLE_BYTES)throw new Error('Backup exceeds 16 MiB.');

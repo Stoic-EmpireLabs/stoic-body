@@ -79,3 +79,8 @@ Phase 0 was approved on 2026-10-04 by the user message: Great. continue throguh 
 
 - DEC-59 — The user requests a first-download host experience: implement real local accounts, optional/resumable twenty-question setup, explicit first-goal suggestions and a replayable whole-app tour. No personal goals or health plans are silently created.
 - DEC-60 — GitHub distribution is explicitly authorized for another client to download and customize independently. Package only the local pilot and installed runtime, with no owner data; preserve main and the separate application. This does not waive the previously required automatic sync or authorize public hosting of SQLite.
+
+## 2026-10-04 — Recovery and intermittent desktop sync
+- User chose their desktop as the sync host and clarified that it need not always be on. Do not make always-on hosting a requirement. Retain automatic sync at launch, local offline core, and visible conflict/retry handling.
+- Complete account recovery before connecting devices: encrypted portable files, preview/confirmation, seven local points, and no credential transfer. Separate local accounts remain independent until actual sync is implemented.
+- Preserve the existing private network service; no Tailscale, firewall, sleep or ULTRON changes in this checkpoint.
