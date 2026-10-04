@@ -5,6 +5,7 @@ window.Health = (() => {
   let compare = ['balanced', 'omad'];
   let trainingDraft = { adult: false, restrictions: 'unknown', equipment: [], style: 'full-body', minutes: 30, preference: 'higher-reps', goalId: null };
   const edits = {};
+  const historyLimits = {};
   const el = (...a) => ctx.element(...a), button = (...a) => ctx.action(...a), records = () => ctx.snapshot().health || [];
   function field(form, name, label, type = 'text', value = '', options = [], required = true) {
     const wrapper = el('label', label), input = el(type === 'select' ? 'select' : type === 'textarea' ? 'textarea' : 'input'); input.name = name; input.setAttribute('aria-label', label);
@@ -23,18 +24,22 @@ window.Health = (() => {
   function save(kind, data) { const edit = edits[kind]; void ctx.command('health.save', edit?.id || crypto.randomUUID(), { kind, data: { ...data, date: data.date || ctx.date() } }, edit?.revision || 0, 'Health entry saved.'); }
   function link(parent, source) { const a = el('a', source.title); a.href = source.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; parent.append(a, el('small', ` · ${source.published || 'Publication date not verified'}${source.access ? ` · ${source.access}` : ''}`, 'muted')); }
   function list(kind, parent, title) {
-    const list = ctx.card(title), entries = records().filter(r => r.kind === kind).slice().reverse().slice(0, 20);
+    const list = ctx.card(title), all = records().filter(r => r.kind === kind).slice().reverse().sort((a, b) => String(b.data.date).localeCompare(String(a.data.date)));
+    const limit = historyLimits[kind] || 20, entries = all.slice(0, limit);
     if (!entries.length) list.append(el('p', 'Your entries will appear here.', 'muted'));
     for (const r of entries) {
       const row = el('article', undefined, 'pilot-row'), d = r.data;
       row.append(el('h3', String(d.title || d.exercise || (kind === 'water' ? `${d.ml} ml` : kind === 'measurement' ? `${d.metric}: ${d.value} ${d.unit}` : 'Daily check-in'))));
       row.append(el('p', `${d.date}${d.portion ? ` · ${d.portion} · ${d.source}` : ''}${r.archived ? ' · Archived' : ''}`, 'muted'));
+      if (kind === 'workout') row.append(el('p', `${d.sets.map(s => `${s.reps} reps × ${s.load} ${s.unit}`).join('; ') || 'Timed practice'} · ${d.duration} min${d.effort === null ? '' : ` · effort ${d.effort}/10`}${d.pain ? ' · discomfort reported' : ''}`, 'muted'));
       const controls = el('div', undefined, 'pilot-actions');
       if (!r.archived) controls.append(button(`Edit ${kind === 'checkin' ? 'check-in' : kind}`, () => { edits[kind] = r; if (kind === 'workout') { selectedRoutine = String(d.routineId); selectedExercise = String(d.exercise); } ctx.render(); }));
       controls.append(button(r.archived ? 'Restore entry' : 'Archive entry', () => ctx.command('health.archive', r.id, { archived: !r.archived }, r.revision, 'Entry updated.')));
       if (kind === 'food' && !r.archived) controls.append(button('Use again', () => { edits.food = { data: { ...r.data, date: ctx.date() } }; ctx.render(); }));
       row.append(controls); list.append(row);
-    } parent.append(list);
+    }
+    if (all.length > entries.length) list.append(button(`Show more ${kind} entries`, () => { historyLimits[kind] = limit + 20; ctx.render(); }));
+    parent.append(list);
   }
   async function summary(parent, currentGeneration, progress = false) {
     try {
@@ -118,11 +123,12 @@ window.Health = (() => {
     const gear = el('fieldset'); gear.append(el('legend', 'Available equipment (bodyweight is always available)'));
     for (const [key, label] of [['cables', 'Cables'], ['bench', 'Bench'], ['barbell', 'Barbell'], ['pullup', 'Pull-up bar'], ['treadmill', 'Treadmill'], ['bag', 'Boxing bag']]) field(gear, key, label, 'checkbox', trainingDraft.equipment.includes(key), [], false); f.append(gear);
     field(f, 'goal', 'Routine goal', 'select', trainingDraft.goalId || '', [['', 'Health / deliberate practice'], ...ctx.snapshot().goals.filter(g => !g.archived).map(g => [g.id, g.title])], false);
-    submit(f, 'Preview routine', () => { trainingDraft = { adult: f.elements.adult.checked, restrictions: value(f, 'restrictions'), style: value(f, 'style'), minutes: numeric(f, 'minutes'), preference: value(f, 'preference'), equipment: ['cables', 'bench', 'barbell', 'pullup', 'treadmill', 'bag'].filter(k => f.elements[k].checked), goalId: value(f, 'goal') || null }; void ctx.send('training-preview', trainingDraft, 'Routine preview ready. Review before saving.'); });
+    const readDraft = () => ({ adult: f.elements.adult.checked, restrictions: value(f, 'restrictions'), style: value(f, 'style'), minutes: numeric(f, 'minutes'), preference: value(f, 'preference'), equipment: ['cables', 'bench', 'barbell', 'pullup', 'treadmill', 'bag'].filter(k => f.elements[k].checked), goalId: value(f, 'goal') || null });
+    submit(f, 'Preview routine', () => { trainingDraft = readDraft(); void ctx.send('training-preview', trainingDraft, 'Routine preview ready. Review before saving.'); });
     c.append(el('p', 'Starter examples use conservative bodyweight/cable movements. A bench, barbell, pull-up bar or bag selection does not automatically prescribe advanced work. A checkbox is not medical clearance.', 'muted')); left.append(c);
     let previewPanel;
     if (preview) { const review = routineCard(preview, 'Review your starter session'); previewPanel = review; if (preview.eligible) review.append(button('Save routine to tasks', () => ctx.command('training.create', crypto.randomUUID(), preview.input, 0, 'Routine saved. Review its place in Plan.'), true)); left.append(review); }
-    f.addEventListener('input', () => { preview = null; previewPanel?.remove(); });
+    f.addEventListener('input', () => { trainingDraft = readDraft(); preview = null; previewPanel?.remove(); });
     const routines = records().filter(r => r.kind === 'routine' && !r.archived);
     if (routines.length) {
       if (!routines.some(r => r.id === selectedRoutine)) selectedRoutine = routines[0].id;
@@ -130,11 +136,22 @@ window.Health = (() => {
       const routine = routines.find(r => r.id === selectedRoutine), [log, lf, ld] = editor('workout', 'Record actual practice');
       if (!routine.data.exercises.some(e => e.name === selectedExercise)) selectedExercise = routine.data.exercises[0].name;
       const exercise = field(lf, 'exercise', 'Exercise', 'select', selectedExercise, routine.data.exercises.map(e => [e.name, e.name])); exercise.addEventListener('change', () => { selectedExercise = exercise.value; loadAdvice(); });
-      const firstSet = ld.sets?.[0]; field(lf, 'count', 'Number of matching sets', 'number', ld.sets?.length ?? 2); field(lf, 'reps', 'Repetitions per set', 'number', firstSet?.reps ?? 12); field(lf, 'load', 'Load per set', 'number', firstSet?.load ?? 0); field(lf, 'unit', 'Load unit', 'select', firstSet?.unit || 'lb', [['lb', 'lb'], ['kg', 'kg']]);
-      lf.append(el('p', 'Use zero load for bodyweight. Use zero sets for a timed-only practice. This entry records matching sets; log another entry for sets with different reps or loads.', 'muted'));
+      const firstSet = ld.sets?.[0], mixedSets = ld.sets?.some(s => s.reps !== firstSet.reps || s.load !== firstSet.load || s.unit !== firstSet.unit);
+      if (mixedSets) {
+        lf.append(el('p', 'This entry contains different sets. Each recorded set is preserved and can be edited below.', 'muted'));
+        ld.sets.forEach((s, i) => { const group = el('fieldset'); group.append(el('legend', `Set ${i + 1}`)); field(group, `reps${i}`, `Set ${i + 1} repetitions`, 'number', s.reps); field(group, `load${i}`, `Set ${i + 1} load`, 'number', s.load); field(group, `unit${i}`, `Set ${i + 1} unit`, 'select', s.unit, [['lb', 'lb'], ['kg', 'kg']]); lf.append(group); });
+      } else {
+        field(lf, 'count', 'Number of matching sets', 'number', ld.sets?.length ?? 2); field(lf, 'reps', 'Repetitions per set', 'number', firstSet?.reps ?? 12); field(lf, 'load', 'Load per set', 'number', firstSet?.load ?? 0); field(lf, 'unit', 'Load unit', 'select', firstSet?.unit || 'lb', [['lb', 'lb'], ['kg', 'kg']]);
+        lf.append(el('p', 'Use zero load for bodyweight. Use zero sets for a timed-only practice. This entry records matching sets; log another entry for sets with different reps or loads.', 'muted'));
+      }
       field(lf, 'duration', 'Exercise duration (minutes)', 'number', ld.duration || 5); field(lf, 'effort', 'Effort (0–10, optional)', 'number', ld.effort, [], false); field(lf, 'pain', 'Discomfort or pain occurred', 'checkbox', ld.pain || false, [], false); field(lf, 'notes', 'Exercise notes', 'textarea', ld.notes, [], false);
-      submit(lf, 'Save exercise log', () => { const count = numeric(lf, 'count'); if (!Number.isInteger(count) || count < 0 || count > 30) { lf.elements.count.setCustomValidity('Choose 0–30 matching sets.'); lf.elements.count.reportValidity(); return; } lf.elements.count.setCustomValidity(''); save('workout', { date: ld.date, routineId: selectedRoutine, exercise: value(lf, 'exercise'), sets: Array.from({ length: count }, () => ({ reps: numeric(lf, 'reps'), load: numeric(lf, 'load'), unit: value(lf, 'unit') })), duration: numeric(lf, 'duration'), effort: numeric(lf, 'effort'), pain: lf.elements.pain.checked, notes: value(lf, 'notes') }); });
-      lf.elements.count.addEventListener('input', () => lf.elements.count.setCustomValidity(''));
+      submit(lf, 'Save exercise log', () => {
+        let sets;
+        if (mixedSets) sets = ld.sets.map((_, i) => ({ reps: numeric(lf, `reps${i}`), load: numeric(lf, `load${i}`), unit: value(lf, `unit${i}`) }));
+        else { const count = numeric(lf, 'count'); if (!Number.isInteger(count) || count < 0 || count > 30) { lf.elements.count.setCustomValidity('Choose 0–30 matching sets.'); lf.elements.count.reportValidity(); return; } lf.elements.count.setCustomValidity(''); sets = Array.from({ length: count }, () => ({ reps: numeric(lf, 'reps'), load: numeric(lf, 'load'), unit: value(lf, 'unit') })); }
+        save('workout', { date: ld.date, routineId: selectedRoutine, exercise: value(lf, 'exercise'), sets, duration: numeric(lf, 'duration'), effort: numeric(lf, 'effort'), pain: lf.elements.pain.checked, notes: value(lf, 'notes') });
+      });
+      lf.elements.count?.addEventListener('input', () => lf.elements.count.setCustomValidity(''));
       right.append(log); const details = el('details'); details.append(el('summary', 'View saved session instructions'), routineCard(routine.data)); right.append(details);
       const advice = ctx.card('Progression review'); advice.append(el('p', 'Loading your practice history…', 'muted')); right.append(advice); const current = generation;
       let adviceRequest = 0;
@@ -158,7 +175,7 @@ window.Health = (() => {
     ({ fuel, train, progress, evidence })[tab](root, current);
   }
   function onResult(path, data, result) {
-    if (path === 'training-preview') preview = result;
+    if (path === 'training-preview') { if (JSON.stringify(data) !== JSON.stringify(trainingDraft)) return false; preview = result; }
     if (path === 'command' && data.type === 'health.save') edits[data.payload.kind] = null;
     if (path === 'command' && data.type === 'training.create') { selectedRoutine = data.entityId; selectedExercise = ''; preview = null; }
   }

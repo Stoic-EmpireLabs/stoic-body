@@ -9,7 +9,7 @@ export function migrateHealth(db: DatabaseSync) {
   catch (error) { if (db.isTransaction) db.exec('ROLLBACK'); throw error; }
 }
 export function readHealth(db: DatabaseSync, owner: string): HealthRecord[] {
-  return db.prepare('SELECT id,kind,revision,archived,data_json FROM core_health WHERE owner_id=? ORDER BY id').all(owner).map(r => ({ id: String(r.id), kind: String(r.kind), revision: Number(r.revision), archived: Boolean(r.archived), data: JSON.parse(String(r.data_json)) }));
+  return db.prepare('SELECT id,kind,revision,archived,data_json FROM core_health WHERE owner_id=? ORDER BY rowid').all(owner).map(r => ({ id: String(r.id), kind: String(r.kind), revision: Number(r.revision), archived: Boolean(r.archived), data: JSON.parse(String(r.data_json)) }));
 }
 export function healthDate(v: unknown): string {
   if (typeof v !== 'string' || !/^\d{4}-\d\d-\d\d$/.test(v) || v < '1970-01-01' || v > '2100-12-31' || !Number.isFinite(Date.parse(`${v}T00:00:00Z`)) || new Date(`${v}T00:00:00Z`).toISOString().slice(0, 10) !== v) throw new Error('Choose a valid date.');

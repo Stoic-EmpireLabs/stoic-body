@@ -40,6 +40,13 @@ async function run() {
     check('notes, linked task and XP survive a real server restart');
     await page.getByRole('button', { name: 'Back to learning library', exact: true }).click();
     await page.getByRole('button', { name: 'My paths', exact: true }).click(); check('enrolled filter shows one course', await page.locator('.learn-course').count() === 1);
+    await page.getByRole('button', { name: 'All paths', exact: true }).click(); check('nine learning paths are available', await page.locator('.learn-course').count() === 9);
+    await page.screenshot({ path: join(evidence, 'library-desktop.png'), fullPage: true });
+    await page.getByRole('button', { name: 'Explore AI from foundations to agents', exact: true }).click();
+    check('the image roadmap includes eleven topic checkpoints', await page.locator('.learn-step').count() === 11);
+    await page.getByRole('button', { name: '07  RAG — retrieving useful evidence', exact: true }).click();
+    check('RAG opens its verified curriculum chapter', (await page.getByRole('link', { name: 'Open lesson or reference' }).getAttribute('href'))?.endsWith('/15-rag-and-vector-databases'));
+    await page.screenshot({ path: join(evidence, 'ai-roadmap-desktop.png'), fullPage: true });
     check('no browser runtime errors', errors.length === 0);
     writeFileSync(join(evidence, 'browser-checks.json'), JSON.stringify({ at: new Date().toISOString(), checks, errors }, null, 2)); console.log(`${checks.length} learning browser checks passed.`);
   } finally { await browser.close(); await pilot.close(); const target = resolve(dir); assert.equal(dirname(target), resolve(tmpdir())); assert.ok(basename(target).startsWith('stoic-learning-')); rmSync(target, { recursive: true, force: true }); }

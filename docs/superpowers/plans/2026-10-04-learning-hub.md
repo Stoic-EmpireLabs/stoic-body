@@ -29,21 +29,22 @@ Files: src/core/learning-content.ts, learning-store.ts, repository.ts; tests/cor
 
 Interfaces: Course has id/title/provider/url/level/prerequisite/cost/format/checkpoints; each checkpoint has id/title/url/minutes/deliverable. LearningEnrollment has id/revision/checkpoints keyed by checkpoint ID with completed/notes/taskId. Commands learning.enroll (entityId course ID), learning.checkpoint ({checkpointId,completed,notes}), learning.practice ({checkpointId,minutes,goalId}) use enrollment revision. One practice task per checkpoint, kind focus, budget 15. readLearning exposes owned enrollment in Snapshot.learning. Migration 5 is additive. No XP on learning commands.
 
-- [ ] Write RED tests for persistence, isolation, revision conflicts, invalid data, rollback and duplicate practice planning.
-- [ ] Implement nine curated paths (including the user's 11-topic AI image roadmap), strict store and command integration; preserve task identity on repeat planning.
-- [ ] Run targeted tests/typecheck/lint and commit.
+- [x] Write RED tests for persistence, isolation, revision conflicts, invalid data, rollback and duplicate practice planning.
+- [x] Implement nine curated paths (including the user's 11-topic AI image roadmap), strict store and command integration; preserve task identity on repeat planning.
+- [x] Run targeted tests/typecheck/lint and commit.
 
 ## Task 2: Lightweight Learn screen and verification
 Files: apps/local-pilot/public/learn.js, app.js, index.html, styles.css, server.ts; scripts/test-learning-pilot.ts; docs/phase-6-learning-checkpoint.md.
 
 Interfaces: authenticated GET learning-content; Learn.render/init receives shared DOM/API/command/navigation helpers. Library filters, enrollment, next checkpoint, original practice brief, external link, notes/completion/undo and practice task creation. Metrics: own checkpoint count and XP from linked calendar sessions, never estimated provider mastery.
 
-- [ ] RED browser journey: enroll, open real resource URL, save note/complete/undo, add one practice task, review schedule, earn 15 XP once and retain data after reload.
-- [ ] Implement responsive cards/course detail, cost/source labels, explicit full-course links and progress limitations.
-- [ ] Run all core and browser checks, typecheck/lint; inspect mobile and desktop evidence.
-- [ ] Include in one fresh final review with health; fix material findings RED→GREEN; commit and restart pilot.
+- [x] RED browser journey: enroll, open real resource URL, save note/complete/undo, add one practice task, review schedule, earn 15 XP once and retain data after reload.
+- [x] Implement responsive cards/course detail, cost/source labels, explicit full-course links and progress limitations.
+- [x] Run all core and browser checks, typecheck/lint; inspect mobile and desktop evidence.
+- [x] Include in one fresh final review with health; fix material findings RED→GREEN; commit and restart pilot.
 
 ## Scope decisions
 Direct feature requests authorize this local implementation. No extra design approval round. Course linking replaces the proposed embedded lesson engine as requested. Provider accounts, automatic course completion sync, executing code, cloud quota retrieval and a universal plugin installer are out of this slice. The full Phase 6 quote/import work is still open.
 
 Image steering: add AI, ML, DL, generative AI, LLMs, RAG, agentic AI, multimodal AI, prompt engineering, fine-tuning and AI safety as a dedicated ordered path. Each checkpoint can create a timeboxed focus task in the shared planning system. The graphic is a topic reference, not an authoritative hierarchy or an instruction to download its named products.
+

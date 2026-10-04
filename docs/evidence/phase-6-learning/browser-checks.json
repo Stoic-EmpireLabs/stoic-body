@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-04T21:49:00.278Z",
+  "at": "2026-10-04T21:58:01.238Z",
   "checks": [
     "real external guide with isolated new tab",
     "Ultra cost boundary visible",
@@ -10,6 +10,9 @@
     "Learn fits a narrow mobile screen",
     "notes, linked task and XP survive a real server restart",
     "enrolled filter shows one course",
+    "nine learning paths are available",
+    "the image roadmap includes eleven topic checkpoints",
+    "RAG opens its verified curriculum chapter",
     "no browser runtime errors"
   ],
   "errors": []

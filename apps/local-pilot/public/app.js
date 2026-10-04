@@ -51,7 +51,7 @@ async function send(path, data, success) {
   setBusy(true); errorMessage('');
   try {
     const result = await api(path, data); pendingRequest = null;
-    Health.onResult(path, data, result);
+    if (Health.onResult(path, data, result) === false) { message('Inputs changed while the routine preview was loading. Request a fresh preview.'); return; }
     if (path === 'propose') { preview = result; timezone = result.proposal.timezone; selectedDate = data.date; }
     if (path === 'time') manualPreview = result;
     if (path === 'command') {
