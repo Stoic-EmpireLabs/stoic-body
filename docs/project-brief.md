@@ -76,9 +76,9 @@ The current user request controls phase approvals and approval before purchasing
 
 - Minimum supported iOS/iPadOS and Windows versions; first-release device classes are confirmed.
 - Android at first release versus a later Google Play release.
-- Multi-customer product architecture and optional accounts/sync; owner is the first pilot user.
+- Multi-customer account/hosting details; automatic cross-device sync is now required at launch. Owner is the first pilot user.
 - Must alarms work with the app closed, device locked or device offline?
-- Which features must work across multiple devices, and what sync model is acceptable?
+- Hosting route for mandatory cross-device sync, under the current zero-paid/no-external-database rule.
 - Whether any AI is needed in the first release; provider and personal-data sharing must be explicit.
 - Exact optional integrations and import/export formats.
 - Commercial model, pricing, free/paid boundaries, store-specific requirements and costs; none is selected or authorized yet.
@@ -88,7 +88,7 @@ The current user request controls phase approvals and approval before purchasing
 
 ## Architecture boundary
 
-No stack is selected. The likely responsibility boundaries are profile, goals/calendar, nutrition, training, learning/resources, rewards, progress, imports and notifications. Their interfaces, persistence and deployment choices belong to Phase 2 after discovery and research.
+No production stack is approved. Phase 2 proposes Flutter/local SQLite plus an authenticated Node/SQLite sync service, compared with React native-shell and PWA alternatives. Shared contracts, privacy and implementation plans are in [the Phase 2 review](phase-2-review.md). Existing Next.js code is separately assessed and preserved.
 
 No clinical assessment, health prescription or body-fat inference has been performed.
 
@@ -96,3 +96,7 @@ No clinical assessment, health prescription or body-fat inference has been perfo
 
 The owner requested research of competitor interfaces, operations and top commercial performers at every step. The [research expansion](research/competitors/README.md) compares 24 products, separates performance measures, and maps 26 journey steps to requirements. Adaptation choices remain proposals. At each later phase, refresh material sources and verify the chosen experience before claiming it works. Public screenshots and research scripts are review artifacts, not app implementation.
 
+
+## Phase 2 update
+
+The expanded Phase 1 packet is approved by “carry on.” Phase 2 is ready for review with 96 requirements, including mandatory automatic sync at launch. Five destinations are proposed: Today, Plan, Train, Fuel and Growth. Product behavior, architecture and evidence remain proposals until the checkpoint is approved. The owner profile is not approved for public examples; its separately embedded copies in current source are a documented release blocker.

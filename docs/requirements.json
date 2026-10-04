@@ -9,7 +9,13 @@
       "phase": "0–8",
       "verification_plan": "Review source-to-row coverage at every checkpoint",
       "status": "Project workflow recorded; ongoing checks remain",
-      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md"
+      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md",
+      "phase2": {
+        "design": "phase-2-review.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "P02",
@@ -19,7 +25,13 @@
       "phase": "0",
       "verification_plan": "Count every catalog entry, verify files and inspect exclusions",
       "status": "Project workflow recorded; ongoing checks remain",
-      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md"
+      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md",
+      "phase2": {
+        "design": "phase-2-review.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "P03",
@@ -29,7 +41,13 @@
       "phase": "0–8",
       "verification_plan": "Review phase transitions against user approvals",
       "status": "Project workflow recorded; ongoing checks remain",
-      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md"
+      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md",
+      "phase2": {
+        "design": "phase-2-review.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "P04",
@@ -39,7 +57,13 @@
       "phase": "0–8",
       "verification_plan": "Close/reopen documents and app; recover state",
       "status": "Project workflow recorded; ongoing checks remain",
-      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md"
+      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md",
+      "phase2": {
+        "design": "phase-2-review.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "P05",
@@ -49,7 +73,13 @@
       "phase": "0–8",
       "verification_plan": "Review action log against authorized scope",
       "status": "Project workflow recorded; ongoing checks remain",
-      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md"
+      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md",
+      "phase2": {
+        "design": "phase-2-review.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "P06",
@@ -59,7 +89,13 @@
       "phase": "3–8",
       "verification_plan": "Trace each completion claim to recent execution evidence",
       "status": "Project workflow recorded; ongoing checks remain",
-      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md"
+      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md",
+      "phase2": {
+        "design": "phase-2-review.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "D01",
@@ -69,7 +105,13 @@
       "phase": "1,4",
       "verification_plan": "Resume partial interview and revise an answer without data loss",
       "status": "Discovery recorded with unknowns; app onboarding not implemented",
-      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "D02",
@@ -79,7 +121,13 @@
       "phase": "1,4",
       "verification_plan": "Changed priorities and deadlines alter the generated plan",
       "status": "Discovery recorded with unknowns; app onboarding not implemented",
-      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "D03",
@@ -89,7 +137,13 @@
       "phase": "1,4",
       "verification_plan": "Availability constraints and energy preferences affect suggestions",
       "status": "Discovery recorded with unknowns; app onboarding not implemented",
-      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "D04",
@@ -99,7 +153,13 @@
       "phase": "1,5",
       "verification_plan": "Missing or restricted inputs prevent unsupported personalization",
       "status": "Discovery recorded with unknowns; app onboarding not implemented",
-      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "D05",
@@ -109,7 +169,13 @@
       "phase": "1,5",
       "verification_plan": "Plan respects available equipment, allergies and preparation time",
       "status": "Discovery recorded with unknowns; app onboarding not implemented",
-      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "D06",
@@ -119,7 +185,13 @@
       "phase": "1,4–6",
       "verification_plan": "Changing consent and preferences changes enabled features",
       "status": "Discovery recorded with unknowns; app onboarding not implemented",
-      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "D07",
@@ -129,7 +201,13 @@
       "phase": "0,1,4",
       "verification_plan": "No unanswered development question appears as a health fact",
       "status": "Discovery recorded with unknowns; app onboarding not implemented",
-      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "S01",
@@ -139,7 +217,13 @@
       "phase": "2,4",
       "verification_plan": "One completion updates its linked goal and daily view consistently",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "S02",
@@ -149,7 +233,13 @@
       "phase": "3,4",
       "verification_plan": "Create and locate one-off and recurring sessions in every view",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "S03",
@@ -159,7 +249,13 @@
       "phase": "2,4",
       "verification_plan": "Conflict fixtures include travel, prerequisites and low availability",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "S04",
@@ -169,7 +265,13 @@
       "phase": "4,5,6",
       "verification_plan": "Integrated week contains no prohibited overlap",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "S05",
@@ -179,7 +281,13 @@
       "phase": "4",
       "verification_plan": "Every status survives restart and produces correct consequences",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "S06",
@@ -189,7 +297,13 @@
       "phase": "4,6",
       "verification_plan": "Low-energy mode reduces optional load and preserves locked obligations",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "S07",
@@ -199,7 +313,13 @@
       "phase": "2,4",
       "verification_plan": "Impossible goal does not produce a falsely feasible schedule",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "S08",
@@ -209,7 +329,13 @@
       "phase": "3,4",
       "verification_plan": "Locked session stays fixed; undo restores prior schedule",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "S09",
@@ -219,7 +345,13 @@
       "phase": "4",
       "verification_plan": "Reject proposal without changing the calendar; accept only chosen moves",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "S10",
@@ -229,7 +361,13 @@
       "phase": "2,4,7",
       "verification_plan": "Spring/fall transitions and cross-zone fixtures produce expected times",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N01",
@@ -239,7 +377,13 @@
       "phase": "1,5",
       "verification_plan": "Every named approach has an evidence and limitations record",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N02",
@@ -249,7 +393,13 @@
       "phase": "1,5",
       "verification_plan": "No unsupported equivalence or universal recommendation",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N03",
@@ -259,7 +409,13 @@
       "phase": "1,5",
       "verification_plan": "Search and comparison do not conflate these categories",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N04",
@@ -269,7 +425,13 @@
       "phase": "2,5",
       "verification_plan": "Changing an eating window does not silently change food restrictions",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N05",
@@ -279,7 +441,13 @@
       "phase": "1,5",
       "verification_plan": "Source audit and entry-completeness check",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N06",
@@ -289,7 +457,13 @@
       "phase": "1,2,5",
       "verification_plan": "Flagged profile cannot receive an unsupported unsupervised plan",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N07",
@@ -299,7 +473,13 @@
       "phase": "1,5,7",
       "verification_plan": "Open sources and verify they support associated claims",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N08",
@@ -309,7 +489,13 @@
       "phase": "2,5",
       "verification_plan": "Inputs, formula, units, assumptions and missing-data behavior are visible",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N09",
@@ -319,7 +505,13 @@
       "phase": "3,5",
       "verification_plan": "UI audit finds no guarantee or unsupported precision",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N10",
@@ -329,7 +521,13 @@
       "phase": "5",
       "verification_plan": "Log, correct, save and reopen records with unit fidelity",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N11",
@@ -339,7 +537,13 @@
       "phase": "5",
       "verification_plan": "User can disable weighing and continue other functions",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N12",
@@ -349,7 +553,13 @@
       "phase": "5",
       "verification_plan": "Recipe edits update grocery quantities with user review",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N13",
@@ -359,7 +569,13 @@
       "phase": "5,6",
       "verification_plan": "Uncertain image yields estimate/confirmation, not false exact data",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "N14",
@@ -369,7 +585,13 @@
       "phase": "2,4,5",
       "verification_plan": "Extreme entries cannot create bonus XP",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "F01",
@@ -379,7 +601,13 @@
       "phase": "1,2,5",
       "verification_plan": "Limited equipment/time profile receives a feasible plan",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "F02",
@@ -389,7 +617,13 @@
       "phase": "5",
       "verification_plan": "Each structure can be represented and scheduled appropriately",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "F03",
@@ -399,7 +633,13 @@
       "phase": "1,5",
       "verification_plan": "Method labels and programming rules are unambiguous",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "F04",
@@ -409,7 +649,13 @@
       "phase": "5",
       "verification_plan": "Named modes available without forcing all into one plan",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "F05",
@@ -419,7 +665,13 @@
       "phase": "2,5",
       "verification_plan": "Workout completeness and technique-resource review",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "F06",
@@ -429,7 +681,13 @@
       "phase": "5",
       "verification_plan": "Corrected and offline logs persist without duplicate sets",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "F07",
@@ -439,7 +697,13 @@
       "phase": "5",
       "verification_plan": "One outlier does not trigger aggressive program change",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "F08",
@@ -449,7 +713,13 @@
       "phase": "1,2,5",
       "verification_plan": "No physique label is required or treated as a deterministic program rule",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "F09",
@@ -459,7 +729,13 @@
       "phase": "5,6",
       "verification_plan": "Consent withdrawal and deletion work; unsupported inference is absent",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "F10",
@@ -469,7 +745,13 @@
       "phase": "5",
       "verification_plan": "Source method and units remain visible in charts and exports",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "L01",
@@ -479,7 +761,13 @@
       "phase": "6",
       "verification_plan": "A learning goal produces a feasible prerequisite-ordered schedule",
       "status": "Initial resource or workflow plan recorded; not implemented",
-      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+        "acceptance": "L01/L03; resources/prerequisites, coach-led cheer, capacity and confirmed imported facts",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "L02",
@@ -489,7 +777,13 @@
       "phase": "6",
       "verification_plan": "Verify every recommended resource and show free/paid label",
       "status": "Initial resource or workflow plan recorded; not implemented",
-      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+        "acceptance": "L01/L03; resources/prerequisites, coach-led cheer, capacity and confirmed imported facts",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "L03",
@@ -499,7 +793,13 @@
       "phase": "5,6",
       "verification_plan": "Complete a resource and observe next practice/review action",
       "status": "Initial resource or workflow plan recorded; not implemented",
-      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+        "acceptance": "L01/L03; resources/prerequisites, coach-led cheer, capacity and confirmed imported facts",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "L04",
@@ -509,7 +809,13 @@
       "phase": "6,7",
       "verification_plan": "Broken or unavailable sources are disclosed, not invented",
       "status": "Initial resource or workflow plan recorded; not implemented",
-      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+        "acceptance": "L01/L03; resources/prerequisites, coach-led cheer, capacity and confirmed imported facts",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "G01",
@@ -519,7 +825,13 @@
       "phase": "2,4",
       "verification_plan": "Attribute configuration preserves historical records",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C03/C05; numerical XP, subdivision budgets, idempotency, partial completion, undo and two-device conflicts",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "G02",
@@ -529,7 +841,13 @@
       "phase": "2,4",
       "verification_plan": "Exact default award fixtures match agreed values",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C03/C05; numerical XP, subdivision budgets, idempotency, partial completion, undo and two-device conflicts",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "G03",
@@ -539,7 +857,13 @@
       "phase": "2,4",
       "verification_plan": "Boundary examples: total XP 0/99/100/224/225 produce correct level",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C03/C05; numerical XP, subdivision budgets, idempotency, partial completion, undo and two-device conflicts",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "G04",
@@ -549,7 +873,13 @@
       "phase": "3,4,6",
       "verification_plan": "Calm/reduced-motion modes disable selected effects; grace days work",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C03/C05; numerical XP, subdivision budgets, idempotency, partial completion, undo and two-device conflicts",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "G05",
@@ -559,7 +889,13 @@
       "phase": "2,4",
       "verification_plan": "Double click, retry, restart and undo/recomplete do not inflate XP",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C03/C05; numerical XP, subdivision budgets, idempotency, partial completion, undo and two-device conflicts",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "G06",
@@ -569,7 +905,13 @@
       "phase": "2,4–6",
       "verification_plan": "Missed task leaves valid prior XP intact; correcting a false award is auditable",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C03/C05; numerical XP, subdivision budgets, idempotency, partial completion, undo and two-device conflicts",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "R01",
@@ -579,7 +921,13 @@
       "phase": "3,5,6",
       "verification_plan": "Every estimate exposes its inputs and relevant limitations",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H04; unit/date/measurement noise, capacity forecasts and unavailable unsupported ETA",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "R02",
@@ -589,7 +937,13 @@
       "phase": "2,5",
       "verification_plan": "Sparse/noisy data widens or suppresses estimates appropriately",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H04; unit/date/measurement noise, capacity forecasts and unavailable unsupported ETA",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "R03",
@@ -599,7 +953,13 @@
       "phase": "4,6",
       "verification_plan": "Changed availability revises forecast with explanation",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/domain-contracts.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H04; unit/date/measurement noise, capacity forecasts and unavailable unsupported ETA",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "Q01",
@@ -609,7 +969,13 @@
       "phase": "6",
       "verification_plan": "Different day contexts yield relevant actionable reflection",
       "status": "Initial resource or workflow plan recorded; not implemented",
-      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+        "acceptance": "L02; source attribution, labeled original text, repetition and tone",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "Q02",
@@ -619,7 +985,13 @@
       "phase": "6",
       "verification_plan": "Quote/source audit and generation attribution tests",
       "status": "Initial resource or workflow plan recorded; not implemented",
-      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+        "acceptance": "L02; source attribution, labeled original text, repetition and tone",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "Q03",
@@ -629,7 +1001,13 @@
       "phase": "6",
       "verification_plan": "Recent history and favorites persist; tone preference is respected",
       "status": "Initial resource or workflow plan recorded; not implemented",
-      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+        "acceptance": "L02; source attribution, labeled original text, repetition and tone",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "V01",
@@ -639,7 +1017,13 @@
       "phase": "3",
       "verification_plan": "User reviews representative screens before implementation",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "phase-2-review.md",
+        "acceptance": "Phase 3 prototype tasks and R03 native accessibility; three visual directions and clear daily loop",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "V02",
@@ -649,7 +1033,13 @@
       "phase": "3,4",
       "verification_plan": "User can identify and finish next action in a usability session",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "phase-2-review.md",
+        "acceptance": "Phase 3 prototype tasks and R03 native accessibility; three visual directions and clear daily loop",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "V03",
@@ -659,7 +1049,13 @@
       "phase": "2,3,7",
       "verification_plan": "Keyboard, screen-reader, contrast and reduced-motion evidence",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "phase-2-review.md",
+        "acceptance": "Phase 3 prototype tasks and R03 native accessibility; three visual directions and clear daily loop",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "V04",
@@ -669,7 +1065,13 @@
       "phase": "2,6",
       "verification_plan": "Each approved format has valid, oversized and malformed-file fixtures",
       "status": "Initial resource or workflow plan recorded; not implemented",
-      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/privacy-and-reliability.md",
+        "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+        "acceptance": "L03; format limits, original hashes, inert parsing and review-before-apply",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "V05",
@@ -679,7 +1081,13 @@
       "phase": "6,7",
       "verification_plan": "Malformed file and injected instruction cannot silently alter a plan",
       "status": "Initial resource or workflow plan recorded; not implemented",
-      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/privacy-and-reliability.md",
+        "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+        "acceptance": "L03; format limits, original hashes, inert parsing and review-before-apply",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "T01",
@@ -689,7 +1097,13 @@
       "phase": "2,4,6,7",
       "verification_plan": "Access, log redaction, deletion and restore tests",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/privacy-and-reliability.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C01/C02/C05/C06; access isolation, durable offline transactions, failure/retry, full backup/restore/deletion",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "T02",
@@ -699,7 +1113,13 @@
       "phase": "2,4–6",
       "verification_plan": "No unapproved network path or automatic paid fallback",
       "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
-      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/privacy-and-reliability.md",
+        "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+        "acceptance": "L04; consented payload only, no paid fallback, manual path on failure",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "T03",
@@ -709,7 +1129,13 @@
       "phase": "1,2",
       "verification_plan": "Document reviewed alternatives, costs and measured alarm plan",
       "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
-      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C01/C07; selected platform prerequisites, notification capabilities, actual device matrix and scoped optional integrations",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "T04",
@@ -719,7 +1145,13 @@
       "phase": "2,4,7",
       "verification_plan": "Foreground, background, closed-app, permission-denied and restart scenarios recorded",
       "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
-      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C01/C07; selected platform prerequisites, notification capabilities, actual device matrix and scoped optional integrations",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "T05",
@@ -729,7 +1161,13 @@
       "phase": "2,Later",
       "verification_plan": "Chosen integration passes duplicate, conflict and disconnect scenarios",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C01/C07; selected platform prerequisites, notification capabilities, actual device matrix and scoped optional integrations",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "T06",
@@ -739,7 +1177,13 @@
       "phase": "2,4,7",
       "verification_plan": "Offline creation and restart preserve core state; reconnection does not duplicate",
       "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
-      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/privacy-and-reliability.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C01/C02/C05/C06; access isolation, durable offline transactions, failure/retry, full backup/restore/deletion",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "T07",
@@ -749,7 +1193,13 @@
       "phase": "0,2–8",
       "verification_plan": "Review dependency/infrastructure choices and actual request paths",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C01/C07; selected platform prerequisites, notification capabilities, actual device matrix and scoped optional integrations",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "T08",
@@ -759,7 +1209,13 @@
       "phase": "2,4–8",
       "verification_plan": "Record actual command output; verify repository excludes secrets",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "architecture/privacy-and-reliability.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R03; actual analyzer/typecheck/lint/test evidence and source/build checks",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "A01",
@@ -769,7 +1225,13 @@
       "phase": "8",
       "verification_plan": "Fresh setup and user walkthrough match documented behavior",
       "status": "Planned; not implemented",
-      "evidence": "Not yet available"
+      "evidence": "Not yet available",
+      "phase2": {
+        "design": "phase-2-review.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R04; reproducible delivery and final requirement evidence",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "V06",
@@ -779,7 +1241,13 @@
       "phase": "1,2,3,7",
       "verification_plan": "Observe next-action discovery, routine completion time and voluntary pilot return behavior; do not equate screen time with benefit",
       "status": "Planned; not implemented",
-      "evidence": "Direct user answer recorded in discovery.md"
+      "evidence": "Direct user answer recorded in discovery.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "phase-2-review.md",
+        "acceptance": "Phase 3 prototype tasks and R03 native accessibility; three visual directions and clear daily loop",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "B01",
@@ -789,7 +1257,13 @@
       "phase": "1,2,6B,8",
       "verification_plan": "Release checklist records each store independently; publishing waits for approval",
       "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
-      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "B02",
@@ -799,7 +1273,13 @@
       "phase": "1,2",
       "verification_plan": "Confirm supported OS versions and Android timing; test release candidates on each selected device class",
       "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
-      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "B03",
@@ -809,7 +1289,13 @@
       "phase": "1,2,3,6B",
       "verification_plan": "User approves model; price, paywall, cancellation and restore flows match it",
       "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
-      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "B04",
@@ -819,7 +1305,13 @@
       "phase": "1,2,6B,7,8",
       "verification_plan": "Validate packages on target devices and prepare reviewable store submissions",
       "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
-      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "B05",
@@ -829,7 +1321,13 @@
       "phase": "2,6B,7",
       "verification_plan": "Test success, cancellation, refund/revocation, restore, renewal where applicable and offline behavior",
       "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
-      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "B06",
@@ -839,7 +1337,13 @@
       "phase": "1,2,4,6B",
       "verification_plan": "If accounts/sync selected, verify customer isolation, conflict resolution, deletion and restore",
       "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
-      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C05/C06; required automatic sync, account isolation, conflicts, revocation and deletion",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "B07",
@@ -849,7 +1353,13 @@
       "phase": "1,2,6B,8",
       "verification_plan": "Review launch assets, support contacts, update/rollback procedure and transparent recurring costs",
       "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
-      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "B08",
@@ -859,7 +1369,13 @@
       "phase": "1,2,6B,7",
       "verification_plan": "Substantiate displayed claims and identify unresolved review requirements before submission",
       "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
-      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "B09",
@@ -869,7 +1385,13 @@
       "phase": "1,2,6B",
       "verification_plan": "No spending, account creation or live store submission without user approval",
       "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
-      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "D08",
@@ -879,7 +1401,13 @@
       "phase": "0,1,4,5,6",
       "verification_plan": "Match source intake to profile/goals; confirm unknowns; later verify reviewed import creates the intended private records",
       "status": "Discovery recorded with unknowns; app onboarding not implemented",
-      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "T09",
@@ -888,8 +1416,14 @@
       "proposed_design": "Separate private directory excluded by project Git rule; synthetic public fixtures and explicit consent for any later external use",
       "phase": "0,2,4,6B,7",
       "verification_plan": "Verify Git exclusion before any commit; inspect build/demo/marketing artifacts for private-data inclusion",
-      "status": "Planning files separated under private/ with ignore rule; app privacy not implemented",
-      "evidence": "../.gitignore; phase-1-verification.md"
+      "status": "Private planning folder excluded; separately created tracked app source contains owner-like data; release blocker",
+      "evidence": "../.gitignore; phase-1-verification.md; architecture/baseline-assessment.md",
+      "phase2": {
+        "design": "architecture/baseline-assessment.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R02; inspect source/bundles/screenshots; owner data in current source remains unresolved",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "S11",
@@ -899,7 +1433,13 @@
       "phase": "2,4,6A,7",
       "verification_plan": "Import representative timetables with recurring classes and deadlines; check timezone, conflicts, duplicate imports and ambiguous dates; require confirmation; never invent absent deadlines or resubmission permission",
       "status": "Initial resource or workflow plan recorded; not implemented",
-      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+        "acceptance": "L03; source-linked academic facts, ambiguous dates, duplicates and conflicts",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "F11",
@@ -909,7 +1449,13 @@
       "phase": "1,2,5,6A,7",
       "verification_plan": "Absent bag equipment excludes bag sessions; integrate with existing training without duplicate conditioning load; skill resources and suitability reviewed",
       "status": "Initial evidence or design requirements recorded; production content and implementation pending",
-      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+        "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "L05",
@@ -919,7 +1465,13 @@
       "phase": "1,2,6A,7",
       "verification_plan": "Advanced lifts cannot be auto-assigned from videos or physique; coached prerequisites, supervision and facility constraints are explicit; family time is preserved",
       "status": "Initial resource or workflow plan recorded; not implemented",
-      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+        "acceptance": "L01/L03; resources/prerequisites, coach-led cheer, capacity and confirmed imported facts",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "P07",
@@ -929,7 +1481,13 @@
       "phase": "1–8",
       "verification_plan": "Each phase links decisions to evidence and actual acceptance checks",
       "status": "Research workflow proposed; future gates not executed",
-      "evidence": "research/competitors/experience-patterns.md"
+      "evidence": "research/competitors/experience-patterns.md",
+      "phase2": {
+        "design": "phase-2-review.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "B10",
@@ -939,7 +1497,13 @@
       "phase": "1, 6B, 8",
       "verification_plan": "Audit country/platform/period/source, conflicting snapshots and unsupported rankings",
       "status": "24-product public-evidence comparison recorded; native/account behavior not tested",
-      "evidence": "research/competitors/README.md; research/competitors/matrix.md; research/competitors/sources.json"
+      "evidence": "research/competitors/README.md; research/competitors/matrix.md; research/competitors/sources.json",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+        "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     },
     {
       "id": "V07",
@@ -949,7 +1513,29 @@
       "phase": "1–3, 7",
       "verification_plan": "Compare prototypes against benchmark tasks and verify clarity, effort, accessibility and failure recovery",
       "status": "10 public visual references and proposed adaptations; prototype pending approval",
-      "evidence": "research/competitors/interface-board.html; research/competitors/visual-audit.md; research/competitors/experience-patterns.md"
+      "evidence": "research/competitors/interface-board.html; research/competitors/visual-audit.md; research/competitors/experience-patterns.md",
+      "phase2": {
+        "design": "architecture/product-spec.md",
+        "plan": "phase-2-review.md",
+        "acceptance": "Phase 3 prototype tasks and R03 native accessibility; three visual directions and clear daily loop",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
+    },
+    {
+      "id": "B11",
+      "source": "Direct discovery answer 2026-10-04 during Phase 2",
+      "requirement": "Automatic sync across iPhone/iPad and Windows is required at launch; preserve offline core and reconcile conflicts, retries and duplicated completions.",
+      "proposed_design": "Local transactional outbox, authenticated command/delta service, owner-scoped records and explicit conflict resolution",
+      "phase": "2,4,7,8",
+      "verification_plan": "Two devices offline then reconnect in both orders; completion awards once, edits conflict visibly, restart preserves records, revoked/deleted accounts cannot sync",
+      "status": "Confirmed launch requirement; architecture proposed; not implemented",
+      "evidence": "decisions.md; architecture/platform-and-sync.md; architecture/domain-contracts.md",
+      "phase2": {
+        "design": "architecture/platform-and-sync.md",
+        "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+        "acceptance": "C05/C06; required automatic sync, account isolation, conflicts, revocation and deletion",
+        "status": "Design proposed; implementation acceptance not executed"
+      }
     }
   ]
 }

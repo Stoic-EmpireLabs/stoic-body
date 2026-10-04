@@ -1,30 +1,27 @@
 # Stoic Body — project review packets
 
-Updated 2026-10-04. In this review workflow, Phase 0 is approved and the expanded Phase 1 research packet awaits review. Next.js source/dependency files were separately observed in this shared folder during research; their implementation and deployment status have not been reviewed here.
+Updated 2026-10-04. Phase 0 and expanded Phase 1 are approved. **[Phase 2 specification and architecture](docs/phase-2-review.md) is ready for review.** Automatic sync across iPhone/iPad and Windows is now required at launch. No product implementation or public deployment is approved by this checkpoint.
 
-Stoic Body connects life goals, schedules, nutrition, training, learning and Stoic reflection through one enjoyable daily game. The user prioritizes ease of use and wanting to return. This is a commercial product targeting Apple App Store, Google Play and Microsoft Store, with the owner as the first user.
+Stoic Body connects life goals, schedules, nutrition, training, learning and Stoic reflection through one enjoyable daily game. The owner is the first pilot user of a commercial product targeting Apple App Store, Google Play and Microsoft Store; Android launch timing remains open.
 
-## Current review
+## Current packet
 
-Start with the [Phase 1 review packet](docs/phase-1-review.md), [discovery readiness](docs/phase-1-discovery.md), [research source register](docs/research/sources.md) and [verification results](docs/phase-1-verification.md).
+- [Product and 20-screen specification](docs/architecture/product-spec.md)
+- [Shared data, scheduling, XP and sync contracts](docs/architecture/domain-contracts.md)
+- [Platform and hosting alternatives](docs/architecture/platform-and-sync.md)
+- [Privacy and recovery design](docs/architecture/privacy-and-reliability.md)
+- [Success measures](docs/architecture/success-measures.md)
+- [Existing Next.js source assessment](docs/architecture/baseline-assessment.md)
+- [96-requirement traceability](docs/architecture/traceability.md) and [verification](docs/phase-2-verification.md)
 
-## Foundational documents
+The existing Next.js source was created separately and has been preserved. Its 15 existing unit tests and TypeScript check pass, but important requirements remain missing or contradicted; see the assessment before treating it as a working commercial app.
 
-1. [Project brief](docs/project-brief.md): purpose, scope, constraints and open choices.
-2. [Phase plan](docs/superpowers/plans/2026-10-04-stoic-body-phase-plan.md): deliverables, dependencies and approval gates.
-3. [Skill inventory](docs/skill-inventory.md): all 121 catalog entries, including 100 unique names and 21 duplicate entries.
-4. [Requirements](docs/requirements.md): 95 mapped requirements with proposed design, phase and future verification.
-5. [Discovery](docs/discovery.md): direct answers, pending questions and later onboarding coverage. The owner's [personal profile](private/personal-profile.md) and [28 goals](private/goals.md) are local planning inputs excluded by the project's Git ignore rule.
-6. [Decisions](docs/decisions.md) and [progress](docs/progress.md): authoritative continuation state.
-7. [Research agenda](docs/research-agenda.md) and [tool inventory](docs/tool-inventory.md).
-8. [Original message](docs/source-original.md): original wording preserved.
-9. [Phase 0 verification](docs/phase-0-verification.md): document checks and their limits.
+## Foundations and research
 
-This is the Codex session's verified skill catalog. Antigravity's separate plugin installation is not assumed to be callable here.
+[Brief](docs/project-brief.md) · [Requirements](docs/requirements.md) · [Decisions](docs/decisions.md) · [Progress](docs/progress.md) · [Discovery](docs/discovery.md) · [Phase roadmap](docs/superpowers/plans/2026-10-04-stoic-body-phase-plan.md) · [Skill inventory](docs/skill-inventory.md) · [Tool inventory](docs/tool-inventory.md) · [Original request](docs/source-original.md)
 
-The current checkpoint is the expanded Phase 1 review: [competitor research](docs/research/competitors/README.md), [visual interface board](docs/research/competitors/interface-board.html) and [26-step experience map](docs/research/competitors/experience-patterns.md). It compares 24 products using 50 additional source references. Research scripts and the interactive reference board are documentation artifacts, not app implementation.
+[Phase 1 research](docs/phase-1-review.md) includes the [24-competitor comparison](docs/research/competitors/README.md), [visual reference board](docs/research/competitors/interface-board.html) and [26-step journey map](docs/research/competitors/experience-patterns.md). These are research artifacts, not implemented features.
 
-Phase 1 approval authorizes writing the Phase 2 specification and architecture; later design and implementation retain their review gates.
+Personal planning records remain under private/ and excluded by Git rules. That exclusion does not protect owner-like values separately embedded in tracked source; removing those from release examples is an explicit blocker. Nothing in this packet authorizes disclosure of personal data.
 
-
-
+Phase 2 approval authorizes Phase 3 synthetic visual prototypes. Later phases, purchases, accounts and public releases retain their approval gates.

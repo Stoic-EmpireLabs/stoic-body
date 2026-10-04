@@ -1,0 +1,31 @@
+{
+  "captured_at": "2026-10-04T17:17:07.989Z",
+  "head": "0ae4e755be195998839068be002236caf3f3e6fc",
+  "files": {
+    "tests/scheduling.test.ts": "0f11c300fa7156a9c4cf6ac612a62a71c2678bb6140612d22ddbfe5055ced0cc",
+    "tests/nutrition.test.ts": "8ee961ed526eb3cf14f11cc6a075cb22799dd001df373f2f67d487a8ce90fd39",
+    "tests/gamification.test.ts": "4a01f26071c2e9290b8a518de32408a40510d560ba56d9bb5e01ae6de97b488b",
+    "tests/e2e-verify.mjs": "071a5a6dae87320b52bc7ff16c8815ffcf731f00a67a40147f5dc07bc2562c53",
+    "tests/db.test.ts": "9579a0df5e8e9a0c55fef0a842ebf4f75675b93a733a0cd12a348075cc308511",
+    "src/lib/scheduling.ts": "08ec7180217c1b450124a4656521dfad510e2bca672d869019f8a0b22ea67d27",
+    "src/lib/nutrition.ts": "d26e8565d7d11e073b6d45618fd4b18e4313c69d5f0c1411156f8086175149a0",
+    "src/lib/gamification.ts": "b70cabb47ab8a5033b7a504003825786149eab7f3b9aef22af48afa488631eee",
+    "src/lib/db.ts": "ae60b80f2cf864c26a4ff977b1f0588a6b304a77009a3078537f0ee08f8e1693",
+    "src/components/Nav.tsx": "a950f08ed479f11e76ffdf5f93b0de30f1a751c41c2f6faa92630548c713d9f0",
+    "src/components/Header.tsx": "c8e7e08f260d73c2b73030dc7b0b887f73d6c70bb6ef310f5562ebecc6751f2c",
+    "src/context/StoicContext.tsx": "2157ee09c76ff423c968d2288f0bd5bab3b1ef0d4b957f38f2b3e9de1b29d885",
+    "src/app/training/page.tsx": "633b11222a6c734e838ac0d96e8eec16a3f56e8d001fcef5ad5b4504b9d0337c",
+    "src/app/settings/page.tsx": "f823f29baaaf2f819a087637f780f4d59a030907e90ecbc931da956187f0d541",
+    "src/app/quests/page.tsx": "55187daf8470bc762c30bea60e8a1f6e12290661f480bbec74b042db2d3ac8aa",
+    "src/app/progress/page.tsx": "6f5ebe5bdc92aeb6560de7b20903498e43120074188289f90d791fafaee6924b",
+    "src/app/page.tsx": "ec4f35ad8768e1b70ab21fadfe41ee32568cac4b147f4bf3bac1600297c1313e",
+    "src/app/nutrition/page.tsx": "78b52f7c10f0bda0f933968383bbe8f811bd2f0f08cfce23ddfb7873a0e8e461",
+    "src/app/layout.tsx": "1ae927934d97ea61a8265c7d3e89be400abbed5522a272db3874d6213ff0cb4d",
+    "src/app/globals.css": "aa8060d7543cef20b16e00a6fe7fc065a7f68814b419c963951c583e472053af",
+    "src/app/character/page.tsx": "18ec9fb9c12ca2ee27d29168657aca7505de5eea5b5e7a88b6bea0ac66cd2dd0",
+    "src/app/api/state/route.ts": "23e75cfc0dfe4e02cd3fcc8c4be8cf5bb4e4d98afc8c4d840b49689220014245",
+    "src/app/calendar/page.tsx": "a6cb53f2f95bbf003861b9e4f757d10a20a219f5dda5d53a9e37f4b4104a5953",
+    "package.json": "7fe17e7904f41af806cba1f2c922bfc2226a06b9a81c56a1dffe9eb06eb009d0",
+    "package-lock.json": "a7d128707ab51597468ab5645b1095633457e5068721ec3bb2ab5fd37b8fcf39"
+  }
+}

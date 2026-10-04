@@ -53,7 +53,7 @@ Prerequisite: Phase 0 approval.
 - [x] Compare business models and expected costs; launch markets and final model remain decisions.
 - [x] Propose measurable usability and pilot success criteria for review; agreement pending.
 - [x] Present evidence review, confirmed constraints, assumptions and unresolved choices.
-- [ ] Obtain Phase 1 approval.
+- [x] Obtain Phase 1 approval: direct user “carry on,” 2026-10-04.
 
 Exit: approved discovery brief and research register. Health or platform conclusions need actual sources.
 
@@ -61,15 +61,15 @@ Exit: approved discovery brief and research register. Health or platform conclus
 
 Prerequisite: Phase 1 approval.
 
-- [ ] Compare feasible platform/storage/notification/AI options within budget constraints.
-- [ ] Define shared goal/calendar model and module contracts.
-- [ ] Specify capacity, recurrence, timezone/DST, rescheduling and undo behavior.
-- [ ] Define XP ledger, partial completion, levels and correction behavior.
-- [ ] Define metric formulas, units, uncertainty and missing-data rules.
-- [ ] Specify consent, imports, local access, optional customer accounts/sync and data lifecycle.
-- [ ] Define approved monetization and store-specific requirements.
-- [ ] Create threat model, security guidance and acceptance criteria.
-- [ ] Write separate implementation plans for core, health modules, content/imports and commercial packaging.
+- [x] Compare feasible platform/storage/notification/AI options within budget constraints.
+- [x] Define shared goal/calendar model and module contracts.
+- [x] Specify capacity, recurrence, timezone/DST, rescheduling and undo behavior.
+- [x] Define XP ledger, partial completion, levels and correction behavior.
+- [x] Define metric formulas, units, uncertainty and missing-data rules.
+- [x] Specify consent, imports, local access, required customer account sync and data lifecycle.
+- [x] Define commercial options and store verification gates; final monetization remains unapproved.
+- [x] Create proposed product trust-boundary/privacy design and acceptance criteria; no repository security scan is claimed.
+- [x] Write separate implementation plans for core, health modules, content/imports and commercial packaging.
 - [ ] Review written specification, then written implementation plans and execution method.
 - [ ] Obtain Phase 2 approval.
 
@@ -189,3 +189,5 @@ Completed work → concrete artifact/demo → covered requirement IDs → actual
 
 Do not equate a discovery reply with phase approval.
 
+
+Phase 2 packet: [review](../../phase-2-review.md). Four subsystem plans and architecture contracts are proposed for review; automatic sync is required at launch. Existing app source is separately assessed rather than treated as approved Phase 4/5 completion.

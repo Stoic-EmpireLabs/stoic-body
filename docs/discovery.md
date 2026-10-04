@@ -99,3 +99,9 @@ Answer: pending.
 
 
 
+
+## Phase 2 product replies — 2026-10-04
+
+- Confirmed: automatic sync across devices is required at launch. Preserve offline core use and explicit conflicts.
+- Hosting question pending: owner-controlled SQLite server under existing no-paid-service rule, or compare paid-hosting costs for later approval. No hosting purchase/deployment is authorized by the question.
+- Development decision only; future personal onboarding still uses the saved intake and unanswered fields.

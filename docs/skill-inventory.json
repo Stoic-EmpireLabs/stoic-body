@@ -125,11 +125,11 @@
     {
       "name": "codex-security:threat-model",
       "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/threat-model/SKILL.md",
-      "status": "Planned",
+      "status": "Conditional",
       "phase": "2",
-      "contribution": "Model photos, imports, schedules, local access and optional AI boundaries.",
-      "depends": "Approved user journeys",
-      "output": "Threat model",
+      "contribution": "Entry instructions inspected; separate repository-model skill has a narrower explicit trigger. Phase 2 contains a proposed privacy/trust-boundary design, not a retained scan model.",
+      "depends": "Explicit repository threat-model request or security scan phase",
+      "output": "No repository security scan/model invocation claimed",
       "file_exists": true
     },
     {
@@ -235,11 +235,11 @@
     {
       "name": "data-analytics:design-kpis",
       "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/design-kpis/SKILL.md",
-      "status": "Planned",
+      "status": "Active",
       "phase": "2",
       "contribution": "Define adherence, progress and outcomes separately.",
       "depends": "Approved success criteria",
-      "output": "Metric dictionary",
+      "output": "architecture/success-measures.md: conceptual metrics, no measured customer baseline",
       "file_exists": true
     },
     {

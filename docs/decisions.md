@@ -29,9 +29,22 @@
 | DEC-25 | 2026-10-04 | Evaluate Flutter first with local core storage and native reminder adapters | Proposed, not selected | Phase 1 platform comparison; Mac/build route and minimum OS unresolved |
 | DEC-26 | 2026-10-04 | Evaluate free-to-try core with one-time paid local features | Proposed, not selected | Phase 1 business-model comparison; no price, purchase or account approval |
 
-Phase 0 was approved on 2026-10-04 by the user message: Great. continue throguh phases. Phase 1 research is authorized; Phase 1 exit approval remains pending. Later phases retain their own exit reviews. Personal data is not approved for public use.
+Phase 0 was approved on 2026-10-04 by the user message: Great. continue throguh phases. Phase 1 research was authorized and has now been approved by the later user message “carry on.” Later phases retain their own exit reviews. Personal data is not approved for public use.
 
 ## Competitor research expansion — 2026-10-04
 
 - DEC-27 — Confirmed: expand Phase 1 to research competitors, interfaces, operations and performance evidence, and retain research at subsequent phase decisions. Source: latest direct user request. This is not Phase 2 approval.
 - DEC-28 — Proposed: adapt visual daily planning, capacity checks, fast logging, explainable weekly reviews and sustainable game progress into one original journey. Evidence and alternatives: research/competitors/README.md and experience-patterns.md. No new stack, price, account or publishing choice is approved.
+
+## Phase 2 specification checkpoint — 2026-10-04
+
+- DEC-29 — Approved: expanded Phase 1 research, from the direct user message “carry on.” Phase 2 specification is authorized; later phases retain review gates.
+- DEC-30 — Confirmed: automatic sync across iPhone/iPad and Windows is required at launch. This supersedes earlier optional-sync wording. Offline work remains required.
+- DEC-31 — Proposed: Flutter/SQLite client and authenticated Node/SQLite sync service; existing React/Next source preserved as a reference. No stack migration approved or performed.
+- DEC-32 — Observed: current app passes 15 existing unit tests and TypeScript checking but conflicts with XP, persistence, privacy and truthful-feature requirements. Baseline assessment is a design input, not launch approval.
+- DEC-33 — Proposed: execute four subsystem plans natively after their phase approvals; no subagent method selected.
+- DEC-34 — Pending: choose a hosting route for required sync under the current zero-paid/no-external-DB rule; a question has been sent. Automatic sync is not deferred while this remains unresolved.
+- DEC-35 — Proposed: five primary destinations; original small XP scale; revision-aware scheduling and sync; three visual directions for Phase 3. See phase-2-review.md.
+
+- DEC-36 — Provisionally approved: Phase 2 by the direct user reply “for now yes.” Proceed with Phase 3 visual prototypes; hosting/build/commercial unknowns remain open.
+- DEC-37 — Phase 3 implementation choice: isolated dependency-free prototype under prototypes/phase-3, synthetic data and in-memory interactions only. Existing Next.js app is preserved; this is visual evaluation, not native production implementation.

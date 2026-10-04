@@ -1,0 +1,920 @@
+{
+  "date": "2026-10-04",
+  "status": "Proposal, not implementation acceptance",
+  "requirements": [
+    {
+      "id": "P01",
+      "design": "phase-2-review.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "P02",
+      "design": "phase-2-review.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "P03",
+      "design": "phase-2-review.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "P04",
+      "design": "phase-2-review.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "P05",
+      "design": "phase-2-review.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "P06",
+      "design": "phase-2-review.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "D01",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX02",
+        "UX03"
+      ]
+    },
+    {
+      "id": "D02",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "D03",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "D04",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX04"
+      ]
+    },
+    {
+      "id": "D05",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "D06",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "D07",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX03"
+      ]
+    },
+    {
+      "id": "S01",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX05"
+      ]
+    },
+    {
+      "id": "S02",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX05"
+      ]
+    },
+    {
+      "id": "S03",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX05",
+        "UX07"
+      ]
+    },
+    {
+      "id": "S04",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX07",
+        "UX17"
+      ]
+    },
+    {
+      "id": "S05",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX09",
+        "UX23"
+      ]
+    },
+    {
+      "id": "S06",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX08",
+        "UX19",
+        "UX21"
+      ]
+    },
+    {
+      "id": "S07",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX07",
+        "UX21"
+      ]
+    },
+    {
+      "id": "S08",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX07"
+      ]
+    },
+    {
+      "id": "S09",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX19"
+      ]
+    },
+    {
+      "id": "S10",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C04/C07; interval, dependency, recurrence/DST, lock, capacity and undo fixtures",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "N01",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX16"
+      ]
+    },
+    {
+      "id": "N02",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX16"
+      ]
+    },
+    {
+      "id": "N03",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX16"
+      ]
+    },
+    {
+      "id": "N04",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX16"
+      ]
+    },
+    {
+      "id": "N05",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX16"
+      ]
+    },
+    {
+      "id": "N06",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX04"
+      ]
+    },
+    {
+      "id": "N07",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "N08",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX04"
+      ]
+    },
+    {
+      "id": "N09",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "N10",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX15"
+      ]
+    },
+    {
+      "id": "N11",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "N12",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX17"
+      ]
+    },
+    {
+      "id": "N13",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX15"
+      ]
+    },
+    {
+      "id": "N14",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H01/H02; evidence coverage, suitability, reliable nutrient data, saved logs and scheduling",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX16"
+      ]
+    },
+    {
+      "id": "F01",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX03",
+        "UX11"
+      ]
+    },
+    {
+      "id": "F02",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "F03",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "F04",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX12",
+        "UX13"
+      ]
+    },
+    {
+      "id": "F05",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX11",
+        "UX12"
+      ]
+    },
+    {
+      "id": "F06",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX11",
+        "UX13"
+      ]
+    },
+    {
+      "id": "F07",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX12",
+        "UX20",
+        "UX21"
+      ]
+    },
+    {
+      "id": "F08",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "F09",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "F10",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX20"
+      ]
+    },
+    {
+      "id": "L01",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+      "acceptance": "L01/L03; resources/prerequisites, coach-led cheer, capacity and confirmed imported facts",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX10",
+        "UX14"
+      ]
+    },
+    {
+      "id": "L02",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+      "acceptance": "L01/L03; resources/prerequisites, coach-led cheer, capacity and confirmed imported facts",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX10"
+      ]
+    },
+    {
+      "id": "L03",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+      "acceptance": "L01/L03; resources/prerequisites, coach-led cheer, capacity and confirmed imported facts",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX10"
+      ]
+    },
+    {
+      "id": "L04",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+      "acceptance": "L01/L03; resources/prerequisites, coach-led cheer, capacity and confirmed imported facts",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "G01",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C03/C05; numerical XP, subdivision budgets, idempotency, partial completion, undo and two-device conflicts",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX18"
+      ]
+    },
+    {
+      "id": "G02",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C03/C05; numerical XP, subdivision budgets, idempotency, partial completion, undo and two-device conflicts",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX18"
+      ]
+    },
+    {
+      "id": "G03",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C03/C05; numerical XP, subdivision budgets, idempotency, partial completion, undo and two-device conflicts",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX18"
+      ]
+    },
+    {
+      "id": "G04",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C03/C05; numerical XP, subdivision budgets, idempotency, partial completion, undo and two-device conflicts",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX18"
+      ]
+    },
+    {
+      "id": "G05",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C03/C05; numerical XP, subdivision budgets, idempotency, partial completion, undo and two-device conflicts",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX18"
+      ]
+    },
+    {
+      "id": "G06",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C03/C05; numerical XP, subdivision budgets, idempotency, partial completion, undo and two-device conflicts",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX18",
+        "UX19"
+      ]
+    },
+    {
+      "id": "R01",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H04; unit/date/measurement noise, capacity forecasts and unavailable unsupported ETA",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX20"
+      ]
+    },
+    {
+      "id": "R02",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H04; unit/date/measurement noise, capacity forecasts and unavailable unsupported ETA",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX20"
+      ]
+    },
+    {
+      "id": "R03",
+      "design": "architecture/domain-contracts.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H04; unit/date/measurement noise, capacity forecasts and unavailable unsupported ETA",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX10",
+        "UX21"
+      ]
+    },
+    {
+      "id": "Q01",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+      "acceptance": "L02; source attribution, labeled original text, repetition and tone",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX08",
+        "UX22"
+      ]
+    },
+    {
+      "id": "Q02",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+      "acceptance": "L02; source attribution, labeled original text, repetition and tone",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX22"
+      ]
+    },
+    {
+      "id": "Q03",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+      "acceptance": "L02; source attribution, labeled original text, repetition and tone",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX22"
+      ]
+    },
+    {
+      "id": "V01",
+      "design": "architecture/product-spec.md",
+      "plan": "phase-2-review.md",
+      "acceptance": "Phase 3 prototype tasks and R03 native accessibility; three visual directions and clear daily loop",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "V02",
+      "design": "architecture/product-spec.md",
+      "plan": "phase-2-review.md",
+      "acceptance": "Phase 3 prototype tasks and R03 native accessibility; three visual directions and clear daily loop",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX01",
+        "UX09"
+      ]
+    },
+    {
+      "id": "V03",
+      "design": "architecture/product-spec.md",
+      "plan": "phase-2-review.md",
+      "acceptance": "Phase 3 prototype tasks and R03 native accessibility; three visual directions and clear daily loop",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "V04",
+      "design": "architecture/privacy-and-reliability.md",
+      "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+      "acceptance": "L03; format limits, original hashes, inert parsing and review-before-apply",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX06"
+      ]
+    },
+    {
+      "id": "V05",
+      "design": "architecture/privacy-and-reliability.md",
+      "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+      "acceptance": "L03; format limits, original hashes, inert parsing and review-before-apply",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX06"
+      ]
+    },
+    {
+      "id": "T01",
+      "design": "architecture/privacy-and-reliability.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C01/C02/C05/C06; access isolation, durable offline transactions, failure/retry, full backup/restore/deletion",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX24",
+        "UX25",
+        "UX26"
+      ]
+    },
+    {
+      "id": "T02",
+      "design": "architecture/privacy-and-reliability.md",
+      "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+      "acceptance": "L04; consented payload only, no paid fallback, manual path on failure",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX24"
+      ]
+    },
+    {
+      "id": "T03",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C01/C07; selected platform prerequisites, notification capabilities, actual device matrix and scoped optional integrations",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "T04",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C01/C07; selected platform prerequisites, notification capabilities, actual device matrix and scoped optional integrations",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX23"
+      ]
+    },
+    {
+      "id": "T05",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C01/C07; selected platform prerequisites, notification capabilities, actual device matrix and scoped optional integrations",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX24"
+      ]
+    },
+    {
+      "id": "T06",
+      "design": "architecture/privacy-and-reliability.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C01/C02/C05/C06; access isolation, durable offline transactions, failure/retry, full backup/restore/deletion",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX02",
+        "UX24"
+      ]
+    },
+    {
+      "id": "T07",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C01/C07; selected platform prerequisites, notification capabilities, actual device matrix and scoped optional integrations",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "T08",
+      "design": "architecture/privacy-and-reliability.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R03; actual analyzer/typecheck/lint/test evidence and source/build checks",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "A01",
+      "design": "phase-2-review.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R04; reproducible delivery and final requirement evidence",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "V06",
+      "design": "architecture/product-spec.md",
+      "plan": "phase-2-review.md",
+      "acceptance": "Phase 3 prototype tasks and R03 native accessibility; three visual directions and clear daily loop",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX09",
+        "UX26"
+      ]
+    },
+    {
+      "id": "B01",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "B02",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "B03",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX25"
+      ]
+    },
+    {
+      "id": "B04",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX01"
+      ]
+    },
+    {
+      "id": "B05",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX25"
+      ]
+    },
+    {
+      "id": "B06",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C05/C06; required automatic sync, account isolation, conflicts, revocation and deletion",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX02"
+      ]
+    },
+    {
+      "id": "B07",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX26"
+      ]
+    },
+    {
+      "id": "B08",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "B09",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "D08",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C02; resumable onboarding, assumptions and answer-driven plan changes",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "T09",
+      "design": "architecture/baseline-assessment.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R02; inspect source/bundles/screenshots; owner data in current source remains unresolved",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX24"
+      ]
+    },
+    {
+      "id": "S11",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+      "acceptance": "L03; source-linked academic facts, ambiguous dates, duplicates and conflicts",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX06"
+      ]
+    },
+    {
+      "id": "F11",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-health-implementation.md",
+      "acceptance": "H03/H04; equipment/prerequisites, boxing interruption, training logs and measurement uncertainty",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX13"
+      ]
+    },
+    {
+      "id": "L05",
+      "design": "architecture/product-spec.md",
+      "plan": "superpowers/plans/2026-10-04-content-implementation.md",
+      "acceptance": "L01/L03; resources/prerequisites, coach-led cheer, capacity and confirmed imported facts",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": [
+        "UX14"
+      ]
+    },
+    {
+      "id": "P07",
+      "design": "phase-2-review.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R03/R04; source-to-requirement, approval and evidence checks",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "B10",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-release-implementation.md",
+      "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "V07",
+      "design": "architecture/product-spec.md",
+      "plan": "phase-2-review.md",
+      "acceptance": "Phase 3 prototype tasks and R03 native accessibility; three visual directions and clear daily loop",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    },
+    {
+      "id": "B11",
+      "design": "architecture/platform-and-sync.md",
+      "plan": "superpowers/plans/2026-10-04-core-implementation.md",
+      "acceptance": "C05/C06; required automatic sync, account isolation, conflicts, revocation and deletion",
+      "status": "Design proposed; implementation acceptance not executed",
+      "ux_ids": []
+    }
+  ]
+}

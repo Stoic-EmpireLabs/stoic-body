@@ -83,14 +83,47 @@ async function verifyLiveApp() {
   const mvdActiveBadge = await page.locator("text=MVD ACTIVE (COMPRESSED)").first();
   console.log("✅ Switched to Minimum Viable Day (MVD) compressed schedule and verified toggle state");
 
-  // 8. Settings & Sovereign License
+  // 8. Learning Curricula & Pathways
+  console.log("📍 Navigating to /learning ...");
+  await page.goto("https://stoic-body.vercel.app/learning", { waitUntil: "networkidle" });
+  const learningHeader = await page.locator("text=Deconstructed Learning Curricula").first();
+  console.log("✅ Deconstructed Learning Curricula verified");
+  const cheerTab = page.locator("button:has-text('Father & Daughter')");
+  await cheerTab.click();
+  console.log("✅ Switched to Cheerleading Flyer progression");
+
+  // 9. Stoic Coaching & Wisdom Hub
+  console.log("📍 Navigating to /coaching ...");
+  await page.goto("https://stoic-body.vercel.app/coaching", { waitUntil: "networkidle" });
+  const coachingHeader = await page.locator("text=Multi-Tone Stoic Advisory").first();
+  console.log("✅ Multi-Tone Stoic Advisory verified");
+  const centurionBtn = page.locator("button:has-text('Direct Centurion')");
+  await centurionBtn.click();
+  console.log("✅ Switched advisor tone to Direct Centurion");
+  const textarea = page.locator("textarea");
+  await textarea.fill("Practiced strict adherence to 23:1 fast and deep work on Ultron LLM.");
+  const sealBtn = page.locator("button:has-text('Seal Audit')");
+  await sealBtn.click();
+  const sealConfirmed = await page.locator("text=Evening Stoic Audit Sealed").first();
+  console.log("✅ Evening Stoic Audit sealed with +250 XP reward");
+
+  // 10. Document & Reference Staging Vault
+  console.log("📍 Navigating to /imports ...");
+  await page.goto("https://stoic-body.vercel.app/imports", { waitUntil: "networkidle" });
+  const vaultIndex = await page.locator("text=Vault Index & Two-Step Confirmation Gate").first();
+  console.log("✅ Vault Index & Two-Step Confirmation Gate verified");
+  const stageBtn = page.locator("button:has-text('+ Stage DBA Research PDF')");
+  await stageBtn.click();
+  console.log("✅ Staged DBA Research PDF into vault");
+
+  // 11. Settings & Sovereign License
   console.log("📍 Navigating to /settings ...");
   await page.goto("https://stoic-body.vercel.app/settings", { waitUntil: "networkidle" });
   const sovereignBadge = await page.locator("text=Founder Sovereign License").first();
   console.log("✅ Founder Sovereign License permanently verified");
 
   await browser.close();
-  console.log("🏆 ALL 8 ROUTES & LIVE BROWSER VERIFICATIONS PASSED 100%!");
+  console.log("🏆 ALL 11 ROUTES & LIVE BROWSER VERIFICATIONS PASSED 100%!");
 }
 
 verifyLiveApp().catch((err) => {

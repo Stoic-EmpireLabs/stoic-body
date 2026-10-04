@@ -1,0 +1,45 @@
+{
+  "checked_at": "2026-10-04T17:35:41.041Z",
+  "scope": "Documentation integrity; not product acceptance",
+  "passed": true,
+  "requirements": 96,
+  "unique_requirements": 96,
+  "original_requirements_preserved": 95,
+  "altered_source_requirements": [],
+  "traceability_rows": 96,
+  "missing_traceability": [],
+  "invalid_design_or_plan_paths": [],
+  "screens": 20,
+  "competitor_patterns": 26,
+  "invalid_pattern_requirements": [],
+  "technical_sources": 18,
+  "json_files_checked": 16,
+  "json_errors": [],
+  "local_markdown_links_checked": 461,
+  "broken_links": [],
+  "baseline_files_checked": 25,
+  "product_files_changed_since_snapshot": [],
+  "private_planning_path_ignored": true,
+  "legacy_unit_tests": {
+    "passed": 15,
+    "failed": 0,
+    "command": "npm test",
+    "scope": "Executed this turn; existing tests include requirements mismatches"
+  },
+  "legacy_typecheck": {
+    "exit_code": 0,
+    "command": "node node_modules/typescript/bin/tsc --noEmit --incremental false"
+  },
+  "lint": "Not run: no script in existing package",
+  "native_acceptance": "Not executed",
+  "xp_spec_arithmetic": {
+    "thresholds": [
+      0,
+      100,
+      225,
+      375
+    ],
+    "half_workout": 12,
+    "split_budget_total": 25
+  }
+}

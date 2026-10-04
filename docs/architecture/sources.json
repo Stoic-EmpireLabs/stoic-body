@@ -1,0 +1,168 @@
+{
+  "review_date": "2026-10-04",
+  "scope": "Phase 2 primary technical references; not a clinical review or device test",
+  "sources": [
+    {
+      "id": "AR01",
+      "title": "Flutter desktop support",
+      "url": "https://docs.flutter.dev/platform-integration/desktop",
+      "publisher": "Flutter",
+      "checked_date": "2026-10-04",
+      "use": "Windows native target and plugin architecture",
+      "limitation": "Documentation; not a local build test"
+    },
+    {
+      "id": "AR02",
+      "title": "Flutter iOS setup",
+      "url": "https://docs.flutter.dev/platform-integration/ios/setup",
+      "publisher": "Flutter",
+      "checked_date": "2026-10-04",
+      "use": "Mac/Xcode build prerequisite",
+      "limitation": "User build-host access unknown"
+    },
+    {
+      "id": "AR03",
+      "title": "Next.js static exports",
+      "url": "https://nextjs.org/docs/app/guides/static-exports",
+      "publisher": "Next.js",
+      "checked_date": "2026-10-04",
+      "use": "Dynamic request-handling API cannot simply become a static client",
+      "limitation": "Current public docs; existing project uses an older major, no upgrade performed"
+    },
+    {
+      "id": "AR04",
+      "title": "Capacitor environment setup",
+      "url": "https://capacitorjs.com/docs/getting-started/environment-setup",
+      "publisher": "Capacitor",
+      "checked_date": "2026-10-04",
+      "use": "Hybrid Apple build prerequisites",
+      "limitation": "Alternative comparison only"
+    },
+    {
+      "id": "AR05",
+      "title": "Tauri prerequisites",
+      "url": "https://v2.tauri.app/start/prerequisites/",
+      "publisher": "Tauri",
+      "checked_date": "2026-10-04",
+      "use": "Alternative shell toolchain requirements",
+      "limitation": "Alternative comparison only"
+    },
+    {
+      "id": "AR06",
+      "title": "Wake up to the AlarmKit API",
+      "url": "https://developer.apple.com/videos/play/wwdc2025/230/",
+      "publisher": "Apple",
+      "checked_date": "2026-10-04",
+      "use": "iOS/iPadOS 26 alarms and user authorization",
+      "limitation": "Transcript reviewed; native adapter not implemented"
+    },
+    {
+      "id": "AR07",
+      "title": "Schedule an app notification",
+      "url": "https://learn.microsoft.com/en-us/windows/apps/develop/notifications/app-notifications/app-notifications-scheduled",
+      "publisher": "Microsoft",
+      "checked_date": "2026-10-04",
+      "use": "Scheduled notification behavior and five-minute delivery window",
+      "limitation": "Page body available despite authorization banner; not device-tested"
+    },
+    {
+      "id": "AR08",
+      "title": "SQLite foreign keys",
+      "url": "https://www.sqlite.org/foreignkeys.html",
+      "publisher": "SQLite",
+      "checked_date": "2026-10-04",
+      "use": "Enable referential integrity per connection",
+      "limitation": "No proposed production schema executed"
+    },
+    {
+      "id": "AR09",
+      "title": "SQLite atomic commit",
+      "url": "https://www.sqlite.org/atomiccommit.html",
+      "publisher": "SQLite",
+      "checked_date": "2026-10-04",
+      "use": "Transactional consistency of related writes",
+      "limitation": "Does not establish correctness of application-level sync"
+    },
+    {
+      "id": "AR10",
+      "title": "Appropriate uses for SQLite",
+      "url": "https://www.sqlite.org/whentouse.html",
+      "publisher": "SQLite",
+      "checked_date": "2026-10-04",
+      "use": "Local database behind application service; network-file and concurrency limits",
+      "limitation": "No capacity estimate inferred"
+    },
+    {
+      "id": "AR11",
+      "title": "RFC 5545 iCalendar",
+      "url": "https://www.rfc-editor.org/rfc/rfc5545",
+      "publisher": "IETF / RFC Editor",
+      "checked_date": "2026-10-04",
+      "use": "Recurrence and timezone semantics for imports",
+      "limitation": "Initial supported subset is intentionally bounded"
+    },
+    {
+      "id": "AR12",
+      "title": "Authentication Cheat Sheet",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+      "publisher": "OWASP",
+      "checked_date": "2026-10-04",
+      "use": "Authentication/session/recovery design review",
+      "limitation": "Guidance is not a completed security audit"
+    },
+    {
+      "id": "AR13",
+      "title": "Password Storage Cheat Sheet",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html",
+      "publisher": "OWASP",
+      "checked_date": "2026-10-04",
+      "use": "Reviewed password hashing approach",
+      "limitation": "Implementation parameters/dependency require validation"
+    },
+    {
+      "id": "AR14",
+      "title": "File Upload Cheat Sheet",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html",
+      "publisher": "OWASP",
+      "checked_date": "2026-10-04",
+      "use": "Bounded validation and private attachment handling",
+      "limitation": "Parsers and files not execution-tested"
+    },
+    {
+      "id": "AR15",
+      "title": "WCAG 2.2",
+      "url": "https://www.w3.org/TR/WCAG22/",
+      "publisher": "W3C",
+      "checked_date": "2026-10-04",
+      "use": "Accessibility acceptance baseline",
+      "limitation": "Native assistive-technology behavior still requires testing"
+    },
+    {
+      "id": "AR16",
+      "title": "ETag header",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag",
+      "publisher": "MDN",
+      "checked_date": "2026-10-04",
+      "use": "Revision/precondition background for lost-update prevention",
+      "limitation": "App uses explicit revision contracts; no ETag requirement inferred"
+    },
+    {
+      "id": "AR17",
+      "title": "Scheduling a notification locally",
+      "url": "https://developer.apple.com/documentation/usernotifications/scheduling-a-notification-locally-from-your-app",
+      "publisher": "Apple",
+      "checked_date": "2026-10-04",
+      "use": "Follow-up implementation reference",
+      "limitation": "Title/stub accessible in text tool; full API behavior not independently verified here"
+    },
+    {
+      "id": "AR18",
+      "title": "Choosing background strategies",
+      "url": "https://developer.apple.com/documentation/backgroundtasks/choosing-background-strategies-for-your-app",
+      "publisher": "Apple",
+      "checked_date": "2026-10-04",
+      "use": "Follow-up reference for background feasibility",
+      "limitation": "Title/stub accessible; no delivery guarantee inferred"
+    }
+  ]
+}
