@@ -87,16 +87,16 @@ export default function QuestVault() {
   return (
     <div className="space-y-6">
 
-      <div className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg flex items-center justify-between">
+      <div className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl flex items-center justify-between">
         <div>
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-100">
-            Makerspace & Sovereign Quest Vault
+          <h2 className="text-sm font-bold uppercase tracking-wider text-white">
+            Makerspace &amp; Sovereign Quest Vault
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-300 mt-0.5">
             Real-world domestic, mechanical, and technical challenges designed to build tangible masculine capability.
           </p>
         </div>
-        <span className="text-xs font-mono px-3 py-1 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30">
+        <span className="text-xs font-mono font-bold px-3 py-1 rounded bg-red-950/80 text-amber-300 border border-amber-500/40">
           3 Active Quests
         </span>
       </div>
@@ -111,38 +111,40 @@ export default function QuestVault() {
           return (
             <div
               key={quest.id}
-              className={`bg-[#13141C] border rounded-xl p-5 shadow-lg transition ${
-                isDone ? "border-amber-500/50 bg-[#1C1E2B]/90" : "border-[#232636]"
+              className={`border rounded-xl p-6 shadow-2xl transition ${
+                isDone
+                  ? "border-amber-500/60 bg-red-950/30 ring-1 ring-amber-500/40"
+                  : "bg-[#0A0A0F] border-red-950/80"
               }`}
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
                   {quest.category} &middot; Tier {quest.tier} {quest.difficulty}
                 </span>
-                <span className="text-xs font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-red-950/80 text-amber-300 border border-amber-500/40">
                   +{quest.xpReward.toLocaleString()} XP
                 </span>
               </div>
 
-              <h3 className="text-base font-bold text-slate-100">{quest.title}</h3>
-              <p className="text-xs text-slate-400 mt-1">{quest.description}</p>
+              <h3 className="text-base font-bold text-white">{quest.title}</h3>
+              <p className="text-xs text-slate-200 mt-1">{quest.description}</p>
 
-              <div className="mt-4 space-y-2 border-t border-[#232636] pt-3">
+              <div className="mt-4 space-y-2 border-t border-red-950/70 pt-3">
                 {quest.steps.map((step, idx) => {
                   const stepKey = `${quest.id}-${idx}`;
                   const isStepChecked = !!checkedSteps[stepKey];
                   return (
                     <label
                       key={idx}
-                      className="flex items-center gap-2.5 text-xs text-slate-300 cursor-pointer hover:text-white"
+                      className="flex items-center gap-2.5 text-xs text-slate-200 cursor-pointer hover:text-white"
                     >
                       <input
                         type="checkbox"
                         checked={isStepChecked}
                         onChange={() => toggleStep(quest.id, idx)}
-                        className="rounded bg-slate-900 border-slate-700 text-amber-500 focus:ring-amber-500/20 cursor-pointer"
+                        className="rounded bg-black border-red-900/60 text-amber-500 focus:ring-amber-500/30 cursor-pointer"
                       />
-                      <span className={isStepChecked ? "line-through text-slate-500" : ""}>
+                      <span className={isStepChecked ? "line-through text-slate-500" : "font-medium"}>
                         {step}
                       </span>
                     </label>
@@ -150,16 +152,16 @@ export default function QuestVault() {
                 })}
               </div>
 
-              <div className="mt-4 pt-3 border-t border-[#232636] flex justify-end">
+              <div className="mt-4 pt-3 border-t border-red-950/70 flex justify-end">
                 <button
                   onClick={() => claimQuest(quest)}
                   disabled={!allStepsChecked || isDone}
-                  className={`px-4 py-2 rounded-lg text-xs font-bold transition ${
+                  className={`px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${
                     isDone
-                      ? "bg-amber-600 text-white cursor-default"
+                      ? "bg-red-700 text-white cursor-default"
                       : allStepsChecked
-                      ? "bg-amber-500 text-slate-900 hover:bg-amber-400"
-                      : "bg-slate-800 text-slate-500 cursor-not-allowed"
+                      ? "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black shadow"
+                      : "bg-neutral-900 text-slate-400 cursor-not-allowed border border-red-950/60"
                   }`}
                 >
                   {isDone

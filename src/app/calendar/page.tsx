@@ -73,48 +73,48 @@ export default function CalendarPage() {
     <div className="space-y-6">
 
       {/* HEADER SECTION WITH VIEW SWITCHER & ADD EVENT CTA */}
-      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-100 flex items-center gap-2">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
             <span>Unified Temporal Calendar</span>
-            <span className="text-[10px] bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
+            <span className="text-[10px] bg-red-950/80 text-amber-300 px-2.5 py-0.5 rounded border border-amber-500/40 font-mono font-bold">
               Month &bull; Week &bull; Day Buffers
             </span>
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-300 mt-0.5">
             Full calendar scheduling with automatic transition buffers (Bi = max(15, 0.20 &times; Duration)) and MVD crisis mode.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           {/* VIEW TOGGLES */}
-          <div className="flex bg-[#181924] p-1 rounded-lg border border-[#232636] text-xs">
+          <div className="flex bg-black p-1 rounded-lg border border-red-950/80 text-xs">
             <button
               onClick={() => setViewMode("month")}
-              className={`px-3 py-1.5 rounded font-semibold transition ${
+              className={`px-3 py-1.5 rounded font-bold transition ${
                 viewMode === "month"
-                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-sm"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-gradient-to-r from-red-700 to-red-800 text-white border border-red-500/60 shadow"
+                  : "text-slate-300 hover:text-white"
               }`}
             >
               🗓️ Month Grid
             </button>
             <button
               onClick={() => setViewMode("week")}
-              className={`px-3 py-1.5 rounded font-semibold transition ${
+              className={`px-3 py-1.5 rounded font-bold transition ${
                 viewMode === "week"
-                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-sm"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-gradient-to-r from-red-700 to-red-800 text-white border border-red-500/60 shadow"
+                  : "text-slate-300 hover:text-white"
               }`}
             >
               📆 7-Day Week
             </button>
             <button
               onClick={() => setViewMode("day")}
-              className={`px-3 py-1.5 rounded font-semibold transition ${
+              className={`px-3 py-1.5 rounded font-bold transition ${
                 viewMode === "day"
-                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-sm"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-gradient-to-r from-red-700 to-red-800 text-white border border-red-500/60 shadow"
+                  : "text-slate-300 hover:text-white"
               }`}
             >
               ⏱️ Day Timeline
@@ -127,7 +127,7 @@ export default function CalendarPage() {
               setNewEventDate(selectedDate);
               setShowAddModal(true);
             }}
-            className="px-3.5 py-1.5 rounded bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs uppercase tracking-wider transition shadow flex items-center gap-1.5"
+            className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-xs uppercase tracking-wider transition shadow flex items-center gap-1.5"
           >
             <span>+</span> Schedule Event
           </button>
@@ -136,21 +136,21 @@ export default function CalendarPage() {
 
       {/* MONTH GRID VIEW */}
       {viewMode === "month" && (
-        <section className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg space-y-4">
-          <div className="flex items-center justify-between border-b border-[#232636] pb-3">
+        <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl space-y-4">
+          <div className="flex items-center justify-between border-b border-red-950/70 pb-3">
             <div className="flex items-center gap-3">
-              <h3 className="text-base font-bold text-slate-100 font-serif">October 2026</h3>
-              <span className="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
+              <h3 className="text-base font-bold text-white font-serif">October 2026</h3>
+              <span className="text-xs font-mono font-bold text-amber-300 bg-red-950/60 px-2.5 py-0.5 rounded border border-amber-500/30">
                 Selected: {selectedDate}
               </span>
             </div>
-            <div className="text-xs text-slate-400">
+            <div className="text-xs text-slate-300">
               Click any date to inspect timeline or schedule tasks
             </div>
           </div>
 
           {/* DAY NAMES */}
-          <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-slate-400 uppercase tracking-wider py-1">
+          <div className="grid grid-cols-7 gap-1 text-center text-xs font-bold text-amber-400 uppercase tracking-wider py-1">
             <span>Sun</span>
             <span>Mon</span>
             <span>Tue</span>
@@ -164,7 +164,7 @@ export default function CalendarPage() {
           <div className="grid grid-cols-7 gap-1.5">
             {/* Blank offset for start day of week */}
             {Array.from({ length: startDayOfWeek }).map((_, i) => (
-              <div key={`blank-${i}`} className="h-24 bg-[#0E0F16]/40 rounded-lg border border-[#1A1C28]/40 opacity-30"></div>
+              <div key={`blank-${i}`} className="h-24 bg-black/40 rounded-lg border border-neutral-900/40 opacity-30"></div>
             ))}
 
             {monthDays.map((d) => {
@@ -177,26 +177,26 @@ export default function CalendarPage() {
                   onClick={() => setSelectedDate(d.dateStr)}
                   className={`h-24 p-2 rounded-lg border cursor-pointer transition flex flex-col justify-between overflow-hidden ${
                     isSelected
-                      ? "bg-amber-500/10 border-amber-500 shadow-md ring-1 ring-amber-500/50"
+                      ? "bg-red-950/40 border-amber-500 shadow-xl ring-2 ring-amber-500"
                       : isToday
-                      ? "bg-[#181924] border-indigo-500/50"
-                      : "bg-[#181924] border-[#232636] hover:border-slate-500"
+                      ? "bg-[#181822] border-red-600/80 shadow-md"
+                      : "bg-[#121218] border-red-950/60 hover:border-amber-500/50"
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <span
                       className={`text-xs font-mono font-bold w-5 h-5 flex items-center justify-center rounded-full ${
-                        isToday
-                          ? "bg-indigo-500 text-white"
-                          : isSelected
+                        isSelected
                           ? "bg-amber-500 text-black"
-                          : "text-slate-300"
+                          : isToday
+                          ? "bg-red-600 text-white"
+                          : "text-white"
                       }`}
                     >
                       {d.dayNum}
                     </span>
                     {d.events.length > 0 && (
-                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
+                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40">
                         {d.events.length}
                       </span>
                     )}
@@ -207,14 +207,14 @@ export default function CalendarPage() {
                     {d.events.slice(0, 2).map((ev) => (
                       <div
                         key={ev.id}
-                        className="text-[10px] truncate px-1.5 py-0.5 rounded bg-[#202232] text-slate-300 border border-white/5"
+                        className="text-[10px] truncate px-1.5 py-0.5 rounded bg-black/70 text-slate-100 border border-white/10 font-medium"
                         title={ev.title}
                       >
                         {ev.time} {ev.title}
                       </div>
                     ))}
                     {d.events.length > 2 && (
-                      <div className="text-[9px] text-slate-500 font-mono">
+                      <div className="text-[9px] text-amber-400 font-mono font-bold">
                         +{d.events.length - 2} more...
                       </div>
                     )}
@@ -228,12 +228,12 @@ export default function CalendarPage() {
 
       {/* 7-DAY WEEK VIEW */}
       {viewMode === "week" && (
-        <section className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg space-y-4">
-          <div className="flex items-center justify-between border-b border-[#232636] pb-3">
-            <h3 className="text-base font-bold text-slate-100 font-serif">
+        <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl space-y-4">
+          <div className="flex items-center justify-between border-b border-red-950/70 pb-3">
+            <h3 className="text-base font-bold text-white font-serif">
               Week of Oct 4 &ndash; Oct 10, 2026
             </h3>
-            <span className="text-xs text-slate-400">7-Day Tactical Horizon</span>
+            <span className="text-xs text-amber-300 font-mono font-bold">7-Day Tactical Horizon</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
@@ -254,28 +254,28 @@ export default function CalendarPage() {
                   onClick={() => setSelectedDate(col.date)}
                   className={`p-3 rounded-lg border cursor-pointer transition min-h-[220px] flex flex-col justify-between ${
                     isSelected
-                      ? "bg-amber-500/10 border-amber-500"
-                      : "bg-[#181924] border-[#232636] hover:border-slate-500"
+                      ? "bg-red-950/40 border-amber-500 ring-2 ring-amber-500 shadow-xl"
+                      : "bg-[#121218] border-red-950/60 hover:border-amber-500/50"
                   }`}
                 >
                   <div>
-                    <div className="flex items-center justify-between border-b border-[#2B2E42] pb-1.5 mb-2">
-                      <span className="font-bold text-xs text-slate-200">{col.day}</span>
-                      <span className="font-mono text-[11px] text-slate-400">{col.label}</span>
+                    <div className="flex items-center justify-between border-b border-red-950/70 pb-1.5 mb-2">
+                      <span className="font-bold text-xs text-white uppercase">{col.day}</span>
+                      <span className="font-mono text-[11px] text-amber-300 font-semibold">{col.label}</span>
                     </div>
 
                     <div className="space-y-1.5">
                       {colEvents.map((ev) => (
                         <div
                           key={ev.id}
-                          className="p-1.5 rounded bg-[#1F2130] border border-white/5 text-[11px]"
+                          className="p-1.5 rounded bg-black/70 border border-white/10 text-[11px]"
                         >
-                          <div className="font-mono text-[10px] text-amber-400 font-semibold">{ev.time}</div>
-                          <div className="text-slate-200 font-medium leading-tight mt-0.5">{ev.title}</div>
+                          <div className="font-mono text-[10px] text-amber-400 font-bold">{ev.time}</div>
+                          <div className="text-white font-medium leading-tight mt-0.5">{ev.title}</div>
                         </div>
                       ))}
                       {colEvents.length === 0 && (
-                        <div className="text-[11px] text-slate-600 italic py-2">Open schedule</div>
+                        <div className="text-[11px] text-slate-400 italic py-2">Open schedule</div>
                       )}
                     </div>
                   </div>
@@ -286,7 +286,7 @@ export default function CalendarPage() {
                       setNewEventDate(col.date);
                       setShowAddModal(true);
                     }}
-                    className="mt-2 text-[10px] text-slate-400 hover:text-amber-400 py-1 border border-dashed border-[#2B2E42] rounded text-center transition"
+                    className="mt-2 text-[10px] text-amber-300 hover:text-white py-1 border border-dashed border-red-900/50 hover:border-amber-500/60 rounded text-center transition font-bold"
                   >
                     + Add to {col.day}
                   </button>
@@ -298,16 +298,16 @@ export default function CalendarPage() {
       )}
 
       {/* SELECTED DATE TIMELINE & SCHEDULE AUDIT */}
-      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#232636] pb-3">
+      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-red-950/70 pb-3">
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-100 flex items-center gap-2">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
               <span>Timeline for {selectedDate}</span>
-              <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono">
+              <span className="text-[10px] bg-red-950/80 text-amber-300 px-2.5 py-0.5 rounded font-mono font-bold border border-amber-500/30">
                 {selectedDateEvents.length} Scheduled Blocks
               </span>
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-300 mt-0.5">
               Chronological sequence with dynamic protective transition buffers.
             </p>
           </div>
@@ -317,8 +317,8 @@ export default function CalendarPage() {
               onClick={() => setMvdActive(!mvdActive)}
               className={`px-3 py-1.5 rounded text-xs font-bold transition border ${
                 mvdActive
-                  ? "bg-amber-500/20 text-amber-300 border-amber-500/50"
-                  : "bg-slate-800 text-slate-300 border-[#232636] hover:bg-slate-700"
+                  ? "bg-red-700 text-white border-red-500 shadow-md"
+                  : "bg-neutral-900 text-amber-300 border-amber-500/40 hover:bg-neutral-800"
               }`}
             >
               {mvdActive ? "⚡ MVD ACTIVE (COMPRESSED)" : "Activate Minimum Viable Day"}
@@ -327,19 +327,19 @@ export default function CalendarPage() {
         </div>
 
         {/* SCHEDULE AUDIT METRICS */}
-        <div className="bg-[#181924] border border-[#232636] rounded-lg p-3 flex flex-wrap items-center justify-between text-xs gap-2">
+        <div className="bg-[#121218] border border-red-950/70 rounded-lg p-3 flex flex-wrap items-center justify-between text-xs gap-2">
           <div>
-            <span className="text-slate-400">Total Commitment (Tasks + Buffers): </span>
-            <strong className="text-slate-100 font-mono">{audit.totalCommitmentMinutes} mins</strong>
-            <span className="text-slate-500 mx-2">&bull;</span>
-            <span className="text-slate-400">Available Waking: </span>
-            <strong className="text-emerald-400 font-mono">{audit.availableWakingMinutes} mins</strong>
+            <span className="text-slate-300">Total Commitment (Tasks + Buffers): </span>
+            <strong className="text-white font-mono font-bold">{audit.totalCommitmentMinutes} mins</strong>
+            <span className="text-red-600 mx-2">&bull;</span>
+            <span className="text-slate-300">Available Waking: </span>
+            <strong className="text-amber-400 font-mono font-bold">{audit.availableWakingMinutes} mins</strong>
           </div>
           <span
-            className={`px-2 py-0.5 rounded font-mono font-bold uppercase text-[11px] ${
+            className={`px-2.5 py-1 rounded font-mono font-bold uppercase text-[11px] ${
               audit.hasOverflow
-                ? "bg-red-500/10 text-red-400 border border-red-500/30"
-                : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+                ? "bg-red-950 text-red-300 border border-red-600 shadow-sm"
+                : "bg-emerald-950/80 text-emerald-300 border border-emerald-600/50"
             }`}
           >
             {audit.hasOverflow ? `Overflow: +${audit.overflowMinutes}m` : "Conflict-Free Balance"}
@@ -347,22 +347,22 @@ export default function CalendarPage() {
         </div>
 
         {/* TIME BLOCKS WITH BUFFERS */}
-        <div className="space-y-3 relative before:absolute before:inset-0 before:left-3 before:w-0.5 before:bg-[#232636] pt-2">
+        <div className="space-y-3 relative before:absolute before:inset-0 before:left-3 before:w-0.5 before:bg-red-950/70 pt-2">
           {selectedDateEvents.map((task, idx) => {
             const buffer = calculateBufferMinutes(task.durationMinutes);
             return (
               <React.Fragment key={task.id}>
                 {/* Task Block */}
                 <div className="relative pl-8">
-                  <span className="absolute left-2 top-3 w-2.5 h-2.5 rounded-full bg-amber-500 -translate-x-1/2 ring-4 ring-[#13141C]"></span>
-                  <div className="bg-[#1C1E2B] border border-[#232636] p-3 rounded-lg flex items-center justify-between">
+                  <span className="absolute left-2 top-3 w-2.5 h-2.5 rounded-full bg-red-600 -translate-x-1/2 ring-4 ring-[#0A0A0F]"></span>
+                  <div className="bg-[#121218] border border-red-950/70 p-3 rounded-lg flex items-center justify-between">
                     <div>
-                      <div className="text-xs font-mono font-semibold text-amber-400">
+                      <div className="text-xs font-mono font-bold text-amber-400">
                         {task.time} &middot; {task.durationMinutes} Minutes
                       </div>
-                      <h4 className="text-sm font-medium text-slate-100">{task.title}</h4>
+                      <h4 className="text-sm font-semibold text-white">{task.title}</h4>
                     </div>
-                    <span className="text-xs px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">
+                    <span className="text-xs px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30 font-mono font-bold">
                       Tier {task.tier}
                     </span>
                   </div>
@@ -371,10 +371,10 @@ export default function CalendarPage() {
                 {/* Transition Buffer */}
                 {idx < selectedDateEvents.length - 1 && (
                   <div className="relative pl-8">
-                    <span className="absolute left-2 top-2 w-1.5 h-1.5 rounded-full bg-slate-600 -translate-x-1/2"></span>
-                    <div className="bg-slate-900/50 border border-dashed border-slate-700/50 px-3 py-1.5 rounded text-[11px] text-slate-400 flex items-center justify-between">
+                    <span className="absolute left-2 top-2 w-1.5 h-1.5 rounded-full bg-amber-600 -translate-x-1/2"></span>
+                    <div className="bg-black/60 border border-dashed border-red-900/40 px-3 py-1.5 rounded text-[11px] text-slate-300 flex items-center justify-between">
                       <span>&cudarrr; {buffer}-Min Protective Transition Buffer</span>
-                      <span className="font-mono text-[10px] text-slate-500">
+                      <span className="font-mono text-[10px] text-amber-400/80">
                         Bi = max(15, 0.20 &times; {task.durationMinutes})
                       </span>
                     </div>
@@ -385,7 +385,7 @@ export default function CalendarPage() {
           })}
 
           {selectedDateEvents.length === 0 && (
-            <div className="pl-8 text-xs text-slate-500 italic py-4">
+            <div className="pl-8 text-xs text-slate-400 italic py-4">
               No tasks scheduled for {selectedDate}. Click &ldquo;+ Schedule Event&rdquo; to add blocks.
             </div>
           )}
@@ -394,15 +394,15 @@ export default function CalendarPage() {
 
       {/* SCHEDULE EVENT MODAL */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#13141C] border border-[#232636] rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-[#232636] pb-3">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-100">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0A0A0F] border border-red-900/80 rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-red-950 pb-3">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-white">
                 Schedule New Calendar Event
               </h3>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="text-slate-400 hover:text-white text-lg"
+                className="text-slate-300 hover:text-white text-lg"
               >
                 &times;
               </button>
@@ -410,7 +410,7 @@ export default function CalendarPage() {
 
             <form onSubmit={handleCreateEvent} className="space-y-3.5 text-xs">
               <div>
-                <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                <label className="block text-slate-300 mb-1 font-semibold uppercase text-[11px]">
                   Event Title
                 </label>
                 <input
@@ -419,13 +419,13 @@ export default function CalendarPage() {
                   placeholder="e.g. 2015 Mustang Oil Change / Boxing 5 Rounds"
                   value={newEventTitle}
                   onChange={(e) => setNewEventTitle(e.target.value)}
-                  className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-black border border-red-950/80 rounded-lg p-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                  <label className="block text-slate-300 mb-1 font-semibold uppercase text-[11px]">
                     Date
                   </label>
                   <input
@@ -433,11 +433,11 @@ export default function CalendarPage() {
                     required
                     value={newEventDate}
                     onChange={(e) => setNewEventDate(e.target.value)}
-                    className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-amber-500 font-mono"
+                    className="w-full bg-black border border-red-950/80 rounded-lg p-2.5 text-white focus:outline-none focus:border-amber-500 font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                  <label className="block text-slate-300 mb-1 font-semibold uppercase text-[11px]">
                     Start Time
                   </label>
                   <input
@@ -445,20 +445,20 @@ export default function CalendarPage() {
                     required
                     value={newEventTime}
                     onChange={(e) => setNewEventTime(e.target.value)}
-                    className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-amber-500 font-mono"
+                    className="w-full bg-black border border-red-950/80 rounded-lg p-2.5 text-white focus:outline-none focus:border-amber-500 font-mono"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                  <label className="block text-slate-300 mb-1 font-semibold uppercase text-[11px]">
                     Duration (Minutes)
                   </label>
                   <select
                     value={newEventDuration}
                     onChange={(e) => setNewEventDuration(e.target.value)}
-                    className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-black border border-red-950/80 rounded-lg p-2.5 text-white focus:outline-none focus:border-amber-500"
                   >
                     <option value="15">15 min</option>
                     <option value="30">30 min</option>
@@ -470,13 +470,13 @@ export default function CalendarPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                  <label className="block text-slate-300 mb-1 font-semibold uppercase text-[11px]">
                     Friction / XP Tier
                   </label>
                   <select
                     value={newEventTier}
                     onChange={(e) => setNewEventTier(e.target.value)}
-                    className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-black border border-red-950/80 rounded-lg p-2.5 text-white focus:outline-none focus:border-amber-500"
                   >
                     <option value="1">Tier 1: Micro (+100 XP)</option>
                     <option value="2">Tier 2: Routine (+300 XP)</option>
@@ -487,17 +487,17 @@ export default function CalendarPage() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-[#232636]">
+              <div className="flex justify-end gap-2 pt-2 border-t border-red-950/70">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-3.5 py-2 rounded bg-slate-800 text-slate-300 hover:text-white"
+                  className="px-3.5 py-2 rounded bg-neutral-900 text-white hover:bg-neutral-800 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase tracking-wider transition"
+                  className="px-4 py-2 rounded bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold uppercase tracking-wider transition shadow"
                 >
                   Schedule Block
                 </button>

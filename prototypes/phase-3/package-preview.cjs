@@ -3,7 +3,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 
 // Only the synthetic review assets are eligible for upload.
-const files = ['index.html', 'gallery.html', 'app.js', 'styles.css',
+const files = ['index.html', 'gallery.html', 'app.js', 'appearance.js', 'styles.css',
   'night-today-desktop.png', 'marble-today-desktop.png', 'journal-today-desktop.png'];
 const project = path.resolve(__dirname, '../..');
 const destination = path.join(project, '.vercel', 'phase-3-static');

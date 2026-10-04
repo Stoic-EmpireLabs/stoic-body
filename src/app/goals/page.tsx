@@ -48,46 +48,93 @@ export default function GoalsPage() {
     setShowAddModal(false);
   };
 
+  // Distinct category styling (Black, Red, Gold theme + differentiated goal colors)
+  const getCategoryStyles = (cat: string) => {
+    switch (cat) {
+      case "Physical":
+        return {
+          cardBg: "bg-[#10080A]",
+          border: "border-red-600/40 hover:border-red-500",
+          tag: "bg-red-600 text-white font-bold",
+          bar: "bg-red-500",
+          xpText: "text-red-400",
+        };
+      case "Consulting":
+        return {
+          cardBg: "bg-[#110E07]",
+          border: "border-amber-500/40 hover:border-amber-400",
+          tag: "bg-amber-500 text-black font-bold",
+          bar: "bg-amber-400",
+          xpText: "text-amber-400",
+        };
+      case "DBA":
+        return {
+          cardBg: "bg-[#090C14]",
+          border: "border-blue-600/40 hover:border-blue-400",
+          tag: "bg-blue-600 text-white font-bold",
+          bar: "bg-blue-400",
+          xpText: "text-blue-400",
+        };
+      case "Recovery":
+        return {
+          cardBg: "bg-[#08120D]",
+          border: "border-emerald-600/40 hover:border-emerald-400",
+          tag: "bg-emerald-600 text-white font-bold",
+          bar: "bg-emerald-400",
+          xpText: "text-emerald-400",
+        };
+      case "Family":
+      default:
+        return {
+          cardBg: "bg-[#12080E]",
+          border: "border-rose-600/40 hover:border-rose-400",
+          tag: "bg-rose-600 text-white font-bold",
+          bar: "bg-rose-400",
+          xpText: "text-rose-400",
+        };
+    }
+  };
+
   return (
     <div className="space-y-6">
 
-      {/* HEADER SECTION */}
-      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* HEADER SECTION (Black with Gold & Red Accent) */}
+      <section className="bg-[#0B0B0F] border border-red-950/80 rounded-xl p-5 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-100 flex items-center gap-2">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
             <span>Goals &amp; Weekly Targets Hub</span>
-            <span className="text-[10px] bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
+            <span className="text-[10px] bg-red-950/70 text-red-300 px-2 py-0.5 rounded border border-red-600/40 font-bold">
               Weekly Quotas &bull; Strategic Life Milestones
             </span>
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Set and track your weekly cadence quotas, habit targets, and long-term milestones.
+          <p className="text-xs text-slate-200 mt-0.5">
+            Differentiated color coding by discipline with crisp white telemetry and gold XP rewards.
           </p>
         </div>
 
         <button
           onClick={() => setShowAddModal(true)}
-          className="px-4 py-2 rounded bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs uppercase tracking-wider transition shadow flex items-center gap-2"
+          className="px-4 py-2 rounded bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-amber-950/40 flex items-center gap-2"
         >
           <span>+</span> Add New Goal
         </button>
       </section>
 
       {/* WEEKLY GOALS MATRIX */}
-      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg space-y-4">
-        <div className="flex items-center justify-between border-b border-[#232636] pb-3">
+      <section className="bg-[#0B0B0F] border border-red-950/80 rounded-xl p-5 shadow-xl space-y-4">
+        <div className="flex items-center justify-between border-b border-red-950/60 pb-3">
           <div>
-            <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
               <span>Weekly Targets &amp; Quotas</span>
-              <span className="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
+              <span className="text-xs font-mono text-amber-400 bg-[#16161D] px-2 py-0.5 rounded border border-amber-500/20">
                 This Week: Oct 4 &ndash; Oct 10
               </span>
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Click &ldquo;+1 Log&rdquo; each time you complete a repetition or session.
+            <p className="text-xs text-slate-300 mt-0.5">
+              Click &ldquo;+1 Log Progress&rdquo; each time you execute a repetition or block.
             </p>
           </div>
-          <span className="text-xs font-mono text-amber-400 bg-amber-500/10 px-2 py-1 rounded border border-amber-500/20">
+          <span className="text-xs font-mono text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded border border-amber-500/30 font-bold">
             {weeklyGoals.filter((g) => g.currentCount >= g.targetCount).length} / {weeklyGoals.length} Completed
           </span>
         </div>
@@ -96,40 +143,39 @@ export default function GoalsPage() {
           {weeklyGoals.map((goal) => {
             const isComplete = goal.currentCount >= goal.targetCount;
             const progressPct = Math.min(100, Math.round((goal.currentCount / goal.targetCount) * 100));
+            const style = getCategoryStyles(goal.category);
 
             return (
               <div
                 key={goal.id}
-                className={`p-4 rounded-xl border transition flex flex-col justify-between ${
-                  isComplete
-                    ? "bg-[#141A18] border-emerald-500/40"
-                    : "bg-[#181924] border-[#232636] hover:border-slate-500"
+                className={`p-4 rounded-xl border transition flex flex-col justify-between ${style.cardBg} ${
+                  isComplete ? "border-emerald-500/60 ring-1 ring-emerald-500/30" : style.border
                 }`}
               >
                 <div>
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-800 text-slate-400">
+                      <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded ${style.tag}`}>
                         {goal.category}
                       </span>
-                      <h4 className="text-sm font-semibold text-slate-100 mt-1.5 leading-snug">
+                      <h4 className="text-sm font-bold text-white mt-2 leading-snug">
                         {goal.title}
                       </h4>
                     </div>
-                    <span className="text-xs font-mono font-bold text-amber-400 shrink-0">
+                    <span className={`text-xs font-mono font-bold ${style.xpText} shrink-0`}>
                       +{goal.xpReward} XP
                     </span>
                   </div>
 
-                  <div className="mt-3">
-                    <div className="flex justify-between text-xs font-mono text-slate-400 mb-1">
-                      <span>Progress: {goal.currentCount} / {goal.targetCount}</span>
-                      <span>{progressPct}%</span>
+                  <div className="mt-3.5">
+                    <div className="flex justify-between text-xs font-mono text-white mb-1.5">
+                      <span>Progress: <strong className="text-amber-400">{goal.currentCount}</strong> / {goal.targetCount}</span>
+                      <span className="font-bold">{progressPct}%</span>
                     </div>
-                    <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div className="w-full bg-black/80 h-2.5 rounded-full overflow-hidden border border-white/10">
                       <div
                         className={`h-full transition-all duration-300 ${
-                          isComplete ? "bg-emerald-400" : "bg-amber-500"
+                          isComplete ? "bg-emerald-400" : style.bar
                         }`}
                         style={{ width: `${progressPct}%` }}
                       ></div>
@@ -137,13 +183,13 @@ export default function GoalsPage() {
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-[#232636] flex items-center justify-between">
+                <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
                   {isComplete ? (
                     <span className="text-xs font-bold text-emerald-400 flex items-center gap-1 font-mono">
                       ✓ Weekly Quota Conquered!
                     </span>
                   ) : (
-                    <span className="text-[11px] text-slate-500">
+                    <span className="text-[11px] text-slate-300 font-mono">
                       {goal.targetCount - goal.currentCount} remaining this week
                     </span>
                   )}
@@ -151,10 +197,10 @@ export default function GoalsPage() {
                   <button
                     onClick={() => incrementWeeklyGoal(goal.id)}
                     disabled={isComplete}
-                    className={`px-3 py-1 rounded text-xs font-bold font-mono transition ${
+                    className={`px-3 py-1.5 rounded text-xs font-bold font-mono transition ${
                       isComplete
-                        ? "bg-slate-800 text-slate-500 cursor-not-allowed"
-                        : "bg-amber-500 hover:bg-amber-400 text-black shadow"
+                        ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                        : "bg-amber-500 hover:bg-amber-400 text-black shadow-md shadow-amber-950/30"
                     }`}
                   >
                     +1 Log Progress
@@ -167,88 +213,89 @@ export default function GoalsPage() {
       </section>
 
       {/* STRATEGIC LIFE MILESTONES */}
-      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg space-y-4">
-        <div className="flex items-center justify-between border-b border-[#232636] pb-3">
+      <section className="bg-[#0B0B0F] border border-red-950/80 rounded-xl p-5 shadow-xl space-y-4">
+        <div className="flex items-center justify-between border-b border-red-950/60 pb-3">
           <div>
-            <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
               Strategic Life Goals &amp; Long-Term Milestones
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Major transformation objectives with phased milestones and heavy XP rewards.
+            <p className="text-xs text-slate-300 mt-0.5">
+              Phased transformation milestones with heavy prestige rewards.
             </p>
           </div>
-          <span className="text-xs font-mono text-slate-400">
+          <span className="text-xs font-mono text-amber-400 font-bold">
             {lifeGoals.filter((g) => g.completed).length} / {lifeGoals.length} Conquered
           </span>
         </div>
 
         <div className="space-y-3">
-          {lifeGoals.map((lg) => (
-            <div
-              key={lg.id}
-              onClick={() => toggleLifeGoal(lg.id)}
-              className={`p-4 rounded-xl border cursor-pointer transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
-                lg.completed
-                  ? "bg-[#141A18] border-emerald-500/40 opacity-80"
-                  : "bg-[#181924] border-[#232636] hover:border-amber-500/50"
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                <div
-                  className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
-                    lg.completed ? "bg-emerald-500 text-black" : "border border-slate-600"
-                  }`}
-                >
-                  {lg.completed && "✓"}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono uppercase bg-slate-800 text-slate-400 px-2 py-0.5 rounded">
-                      {lg.category}
-                    </span>
-                    <span className="text-xs font-mono text-slate-500">
-                      Target Date: {lg.targetDate}
-                    </span>
-                  </div>
-                  <h4
-                    className={`text-sm font-semibold mt-1 ${
-                      lg.completed ? "line-through text-slate-500" : "text-slate-100"
+          {lifeGoals.map((lg) => {
+            const style = getCategoryStyles(lg.category);
+            return (
+              <div
+                key={lg.id}
+                onClick={() => toggleLifeGoal(lg.id)}
+                className={`p-4 rounded-xl border cursor-pointer transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+                  style.cardBg
+                } ${lg.completed ? "border-emerald-500/50 opacity-70" : style.border}`}
+              >
+                <div className="flex items-start gap-3.5">
+                  <div
+                    className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
+                      lg.completed ? "bg-emerald-500 text-black" : "border border-zinc-600 bg-black"
                     }`}
                   >
-                    {lg.title}
-                  </h4>
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {lg.milestones.map((m, idx) => (
-                      <span
-                        key={idx}
-                        className="text-[10px] bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-400"
-                      >
-                        &bull; {m}
+                    {lg.completed && "✓"}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded ${style.tag}`}>
+                        {lg.category}
                       </span>
-                    ))}
+                      <span className="text-xs font-mono text-slate-300">
+                        Target Date: <strong className="text-white">{lg.targetDate}</strong>
+                      </span>
+                    </div>
+                    <h4
+                      className={`text-sm font-bold mt-1.5 ${
+                        lg.completed ? "line-through text-zinc-500" : "text-white"
+                      }`}
+                    >
+                      {lg.title}
+                    </h4>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {lg.milestones.map((m, idx) => (
+                        <span
+                          key={idx}
+                          className="text-[10px] bg-black/60 border border-white/10 px-2 py-0.5 rounded text-slate-200"
+                        >
+                          &bull; {m}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-right shrink-0">
+                  <span className="text-xs font-mono font-bold text-amber-400">
+                    +{lg.xpReward} XP
+                  </span>
+                  <div className="text-[10px] text-slate-400 mt-1">
+                    {lg.completed ? "Completed" : "Click to Complete"}
                   </div>
                 </div>
               </div>
-
-              <div className="text-right shrink-0">
-                <span className="text-xs font-mono font-bold text-amber-400">
-                  +{lg.xpReward} XP
-                </span>
-                <div className="text-[10px] text-slate-500 mt-1">
-                  {lg.completed ? "Completed" : "Click to Complete"}
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
       {/* CREATE GOAL MODAL */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#13141C] border border-[#232636] rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-[#232636] pb-3">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-100">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0B0B0F] border border-red-600/50 rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-red-950/60 pb-3">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-white">
                 Define New Goal
               </h3>
               <button
@@ -260,9 +307,8 @@ export default function GoalsPage() {
             </div>
 
             <form onSubmit={handleCreateGoal} className="space-y-3.5 text-xs">
-              {/* GOAL TYPE TOGGLE */}
               <div>
-                <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                <label className="block text-slate-300 mb-1 font-semibold uppercase text-[11px]">
                   Goal Type
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -271,8 +317,8 @@ export default function GoalsPage() {
                     onClick={() => setGoalType("weekly")}
                     className={`py-2 rounded font-semibold transition border ${
                       goalType === "weekly"
-                        ? "bg-amber-500/20 text-amber-300 border-amber-500"
-                        : "bg-[#181924] border-[#232636] text-slate-400"
+                        ? "bg-red-950/40 text-red-300 border-red-500 font-bold"
+                        : "bg-[#14141A] border-zinc-800 text-slate-300"
                     }`}
                   >
                     Weekly Target Quota
@@ -282,8 +328,8 @@ export default function GoalsPage() {
                     onClick={() => setGoalType("life")}
                     className={`py-2 rounded font-semibold transition border ${
                       goalType === "life"
-                        ? "bg-amber-500/20 text-amber-300 border-amber-500"
-                        : "bg-[#181924] border-[#232636] text-slate-400"
+                        ? "bg-amber-950/40 text-amber-300 border-amber-500 font-bold"
+                        : "bg-[#14141A] border-zinc-800 text-slate-300"
                     }`}
                   >
                     Strategic Life Milestone
@@ -292,7 +338,7 @@ export default function GoalsPage() {
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                <label className="block text-slate-300 mb-1 font-semibold uppercase text-[11px]">
                   Goal Title
                 </label>
                 <input
@@ -300,36 +346,36 @@ export default function GoalsPage() {
                   required
                   placeholder={
                     goalType === "weekly"
-                      ? "e.g. 4 Calisthenics Sessions / 5 Business Pitches"
+                      ? "e.g. 5 Calisthenics Sessions / 5 Business Pitches"
                       : "e.g. Reach 155 lbs baseline / Close $10k AI retainer"
                   }
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-[#14141A] border border-red-950 rounded-lg p-2.5 text-white focus:outline-none focus:border-red-500 font-medium"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                  <label className="block text-slate-300 mb-1 font-semibold uppercase text-[11px]">
                     Category
                   </label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value as any)}
-                    className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#14141A] border border-red-950 rounded-lg p-2.5 text-white focus:outline-none focus:border-amber-500"
                   >
-                    <option value="Physical">Physical (Calisthenics/Boxing)</option>
-                    <option value="Consulting">Consulting (Fiverr / Local)</option>
-                    <option value="DBA">Doctoral DBA Research</option>
-                    <option value="Recovery">Recovery (OMAD / Fasting)</option>
-                    <option value="Family">Family Sanctuary (Cheer/Weekend)</option>
+                    <option value="Physical">Physical (Red Accent)</option>
+                    <option value="Consulting">Consulting (Gold Accent)</option>
+                    <option value="DBA">Doctoral DBA (Blue Accent)</option>
+                    <option value="Recovery">Recovery (Emerald Accent)</option>
+                    <option value="Family">Family Sanctuary (Rose Accent)</option>
                   </select>
                 </div>
 
                 {goalType === "weekly" ? (
                   <div>
-                    <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                    <label className="block text-slate-300 mb-1 font-semibold uppercase text-[11px]">
                       Weekly Target Count
                     </label>
                     <input
@@ -338,52 +384,52 @@ export default function GoalsPage() {
                       max="30"
                       value={targetCount}
                       onChange={(e) => setTargetCount(e.target.value)}
-                      className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 font-mono focus:outline-none focus:border-amber-500"
+                      className="w-full bg-[#14141A] border border-red-950 rounded-lg p-2.5 text-white font-mono focus:outline-none focus:border-amber-500"
                     />
                   </div>
                 ) : (
                   <div>
-                    <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                    <label className="block text-slate-300 mb-1 font-semibold uppercase text-[11px]">
                       Target Completion Date
                     </label>
                     <input
                       type="date"
                       value={targetDate}
                       onChange={(e) => setTargetDate(e.target.value)}
-                      className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 font-mono focus:outline-none focus:border-amber-500"
+                      className="w-full bg-[#14141A] border border-red-950 rounded-lg p-2.5 text-white font-mono focus:outline-none focus:border-amber-500"
                     />
                   </div>
                 )}
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                <label className="block text-slate-300 mb-1 font-semibold uppercase text-[11px]">
                   Completion XP Reward
                 </label>
                 <select
                   value={xpReward}
                   onChange={(e) => setXpReward(e.target.value)}
-                  className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 font-mono focus:outline-none focus:border-amber-500"
+                  className="w-full bg-[#14141A] border border-red-950 rounded-lg p-2.5 text-white font-mono focus:outline-none focus:border-amber-500"
                 >
-                  <option value="500">+500 XP (Minor Milestone)</option>
+                  <option value="500">+500 XP (Minor Target)</option>
                   <option value="1000">+1,000 XP (Standard Weekly Quota)</option>
-                  <option value="1500">+1,500 XP (Major Target)</option>
+                  <option value="1500">+1,500 XP (High Discipline Target)</option>
                   <option value="2500">+2,500 XP (Consulting Retainer Bounty)</option>
                   <option value="5000">+5,000 XP (Epic Milestone: 155 lbs)</option>
                 </select>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-[#232636]">
+              <div className="flex justify-end gap-2 pt-2 border-t border-red-950/60">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-3.5 py-2 rounded bg-slate-800 text-slate-300 hover:text-white"
+                  className="px-3.5 py-2 rounded bg-zinc-800 text-slate-200 hover:text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase tracking-wider transition"
+                  className="px-4 py-2 rounded bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase tracking-wider transition shadow"
                 >
                   Commit Goal
                 </button>

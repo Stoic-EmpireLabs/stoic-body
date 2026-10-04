@@ -6,12 +6,13 @@
   <meta name="color-scheme" content="dark light">
   <title>Stoic Body — interactive design preview</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="appearance.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="preview-bar" aria-label="Prototype controls">
-    <span><span class="preview-dot"></span> DESIGN PREVIEW <span class="preview-detail">· Fictional data · Refresh to reset</span></span>
+    <span><span class="preview-dot"></span> DESIGN PREVIEW <span class="preview-detail">· Fictional data · Sample logs reset</span></span>
     <div class="theme-options" role="group" aria-label="Visual direction">
       <button data-theme-option="night" aria-pressed="true"><span class="swatch night"></span>Crimson &amp; Gold</button>
       <button data-theme-option="marble" aria-pressed="false"><span class="swatch marble"></span>Quiet Marble</button>
@@ -30,7 +31,7 @@
       </div>
     </aside>
     <div class="workspace">
-      <header class="topbar"><div class="breadcrumb">Your practice <span>/</span> <strong id="breadcrumb">Today</strong></div><div class="top-actions"><button class="sync-pill" data-view="settings"><span class="status-dot"></span><span>Sync preview</span></button><button id="calm-toggle" class="icon-button" aria-label="Enable calm mode" aria-pressed="false"></button><button class="avatar avatar-button" data-view="onboarding" aria-label="Open profile setup">A</button></div></header>
+      <header class="topbar"><div class="breadcrumb">Your practice <span>/</span> <strong id="breadcrumb">Today</strong></div><div class="top-actions"><button class="sync-pill" data-view="settings"><span class="status-dot"></span><span>Sync preview</span></button><button id="calm-toggle" class="icon-button" aria-label="Enable calm mode" aria-pressed="false"></button><button class="icon-button" data-view="settings" aria-label="Theme and color settings"><span aria-hidden="true">⚙</span></button></div></header>
       <main id="main" tabindex="-1"></main>
       <footer class="app-footer">Build a life you respect. One day at a time.<span>STOIC BODY / DESIGN 03</span></footer>
     </div>

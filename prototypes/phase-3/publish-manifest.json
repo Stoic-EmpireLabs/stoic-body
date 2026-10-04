@@ -3,38 +3,43 @@
   "files": [
     {
       "file": "index.html",
-      "bytes": 2817,
-      "sha256": "34847c0c88ea91a018b96f0a29bb8052c155e35b333710cadb413600c12e7613"
+      "bytes": 2893,
+      "sha256": "b24969d39f6705962420925beab3523df2066db83d00086a7c83b9768afb20ed"
     },
     {
       "file": "gallery.html",
-      "bytes": 5057,
-      "sha256": "36233212d473f8959a034b4d7a62e8975c1f737e7573273e2b0c9530cf58d275"
+      "bytes": 5120,
+      "sha256": "0d0a9b4e984fc2837eaf47c7e3f213f98830450704cb8bacb521335c531e3ca4"
     },
     {
       "file": "app.js",
-      "bytes": 56677,
-      "sha256": "8515a6c252e2fde62176d179d0118a8a1ae593bcf326e403031abf98433ca25b"
+      "bytes": 56734,
+      "sha256": "451b317e42bb37249426690c7bcf972ef6b54b7f1186cde91f5b9bfe7f172440"
+    },
+    {
+      "file": "appearance.js",
+      "bytes": 8146,
+      "sha256": "e096b66e21b6b12a87815af35cd50f785fb1d7f13709162c62a372d9dbf28f4d"
     },
     {
       "file": "styles.css",
-      "bytes": 26745,
-      "sha256": "7df2ef759fd4295fcfa5642981f1f759aaac66f82b240baed54947f5ae08479b"
+      "bytes": 29977,
+      "sha256": "95684d27b9e5efe264af6844f232d1c4feac2de90dec38d17557f236f03c8987"
     },
     {
       "file": "night-today-desktop.png",
-      "bytes": 254437,
-      "sha256": "579815c55b2e01dce37d46d9bf19d3e6b4d817d3cdda22ca1499bad9e4a814b7"
+      "bytes": 256349,
+      "sha256": "95ab1283d91468be6c5fb7c841332646724281a20785e38827964b6e4dcecbf1"
     },
     {
       "file": "marble-today-desktop.png",
-      "bytes": 251366,
-      "sha256": "9d7249172579f658747f795cd4964f2d59c2d67eae313fdfd58d678b8beb2751"
+      "bytes": 232836,
+      "sha256": "33cdacf5b219a372cce0820b09002a9d7190aac9c16403d33e37ff3392ab9fff"
     },
     {
       "file": "journal-today-desktop.png",
-      "bytes": 257843,
-      "sha256": "13296332babf2c47c60fb16c0a1a41032749d6bfb4f88b5f05b29a15043d8488"
+      "bytes": 253011,
+      "sha256": "e2019681dc7687bbfbc2965e9ac9fb4704ecfcbb41c94cefbfe9265f3ff2355f"
     }
   ]
 }

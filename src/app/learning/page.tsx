@@ -203,48 +203,48 @@ export default function LearningPage() {
     <div className="space-y-6">
 
       {/* HEADER SECTION */}
-      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-100 flex items-center gap-2">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
             <span>Video How-To Guides &amp; Deconstructed Curricula</span>
-            <span className="text-[10px] bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
+            <span className="text-[10px] bg-red-950/80 text-amber-300 px-2.5 py-0.5 rounded border border-amber-500/40 font-mono font-bold">
               Interactive Video Players &bull; Step Milestones
             </span>
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-300 mt-0.5">
             Watch verified video walk-throughs for real-world maintenance, cheer stunting, home fabrication, and AI consulting.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400">Next Spaced Review:</span>
-          <span className="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded border border-amber-500/20">
+          <span className="text-xs text-slate-300">Next Spaced Review:</span>
+          <span className="text-xs font-mono font-bold text-amber-300 bg-red-950/60 px-2.5 py-1 rounded border border-amber-500/30">
             {nextReview.toISOString().split("T")[0]}
           </span>
         </div>
       </section>
 
       {/* FEATURED INTERACTIVE HOW-TO VIDEO PLAYER */}
-      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-6 shadow-xl space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-[#232636] pb-3">
+      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-red-950/70 pb-3">
           <div>
-            <span className="text-[10px] font-mono uppercase bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/20 font-bold">
+            <span className="text-[10px] font-mono uppercase bg-red-950/80 text-amber-300 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
               {selectedVideo.category} Masterclass &bull; {selectedVideo.duration}
             </span>
-            <h3 className="text-base font-bold text-slate-100 mt-1">
+            <h3 className="text-base font-bold text-white mt-1">
               {selectedVideo.title}
             </h3>
           </div>
 
           <div className="flex items-center gap-2">
             {selectedVideo.watched ? (
-              <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20">
+              <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/80 px-3 py-1 rounded border border-emerald-500/30">
                 ✓ Video Mastered (+{selectedVideo.xpReward} XP)
               </span>
             ) : (
               <button
                 onClick={() => markVideoWatched(selectedVideo.id)}
-                className="px-3.5 py-1.5 rounded bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs uppercase tracking-wider transition shadow flex items-center gap-1.5"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-xs uppercase tracking-wider transition shadow flex items-center gap-1.5"
               >
                 <span>✓</span> Mark Watched (+{selectedVideo.xpReward} XP)
               </button>
@@ -253,12 +253,12 @@ export default function LearningPage() {
         </div>
 
         {/* RESPONSIVE VIDEO SCREEN */}
-        <div className="relative w-full aspect-video bg-gradient-to-br from-slate-900 to-black rounded-xl overflow-hidden border border-[#232636] shadow-2xl flex flex-col justify-between p-6">
+        <div className="relative w-full aspect-video bg-gradient-to-br from-black via-[#0D0507] to-black rounded-xl overflow-hidden border border-red-900/40 shadow-2xl flex flex-col justify-between p-6">
           <div className="flex justify-between items-start">
-            <span className="text-xs font-mono bg-black/60 backdrop-blur-md px-3 py-1 rounded text-slate-300 border border-white/10">
+            <span className="text-xs font-mono bg-black/80 backdrop-blur-md px-3 py-1 rounded text-white border border-red-900/40">
               HD &bull; High Frame Rate &bull; Step Breakdown
             </span>
-            <span className="text-xs font-mono text-amber-400 bg-black/60 px-2.5 py-1 rounded border border-white/10 font-bold">
+            <span className="text-xs font-mono text-amber-400 bg-black/80 px-2.5 py-1 rounded border border-amber-500/30 font-bold">
               {selectedVideo.duration}
             </span>
           </div>
@@ -267,27 +267,27 @@ export default function LearningPage() {
           <div className="self-center text-center">
             <button
               onClick={() => setIsPlaying(!isPlaying)}
-              className="w-16 h-16 rounded-full bg-amber-500 hover:bg-amber-400 text-black flex items-center justify-center text-2xl shadow-xl transition transform hover:scale-105"
+              className="w-16 h-16 rounded-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white flex items-center justify-center text-2xl shadow-2xl transition transform hover:scale-105 border border-red-400/30"
             >
               {isPlaying ? "❚❚" : "▶"}
             </button>
-            <div className="text-xs text-slate-300 mt-3 font-semibold">
+            <div className="text-xs text-white mt-3 font-bold tracking-wide">
               {isPlaying ? "Playing Video Guide..." : "Click to Play Video Guide"}
             </div>
-            <p className="text-[11px] text-slate-500 max-w-md mx-auto mt-1">
+            <p className="text-[11px] text-slate-300 max-w-md mx-auto mt-1">
               {selectedVideo.description}
             </p>
           </div>
 
           {/* TIMELINE CHAPTERS */}
-          <div className="bg-black/60 backdrop-blur-md p-3 rounded-lg border border-white/10 flex flex-wrap gap-2 text-[11px] font-mono text-slate-300 overflow-x-auto">
+          <div className="bg-black/80 backdrop-blur-md p-3 rounded-lg border border-red-950/80 flex flex-wrap gap-2 text-[11px] font-mono text-white overflow-x-auto">
             <span className="text-amber-400 font-bold self-center">Chapters:</span>
             {selectedVideo.chapters.map((ch, idx) => (
               <span
                 key={idx}
-                className="px-2 py-0.5 rounded bg-white/5 border border-white/10 hover:border-amber-400/40 cursor-pointer whitespace-nowrap"
+                className="px-2.5 py-0.5 rounded bg-neutral-900/90 border border-red-950 hover:border-amber-400/50 cursor-pointer whitespace-nowrap text-white font-medium"
               >
-                <strong className="text-amber-300 mr-1">{ch.time}</strong> {ch.title}
+                <strong className="text-amber-400 mr-1">{ch.time}</strong> {ch.title}
               </span>
             ))}
           </div>
@@ -295,17 +295,17 @@ export default function LearningPage() {
       </section>
 
       {/* HOW-TO VIDEO LIBRARY GRID */}
-      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg space-y-4">
-        <div className="flex items-center justify-between border-b border-[#232636] pb-3">
+      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl space-y-4">
+        <div className="flex items-center justify-between border-b border-red-950/70 pb-3">
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-100">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white">
               Founder Video Masterclass Library
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-300 mt-0.5">
               Click any guide to load into player. Watch all 8 guides to earn +2,000 XP.
             </p>
           </div>
-          <span className="text-xs font-mono text-slate-400">
+          <span className="text-xs font-mono font-bold text-amber-300">
             {videos.length} Verified Video Walk-Throughs
           </span>
         </div>
@@ -322,16 +322,16 @@ export default function LearningPage() {
                 }}
                 className={`p-3.5 rounded-xl border cursor-pointer transition flex flex-col justify-between ${
                   isSelected
-                    ? "bg-amber-500/10 border-amber-500 shadow-md ring-1 ring-amber-500/40"
-                    : "bg-[#181924] border-[#232636] hover:border-slate-500"
+                    ? "bg-red-950/40 border-amber-500 shadow-xl ring-2 ring-amber-500/60"
+                    : "bg-[#121218] border-red-950/60 hover:border-amber-500/50"
                 }`}
               >
                 <div>
                   <div className={`h-24 rounded-lg bg-gradient-to-br ${vid.thumbnailGradient} flex items-center justify-center relative overflow-hidden border border-white/5`}>
-                    <div className="w-10 h-10 rounded-full bg-black/60 flex items-center justify-center text-amber-400 text-sm shadow">
+                    <div className="w-10 h-10 rounded-full bg-black/80 flex items-center justify-center text-amber-400 text-sm shadow border border-amber-500/30">
                       ▶
                     </div>
-                    <span className="absolute bottom-1.5 right-1.5 font-mono text-[10px] bg-black/80 px-1.5 py-0.5 rounded text-slate-300">
+                    <span className="absolute bottom-1.5 right-1.5 font-mono text-[10px] bg-black/90 px-1.5 py-0.5 rounded text-white font-bold">
                       {vid.duration}
                     </span>
                   </div>
@@ -339,14 +339,14 @@ export default function LearningPage() {
                   <span className="text-[10px] font-mono uppercase text-amber-400 font-bold block mt-2">
                     {vid.category}
                   </span>
-                  <h4 className="text-xs font-semibold text-slate-100 mt-1 leading-snug line-clamp-2">
+                  <h4 className="text-xs font-semibold text-white mt-1 leading-snug line-clamp-2">
                     {vid.title}
                   </h4>
                 </div>
 
-                <div className="mt-3 pt-2 border-t border-[#232636] flex items-center justify-between text-[11px] font-mono">
+                <div className="mt-3 pt-2 border-t border-red-950/70 flex items-center justify-between text-[11px] font-mono font-bold">
                   <span className="text-amber-400">+{vid.xpReward} XP</span>
-                  <span className={vid.watched ? "text-emerald-400 font-bold" : "text-slate-500"}>
+                  <span className={vid.watched ? "text-emerald-400 font-bold" : "text-slate-300"}>
                     {vid.watched ? "✓ Mastered" : "Watch Now"}
                   </span>
                 </div>
@@ -357,12 +357,12 @@ export default function LearningPage() {
       </section>
 
       {/* DECONSTRUCTED CHECKLISTS & STEP PROGRESSION */}
-      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-6 shadow-lg space-y-6">
+      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl space-y-6">
         <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-100 mb-1">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-1">
             Step-by-Step Mechanical &amp; Project Checklists
           </h3>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-300">
             Check off steps as you physically perform them. Tool requirements and factory torque specs included.
           </p>
         </div>
@@ -376,14 +376,14 @@ export default function LearningPage() {
               <button
                 key={pw.id}
                 onClick={() => setSelectedPathwayId(pw.id)}
-                className={`px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition border flex items-center gap-2 ${
+                className={`px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition border flex items-center gap-2 ${
                   isSelected
-                    ? "bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-md"
-                    : "bg-[#181924] text-slate-400 border-[#232636] hover:text-slate-200"
+                    ? "bg-gradient-to-r from-red-700 to-red-800 text-white border-red-500/60 shadow-md"
+                    : "bg-black text-slate-300 border-red-950/70 hover:text-white"
                 }`}
               >
                 <span>{pw.title.split("—")[0].split("DIY")[0]}</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-300">
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-red-950/80 text-amber-300 border border-amber-500/30">
                   {pwProgress.percentage}%
                 </span>
               </button>
@@ -395,35 +395,35 @@ export default function LearningPage() {
         <div className="space-y-4">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-300 bg-red-950/80 px-2.5 py-0.5 rounded border border-amber-500/30">
                 Category: {currentPathway.category.replace("_", " ")}
               </span>
-              <h3 className="text-lg font-bold text-slate-100 mt-2">{currentPathway.title}</h3>
-              <p className="text-xs text-slate-300 mt-1 max-w-2xl">{currentPathway.description}</p>
+              <h3 className="text-lg font-bold text-white mt-2">{currentPathway.title}</h3>
+              <p className="text-xs text-slate-200 mt-1 max-w-2xl">{currentPathway.description}</p>
             </div>
             <div className="text-right shrink-0">
               <span className="text-2xl font-mono font-black text-amber-400">{progress.percentage}%</span>
-              <div className="text-[11px] text-slate-400 font-mono">
+              <div className="text-[11px] text-slate-300 font-mono">
                 {progress.completedSteps} / {progress.totalSteps} Steps Complete
               </div>
             </div>
           </div>
 
-          <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+          <div className="w-full bg-neutral-900 h-2 rounded-full overflow-hidden border border-red-950/80">
             <div
-              className="bg-amber-500 h-full transition-all duration-300"
+              className="bg-gradient-to-r from-amber-500 to-amber-400 h-full transition-all duration-300"
               style={{ width: `${progress.percentage}%` }}
             ></div>
           </div>
 
           {/* PREREQUISITES AUDIT */}
-          <div className="bg-[#181924] border border-[#232636] rounded-lg p-4">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+          <div className="bg-black border border-red-950/80 rounded-lg p-4">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">
               Tooling &amp; Safety Prerequisites
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               {currentPathway.prerequisites.map((req, i) => (
-                <div key={i} className="flex items-center gap-2 text-slate-300">
+                <div key={i} className="flex items-center gap-2 text-white">
                   <span className="text-emerald-400 font-bold">✓</span>
                   <span>{req.name}</span>
                 </div>
@@ -439,27 +439,27 @@ export default function LearningPage() {
                 onClick={() => toggleStep(step.id)}
                 className={`p-3.5 rounded-lg border cursor-pointer transition flex items-center justify-between gap-4 ${
                   step.completed
-                    ? "bg-slate-900/60 border-emerald-500/30 text-slate-400"
-                    : "bg-[#1C1E2B] border-[#232636] hover:border-amber-500/40 text-slate-100"
+                    ? "bg-black/60 border-red-950/40 text-slate-400"
+                    : "bg-[#121218] border-red-950/70 hover:border-amber-500/40 text-white"
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div
                     className={`w-5 h-5 rounded flex items-center justify-center text-xs font-bold ${
-                      step.completed ? "bg-emerald-500 text-black" : "border border-slate-600"
+                      step.completed ? "bg-amber-500 text-black font-bold" : "border border-red-900/60 bg-black"
                     }`}
                   >
                     {step.completed && "✓"}
                   </div>
                   <div>
-                    <span className="text-xs font-mono text-slate-500 mr-2">Step {idx + 1}</span>
-                    <span className={`text-sm ${step.completed ? "line-through text-slate-500" : "font-medium"}`}>
+                    <span className="text-xs font-mono text-amber-400 font-bold mr-2">Step {idx + 1}</span>
+                    <span className={`text-sm ${step.completed ? "line-through text-slate-500" : "font-semibold text-white"}`}>
                       {step.title}
                     </span>
                   </div>
                 </div>
 
-                <span className="text-xs font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 shrink-0">
+                <span className="text-xs font-mono px-2 py-0.5 rounded bg-black text-amber-300 font-bold border border-red-950 shrink-0">
                   {step.estimatedMinutes}m
                 </span>
               </div>

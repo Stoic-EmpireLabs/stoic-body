@@ -15,8 +15,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-[#090A0F] text-slate-100 min-h-screen pb-16 antialiased">
+    <html lang="en" className="dark bg-black">
+      <body className="bg-black text-white min-h-screen pb-16 antialiased selection:bg-red-900 selection:text-white">
         <StoicProvider>
           <Header />
           <Nav />

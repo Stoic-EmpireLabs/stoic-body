@@ -14,7 +14,7 @@ let browser;
  const external=[];page.on('request',r=>{if(!r.url().startsWith(base))external.push(r.url());});
  const save=async(name,fullPage=false)=>{await page.screenshot({path:path.join(root,name+'.png'),fullPage});results.screenshots.push(name+'.png');};
  await page.goto(base);
- check('Preview disclosure visible',await page.getByText('Fictional data · Refresh to reset').isVisible());
+ check('Preview disclosure visible',await page.getByText('Fictional data · Sample logs reset').isVisible());
  await page.getByRole('button',{name:'Complete Movement & strength',exact:true}).click();
  check('Completion awards 25 XP',await page.locator('[data-xp]').textContent()==='105 XP');
  await page.getByRole('button',{name:'Undo Movement & strength',exact:true}).click();

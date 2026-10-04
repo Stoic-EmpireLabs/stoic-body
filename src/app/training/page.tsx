@@ -89,45 +89,45 @@ export default function TrainingStudio() {
     <div className="space-y-6">
 
       {/* BOXING ROUND TIMER */}
-      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-6 shadow-lg text-center relative overflow-hidden">
+      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl text-center relative overflow-hidden">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-xs font-semibold uppercase tracking-wider text-red-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-red-500">
             Home Boxing Round Timer
           </span>
-          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/30">
+          <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-red-950/80 text-amber-300 border border-amber-500/40">
             ROUND {currentRound} of 6
           </span>
         </div>
 
         <div className="my-4">
-          <div className="text-6xl font-mono font-black tracking-tight text-slate-100">
+          <div className="text-6xl font-mono font-black tracking-tight text-white">
             {formatTime(timerSeconds)}
           </div>
           <div
-            className={`text-xs font-bold uppercase tracking-widest mt-1 ${
-              isRest ? "text-blue-400" : "text-emerald-400"
+            className={`text-xs font-bold uppercase tracking-widest mt-1.5 ${
+              isRest ? "text-amber-400" : "text-red-400"
             }`}
           >
-            {isRest ? "REST & BREATHE INTERVAL" : "FIGHT · HIGH INTENSITY"}
+            {isRest ? "REST & BREATHE INTERVAL (60 SEC)" : "FIGHT · HIGH INTENSITY STRIKING"}
           </div>
         </div>
 
         <div className="flex justify-center gap-3">
           <button
             onClick={handleStartTimer}
-            className="px-6 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-sm transition shadow-lg shadow-red-900/30"
+            className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm transition shadow-xl shadow-red-950/50 border border-red-500/30 tracking-wider uppercase"
           >
             START ROUND
           </button>
           <button
             onClick={handlePauseTimer}
-            className="px-5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-sm transition"
+            className="px-5 py-2.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-sm transition border border-red-950/80"
           >
             PAUSE
           </button>
           <button
             onClick={handleResetTimer}
-            className="px-5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 font-medium text-sm transition"
+            className="px-5 py-2.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-slate-300 hover:text-white font-bold text-sm transition border border-red-950/80"
           >
             RESET
           </button>
@@ -135,23 +135,23 @@ export default function TrainingStudio() {
       </section>
 
       {/* NO-DUMBBELL CALISTHENICS WORKOUT DECK */}
-      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg">
+      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-100">
-              Home Calisthenics & High-Rep Suite
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white">
+              Home Calisthenics &amp; High-Rep Suite
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-300">
               Strict Equipment Constraint: Zero Dumbbells &middot; High Reps &middot; Progressive Overload
             </p>
           </div>
           <button
             onClick={completeCalisthenics}
             disabled={routineCompleted}
-            className={`text-xs font-mono px-3 py-1 rounded border transition ${
+            className={`text-xs font-mono font-bold px-3 py-1.5 rounded border transition ${
               routineCompleted
-                ? "bg-purple-600 text-white border-purple-500 cursor-default"
-                : "bg-purple-500/10 text-purple-400 border-purple-500/30 hover:bg-purple-500/20"
+                ? "bg-red-700 text-white border-red-500 cursor-default"
+                : "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black border-amber-400/50 shadow"
             }`}
           >
             {routineCompleted ? "Completed (+750 XP)" : "Claim Routine (+750 XP)"}
@@ -161,10 +161,10 @@ export default function TrainingStudio() {
         <div className="space-y-3">
           
           {/* Exercise 1 */}
-          <div className="p-3 rounded-lg bg-[#1C1E2B] border border-[#232636] flex items-center justify-between">
+          <div className="p-3 rounded-lg bg-[#121218] border border-red-950/60 flex items-center justify-between">
             <div>
-              <h5 className="text-sm font-medium text-slate-100">Strict Overhand Pull-Ups</h5>
-              <p className="text-xs text-slate-400">Target: 3 Sets &times; Max Reps (RPE 9)</p>
+              <h5 className="text-sm font-semibold text-white">Strict Overhand Pull-Ups</h5>
+              <p className="text-xs text-slate-300">Target: 3 Sets &times; Max Reps (RPE 9)</p>
             </div>
             <div className="flex items-center gap-2">
               {[1, 2, 3].map((s) => {
@@ -175,8 +175,8 @@ export default function TrainingStudio() {
                     onClick={() => toggleSet("pullups", s)}
                     className={`w-8 h-8 rounded font-mono text-xs font-bold transition ${
                       isDone
-                        ? "bg-amber-500 text-slate-900"
-                        : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                        ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
+                        : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
                     }`}
                   >
                     S{s}
@@ -187,10 +187,10 @@ export default function TrainingStudio() {
           </div>
 
           {/* Exercise 2 */}
-          <div className="p-3 rounded-lg bg-[#1C1E2B] border border-[#232636] flex items-center justify-between">
+          <div className="p-3 rounded-lg bg-[#121218] border border-red-950/60 flex items-center justify-between">
             <div>
-              <h5 className="text-sm font-medium text-slate-100">Parallel Bar Dips</h5>
-              <p className="text-xs text-slate-400">Target: 3 Sets &times; 15 Reps</p>
+              <h5 className="text-sm font-semibold text-white">Parallel Bar Dips</h5>
+              <p className="text-xs text-slate-300">Target: 3 Sets &times; 15 Reps</p>
             </div>
             <div className="flex items-center gap-2">
               {[1, 2, 3].map((s) => {
@@ -201,8 +201,8 @@ export default function TrainingStudio() {
                     onClick={() => toggleSet("dips", s)}
                     className={`w-8 h-8 rounded font-mono text-xs font-bold transition ${
                       isDone
-                        ? "bg-amber-500 text-slate-900"
-                        : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                        ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
+                        : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
                     }`}
                   >
                     S{s}
@@ -213,10 +213,10 @@ export default function TrainingStudio() {
           </div>
 
           {/* Exercise 3 */}
-          <div className="p-3 rounded-lg bg-[#1C1E2B] border border-[#232636] flex items-center justify-between">
+          <div className="p-3 rounded-lg bg-[#121218] border border-red-950/60 flex items-center justify-between">
             <div>
-              <h5 className="text-sm font-medium text-slate-100">Diamond Push-Up Burnout</h5>
-              <p className="text-xs text-slate-400">Target: 3 Sets &times; 20 Reps (Triceps & Chest Focus)</p>
+              <h5 className="text-sm font-semibold text-white">Diamond Push-Up Burnout</h5>
+              <p className="text-xs text-slate-300">Target: 3 Sets &times; 20 Reps (Triceps &amp; Chest Focus)</p>
             </div>
             <div className="flex items-center gap-2">
               {[1, 2, 3].map((s) => {
@@ -227,8 +227,8 @@ export default function TrainingStudio() {
                     onClick={() => toggleSet("pushups", s)}
                     className={`w-8 h-8 rounded font-mono text-xs font-bold transition ${
                       isDone
-                        ? "bg-amber-500 text-slate-900"
-                        : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                        ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
+                        : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
                     }`}
                   >
                     S{s}
@@ -239,10 +239,10 @@ export default function TrainingStudio() {
           </div>
 
           {/* Exercise 4 */}
-          <div className="p-3 rounded-lg bg-[#1C1E2B] border border-[#232636] flex items-center justify-between">
+          <div className="p-3 rounded-lg bg-[#121218] border border-red-950/60 flex items-center justify-between">
             <div>
-              <h5 className="text-sm font-medium text-slate-100">Hanging Leg Raises & Hollow Holds</h5>
-              <p className="text-xs text-slate-400">Target: 3 Sets &times; 12 Reps (Compressed Core for Abs)</p>
+              <h5 className="text-sm font-semibold text-white">Hanging Leg Raises &amp; Hollow Holds</h5>
+              <p className="text-xs text-slate-300">Target: 3 Sets &times; 12 Reps (Compressed Core for Abs)</p>
             </div>
             <div className="flex items-center gap-2">
               {[1, 2, 3].map((s) => {
@@ -253,8 +253,8 @@ export default function TrainingStudio() {
                     onClick={() => toggleSet("core", s)}
                     className={`w-8 h-8 rounded font-mono text-xs font-bold transition ${
                       isDone
-                        ? "bg-amber-500 text-slate-900"
-                        : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                        ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
+                        : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
                     }`}
                   >
                     S{s}
@@ -268,25 +268,25 @@ export default function TrainingStudio() {
       </section>
 
       {/* CHEER STUNTING FLYER DRILL */}
-      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg">
+      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-pink-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-rose-400">
             Cheerleading Partner Flyer Stunt Coaching
           </span>
-          <span className="text-xs font-mono px-2 py-0.5 rounded bg-pink-500/10 text-pink-400 border border-pink-500/20">
+          <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-500/40">
             Family Sanctuary
           </span>
         </div>
-        <p className="text-sm font-medium text-slate-100">
-          Daughter Flyer Base Fundamentals & Balance Elevation
+        <p className="text-sm font-semibold text-white">
+          Daughter Flyer Base Fundamentals &amp; Balance Elevation
         </p>
-        <p className="text-xs text-slate-400 mt-1">
+        <p className="text-xs text-slate-300 mt-1">
           Coaching cues: Chest upright, lock elbows at 90 degrees, absorb with deep quad drive, establish firm wrist lock under foot arches. Emphasize trust, locked core, and soft dismount catches.
         </p>
-        <div className="mt-3 pt-3 border-t border-[#232636] flex justify-end">
+        <div className="mt-3 pt-3 border-t border-red-950/70 flex justify-end">
           <button
             onClick={() => awardXp(1500, "Cheer Flyer Partner Stunt Session", "Strength")}
-            className="px-3 py-1.5 rounded bg-pink-500/20 text-pink-300 border border-pink-500/30 text-xs font-semibold hover:bg-pink-500/30 transition"
+            className="px-4 py-2 rounded-lg bg-gradient-to-r from-rose-700 to-rose-800 hover:from-rose-600 text-white border border-rose-500/40 text-xs font-bold shadow-lg transition"
           >
             Log Practice Drill (+1,500 XP)
           </button>

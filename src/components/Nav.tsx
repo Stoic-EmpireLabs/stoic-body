@@ -23,18 +23,18 @@ export default function Nav() {
   ];
 
   return (
-    <nav className="max-w-4xl mx-auto px-4 mt-4 overflow-x-auto">
-      <div className="flex border-b border-[#232636] gap-2 min-w-max">
+    <nav className="max-w-4xl mx-auto px-4 mt-3 overflow-x-auto">
+      <div className="flex border-b border-red-950/70 gap-1.5 min-w-max">
         {links.map((link) => {
           const isActive = pathname === link.href;
           return (
             <Link
               key={link.href}
               href={link.href}
-              className={`px-4 py-2.5 text-xs font-semibold uppercase tracking-wider transition ${
+              className={`px-3.5 py-2.5 text-xs font-bold uppercase tracking-wider transition rounded-t-md ${
                 isActive
-                  ? "text-amber-400 border-b-2 border-amber-500"
-                  : "text-slate-400 border-b-2 border-transparent hover:text-slate-200"
+                  ? "text-amber-400 border-b-2 border-red-500 bg-red-950/20 shadow-sm"
+                  : "text-white hover:text-amber-300 border-b-2 border-transparent hover:border-amber-500/40 hover:bg-white/[0.03]"
               }`}
             >
               {link.label}
