@@ -187,7 +187,7 @@ export default function BodyProgressPage() {
           {/* Target Weight & Estimated Arrival */}
           <div className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60">
             <span className="text-[11px] text-amber-400 uppercase font-bold block">
-              Target Sovereign Baseline
+              Target Body Goal &middot; Sovereign Baseline
             </span>
             <div className="text-2xl font-bold font-mono text-white mt-1">
               {targetWeight.toFixed(1)}{" "}

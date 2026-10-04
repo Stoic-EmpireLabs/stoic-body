@@ -181,9 +181,9 @@ export default function TrainingStudio() {
       <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl relative overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-red-500 block">
-              Home Boxing &amp; Interval Studio
-            </span>
+            <h2 className="text-xs font-bold uppercase tracking-wider text-red-500 block">
+              Home Boxing Round Timer &middot; Interval Studio
+            </h2>
             <span className="text-xs text-slate-300">
               Championship pacing &middot; Heavy bag &amp; shadowboxing cadence.
             </span>
@@ -251,9 +251,9 @@ export default function TrainingStudio() {
         {/* ACTIVE COMBINATION DRILL CALLOUT */}
         <div className="p-4 rounded-lg bg-[#121218] border border-red-950/70 text-left">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400">
+            <h3 className="text-[11px] font-bold uppercase tracking-wider text-amber-400">
               Active Round Drill Callout &middot; Combination #{comboIndex + 1}
-            </span>
+            </h3>
             <div className="flex gap-1.5">
               <button
                 onClick={() =>
@@ -322,7 +322,7 @@ export default function TrainingStudio() {
           {/* Exercise 1 */}
           <div className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h5 className="text-sm font-bold text-white">Strict Overhand Pull-Ups</h5>
+              <h3 className="text-sm font-bold text-white">Strict Overhand Pull-Ups</h3>
               <p className="text-xs text-slate-300">Target: 3 Sets &times; Max Reps (RPE 9 &middot; Latissimus Hypertrophy)</p>
             </div>
             <div className="flex items-center gap-2">
@@ -348,7 +348,7 @@ export default function TrainingStudio() {
           {/* Exercise 2 */}
           <div className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h5 className="text-sm font-bold text-white">Parallel Bar Dips</h5>
+              <h3 className="text-sm font-bold text-white">Parallel Bar Dips</h3>
               <p className="text-xs text-slate-300">Target: 3 Sets &times; 15 Reps (Lower Chest &amp; Triceps Extension)</p>
             </div>
             <div className="flex items-center gap-2">
@@ -374,7 +374,7 @@ export default function TrainingStudio() {
           {/* Exercise 3 */}
           <div className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h5 className="text-sm font-bold text-white">Diamond Push-Up Burnout</h5>
+              <h3 className="text-sm font-bold text-white">Diamond Push-Up Burnout</h3>
               <p className="text-xs text-slate-300">Target: 3 Sets &times; 20 Reps (Inward Chest Cleavage &amp; Triceps)</p>
             </div>
             <div className="flex items-center gap-2">
@@ -400,7 +400,7 @@ export default function TrainingStudio() {
           {/* Exercise 4 */}
           <div className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h5 className="text-sm font-bold text-white">Hanging Leg Raises &amp; Hollow Holds</h5>
+              <h3 className="text-sm font-bold text-white">Hanging Leg Raises &amp; Hollow Holds</h3>
               <p className="text-xs text-slate-300">Target: 3 Sets &times; 12 Reps (Compressed Core for Visible Abs)</p>
             </div>
             <div className="flex items-center gap-2">
@@ -426,7 +426,7 @@ export default function TrainingStudio() {
           {/* Exercise 5 */}
           <div className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h5 className="text-sm font-bold text-white">Inverted Australian Rows</h5>
+              <h3 className="text-sm font-bold text-white">Inverted Australian Rows</h3>
               <p className="text-xs text-slate-300">Target: 3 Sets &times; 12 Reps (Mid-Trap &amp; Rhomboid Thickness)</p>
             </div>
             <div className="flex items-center gap-2">
@@ -452,7 +452,7 @@ export default function TrainingStudio() {
           {/* Exercise 6 */}
           <div className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h5 className="text-sm font-bold text-white">Bodyweight Pistol Squat Progressions</h5>
+              <h3 className="text-sm font-bold text-white">Bodyweight Pistol Squat Progressions</h3>
               <p className="text-xs text-slate-300">Target: 3 Sets &times; 15 Reps / Leg (Quad Hypertrophy &amp; Knee Health)</p>
             </div>
             <div className="flex items-center gap-2">
@@ -481,16 +481,16 @@ export default function TrainingStudio() {
       {/* CHEER STUNTING FLYER DRILL */}
       <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-rose-400">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-rose-400">
             Cheerleading Partner Flyer Stunt Coaching
-          </span>
+          </h2>
           <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-500/40">
             Family Sanctuary
           </span>
         </div>
-        <p className="text-sm font-bold text-white">
+        <h3 className="text-sm font-bold text-white">
           Daughter Flyer Base Fundamentals &amp; Balance Elevation
-        </p>
+        </h3>
         <p className="text-xs text-slate-300 mt-1">
           Coaching cues: Chest upright, lock elbows at 90 degrees, absorb with deep quad drive, establish firm wrist lock under foot arches. Emphasize trust, locked core, and soft cradle catch absorption.
         </p>
