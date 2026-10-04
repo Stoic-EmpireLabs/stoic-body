@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-04T21:31:58.589Z",
+  "at": "2026-10-04T21:50:54.494Z",
   "checks": [
     "unknown calories are not shown as zero intake",
     "food edits replace the same entry",
@@ -8,8 +8,10 @@
     "measurement units and visible trend assumptions",
     "diet evidence includes real source links",
     "unknown suitability cannot save a generated routine",
+    "changed inputs invalidate the earlier routine preview",
     "routine is saved as an unscheduled task",
     "exercise log alone does not award XP",
+    "progression advice follows the selected exercise",
     "scheduled workout grants the existing single award",
     "health data survives page reload",
     "health screen fits mobile width",

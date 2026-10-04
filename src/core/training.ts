@@ -17,6 +17,7 @@ export function buildRoutine(input: unknown): Routine {
   if (style === 'walk' && !equipment.includes('treadmill')) reasons.push('A treadmill is required for this selection. An outdoor walk can be entered as an ordinary task.');
   const reps = preference === 'higher-reps' ? '2 sets of 12–20 controlled repetitions' : '2 sets of 8–12 controlled repetitions';
   const block = preference === 'higher-reps' ? 6 : 5;
+  if (style === 'full-body' && minutes < 8 + 3 * block) reasons.push(`This full-body starter needs at least ${8 + 3 * block} minutes to include pushing, pulling and legs plus warm-up/cooldown. Choose a longer window or a focused shorter session.`);
   const strength = (name: string, cue: string, alternative: string): Exercise => ({ name, cue, alternative, minutes: block, prescription: `${reps}; rest 60–90 seconds between sets. Start with an easy load; stop before technique changes.` });
   const push = strength('Incline push-up', 'Use a stable fixed surface. Keep your body aligned and lower only through a comfortable range.', 'Use a higher stable surface or a wall.');
   const pull = equipment.includes('cables') ? strength('Cable row', 'Set a light load. Keep your torso quiet and draw your elbows back without shrugging or jerking.', 'Prone W raise for light control work; it is not an equivalent loaded pull.') : strength('Prone W raise', 'Lie face down with elbows bent into a W. Lift the hands slightly without forcing your back or neck.', 'A light cable row when equipment and technique are available.');

@@ -17,6 +17,13 @@ test('routine generation respects screening, equipment and time', () => {
   assert.ok(routine.exercises.every(e => e.cue && e.alternative && e.prescription));
   assert.equal(buildRoutine({ ...input, style: 'boxing', equipment: [] }).exercises.some(e => e.name.includes('Bag')), false);
 });
+test('short full-body requests cannot silently omit all lower-body training', () => {
+  const tooShort = buildRoutine({ ...input, minutes: 20 });
+  assert.equal(tooShort.eligible, false);
+  assert.match(tooShort.reasons.join(' '), /26 minutes/);
+  const enough = buildRoutine({ ...input, minutes: 26 });
+  assert.equal(enough.eligible, true); assert.ok(enough.exercises.some(e => e.name === 'Bodyweight squat'));
+});
 test('routine and matching task persist atomically and replay without duplication or XP', () => {
   const r = new CoreRepository(':memory:'); r.createOwner('one');
   try {

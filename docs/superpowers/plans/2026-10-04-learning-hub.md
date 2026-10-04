@@ -30,7 +30,7 @@ Files: src/core/learning-content.ts, learning-store.ts, repository.ts; tests/cor
 Interfaces: Course has id/title/provider/url/level/prerequisite/cost/format/checkpoints; each checkpoint has id/title/url/minutes/deliverable. LearningEnrollment has id/revision/checkpoints keyed by checkpoint ID with completed/notes/taskId. Commands learning.enroll (entityId course ID), learning.checkpoint ({checkpointId,completed,notes}), learning.practice ({checkpointId,minutes,goalId}) use enrollment revision. One practice task per checkpoint, kind focus, budget 15. readLearning exposes owned enrollment in Snapshot.learning. Migration 5 is additive. No XP on learning commands.
 
 - [ ] Write RED tests for persistence, isolation, revision conflicts, invalid data, rollback and duplicate practice planning.
-- [ ] Implement eight curated paths, strict store and command integration; preserve task identity on repeat planning.
+- [ ] Implement nine curated paths (including the user's 11-topic AI image roadmap), strict store and command integration; preserve task identity on repeat planning.
 - [ ] Run targeted tests/typecheck/lint and commit.
 
 ## Task 2: Lightweight Learn screen and verification
@@ -45,3 +45,5 @@ Interfaces: authenticated GET learning-content; Learn.render/init receives share
 
 ## Scope decisions
 Direct feature requests authorize this local implementation. No extra design approval round. Course linking replaces the proposed embedded lesson engine as requested. Provider accounts, automatic course completion sync, executing code, cloud quota retrieval and a universal plugin installer are out of this slice. The full Phase 6 quote/import work is still open.
+
+Image steering: add AI, ML, DL, generative AI, LLMs, RAG, agentic AI, multimodal AI, prompt engineering, fine-tuning and AI safety as a dedicated ordered path. Each checkpoint can create a timeboxed focus task in the shared planning system. The graphic is a topic reference, not an authoritative hierarchy or an instruction to download its named products.

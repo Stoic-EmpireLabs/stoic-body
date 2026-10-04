@@ -1,9 +1,11 @@
-/* global Appearance, Health */
+/* global Appearance, Health, Learn */
 'use strict';
 const $ = selector => document.querySelector(selector);
-const labels = { today: 'Today', goals: 'Goals', plan: 'Plan', health: 'Health', profile: 'Profile', settings: 'Settings' };
+const labels = { today: 'Today', goals: 'Goals', plan: 'Plan', health: 'Health', learn: 'Learn', profile: 'Profile', settings: 'Settings' };
 const kinds = { task: 'Small task · 5 XP', focus: 'Focus / learning · 15 XP', workout: 'Workout · 25 XP', recovery: 'Recovery · 15 XP', reflection: 'Reflection · 10 XP', weeklyReview: 'Weekly review · 30 XP' };
 let snapshot, token, currentView = 'today', busy = false, pendingRequest = null, preview = null, editTask = null, editGoal = null;
+const requestedView = new URLSearchParams(location.search).get('view');
+if (Object.hasOwn(labels, requestedView)) currentView = requestedView;
 let timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 let selectedDate = new Intl.DateTimeFormat('en-CA', { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
 let questionId = 'goals';
@@ -84,7 +86,7 @@ function render() {
   const l = level(snapshot.totalXp); $('#level-label').textContent = `Level ${l.rank}`;
   document.querySelectorAll('#navigation button').forEach(b => { if (b.dataset.view === currentView) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   $('#main').replaceChildren();
-  ({ today: renderToday, goals: renderGoals, plan: renderPlan, health: Health.render, profile: renderProfile, settings: renderSettings })[currentView]();
+  ({ today: renderToday, goals: renderGoals, plan: renderPlan, health: Health.render, learn: Learn.render, profile: renderProfile, settings: renderSettings })[currentView]();
   setBusy(busy);
 }
 function renderToday() {
@@ -231,4 +233,5 @@ async function boot() {
   finally { setBusy(false); }
 }
 Health.init({ element, action, card, intro, snapshot: () => snapshot, date: () => selectedDate, setDate: d => { selectedDate = d; }, api, command, send, render });
+Learn.init({ element, action, card, intro, snapshot: () => snapshot, api, command, render, navigate });
 void boot();

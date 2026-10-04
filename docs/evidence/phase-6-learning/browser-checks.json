@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-04T21:49:00.278Z",
+  "checks": [
+    "real external guide with isolated new tab",
+    "Ultra cost boundary visible",
+    "checkpoint progress remains separate from XP",
+    "checkpoint completion can be reversed",
+    "repeat planning is replaced by a link to the existing task",
+    "practice earns the agreed 15 XP through calendar completion",
+    "Learn fits a narrow mobile screen",
+    "notes, linked task and XP survive a real server restart",
+    "enrolled filter shows one course",
+    "no browser runtime errors"
+  ],
+  "errors": []
+}

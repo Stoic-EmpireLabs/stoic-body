@@ -35,11 +35,17 @@ async function run() {
     await page.getByRole('button', { name: 'Preview routine', exact: true }).click();
     await page.getByText(/Starter generation is for adults/).waitFor(); check('unknown suitability cannot save a generated routine', await page.getByRole('button', { name: 'Save routine to tasks', exact: true }).count() === 0);
     await page.getByLabel('I am 18 or older', { exact: true }).check(); await page.getByLabel('Relevant restrictions').selectOption('none'); await page.getByLabel('Cables', { exact: true }).check();
+    await page.getByRole('button', { name: 'Preview routine', exact: true }).click(); await page.getByRole('button', { name: 'Save routine to tasks', exact: true }).waitFor(); await page.getByLabel('Session minutes').fill('40');
+    check('changed inputs invalidate the earlier routine preview', await page.getByRole('button', { name: 'Save routine to tasks', exact: true }).count() === 0);
     await page.getByRole('button', { name: 'Preview routine', exact: true }).click(); await page.getByRole('button', { name: 'Save routine to tasks', exact: true }).click();
     await page.getByText('Routine saved. Review its place in Plan.', { exact: true }).waitFor(); check('routine is saved as an unscheduled task');
     await page.getByLabel('Exercise', { exact: true }).selectOption({ label: 'Cable row' });
     await page.getByLabel('Repetitions per set').fill('12'); await page.getByLabel('Load per set').fill('20'); await page.getByLabel('Effort (0–10, optional)').fill('6'); await saved('Save exercise log');
     check('exercise log alone does not award XP', await page.locator('#total-xp').textContent() === '0 XP');
+    await page.getByLabel('Discomfort or pain occurred').check(); await saved('Save exercise log');
+    await page.getByText(/Recent discomfort or very high effort:/).waitFor();
+    await page.getByLabel('Exercise', { exact: true }).selectOption({ label: 'Incline push-up' });
+    await page.getByText(/Keep the plan steady. A useful progression review/).waitFor(); check('progression advice follows the selected exercise');
     await page.screenshot({ path: join(evidence, 'health-desktop.png'), fullPage: true });
     await page.getByRole('button', { name: 'Plan', exact: true }).click(); await page.getByRole('button', { name: 'Preview schedule', exact: true }).click(); await page.getByRole('button', { name: 'Accept schedule', exact: true }).click();
     await page.getByRole('button', { name: 'Today', exact: true }).click(); await page.getByRole('button', { name: 'Complete', exact: true }).click(); await page.locator('#total-xp').filter({ hasText: '25 XP' }).waitFor(); check('scheduled workout grants the existing single award');

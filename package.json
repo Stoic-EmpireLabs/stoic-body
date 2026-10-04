@@ -8,10 +8,11 @@
     "start": "next start",
     "test": "node --import tsx --test tests/**/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "lint": "node tools/quality/node_modules/eslint/bin/eslint.js src/core tests/core tests/pilot apps/local-pilot scripts/verify-core.ts scripts/test-local-pilot.ts scripts/test-health-pilot.ts --max-warnings 0",
+    "lint": "node tools/quality/node_modules/eslint/bin/eslint.js src/core tests/core tests/pilot apps/local-pilot scripts/verify-core.ts scripts/test-local-pilot.ts scripts/test-health-pilot.ts scripts/test-learning-pilot.ts --max-warnings 0",
     "pilot": "node --import tsx apps/local-pilot/main.ts",
     "test:pilot": "node --import tsx scripts/test-local-pilot.ts",
-    "test:health": "node --import tsx scripts/test-health-pilot.ts"
+    "test:health": "node --import tsx scripts/test-health-pilot.ts",
+    "test:learning": "node --import tsx scripts/test-learning-pilot.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",

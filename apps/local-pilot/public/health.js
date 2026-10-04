@@ -120,14 +120,16 @@ window.Health = (() => {
     field(f, 'goal', 'Routine goal', 'select', trainingDraft.goalId || '', [['', 'Health / deliberate practice'], ...ctx.snapshot().goals.filter(g => !g.archived).map(g => [g.id, g.title])], false);
     submit(f, 'Preview routine', () => { trainingDraft = { adult: f.elements.adult.checked, restrictions: value(f, 'restrictions'), style: value(f, 'style'), minutes: numeric(f, 'minutes'), preference: value(f, 'preference'), equipment: ['cables', 'bench', 'barbell', 'pullup', 'treadmill', 'bag'].filter(k => f.elements[k].checked), goalId: value(f, 'goal') || null }; void ctx.send('training-preview', trainingDraft, 'Routine preview ready. Review before saving.'); });
     c.append(el('p', 'Starter examples use conservative bodyweight/cable movements. A bench, barbell, pull-up bar or bag selection does not automatically prescribe advanced work. A checkbox is not medical clearance.', 'muted')); left.append(c);
-    if (preview) { const review = routineCard(preview, 'Review your starter session'); if (preview.eligible) review.append(button('Save routine to tasks', () => ctx.command('training.create', crypto.randomUUID(), preview.input, 0, 'Routine saved. Review its place in Plan.'), true)); left.append(review); }
+    let previewPanel;
+    if (preview) { const review = routineCard(preview, 'Review your starter session'); previewPanel = review; if (preview.eligible) review.append(button('Save routine to tasks', () => ctx.command('training.create', crypto.randomUUID(), preview.input, 0, 'Routine saved. Review its place in Plan.'), true)); left.append(review); }
+    f.addEventListener('input', () => { preview = null; previewPanel?.remove(); });
     const routines = records().filter(r => r.kind === 'routine' && !r.archived);
     if (routines.length) {
       if (!routines.some(r => r.id === selectedRoutine)) selectedRoutine = routines[0].id;
       const picker = el('form', undefined, 'pilot-form'), select = field(picker, 'routine', 'Saved routine', 'select', selectedRoutine, routines.map(r => [r.id, r.data.title])); select.addEventListener('change', () => { selectedRoutine = select.value; selectedExercise = ''; edits.workout = null; ctx.render(); }); right.append(picker);
       const routine = routines.find(r => r.id === selectedRoutine), [log, lf, ld] = editor('workout', 'Record actual practice');
       if (!routine.data.exercises.some(e => e.name === selectedExercise)) selectedExercise = routine.data.exercises[0].name;
-      const exercise = field(lf, 'exercise', 'Exercise', 'select', selectedExercise, routine.data.exercises.map(e => [e.name, e.name])); exercise.addEventListener('change', () => { selectedExercise = exercise.value; });
+      const exercise = field(lf, 'exercise', 'Exercise', 'select', selectedExercise, routine.data.exercises.map(e => [e.name, e.name])); exercise.addEventListener('change', () => { selectedExercise = exercise.value; loadAdvice(); });
       const firstSet = ld.sets?.[0]; field(lf, 'count', 'Number of matching sets', 'number', ld.sets?.length ?? 2); field(lf, 'reps', 'Repetitions per set', 'number', firstSet?.reps ?? 12); field(lf, 'load', 'Load per set', 'number', firstSet?.load ?? 0); field(lf, 'unit', 'Load unit', 'select', firstSet?.unit || 'lb', [['lb', 'lb'], ['kg', 'kg']]);
       lf.append(el('p', 'Use zero load for bodyweight. Use zero sets for a timed-only practice. This entry records matching sets; log another entry for sets with different reps or loads.', 'muted'));
       field(lf, 'duration', 'Exercise duration (minutes)', 'number', ld.duration || 5); field(lf, 'effort', 'Effort (0–10, optional)', 'number', ld.effort, [], false); field(lf, 'pain', 'Discomfort or pain occurred', 'checkbox', ld.pain || false, [], false); field(lf, 'notes', 'Exercise notes', 'textarea', ld.notes, [], false);
@@ -135,7 +137,12 @@ window.Health = (() => {
       lf.elements.count.addEventListener('input', () => lf.elements.count.setCustomValidity(''));
       right.append(log); const details = el('details'); details.append(el('summary', 'View saved session instructions'), routineCard(routine.data)); right.append(details);
       const advice = ctx.card('Progression review'); advice.append(el('p', 'Loading your practice history…', 'muted')); right.append(advice); const current = generation;
-      void ctx.api('training-advice', { routineId: selectedRoutine, exercise: selectedExercise }).then(result => { if (current === generation && advice.isConnected) { advice.replaceChildren(el('h2', 'Progression review'), el('p', result.text, 'muted')); } }).catch(e => { if (advice.isConnected) advice.textContent = e.message; });
+      let adviceRequest = 0;
+      function loadAdvice() {
+        const request = ++adviceRequest; advice.replaceChildren(el('h2', 'Progression review'), el('p', 'Loading your practice history…', 'muted'));
+        void ctx.api('training-advice', { routineId: selectedRoutine, exercise: selectedExercise }).then(result => { if (request === adviceRequest && current === generation && advice.isConnected) { advice.replaceChildren(el('h2', 'Progression review'), el('p', result.text, 'muted')); } }).catch(e => { if (request === adviceRequest && advice.isConnected) advice.textContent = e.message; });
+      }
+      loadAdvice();
       list('workout', right, 'Recent exercise logs');
     } else right.append(el('p', 'Save a reviewed routine to unlock exercise logging. Its task will appear in Plan; you choose when it belongs in your day.', 'empty'));
     columns.append(left, right); root.append(columns);

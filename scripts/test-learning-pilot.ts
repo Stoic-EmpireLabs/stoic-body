@@ -1,0 +1,47 @@
+import assert from 'node:assert/strict';
+import { chromium } from 'playwright';
+import { mkdirSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { resolve, join, dirname, basename } from 'node:path';
+import { startPilot } from '../apps/local-pilot/server';
+async function run() {
+  const dir = mkdtempSync(join(tmpdir(), 'stoic-learning-')), databasePath = join(dir, 'learning.sqlite');
+  let pilot = await startPilot({ databasePath, port: 0 });
+  let browser = await chromium.launch({ headless: true });
+  let page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, timezoneId: 'America/Denver' });
+  const checks: string[] = [], errors: string[] = []; page.on('pageerror', e => errors.push(e.message)); page.setDefaultTimeout(5000);
+  const check = (name: string, value = true) => { assert.ok(value, name); checks.push(name); };
+  const evidence = resolve('docs/evidence/phase-6-learning'); mkdirSync(evidence, { recursive: true });
+  try {
+    await page.goto(`${pilot.url}/?view=learn`); await page.getByRole('heading', { name: 'Build what you learn.' }).waitFor();
+    await page.getByRole('button', { name: 'Explore Antigravity & AI-assisted building', exact: true }).click();
+    check('real external guide with isolated new tab', await page.getByRole('link', { name: 'Open full learning resource' }).getAttribute('href') === 'https://codelabs.developers.google.com/getting-started-google-antigravity');
+    check('Ultra cost boundary visible', (await page.locator('#main').innerText()).includes('Google AI Ultra has usage limits'));
+    await page.getByRole('button', { name: 'Start this path', exact: true }).click(); await page.getByText('Learning path started.', { exact: true }).waitFor();
+    await page.getByLabel('Practice notes').fill('Synthetic build brief, three acceptance checks.');
+    await page.getByRole('button', { name: 'Mark checkpoint complete', exact: true }).click(); await page.getByText('Checkpoint saved.', { exact: true }).waitFor();
+    check('checkpoint progress remains separate from XP', (await page.locator('#main').innerText()).includes('1 / 4 checkpoints') && (await page.locator('#total-xp').innerText()) === '0 XP');
+    await page.getByRole('button', { name: 'Reopen checkpoint', exact: true }).click(); await page.getByText('0 / 4 checkpoints', { exact: true }).waitFor();
+    check('checkpoint completion can be reversed');
+    await page.getByRole('button', { name: 'Add practice task', exact: true }).click(); await page.getByText('Practice task added. Review its time in Plan.', { exact: true }).waitFor();
+    check('repeat planning is replaced by a link to the existing task', await page.getByRole('button', { name: 'Add practice task', exact: true }).count() === 0);
+    await page.screenshot({ path: join(evidence, 'learn-desktop.png'), fullPage: true });
+    await page.getByRole('button', { name: 'Plan', exact: true }).click(); await page.locator('#plan-form input[name=date]').fill('2026-10-06');
+    await page.getByRole('button', { name: 'Preview schedule', exact: true }).click(); await page.getByRole('button', { name: 'Accept schedule', exact: true }).click();
+    await page.getByRole('button', { name: 'Today', exact: true }).click(); await page.getByRole('button', { name: 'Complete', exact: true }).click(); await page.locator('#total-xp').filter({ hasText: '15 XP' }).waitFor();
+    check('practice earns the agreed 15 XP through calendar completion');
+    await page.getByRole('button', { name: 'Learn', exact: true }).click(); await page.getByText('15 practice XP', { exact: true }).waitFor();
+    await page.setViewportSize({ width: 390, height: 844 }); check('Learn fits a narrow mobile screen', await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    await page.screenshot({ path: join(evidence, 'learn-mobile.png'), fullPage: true });
+    await browser.close(); await pilot.close(); pilot = await startPilot({ databasePath, port: 0 });
+    browser = await chromium.launch({ headless: true }); page = await browser.newPage(); page.setDefaultTimeout(5000); page.on('pageerror', e => errors.push(e.message));
+    await page.goto(`${pilot.url}/?view=learn`); await page.getByRole('button', { name: 'Continue Antigravity & AI-assisted building', exact: true }).click();
+    assert.equal(await page.getByLabel('Practice notes').inputValue(), 'Synthetic build brief, three acceptance checks.'); await page.getByText('15 practice XP', { exact: true }).waitFor();
+    check('notes, linked task and XP survive a real server restart');
+    await page.getByRole('button', { name: 'Back to learning library', exact: true }).click();
+    await page.getByRole('button', { name: 'My paths', exact: true }).click(); check('enrolled filter shows one course', await page.locator('.learn-course').count() === 1);
+    check('no browser runtime errors', errors.length === 0);
+    writeFileSync(join(evidence, 'browser-checks.json'), JSON.stringify({ at: new Date().toISOString(), checks, errors }, null, 2)); console.log(`${checks.length} learning browser checks passed.`);
+  } finally { await browser.close(); await pilot.close(); const target = resolve(dir); assert.equal(dirname(target), resolve(tmpdir())); assert.ok(basename(target).startsWith('stoic-learning-')); rmSync(target, { recursive: true, force: true }); }
+}
+run().catch(e => { console.error(e); process.exitCode = 1; });

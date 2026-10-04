@@ -9,6 +9,7 @@ import { object, keys, text, zone } from '../../src/core/validation';
 import { diets } from '../../src/core/health-content';
 import { summarizeHealth } from '../../src/core/health-metrics';
 import { buildRoutine, trainingStyles, progressionAdvice } from '../../src/core/training';
+import { courses } from '../../src/core/learning-content';
 
 export interface PilotOptions { databasePath: string; port: number }
 export interface PilotServer { url: string; close: () => Promise<void> }
@@ -17,6 +18,7 @@ const assets: Record<string, [string, string]> = {
   '/': ['apps/local-pilot/public/index.html', 'text/html'],
   '/app.js': ['apps/local-pilot/public/app.js', 'text/javascript'],
   '/health.js': ['apps/local-pilot/public/health.js', 'text/javascript'],
+  '/learn.js': ['apps/local-pilot/public/learn.js', 'text/javascript'],
   '/styles.css': ['apps/local-pilot/public/styles.css', 'text/css'],
   '/base.css': ['prototypes/phase-3/styles.css', 'text/css'],
   '/appearance.js': ['prototypes/phase-3/appearance.js', 'text/javascript'],
@@ -68,6 +70,7 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
         if (!secretEquals(cookie, session) || typeof supplied !== 'string' || !secretEquals(supplied, token)) throw new HttpError(403, 'Your local session expired. Reload the app.');
         if (path === '/api/snapshot' && request.method === 'GET') { json(response, 200, { snapshot: repository.snapshot(owner) }); return; }
         if (path === '/api/health-content' && request.method === 'GET') { json(response, 200, { diets, trainingStyles }); return; }
+        if (path === '/api/learning-content' && request.method === 'GET') { json(response, 200, { courses }); return; }
         if (request.method !== 'POST' || request.headers.origin !== origin) throw new HttpError(403, 'Save requests must come from this app.');
         const data = await body(request);
         if (path === '/api/training-preview') { json(response, 200, buildRoutine(data)); return; }

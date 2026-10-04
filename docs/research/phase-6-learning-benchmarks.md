@@ -38,3 +38,9 @@ Course sources: [getting started](https://codelabs.developers.google.com/getting
 [Google responsive design](https://web.dev/learn/design/) for layouts, readable type and accessibility; [YouTube title/thumbnail guidance](https://support.google.com/youtube/answer/12340300?hl=en-GB) for a small original visual-design workshop. YouTube guidance is a reference, not a full certification course. No guaranteed click-through or revenue claim.
 
 Verified links refer to official pages/repositories retrieved today. Authentication, provider progress synchronization, every nested lesson, and paid labs were not executed. Estimated minutes are our practice timeboxes, not provider course-duration claims.
+
+## Added image topics
+
+The user supplied an AI/ML/DL/GenAI/LLM/RAG/agentic-AI infographic and requested the topics in the app and schedule. All seven headline topics plus multimodal AI, fine-tuning, prompt engineering and AI safety form an 11-checkpoint path. Its order is pedagogical, not a linear taxonomy. ML is within AI and DL within ML; RAG and agentic systems are approaches that can use these model families. Generated claims remain subject to evaluation.
+
+Primary resources verified: [Microsoft AI curriculum](https://github.com/microsoft/AI-For-Beginners) (69,439 stars, MIT), [Microsoft ML curriculum](https://github.com/microsoft/ML-For-Beginners) (91,259 stars, MIT), [Google ML Crash Course](https://developers.google.com/machine-learning/crash-course), [Google LLM introduction](https://developers.google.com/machine-learning/crash-course/llm). Counts from GitHub API, 2026-10-04. Microsoft generative-AI chapter paths were confirmed through GitHub's contents API; some GitHub HTML chapter fetches failed in the web reader. Full source materials remain external. Python/math prerequisites are explicitly noted; a 25–40 minute exercise does not claim mastery of the topic.
