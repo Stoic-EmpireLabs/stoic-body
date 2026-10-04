@@ -72,11 +72,14 @@ interface StoicContextType {
   lifeGoals: LifeGoal[];
   calendarEvents: CalendarEvent[];
   userProfile: UserProfile;
+  mvdActive: boolean;
+  toggleMvd: () => void;
   toggleCalmMode: () => void;
   awardXp: (amount: number, label: string, attribute?: string) => void;
   reverseXp: (amount: number, label: string) => void;
   playAnvilChime: () => void;
   playBellSound: () => void;
+  playBoxingBell: () => void;
   isFounderMode: boolean;
   addTask: (task: Omit<CustomTaskItem, "id" | "completed">) => void;
   toggleTask: (id: string) => void;
@@ -86,6 +89,8 @@ interface StoicContextType {
   toggleLifeGoal: (id: string) => void;
   addCalendarEvent: (event: Omit<CalendarEvent, "id">) => void;
   updateProfile: (updates: Partial<UserProfile>) => void;
+  exportBackup: () => void;
+  importBackup: (jsonData: string) => { success: boolean; error?: string };
 }
 
 const StoicContext = createContext<StoicContextType | undefined>(undefined);
@@ -94,6 +99,7 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
   const [totalXp, setTotalXp] = useState<number>(26450);
   const [streakDays, setStreakDays] = useState<number>(14);
   const [calmMode, setCalmMode] = useState<boolean>(false);
+  const [mvdActive, setMvdActive] = useState<boolean>(false);
   const isFounderMode = true; // Permanent Founder Sovereign Mode
 
   const [userProfile, setUserProfile] = useState<UserProfile>({
@@ -298,6 +304,21 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
       if (savedXp) setTotalXp(Number(savedXp));
       const savedCalm = localStorage.getItem("stoic_calm_mode");
       if (savedCalm) setCalmMode(savedCalm === "true");
+      const savedMvd = localStorage.getItem("stoic_mvd_mode");
+      if (savedMvd) setMvdActive(savedMvd === "true");
+
+      const savedTasks = localStorage.getItem("stoic_daily_tasks");
+      if (savedTasks) try { setDailyTasks(JSON.parse(savedTasks)); } catch (e) {}
+      const savedWg = localStorage.getItem("stoic_weekly_goals");
+      if (savedWg) try { setWeeklyGoals(JSON.parse(savedWg)); } catch (e) {}
+      const savedLg = localStorage.getItem("stoic_life_goals");
+      if (savedLg) try { setLifeGoals(JSON.parse(savedLg)); } catch (e) {}
+      const savedCe = localStorage.getItem("stoic_calendar_events");
+      if (savedCe) try { setCalendarEvents(JSON.parse(savedCe)); } catch (e) {}
+      const savedProf = localStorage.getItem("stoic_user_profile");
+      if (savedProf) try { setUserProfile(JSON.parse(savedProf)); } catch (e) {}
+      const savedTx = localStorage.getItem("stoic_transactions");
+      if (savedTx) try { setTransactions(JSON.parse(savedTx)); } catch (e) {}
     }
   }, []);
 
@@ -334,6 +355,36 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
       osc.start();
       osc.stop(ctx.currentTime + 1.2);
     } catch (e) {}
+  };
+
+  const playBoxingBell = () => {
+    if (calmMode || typeof window === "undefined") return;
+    try {
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      [0, 0.18].forEach((delay) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(1400, ctx.currentTime + delay);
+        osc.frequency.exponentialRampToValueAtTime(1100, ctx.currentTime + delay + 0.3);
+        gain.gain.setValueAtTime(0.35, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + 0.35);
+      });
+    } catch (e) {}
+  };
+
+  const toggleMvd = () => {
+    setMvdActive((prev) => {
+      const next = !prev;
+      if (typeof window !== "undefined") {
+        localStorage.setItem("stoic_mvd_mode", String(next));
+      }
+      return next;
+    });
   };
 
   const toggleCalmMode = () => {
@@ -490,6 +541,60 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
     awardXp(100, "Biometrics & Profile Baseline Updated", "Discipline");
   };
 
+  // EXPORT BACKUP
+  const exportBackup = () => {
+    const backupData = {
+      version: "2.0.0",
+      exportedAt: new Date().toISOString(),
+      founderId: "founder",
+      totalXp,
+      streakDays,
+      userProfile,
+      dailyTasks,
+      weeklyGoals,
+      lifeGoals,
+      calendarEvents,
+      transactions,
+    };
+    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `stoic-body-backup-${new Date().toISOString().split("T")[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    awardXp(100, "Full System Backup Exported", "Knowledge");
+  };
+
+  // IMPORT BACKUP
+  const importBackup = (jsonData: string): { success: boolean; error?: string } => {
+    try {
+      const parsed = JSON.parse(jsonData);
+      if (!parsed || typeof parsed !== "object") return { success: false, error: "Invalid backup format" };
+      if (typeof parsed.totalXp === "number") setTotalXp(parsed.totalXp);
+      if (parsed.userProfile) setUserProfile(parsed.userProfile);
+      if (parsed.dailyTasks) setDailyTasks(parsed.dailyTasks);
+      if (parsed.weeklyGoals) setWeeklyGoals(parsed.weeklyGoals);
+      if (parsed.lifeGoals) setLifeGoals(parsed.lifeGoals);
+      if (parsed.calendarEvents) setCalendarEvents(parsed.calendarEvents);
+      if (parsed.transactions) setTransactions(parsed.transactions);
+
+      if (typeof window !== "undefined") {
+        if (parsed.totalXp) localStorage.setItem("stoic_total_xp", String(parsed.totalXp));
+        if (parsed.userProfile) localStorage.setItem("stoic_user_profile", JSON.stringify(parsed.userProfile));
+        if (parsed.dailyTasks) localStorage.setItem("stoic_daily_tasks", JSON.stringify(parsed.dailyTasks));
+        if (parsed.weeklyGoals) localStorage.setItem("stoic_weekly_goals", JSON.stringify(parsed.weeklyGoals));
+        if (parsed.lifeGoals) localStorage.setItem("stoic_life_goals", JSON.stringify(parsed.lifeGoals));
+        if (parsed.calendarEvents) localStorage.setItem("stoic_calendar_events", JSON.stringify(parsed.calendarEvents));
+        if (parsed.transactions) localStorage.setItem("stoic_transactions", JSON.stringify(parsed.transactions));
+      }
+      playBellSound();
+      return { success: true };
+    } catch (e: any) {
+      return { success: false, error: e.message || "Failed to parse JSON backup" };
+    }
+  };
+
   return (
     <StoicContext.Provider
       value={{
@@ -503,11 +608,14 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
         lifeGoals,
         calendarEvents,
         userProfile,
+        mvdActive,
+        toggleMvd,
         toggleCalmMode,
         awardXp,
         reverseXp,
         playAnvilChime,
         playBellSound,
+        playBoxingBell,
         isFounderMode,
         addTask,
         toggleTask,
@@ -517,6 +625,8 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
         toggleLifeGoal,
         addCalendarEvent,
         updateProfile,
+        exportBackup,
+        importBackup,
       }}
     >
       {children}

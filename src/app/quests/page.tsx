@@ -15,7 +15,7 @@ interface Quest {
 }
 
 export default function QuestVault() {
-  const { awardXp } = useStoic();
+  const { awardXp, playAnvilChime, playBellSound } = useStoic();
 
   const [quests] = useState<Quest[]>([
     {
@@ -73,15 +73,38 @@ export default function QuestVault() {
   const [checkedSteps, setCheckedSteps] = useState<Record<string, boolean>>({});
   const [completedQuests, setCompletedQuests] = useState<Record<string, boolean>>({});
 
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedSteps = localStorage.getItem("stoic_checked_quest_steps");
+      if (savedSteps) try { setCheckedSteps(JSON.parse(savedSteps)); } catch (e) {}
+      const savedQuests = localStorage.getItem("stoic_completed_quests");
+      if (savedQuests) try { setCompletedQuests(JSON.parse(savedQuests)); } catch (e) {}
+    }
+  }, []);
+
   const toggleStep = (questId: string, stepIdx: number) => {
+    playAnvilChime();
     const key = `${questId}-${stepIdx}`;
-    setCheckedSteps((prev) => ({ ...prev, [key]: !prev[key] }));
+    setCheckedSteps((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      if (typeof window !== "undefined") {
+        localStorage.setItem("stoic_checked_quest_steps", JSON.stringify(next));
+      }
+      return next;
+    });
   };
 
   const claimQuest = (quest: Quest) => {
     if (completedQuests[quest.id]) return;
+    playBellSound();
     awardXp(quest.xpReward, `Quest Completed: ${quest.title}`, "Knowledge");
-    setCompletedQuests((prev) => ({ ...prev, [quest.id]: true }));
+    setCompletedQuests((prev) => {
+      const next = { ...prev, [quest.id]: true };
+      if (typeof window !== "undefined") {
+        localStorage.setItem("stoic_completed_quests", JSON.stringify(next));
+      }
+      return next;
+    });
   };
 
   return (

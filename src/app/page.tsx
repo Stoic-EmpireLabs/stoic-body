@@ -17,7 +17,7 @@ interface AnchorItem {
 }
 
 export default function TodayCommandCenter() {
-  const { awardXp, reverseXp, streakDays, calmMode } = useStoic();
+  const { awardXp, reverseXp, streakDays, calmMode, mvdActive, toggleMvd } = useStoic();
 
   const [anchors, setAnchors] = useState<AnchorItem[]>([
     {
@@ -161,10 +161,21 @@ export default function TodayCommandCenter() {
               Morning Anchor &middot; 05:30 AM
             </h2>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 flex-wrap">
             <span className="text-xs text-slate-300 font-mono hidden sm:inline">
               Streak Multiplier: <strong className="text-amber-300">1.25x</strong>
             </span>
+            <button
+              onClick={toggleMvd}
+              className={`px-3 py-1 rounded text-xs font-bold font-mono transition flex items-center gap-1.5 ${
+                mvdActive
+                  ? "bg-red-700 text-white shadow-lg ring-2 ring-red-500/50"
+                  : "bg-black/80 text-amber-300 border border-amber-500/30 hover:border-amber-400"
+              }`}
+              title="Minimum Viable Day: When sick, fatigued, or in crisis, collapses day to essential anchors without streak loss."
+            >
+              <span>⚡</span> {mvdActive ? "MVD: Active" : "MVD Crisis Mode"}
+            </button>
             <button
               onClick={() => setShowAddTaskModal(true)}
               className="px-3 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 text-xs font-bold font-mono transition flex items-center gap-1 shadow-sm"
@@ -292,6 +303,15 @@ export default function TodayCommandCenter() {
           </h2>
           <span className="text-xs text-amber-400/90 font-mono">Dynamic Buffer Engine Active</span>
         </div>
+
+        {mvdActive && (
+          <div className="mb-4 p-3 rounded-lg bg-red-950/40 border border-amber-500/40 flex items-center justify-between text-xs">
+            <span className="text-white font-bold flex items-center gap-2">
+              <span className="text-amber-400 font-mono">🛡️</span> Minimum Viable Day Active &bull; Non-essential blocks deferred.
+            </span>
+            <span className="text-amber-300 font-mono font-bold">14-Day Streak Shielded</span>
+          </div>
+        )}
 
         <div className="space-y-3 relative before:absolute before:inset-0 before:left-3 before:w-0.5 before:bg-red-950/60">
           

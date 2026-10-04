@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useStoic } from "@/context/StoicContext";
 
 export default function TrainingStudio() {
-  const { awardXp, playAnvilChime, playBellSound } = useStoic();
+  const { awardXp, playAnvilChime, playBoxingBell } = useStoic();
 
   // Boxing Timer State
   const [timerSeconds, setTimerSeconds] = useState(180);
@@ -21,7 +21,7 @@ export default function TrainingStudio() {
             return prev - 1;
           } else {
             // Round / Rest Switch
-            playBellSound();
+            playBoxingBell();
             if (!isRest) {
               // Transition to 1m Rest
               setIsRest(true);
@@ -42,11 +42,11 @@ export default function TrainingStudio() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isRunning, isRest, playBellSound]);
+  }, [isRunning, isRest, playBoxingBell]);
 
   const handleStartTimer = () => {
     if (!isRunning) {
-      playBellSound();
+      playBoxingBell();
       setIsRunning(true);
     }
   };

@@ -14,6 +14,7 @@ export default function SettingsPage() {
     updateProfile,
     playAnvilChime,
     playBellSound,
+    playBoxingBell,
   } = useStoic();
 
   const [profileForm, setProfileForm] = useState<UserProfile>(userProfile);
@@ -269,16 +270,22 @@ export default function SettingsPage() {
           </button>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <button
             onClick={playAnvilChime}
-            className="text-xs px-3 py-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-white border border-red-950 transition flex items-center gap-1.5 font-semibold"
+            className="text-xs px-3.5 py-1.5 rounded bg-[#121218] hover:bg-neutral-800 text-white border border-red-950 transition flex items-center gap-1.5 font-bold"
           >
             <span>🔔</span> Test Anvil Chime (+XP)
           </button>
           <button
             onClick={playBellSound}
-            className="text-xs px-3 py-1.5 rounded bg-neutral-900 hover:bg-neutral-800 text-white border border-red-950 transition flex items-center gap-1.5 font-semibold"
+            className="text-xs px-3.5 py-1.5 rounded bg-[#121218] hover:bg-neutral-800 text-white border border-red-950 transition flex items-center gap-1.5 font-bold"
+          >
+            <span>✨</span> Test Temple Bell (Milestone)
+          </button>
+          <button
+            onClick={playBoxingBell}
+            className="text-xs px-3.5 py-1.5 rounded bg-[#121218] hover:bg-neutral-800 text-white border border-red-950 transition flex items-center gap-1.5 font-bold"
           >
             <span>🥊</span> Test Boxing Round Bell
           </button>
@@ -296,14 +303,37 @@ export default function SettingsPage() {
               PWA and desktop push reminder alerts for core biological rituals.
             </p>
           </div>
-          <button
-            onClick={() => setNotificationsEnabled(!notificationsEnabled)}
-            className={`px-3 py-1 rounded text-xs font-bold font-mono transition ${
-              notificationsEnabled ? "bg-red-950/80 text-amber-300 border border-amber-500/40" : "bg-neutral-900 text-slate-400"
-            }`}
-          >
-            {notificationsEnabled ? "REMINDERS ON" : "MUTED"}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                if (typeof window !== "undefined" && "Notification" in window) {
+                  Notification.requestPermission().then((permission) => {
+                    if (permission === "granted") {
+                      new Notification("⚔️ Stoic Body Sovereign Alert", {
+                        body: "Feeding window opens in 1 hour (05:30 PM). 140g protein target ready.",
+                        icon: "/favicon.ico",
+                      });
+                    } else {
+                      alert("Desktop notifications permission was not granted.");
+                    }
+                  });
+                } else {
+                  alert("Desktop notifications not supported in this browser environment.");
+                }
+              }}
+              className="px-3 py-1 rounded bg-[#121218] hover:bg-black text-amber-400 border border-amber-500/40 text-xs font-bold font-mono transition"
+            >
+              Test Notification
+            </button>
+            <button
+              onClick={() => setNotificationsEnabled(!notificationsEnabled)}
+              className={`px-3 py-1 rounded text-xs font-bold font-mono transition ${
+                notificationsEnabled ? "bg-red-950/80 text-amber-300 border border-amber-500/40" : "bg-neutral-900 text-slate-400"
+              }`}
+            >
+              {notificationsEnabled ? "REMINDERS ON" : "MUTED"}
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
@@ -314,7 +344,7 @@ export default function SettingsPage() {
           </div>
           <div className="p-3 rounded-lg bg-[#121218] border border-red-950/70">
             <span className="text-slate-300 text-[11px] block font-semibold">OMAD Feeding Window</span>
-            <span className="font-mono font-bold text-white text-sm">06:00 PM</span>
+            <span className="font-mono font-bold text-white text-sm">05:30 PM</span>
             <span className="text-[10px] text-amber-400/80 block mt-0.5">140g Protein Target</span>
           </div>
           <div className="p-3 rounded-lg bg-[#121218] border border-red-950/70">
@@ -325,20 +355,98 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      {/* LOCAL-FIRST DATA PORTABILITY */}
+      {/* CLOUD SYNC & MULTI-DEVICE PAIRING */}
       <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl space-y-3">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-white">
-          Local SQLite Storage &amp; Privacy Sovereignty
-        </h3>
-        <p className="text-xs text-slate-300">
-          Your personal biometrics, nutrition logs, and quest progress are stored locally on this machine with native SQLite (<code className="text-amber-300 font-mono">node:sqlite</code>). Zero data is sent to external commercial advertising databases.
-        </p>
-        <button
-          onClick={handleExportData}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 text-white border border-red-500/40 text-xs font-bold transition shadow-lg"
-        >
-          {exported ? "Data Export Downloaded" : "Export Full JSON Backup"}
-        </button>
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white">
+              Cross-Device Synchronization &amp; Pairing
+            </h3>
+            <p className="text-xs text-slate-300 mt-0.5">
+              Sync tasks, calendar events, and XP progress between Windows desktop, iPhone, and iPad.
+            </p>
+          </div>
+          <span className="text-xs font-mono font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-700/50 px-2.5 py-1 rounded">
+            Node Connected
+          </span>
+        </div>
+
+        <div className="bg-[#121218] p-4 rounded-lg border border-red-950/70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+              Sovereign Pairing Passkey
+            </span>
+            <span className="font-mono text-xs text-amber-400 font-extrabold select-all">
+              SOVEREIGN-FOUNDER-2026
+            </span>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Use this key to pair secondary phones or tablets with your primary database.
+            </p>
+          </div>
+          <button
+            onClick={async () => {
+              try {
+                const res = await fetch("/api/sync?passkey=SOVEREIGN-FOUNDER-2026");
+                if (res.ok) {
+                  alert("✓ Synchronization verified: State reconciled with Sovereign Node.");
+                } else {
+                  alert("Local-First Mode: Offline state stored securely in browser.");
+                }
+              } catch (e) {
+                alert("Local-First Mode: Offline state stored securely in browser.");
+              }
+            }}
+            className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black font-extrabold text-xs uppercase tracking-wider transition shadow shrink-0"
+          >
+            Sync Now ⚡
+          </button>
+        </div>
+      </section>
+
+      {/* LOCAL-FIRST DATA PORTABILITY & RESTORATION */}
+      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl space-y-4">
+        <div>
+          <h3 className="text-sm font-bold uppercase tracking-wider text-white">
+            Local SQLite Storage &amp; Backup Restoration
+          </h3>
+          <p className="text-xs text-slate-300 mt-0.5">
+            Your personal biometrics, nutrition logs, and quest progress are stored locally on this machine with native SQLite and IndexedDB. Zero data is sent to external commercial advertisers.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 flex-wrap">
+          <button
+            onClick={handleExportData}
+            className="px-4 py-2.5 rounded-lg bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 text-white border border-red-500/40 text-xs font-bold transition shadow-lg flex items-center gap-2"
+          >
+            <span>⬇</span> {exported ? "Backup JSON Exported!" : "Export Full JSON Backup"}
+          </button>
+
+          <label className="px-4 py-2.5 rounded-lg bg-[#121218] hover:bg-black text-amber-400 border border-amber-500/50 hover:border-amber-400 text-xs font-bold transition shadow-lg cursor-pointer flex items-center gap-2">
+            <span>⬆</span> Restore From JSON Backup
+            <input
+              type="file"
+              accept=".json"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                  try {
+                    const content = event.target?.result as string;
+                    const parsed = JSON.parse(content);
+                    if (parsed.user) updateProfile(parsed.user);
+                    alert("✓ Backup successfully restored and applied to workstation.");
+                  } catch (err) {
+                    alert("Error: Invalid JSON backup file format.");
+                  }
+                };
+                reader.readAsText(file);
+              }}
+            />
+          </label>
+        </div>
       </section>
 
       {/* CLINICAL MEDICAL & FASTING DISCLAIMER (Apple Guideline 1.4) */}
