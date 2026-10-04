@@ -12,6 +12,7 @@ import { buildRoutine, trainingStyles, progressionAdvice } from '../../src/core/
 import { courses } from '../../src/core/learning-content';
 import { mealCatalog, previewMeal } from '../../src/core/meals';
 import { AccountStore, AccountError, type Account } from '../../src/core/accounts';
+import { RecoveryStore } from '../../src/core/recovery';
 
 export interface PilotOptions { databasePath: string; port: number }
 export interface PilotServer { url: string; close: () => Promise<void> }
@@ -35,12 +36,12 @@ function secretEquals(actual: string | undefined, expected: string) {
 function json(response: ServerResponse, status: number, data: unknown) {
   response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' }); response.end(JSON.stringify(data));
 }
-async function body(request: IncomingMessage) {
+async function body(request: IncomingMessage, limit = 1_048_576) {
   if (request.headers['content-type'] !== 'application/json') throw new HttpError(415, 'Send JSON data.');
   let length = 0; const parts: Buffer[] = [];
   for await (const chunk of request) {
     length += chunk.length;
-    if (length > 1_048_576) throw new HttpError(413, 'The request is too large.');
+    if (length > limit) throw new HttpError(413, 'The request is too large.');
     parts.push(chunk);
   }
   try { return JSON.parse(Buffer.concat(parts).toString('utf8')); }
@@ -51,6 +52,7 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
   if (!Number.isInteger(options.port) || options.port < 0 || options.port > 65535) throw new Error('Invalid port.');
   const repository = new CoreRepository(options.databasePath);
   const accounts = new AccountStore(repository.database);
+  const recovery = new RecoveryStore(repository, accounts);
   let origin = '';
   const server = createServer((request, response) => {
     response.setHeader('Cache-Control', 'no-store');
@@ -83,13 +85,25 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
         if (!session) throw new HttpError(401, 'Sign in to open your private workspace.');
         if (typeof supplied !== 'string' || !secretEquals(supplied, session.csrf)) throw new HttpError(403, 'Your local session changed. Reconnect the app.');
         const owner = session.account.id;
+        const requireCurrent = () => { const live=accounts.authenticate(cookie);if(!live||live.account.id!==owner||!secretEquals(supplied,live.csrf))throw new HttpError(401,'Your session changed. Sign in again.'); };
+        if (path === '/api/recovery/points' && request.method === 'GET') { json(response,200,{points:recovery.list(owner)});return; }
         if (path === '/api/snapshot' && request.method === 'GET') { json(response, 200, { snapshot: repository.snapshot(owner) }); return; }
         if (path === '/api/health-content' && request.method === 'GET') { json(response, 200, { diets, trainingStyles, meals: mealCatalog }); return; }
         if (path === '/api/learning-content' && request.method === 'GET') { json(response, 200, { courses }); return; }
         if (request.method !== 'POST' || request.headers.origin !== origin) throw new HttpError(403, 'Save requests must come from this app.');
-        const data = await body(request);
+        const data = await body(request, ['/api/recovery/preview','/api/recovery/restore'].includes(path) ? 24*1024*1024 : 1_048_576);
+        requireCurrent();
+        if (path === '/api/recovery/export') { const p=object(data);keys(p,['passphrase']);const file=await recovery.export(owner,p.passphrase);requireCurrent();json(response,200,{file});return; }
+        if (path === '/api/recovery/preview') { const p=object(data);keys(p,['source','passphrase']);const preview=await recovery.preview(owner,p.source,p.passphrase);requireCurrent();json(response,200,preview);return; }
+        if (path === '/api/recovery/restore') {
+          const result=await recovery.restore(owner,data,requireCurrent);
+          repository.database.prepare('DELETE FROM app_sessions WHERE owner_id=?').run(owner);
+          const fresh=accounts.createSession(owner);
+          response.setHeader('Set-Cookie',`stoic_local=${fresh.key}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200`);
+          json(response,200,{...result,...signedIn(session.account,fresh.csrf)});return;
+        }
         if (path === '/api/auth/logout') { keys(object(data),[]); accounts.logout(cookie!); response.setHeader('Set-Cookie','stoic_local=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0'); json(response,200,{authenticated:false}); return; }
-        if (path === '/api/guide') { json(response,200,{guide:accounts.saveGuide(owner,data)}); return; }
+        if (path === '/api/guide') { recovery.captureBeforeEdit(owner);json(response,200,{guide:accounts.saveGuide(owner,data)}); return; }
         if (path === '/api/meal-preview') { json(response, 200, previewMeal(data)); return; }
         if (path === '/api/training-preview') { json(response, 200, buildRoutine(data)); return; }
         if (path === '/api/health-summary') {
@@ -98,10 +112,11 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
         }
         if (path === '/api/training-advice') { const p = object(data); keys(p, ['routineId', 'exercise']); json(response, 200, progressionAdvice(repository.snapshot(owner).health, text(p.routineId), text(p.exercise))); return; }
         if (path === '/api/command') {
+          recovery.captureBeforeEdit(owner);
           const receipt = repository.apply(owner, data as Command);
           json(response, receipt.status === 'conflict' ? 409 : 200, { receipt, snapshot: repository.snapshot(owner), ...(receipt.safeReason ? { error: receipt.safeReason } : {}) }); return;
         }
-        if (path === '/api/propose') { json(response, 200, repository.proposeDay(owner, data as DayInput)); return; }
+        if (path === '/api/propose') { recovery.captureBeforeEdit(owner);json(response, 200, repository.proposeDay(owner, data as DayInput)); return; }
         if (path === '/api/time') {
           const value = object(data); keys(value, ['local', 'timezone']);
           json(response, 200, resolveWallTime(text(value.local, 16), zone(value.timezone), { source: 'user' })); return;
