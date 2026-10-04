@@ -1,6 +1,6 @@
 # Stoic Body local pilot
 
-A working Phase 4 slice using the accepted visual direction and real SQLite persistence. The separate Next.js app and published Phase 3 preview are unchanged.
+A working local slice with account-specific goals, scheduling, health/learning logs, welcome setup and an app tour. The separate Next.js app and published Phase 3 preview are unchanged. For the no-setup Windows ZIP, see [desktop instructions](../desktop/README.txt).
 
 ## Run on Windows
 
@@ -18,6 +18,8 @@ Open `http://127.0.0.1:4330`. The launcher binds only to this computer. Stop it 
 
 ## Try it
 
+Create your account, save its recovery key, and follow the welcome guide. New clients receive no prefilled owner data. The twenty setup questions can be skipped, marked unknown, paused and resumed. **Help & tour** reopens guidance at any time. Existing anonymous pilot records are preserved but never assigned to the first new account.
+
 1. In **Goals**, create a goal and a small task. Choose a task kind, duration, priority and preparation/buffer time.
 2. In **Profile**, answer one of twenty questions, or choose skipped/unknown. Availability written as `07:00–18:00` prefills the planning window. Other answers are retained for later reviewed personalization.
 3. In **Plan**, add any fixed/protected sessions first, then preview the remaining day. Accepting saves the displayed placements together. The proposal reports tasks that do not fit.
@@ -28,7 +30,7 @@ Repeated saves use command identifiers. Conflicting edits show a review message.
 
 ## Data and limitations
 
-This is a personal local service, not remote account authentication. Other trusted programs running on your computer can access local services/files. No external AI, database provider or analytics service receives entries. SQLite encryption has not been implemented. Do not expose this port through a proxy, tunnel or public host; an authenticated deployment service is still required for launch sync.
+This is a personal local service with real local account authentication. Other trusted programs running on your computer can access local services/files. No external AI, database provider or analytics service receives entries. SQLite encryption has not been implemented. Do not expose this port through a proxy, tunnel or public host; a production deployment service is still required for launch sync.
 
 Automated backup/restore is not implemented. For a manual safety copy, stop the pilot cleanly first, then copy the private database into a private backup location. Do not copy a live database file or commit it. No deletion/reset control is supplied in this pilot.
 

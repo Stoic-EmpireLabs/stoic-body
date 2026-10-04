@@ -62,6 +62,7 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
       if (request.headers.host !== new URL(origin).host || (request.headers.origin && request.headers.origin !== origin)
         || request.headers['sec-fetch-site'] === 'cross-site') throw new HttpError(403, 'Open this app directly on this computer.');
       const path = new URL(request.url ?? '/', origin).pathname;
+      if (path === '/api/identity' && request.method === 'GET') { json(response, 200, { product: 'Stoic Body', edition: 'desktop-local', version: '0.2.0-local' }); return; }
       const cookie = request.headers.cookie?.split(';').map(v => v.trim()).find(v => v.startsWith('stoic_local='))?.slice('stoic_local='.length);
       const session = accounts.authenticate(cookie);
       const signedIn = (account: Account, token: string) => ({ authenticated: true, account, token, snapshot: repository.snapshot(account.id), guide: accounts.readGuide(account.id), mode: 'local' });

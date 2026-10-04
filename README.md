@@ -1,6 +1,23 @@
-# Stoic Body — project review packets
+# Stoic Body — Windows local pilot
 
-Updated 2026-10-04. Phase 0 and expanded Phase 1 are approved. Phase 2 is provisionally approved. **[Phase 3 interactive prototype](docs/phase-3-review.md) is ready for review.** Automatic sync across iPhone/iPad and Windows is now required at launch. The user explicitly authorized GitHub and Vercel upload; this does not approve Phase 4 or app-store publication.
+Updated 2026-10-04. The working local pilot has separate client accounts, a welcome experience, resumable setup questions and a full-app guide. Each client starts with an empty workspace and adds their own goals, schedule and logs.
+
+## Download and start on Windows
+
+1. Open [GitHub Releases](https://github.com/Stoic-EmpireLabs/stoic-body/releases) and select the **Windows local pilot** prerelease.
+2. Download **Stoic-Body-Windows-x64.zip** and extract the complete folder onto your desktop.
+3. Double-click **Start Stoic Body.cmd**, choose **Create my account**, and save your recovery key privately.
+4. Follow the host's setup questions and tour. Use **Help & tour** whenever you need guidance.
+
+Use **Stop Stoic Body.cmd** to stop the background service. Node.js is included; no developer installation is needed. Windows 10/11 x64 and a current browser are required. This is an unsigned browser-based local preview, not a Store installer.
+
+Your data stays in `%LOCALAPPDATA%\StoicBody`, outside the download folder. The ZIP contains no owner database, personal profile, environment secrets or developer dependencies. Accounts on different computers are independent. **Automatic cross-device sync, native alarms, automated backup/restore and store distribution remain unfinished launch requirements.** Local SQLite data is not encrypted; use separate Windows accounts on shared computers.
+
+[Detailed Windows instructions](apps/desktop/README.txt) · [Developer run instructions](apps/local-pilot/README.md) · [Guided-entry verification](docs/guided-entry-checkpoint.md)
+
+## Product and previous review packets
+
+Phase 3's visual direction was approved and subsequent local implementation was authorized. Required iPhone/iPad and Windows sync is not waived by this downloadable pilot. The separate Next.js application and Vercel design preview are not the Windows package.
 
 Stoic Body connects life goals, schedules, nutrition, training, learning and Stoic reflection through one enjoyable daily game. The owner is the first pilot user of a commercial product targeting Apple App Store, Google Play and Microsoft Store; Android launch timing remains open.
 
@@ -33,4 +50,4 @@ The existing Next.js source was created separately and has been preserved. Its 1
 
 Personal planning records remain under private/ and excluded by Git rules. That exclusion does not protect owner-like values separately embedded in tracked source; removing those from release examples is an explicit blocker. Nothing in this packet authorizes disclosure of personal data.
 
-Phase 3 style/flow approval is pending. The explicit upload instruction authorized the published GitHub/Vercel preview. Later implementation phases, purchases, accounts and app-store releases retain their approval gates.
+The user authorized GitHub distribution of the Windows pilot. Purchases, external accounts, public service deployment and app-store releases retain their approval gates.

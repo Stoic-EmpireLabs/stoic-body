@@ -3,9 +3,9 @@ import { resolve } from 'node:path';
 import { startPilot } from './server';
 
 async function main() {
-  const folder = resolve('private/local-pilot');
+  const folder = resolve(process.env.STOIC_BODY_DATA_DIR || 'private/local-pilot');
   await mkdir(folder, { recursive: true });
-  const pilot = await startPilot({ databasePath: resolve(folder, 'stoic-body.sqlite'), port: 4330 });
+  const pilot = await startPilot({ databasePath: resolve(folder, 'stoic-body.sqlite'), port: Number(process.env.STOIC_BODY_PORT || 4330) });
   console.log(`Stoic Body local pilot: ${pilot.url}`);
   console.log('Saved on this computer. Automatic cross-device sync and native alarms are not connected yet.');
   for (const signal of ['SIGINT', 'SIGTERM'] as const) process.once(signal, () => { void pilot.close().then(() => process.exit(0)); });
