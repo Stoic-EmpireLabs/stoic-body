@@ -4,14 +4,14 @@ Date: 2026-10-04. Phase 2 provisionally approved by “for now yes.” Phase 3 d
 
 ## Open the result
 
-- [Three design directions on Vercel](https://stoic-body-4wc0a5l0c-stoic-dev-team.vercel.app/gallery.html) — existing Vercel account authentication applies.
+- [Three design directions on Vercel](https://stoic-body-qv8gdjf3o-stoic-dev-team.vercel.app/gallery.html) — existing Vercel account authentication applies.
 - [Prototype source on GitHub](https://github.com/Stoic-EmpireLabs/stoic-body/tree/main/prototypes/phase-3).
 - [Local gallery](http://127.0.0.1:4327/gallery.html), while the preview server is running.
 - [Existing separately developed app](https://stoic-body.vercel.app), preserved. It is not the same artifact as this design preview.
 
 ## What was completed
 
-Three themes share an original layout and the same interactions. Stoic Night uses charcoal, lavender and restrained gold. Quiet Marble uses warm ivory and plum. Training Journal uses light slate surfaces, green accents and more direct typography. Stoic Night is the recommended starting direction; the user has not selected one yet.
+The user selected red, black and gold on 2026-10-04. The default direction is now Crimson & Gold: black surfaces, deep red actions, brighter red navigation accents and gold progress/reward details. This replaces the earlier purple Stoic Night proposal. Quiet Marble and Training Journal remain as previous alternatives; the revised gallery labels them accordingly. The internal night URL key is retained so existing preview routes still work.
 
 Five primary destinations — Today, Plan, Train, Fuel and Growth — lead to eleven preview screens: Today, Plan, Train, Fuel, Growth, Goals, evening reflection, weekly review, onboarding, imports and settings. Phone navigation moves to the bottom; tablet and desktop layouts use the available space. The prototype includes calm mode, reduced-motion behavior, keyboard focus styling and labeled controls.
 
@@ -42,7 +42,7 @@ These are partial design evidence, not production acceptance claims. The full 96
 | L05 | Coach-led cheer-learning path | Verified resources and coached prerequisites |
 | G01–G06 | XP feedback, correction, partial completion, levels, review rewards and calm mode | Durable ledger, concurrent-device idempotency, all boundary tests |
 | Q01–Q03 | Clearly labeled original reflection, tone and favorites controls | Sourced quote library, history and daily selection |
-| V01–V03, V06–V07 | Three themes, responsive journeys and focused keyboard checks | User style selection, usability session, contrast and assistive-technology audit |
+| V01–V03, V06–V07 | Selected red/black/gold theme, responsive journeys and focused keyboard checks | Updated-screen approval, usability session, contrast and assistive-technology audit |
 | V04–V05 | Staged import and explicit confirmation | Real file validation, extraction, private storage and malicious-file cases |
 | B11 | Visible device/sync state and explicit conflict simulation | Authenticated automatic cross-device sync at launch |
 
@@ -60,4 +60,4 @@ The separate app changed during this workstream. Its TypeScript check now passes
 
 ## Next checkpoint
 
-Choose a visual direction and approve or revise the daily journey. Phase 4 then implements the approved core: resumable onboarding, goals, feasible scheduling, persistent checklists and XP, sync at launch and actual reminder adapters. Hosting, Apple build access, minimum OS versions and commercial choices remain unresolved. Publishing this preview does not satisfy those decisions or grant approval for later phases.
+The palette is selected. Review the revised red/black/gold screens and approve or revise the daily journey. Phase 4 then implements the approved core: resumable onboarding, goals, feasible scheduling, persistent checklists and XP, sync at launch and actual reminder adapters. Hosting, Apple build access, minimum OS versions and commercial choices remain unresolved. Publishing this preview does not satisfy those decisions or grant approval for later phases.

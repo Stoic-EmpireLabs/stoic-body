@@ -1,0 +1,30 @@
+{
+  "checked_at": "2026-10-04T18:36:57.027Z",
+  "scope": "Selected opaque text/background token pairs; not a complete accessibility audit",
+  "results": [
+    {
+      "name": "Main text",
+      "ratio": 16.65
+    },
+    {
+      "name": "Secondary text",
+      "ratio": 9.96
+    },
+    {
+      "name": "Accent link",
+      "ratio": 6.6
+    },
+    {
+      "name": "Gold detail",
+      "ratio": 10.86
+    },
+    {
+      "name": "Primary button",
+      "ratio": 6.4
+    },
+    {
+      "name": "Active navigation",
+      "ratio": 6.11
+    }
+  ]
+}

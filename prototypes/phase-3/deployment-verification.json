@@ -1,6 +1,6 @@
 {
-  "checked_at": "2026-10-04T18:23:30.661Z",
-  "deployment": "https://stoic-body-4wc0a5l0c-stoic-dev-team.vercel.app",
+  "checked_at": "2026-10-04T18:38:08.611Z",
+  "deployment": "https://stoic-body-qv8gdjf3o-stoic-dev-team.vercel.app",
   "protection": "Vercel account authentication retained; fetched with authenticated Vercel CLI",
   "note": "HTML comparison permits only the exact observed Vercel feedback script appended after the source. CSP does not allow that external script. All other bytes must match.",
   "assets": [
@@ -8,13 +8,13 @@
       "file": "index.html",
       "sourceMatches": true,
       "vercelToolbarAppendix": true,
-      "sourceSha256": "81e684c59815b638226eff4ad841624082775f9e48eeef9a36a9500193ca7c9f"
+      "sourceSha256": "34847c0c88ea91a018b96f0a29bb8052c155e35b333710cadb413600c12e7613"
     },
     {
       "file": "gallery.html",
       "sourceMatches": true,
       "vercelToolbarAppendix": true,
-      "sourceSha256": "57abaa66e27755c8ff5c86bdefef68a518519e2b2e540dd1c7e9832d10736165"
+      "sourceSha256": "36233212d473f8959a034b4d7a62e8975c1f737e7573273e2b0c9530cf58d275"
     },
     {
       "file": "app.js",
@@ -26,25 +26,25 @@
       "file": "styles.css",
       "sourceMatches": true,
       "vercelToolbarAppendix": false,
-      "sourceSha256": "4a4b5ca8654696e7e5dac3f65b2399c836a94a3fcd25ccc002c58a9882e7d92a"
+      "sourceSha256": "7df2ef759fd4295fcfa5642981f1f759aaac66f82b240baed54947f5ae08479b"
     },
     {
       "file": "night-today-desktop.png",
       "sourceMatches": true,
       "vercelToolbarAppendix": false,
-      "sourceSha256": "68671047f8b5e55f386dd9ee3b680e1f2e4d62daddcf85c73b5e41a236d1f48e"
+      "sourceSha256": "579815c55b2e01dce37d46d9bf19d3e6b4d817d3cdda22ca1499bad9e4a814b7"
     },
     {
       "file": "marble-today-desktop.png",
       "sourceMatches": true,
       "vercelToolbarAppendix": false,
-      "sourceSha256": "795afbf81acea4c118216f87235baaaab31aab0a09d72063a17187105e2c84d5"
+      "sourceSha256": "9d7249172579f658747f795cd4964f2d59c2d67eae313fdfd58d678b8beb2751"
     },
     {
       "file": "journal-today-desktop.png",
       "sourceMatches": true,
       "vercelToolbarAppendix": false,
-      "sourceSha256": "d1855f66ad1c19c5c1fcd81269b076667f199d3d03e999eea305c92a8f82c6e1"
+      "sourceSha256": "13296332babf2c47c60fb16c0a1a41032749d6bfb4f88b5f05b29a15043d8488"
     }
   ]
 }

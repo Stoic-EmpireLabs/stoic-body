@@ -51,3 +51,5 @@ Phase 0 was approved on 2026-10-04 by the user message: Great. continue throguh 
 
 - DEC-38 — Authorized: direct user request “upload to vercel account i have and github account.” Verified existing GitHub Stoic-EmpireLabs/stoic-body and Vercel stoic-dev-team/stoic-body. Existing source was already uploaded. Publish only the synthetic Phase 3 static preview and review evidence from this workstream; preserve the separate production app. No spending or store submission is authorized.
 - DEC-39 — Published: Phase 3 preview dpl_FVEZq7aFMbFp61b1MgqV3DWKpQ7V in the existing Vercel project, with account authentication retained. Seven allowlisted assets; no owner records or environment files. Style selection and Phase 3 approval are still pending.
+
+- DEC-40 — Selected: direct user correction “no red and black and gold.” Replace the initial purple direction with black surfaces, red actions/navigation and gold progress/reward details. Default prototype label: Crimson & Gold. Updated the authorized GitHub/Vercel preview; later phase approval remains scoped to the reviewed artifacts.

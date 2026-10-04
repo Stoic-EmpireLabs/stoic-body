@@ -6,7 +6,7 @@ Stoic Body connects life goals, schedules, nutrition, training, learning and Sto
 
 ## Current preview
 
-- [Three design directions on Vercel](https://stoic-body-4wc0a5l0c-stoic-dev-team.vercel.app/gallery.html) — sign in with the existing Vercel account.
+- [Selected red, black and gold design on Vercel](https://stoic-body-qv8gdjf3o-stoic-dev-team.vercel.app/gallery.html) — sign in with the existing Vercel account.
 - [Prototype source and local instructions](prototypes/phase-3/README.md).
 - [Phase 3 review](docs/phase-3-review.md) and [verification](docs/phase-3-verification.md): 126 browser checks passed; gallery and deployment assets checked separately.
 - [Existing separately developed application](https://stoic-body.vercel.app), preserved.
