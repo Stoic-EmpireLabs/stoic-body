@@ -28,7 +28,17 @@ Screenshots: [welcome](evidence/guided-entry/welcome-desktop.png), [questions](e
 
 A fresh independent review covered immutable commits 3c745b9..81e2972. Its three findings were reproduced in failing tests and corrected in one fix pass: cross-account draft/retry leakage, concurrent launcher ownership, and unrecoverable questionnaire conflicts. Browser sign-out now clears other tabs, changed identities reload with private drafts discarded, Windows start/stop is serialized with atomic ownership records, and questionnaire conflicts show the latest saved answer beside the retained draft before explicit resubmission. No minor findings remain deferred. [Review receipt](evidence/guided-entry/review.md).
 
-The live service was restarted and a read-only guest check returned HTTP 200, authenticated=false and no snapshot. No synthetic account or personal profile was written to the owner's live database. GitHub release verification is the remaining publication step at this checkpoint revision.
+The live service was restarted and a read-only guest check returned HTTP 200, authenticated=false and no snapshot. No synthetic account or personal profile was written to the owner's live database.
+
+## Published download
+
+[Windows local pilot prerelease](https://github.com/Stoic-EmpireLabs/stoic-body/releases/tag/v0.2.0-local-pilot) · [Download ZIP](https://github.com/Stoic-EmpireLabs/stoic-body/releases/download/v0.2.0-local-pilot/Stoic-Body-Windows-x64.zip).
+
+Published from source commit b3bc51f7203c388ac3f9a1cb52e6ceaa2b566a2b on codex/stoic-body-core. Main was not merged or changed. GitHub reports both assets uploaded and the release publicly available as a prerelease. Direct ZIP download HEAD returned HTTP 200 and 34,787,477 bytes. GitHub's ZIP digest and downloaded checksum file match the locally inspected archive:
+
+`cd5314311e4176e22ae1ae05a3caf0004096b8b671b559b79578300eac8e5feb`
+
+All sixteen application/runtime files inside the ZIP were compared against the included manifest hashes. The seventeenth file is the manifest itself. No private/environment/database files are included. The source branch also contains historical planning and the separately preserved application; recipients should download the named ZIP asset rather than the automatic Source code archive.
 
 ## Research and requirements
 
@@ -40,7 +50,7 @@ The live service was restarted and a read-only guest check returned HTTP 200, au
 | New-user questionnaire | Host; twenty core profile answers and separate guide progress | onboarding.test.ts |
 | Host and full-app tooltip tour | Host; real views, explicit next actions, pause/resume/replay | onboarding.test.ts; desktop/mobile images |
 | Wife's own goals and experience | Empty account, local persistent database, independent Windows download | auth isolation tests and test-desktop.mjs |
-| GitHub distribution | Allowlisted ZIP plus SHA-256 manifest, prerelease from implementation branch | Publication receipt to follow |
+| GitHub distribution | Allowlisted ZIP plus SHA-256 manifest, prerelease from implementation branch | Uploaded asset digest/size, direct HTTP 200 and checksum file verified above |
 
 ## Limitations and next phase
 

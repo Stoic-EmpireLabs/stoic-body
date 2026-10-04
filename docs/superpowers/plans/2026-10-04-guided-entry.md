@@ -33,10 +33,10 @@ Files: src/core/accounts.ts; apps/local-pilot/server.ts; tests/core/accounts.tes
 
 Interfaces: AccountStore(db) supplies register/login/recover, createSession/authenticate/logout, readGuide/saveGuide. Server bootstrap returns {authenticated, account?, token?, snapshot?, guide?}; auth routes use same-origin POST. Existing data routes derive owner from session only. Guide writes require expected revision and validate a small state object.
 
-- [ ] Write failing account/isolation/session/recovery/guide tests and HTTP unauthorized tests; run, expect missing implementation.
-- [ ] Implement scrypt N32768/r8/p3, 16-byte salt, timing-safe checks; 15–128-character passwords; username/display name; single-use recovery key; random 12h sessions with 30m idle limit; persistent bounded login throttles. Store only session/key digests. Signup creates a new owner, never claims legacy rows.
-- [ ] Adapt existing test fixtures to register/sign in through the real API (no auth bypass), using a shared test helper. Existing behavior tests may mark their synthetic guide complete.
-- [ ] Run core/account/HTTP tests, typecheck and lint. Expect pass. Commit.
+- [x] Write failing account/isolation/session/recovery/guide tests and HTTP unauthorized tests; run, expect missing implementation.
+- [x] Implement scrypt N32768/r8/p3, 16-byte salt, timing-safe checks; 15–128-character passwords; username/display name; single-use recovery key; random 12h sessions with 30m idle limit; persistent bounded login throttles. Store only session/key digests. Signup creates a new owner, never claims legacy rows.
+- [x] Adapt existing test fixtures to register/sign in through the real API (no auth bypass), using a shared test helper. Existing behavior tests may mark their synthetic guide complete.
+- [x] Run core/account/HTTP tests, typecheck and lint. Expect pass. Commit.
 
 Completion command: node --import tsx --test tests/core/accounts.test.ts tests/pilot/auth.test.ts tests/pilot/server.test.ts
 
@@ -46,11 +46,11 @@ Files: apps/local-pilot/public/access.js; host.js; app.js; health.js; index.html
 
 Interfaces: Access handles guest forms and one-time recovery-key display, then reloads the signed-in app. Host receives questions, account/guide state and existing rendering/API functions; adds setup view, dashboard checklist, help button and tour. Health exposes an explicit open-tab method for tour only.
 
-- [ ] Write failing browser journey: guest landing → create account → welcome → questions → pause/resume → first-goal draft → full tour → sign out → sign in. Verify skip/unknown/back, sources of setup status, keyboard Escape and mobile layout. Expect missing access UI.
-- [ ] Implement clear product welcome, account forms, password visibility and recovery flow; logout clears all app modules via reload. No fake email/social login.
-- [ ] Implement 20 questions in four small groups, save/continue/back/skip/unknown, reason/context, progress and resume. Answer recap and explicit editable first-goal suggestion.
-- [ ] Implement real-view walkthrough for Today, Goals, Plan, all Health tabs, Learn, Profile, Settings and XP. Native modal focus management, target highlights, Back/Next/Escape/pause, persisted progress and replay. Guide never mutates health/schedule data.
-- [ ] Add persistent Help/guide and useful empty-state setup checklist. Run browser test. Expect pass. Commit.
+- [x] Write failing browser journey: guest landing → create account → welcome → questions → pause/resume → first-goal draft → full tour → sign out → sign in. Verify skip/unknown/back, sources of setup status, keyboard Escape and mobile layout. Expect missing access UI.
+- [x] Implement clear product welcome, account forms, password visibility and recovery flow; logout clears all app modules via reload. No fake email/social login.
+- [x] Implement 20 questions in four small groups, save/continue/back/skip/unknown, reason/context, progress and resume. Answer recap and explicit editable first-goal suggestion.
+- [x] Implement real-view walkthrough for Today, Goals, Plan, all Health tabs, Learn, Profile, Settings and XP. Native modal focus management, target highlights, Back/Next/Escape/pause, persisted progress and replay. Guide never mutates health/schedule data.
+- [x] Add persistent Help/guide and useful empty-state setup checklist. Run browser test. Expect pass. Commit.
 
 Completion command: node --import tsx --test tests/pilot/onboarding.test.ts
 
@@ -62,9 +62,9 @@ Files: scripts/build-desktop.mjs; apps/desktop/launch.ps1; launcher CMD files; d
 
 Interfaces: bundle the local service and an allowlist of UI assets with the installed Node Windows x64 executable and its matching official license. A launcher stores runtime data under LOCALAPPDATA/StoicBody, starts hidden and opens the browser. No owner database, private discovery file, environment file or developer dependencies in the archive. An explicit stop launcher verifies its own runtime PID/path before stopping.
 
-- [ ] Write a packaging smoke that checks the allowlist, startup, guest isolation and actual launcher/stop behavior using temporary user data. Observe failure before the package builder exists.
-- [ ] Build a standalone ZIP without needing Node/npm on the recipient's computer; retain the unsigned local-pilot boundary. Include a manifest/hash and current startup/update instructions. No new external account or paid service.
-- [ ] Verify bundled app and onboarding in isolated data, then commit packaging sources. Publication occurs only after final verification/review in Task 4.
+- [x] Write a packaging smoke that checks the allowlist, startup, guest isolation and actual launcher/stop behavior using temporary user data. Observe failure before the package builder exists.
+- [x] Build a standalone ZIP without needing Node/npm on the recipient's computer; retain the unsigned local-pilot boundary. Include a manifest/hash and current startup/update instructions. No new external account or paid service.
+- [x] Verify bundled app and onboarding in isolated data, then commit packaging sources. Publication occurs only after final verification/review in Task 4.
 
 Completion command: npm run test:desktop
 
@@ -72,10 +72,10 @@ Completion command: npm run test:desktop
 
 Files: docs/guided-entry-checkpoint.md; docs/progress.md; docs/requirements.md; docs/decisions.md; docs/evidence/guided-entry/.
 
-- [ ] Run npm test, typecheck, lint, test:pilot, test:health and test:learning. Expect all pass. Verify restart requires valid sign-in and restores account-specific answers/guide state.
-- [ ] Inspect synthetic screenshots at desktop/mobile, verify actual dialogs and keyboard flow. Commit evidence/docs.
-- [ ] Fresh reviewer examines complete immutable change. Fix Important/Critical findings in one RED→GREEN pass, then whole suite.
-- [ ] Restart live pilot, read-only guest smoke; retain existing local data. Present login/setup screen for user to create their own account. Keep branch and ignored evidence workspace.
-- [ ] User authorized GitHub distribution. Inspect outgoing files for private data, push the implementation branch, and publish a clearly labeled prerelease ZIP with exact run instructions. Do not merge or deploy the local service publicly. Verify uploaded asset size/hash and repository links.
+- [x] Run npm test, typecheck, lint, test:pilot, test:health and test:learning. Expect all pass. Verify restart requires valid sign-in and restores account-specific answers/guide state.
+- [x] Inspect synthetic screenshots at desktop/mobile, verify actual dialogs and keyboard flow. Commit evidence/docs.
+- [x] Fresh reviewer examines complete immutable change. Fix Important/Critical findings in one RED→GREEN pass, then whole suite.
+- [x] Restart live pilot, read-only guest smoke; retain existing local data. Present login/setup screen for user to create their own account. Keep branch and ignored evidence workspace.
+- [x] User authorized GitHub distribution. Inspect outgoing files for private data, push the implementation branch, and publish a clearly labeled prerelease ZIP with exact run instructions. Do not merge or deploy the local service publicly. Verify uploaded asset size/hash and repository links.
 
 Completion command: npm test

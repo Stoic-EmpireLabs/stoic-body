@@ -4,7 +4,7 @@ Updated 2026-10-04. The working local pilot has separate client accounts, a welc
 
 ## Download and start on Windows
 
-1. Open [GitHub Releases](https://github.com/Stoic-EmpireLabs/stoic-body/releases) and select the **Windows local pilot** prerelease.
+1. Open the [Windows local pilot prerelease](https://github.com/Stoic-EmpireLabs/stoic-body/releases/tag/v0.2.0-local-pilot).
 2. Download **Stoic-Body-Windows-x64.zip** and extract the complete folder onto your desktop.
 3. Double-click **Start Stoic Body.cmd**, choose **Create my account**, and save your recovery key privately.
 4. Follow the host's setup questions and tour. Use **Help & tour** whenever you need guidance.
