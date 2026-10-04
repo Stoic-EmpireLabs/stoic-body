@@ -317,7 +317,7 @@ export default function TodayCommandCenter() {
           <div className="relative pl-8">
             <span className="absolute left-2 top-2 w-2 h-2 rounded-full bg-amber-600 -translate-x-1/2"></span>
             <div className="bg-black/60 border border-dashed border-red-900/40 px-3 py-1.5 rounded text-xs text-slate-300 flex items-center justify-between">
-              <span>&cudarrr; 24-Min Transition Buffer (Hydration, Physical Reset)</span>
+              <span>↓ 24-Min Transition Buffer (Hydration, Physical Reset)</span>
               <span className="font-mono text-[10px] text-amber-400/70">
                 Bi = max(15m, 0.20 &times; Dur)
               </span>
@@ -346,7 +346,7 @@ export default function TodayCommandCenter() {
           <div className="relative pl-8">
             <span className="absolute left-2 top-2 w-2 h-2 rounded-full bg-amber-600 -translate-x-1/2"></span>
             <div className="bg-black/60 border border-dashed border-red-900/40 px-3 py-1.5 rounded text-xs text-slate-300">
-              &cudarrr; 19-Min Transition Buffer
+              ↓ 19-Min Transition Buffer
             </div>
           </div>
 

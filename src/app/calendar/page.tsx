@@ -373,7 +373,7 @@ export default function CalendarPage() {
                   <div className="relative pl-8">
                     <span className="absolute left-2 top-2 w-1.5 h-1.5 rounded-full bg-amber-600 -translate-x-1/2"></span>
                     <div className="bg-black/60 border border-dashed border-red-900/40 px-3 py-1.5 rounded text-[11px] text-slate-300 flex items-center justify-between">
-                      <span>&cudarrr; {buffer}-Min Protective Transition Buffer</span>
+                      <span>↓ {buffer}-Min Protective Transition Buffer</span>
                       <span className="font-mono text-[10px] text-amber-400/80">
                         Bi = max(15, 0.20 &times; {task.durationMinutes})
                       </span>
