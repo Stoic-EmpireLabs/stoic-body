@@ -31,7 +31,7 @@ window.Access = (() => {
       form.addEventListener('submit',async event=>{
         event.preventDefault();if(working)return;working=true;status.textContent='';form.querySelectorAll('button,input').forEach(e=>{e.disabled=true;});
         const data={username:form.elements.username.value,password:pass.value}; if(mode==='register') data.displayName=form.elements.displayName.value;if(mode==='recover')data.recoveryKey=form.elements.recoveryKey.value;
-        try {const result=await ctx.api(`auth/${mode}`,data); if(result.recoveryKey) recovery(result.recoveryKey);else location.replace('/');}
+        try {const result=await ctx.api(`auth/${mode}`,data); ctx.announceAccountChange(); if(result.recoveryKey) recovery(result.recoveryKey);else location.replace('/');}
         catch(e){status.textContent=e.message;form.querySelectorAll('button,input').forEach(e=>{e.disabled=false;});}
         finally{working=false;}
       }); card.append(form);
@@ -46,6 +46,6 @@ window.Access = (() => {
     c.append(el('p','Save this key in your password manager. It can reset your passphrase, so keep it private. It is shown only now; there is no email reset service.','muted'));
     const code=el('code',key);code.id='recovery-key';c.append(code,button('I saved my key — continue',()=>location.replace('/'),true));root.append(c);c.querySelector('h2').tabIndex=-1;c.querySelector('h2').focus();
   }
-  async function signOut() {try {await ctx.api('auth/logout',{});}finally{location.replace('/');}}
+  async function signOut() {try {await ctx.api('auth/logout',{});ctx.announceAccountChange();}finally{location.replace('/');}}
   return {init:context=>{ctx=context;},show,signOut};
 })();

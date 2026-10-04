@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-04T23:05:42.993Z",
+  "at": "2026-10-04T23:18:18.012Z",
   "checks": [
     "empty account starts with zero XP",
     "user markup renders as text",

@@ -15,18 +15,20 @@
 
 | Check | Result |
 |---|---|
-| Unit, HTTP and browser test suite | 116/116 passed |
+| Unit, HTTP and browser test suite | 120/120 passed after review fixes |
 | TypeScript and scoped ESLint | Passed |
 | Core pilot browser journey | 19 checks passed |
 | Health browser journey | 15 checks passed |
 | Learning browser journey | 13 checks passed |
-| Windows package smoke | Real bundled launcher, account creation, clean data, file hashes, stop and restart passed using isolated temporary data |
+| Windows package smoke | Three concurrent real bundled launchers share one owned service; account creation, clean data, file hashes, stop and restart passed using isolated temporary data |
 | Visual review | Desktop welcome, setup and tour; mobile help checked from synthetic screenshots |
 | Extra account regressions | In-flight stale credentials and restored-page inactivity reproduced failing, then passed after fixes |
 
 Screenshots: [welcome](evidence/guided-entry/welcome-desktop.png), [questions](evidence/guided-entry/questionnaire-desktop.png), [tour](evidence/guided-entry/tour-desktop.png), [mobile help](evidence/guided-entry/host-mobile.png).
 
-The final independent review and GitHub release verification are pending at this checkpoint revision. Later evidence will be appended before publication. No synthetic account or personal profile has been written to the owner's live database.
+A fresh independent review covered immutable commits 3c745b9..81e2972. Its three findings were reproduced in failing tests and corrected in one fix pass: cross-account draft/retry leakage, concurrent launcher ownership, and unrecoverable questionnaire conflicts. Browser sign-out now clears other tabs, changed identities reload with private drafts discarded, Windows start/stop is serialized with atomic ownership records, and questionnaire conflicts show the latest saved answer beside the retained draft before explicit resubmission. No minor findings remain deferred. [Review receipt](evidence/guided-entry/review.md).
+
+The live service was restarted and a read-only guest check returned HTTP 200, authenticated=false and no snapshot. No synthetic account or personal profile was written to the owner's live database. GitHub release verification is the remaining publication step at this checkpoint revision.
 
 ## Research and requirements
 
@@ -53,3 +55,7 @@ The next proposed work is required authenticated cross-device sync and launch re
 - Preserve unclaimed legacy owner data; populated legacy data requires a separately reviewed migration.
 - Retain the isolated branch and ignored evidence workspace; cost is modest local storage.
 - Publish the explicitly authorized GitHub prerelease from the implementation branch, preserving main and the separate application. The ZIP allowlist protects recipient downloads from developer data. Publication creates no public database service.
+- Reviewer boundary: sync, native alarms, stores and full coaching remain separate launch work; cost is an explicitly incomplete commercial release.
+- Reviewer boundary: the separate Next.js application remains outside this slice; its behavior is not vouched for by pilot tests.
+- Reviewer boundary: verify the published asset using GitHub's uploaded size/digest and the local archive hash before handoff; a local build alone cannot prove availability.
+- Reviewer boundary: accounts do not protect against direct Windows filesystem access; production storage/privacy work remains.

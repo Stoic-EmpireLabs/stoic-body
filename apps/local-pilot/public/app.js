@@ -5,6 +5,18 @@ const labels = { today: 'Today', goals: 'Goals', plan: 'Plan', health: 'Health',
 const kinds = { task: 'Small task · 5 XP', focus: 'Focus / learning · 15 XP', workout: 'Workout · 25 XP', recovery: 'Recovery · 15 XP', reflection: 'Reflection · 10 XP', weeklyReview: 'Weekly review · 30 XP' };
 let snapshot, token, currentView = 'today', busy = false, pendingRequest = null, preview = null, editTask = null, editGoal = null;
 let account, guide;
+let identityEpoch = 0, resettingIdentity = false;
+const accountChannel = 'BroadcastChannel' in window ? new BroadcastChannel('stoic-local-account') : null;
+function clearChangedIdentity() {
+  if (resettingIdentity) return;
+  resettingIdentity = true; identityEpoch++; snapshot = null; token = null; pendingRequest = null;
+  document.querySelector('.pilot-shell').hidden = true; $('#main').replaceChildren();
+  document.querySelectorAll('dialog').forEach(d => d.remove());
+  $('#access').replaceChildren(element('p', 'Your sign-in changed. Opening your current workspace…')); $('#access').hidden = false;
+  location.replace('/');
+}
+if (accountChannel) accountChannel.onmessage = clearChangedIdentity;
+function announceAccountChange() { accountChannel?.postMessage('changed'); }
 const requestedView = new URLSearchParams(location.search).get('view');
 if (Object.hasOwn(labels, requestedView)) currentView = requestedView;
 let timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -39,10 +51,22 @@ function message(text) { $('#notice').textContent = text; $('#notice').hidden = 
 function errorMessage(text) { $('#error-message').textContent = text; $('#error-panel').hidden = !text; $('#retry').hidden = !pendingRequest; }
 function setBusy(value) { busy = value; document.querySelectorAll('[data-save]').forEach(b => { b.disabled = value || Boolean(pendingRequest); }); $('#retry').disabled = value; $('#reload').disabled = value; }
 async function api(path, data) {
+  const epoch = identityEpoch, owner = account?.id;
   let response;
   try { response = await fetch(`/api/${path}`, { method: data === undefined ? 'GET' : 'POST', headers: { 'X-Stoic-Token': token || '', 'Content-Type': 'application/json' }, ...(data === undefined ? {} : { body: JSON.stringify(data) }) }); }
   catch { throw new Error('Could not reach the local app. Check that it is running, then retry.'); }
   const result = await response.json();
+  if (resettingIdentity || epoch !== identityEpoch) throw Object.assign(new Error('Your sign-in changed.'), {responseStatus:401});
+  if (response.status === 403 && !path.startsWith('auth/') && path !== 'bootstrap') {
+    // A cookie can change in another tab even when this page's CSRF token has not.
+    // Never let a retained operation cross that owner boundary after reconnect.
+    let fresh;
+    try { const check = await fetch('/api/bootstrap'); if(check.ok) fresh = await check.json(); } catch { /* Clear when identity cannot be verified. */ }
+    if (!fresh?.authenticated || fresh.account.id !== owner) { clearChangedIdentity(); throw Object.assign(new Error('Your sign-in changed.'),{responseStatus:401}); }
+  }
+  if (owner && ((path === 'bootstrap' && result.account?.id !== owner) || (result.snapshot && result.snapshot.ownerId !== owner) || (result.account && result.account.id !== owner))) {
+    clearChangedIdentity(); throw Object.assign(new Error('Your sign-in changed.'),{responseStatus:401});
+  }
   if (response.status === 401 && !path.startsWith('auth/')) { snapshot = null; token = null; document.querySelector('.pilot-shell').hidden = true; location.replace('/'); throw new Error('Please sign in again.'); }
   if (result.snapshot) snapshot = result.snapshot;
   if (result.guide) guide = result.guide;
@@ -68,6 +92,7 @@ async function send(path, data, success) {
     }
     render(); message(success);
   } catch (error) {
+    if (resettingIdentity) return;
     pendingRequest = !error.responseStatus || error.responseStatus >= 500 || error.responseStatus === 403 ? { path, data, success } : null;
     if (error.responseStatus === 409) { preview = null; manualPreview = null; render(); }
     errorMessage(error.message);
@@ -245,7 +270,7 @@ async function boot() {
 }
 Health.init({ element, action, card, intro, snapshot: () => snapshot, date: () => selectedDate, setDate: d => { selectedDate = d; }, api, command, send, render });
 Learn.init({ element, action, card, intro, snapshot: () => snapshot, api, command, render, navigate });
-Access.init({element,card,api});
+Access.init({element,card,api,announceAccountChange});
 Host.init({element,action,card,intro,questions,snapshot:()=>snapshot,account:()=>account,guide:()=>guide,api,render,navigate,setBusy});
 let idleTimer;
 function resetIdle() { clearTimeout(idleTimer); if (account) idleTimer = setTimeout(() => { void Access.signOut(); }, 30 * 60 * 1000); }

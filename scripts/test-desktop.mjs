@@ -28,7 +28,8 @@ const env = { ...process.env, STOIC_BODY_DATA_DIR: resolve(root, 'test-data'), S
 const launch = (...args) => run('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', resolve(folder, 'launch.ps1'), ...args], { env, timeout: 30000 });
 const browser = await chromium.launch({ headless: true });
 try {
-  await launch('-NoBrowser');
+  const starts=await Promise.allSettled([launch('-NoBrowser'),launch('-NoBrowser'),launch('-NoBrowser')]);
+  assert.deepEqual(starts.map(s=>s.status),['fulfilled','fulfilled','fulfilled'],'simultaneous starts must share one owned server');
   console.log('PASS: bundled launcher starts the local service.');
   assert.equal((await (await fetch(`${url}/api/identity`)).json()).product, 'Stoic Body');
   assert.deepEqual(await (await fetch(`${url}/api/bootstrap`)).json(), { authenticated: false, mode: 'local' });
@@ -57,4 +58,6 @@ try {
 } finally {
   await browser.close();
   await launch('-Stop');
+  // Only this freshly-created test bundle; clean a failed ownership-race probe too.
+  await run('powershell.exe',['-NoProfile','-Command',"Get-CimInstance Win32_Process | Where-Object { $_.ExecutablePath -eq $env:STOIC_TEST_RUNTIME } | ForEach-Object { Stop-Process -Id $_.ProcessId }"],{env:{...env,STOIC_TEST_RUNTIME:resolve(folder,'runtime/node.exe')}});
 }

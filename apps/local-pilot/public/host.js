@@ -1,7 +1,7 @@
 /* global window, Health */
 'use strict';
 window.Host = (() => {
-  let ctx, panel='', saving=false, pending=null, tour=-1, dialog, highlighted, tourEpoch=0;
+  let ctx, panel='', saving=false, pending=null, conflict=null, tour=-1, dialog, highlighted, tourEpoch=0;
   const drafts={}, el=(...a)=>ctx.element(...a), button=(...a)=>ctx.action(...a);
   const stops=[
     ['today',null,'#main .pilot-hero','Start with Today','This is your home base: your next action, accepted schedule and progress. Empty is okay. Your first job is choosing one meaningful goal.'],
@@ -21,7 +21,10 @@ window.Host = (() => {
   const count=()=>ctx.questions.filter(q=>ctx.snapshot().answers[q[0]]).length;
   async function persist(changes) {const g=guide();const r=await ctx.api('guide',{baseRevision:g.revision,state:{...g.state,...changes}});return r.guide;}
   function notice(message){const target=document.querySelector('#host-status')||dialog?.querySelector('.tour-error');if(target)target.textContent=message;}
-  async function run(fn){if(saving)return;saving=true;ctx.setBusy(true);try{await fn();notice('');}catch(e){notice(e.message);}finally{saving=false;ctx.setBusy(false);}}
+  async function run(fn){if(saving)return;saving=true;ctx.setBusy(true);try{await fn();notice('');}catch(e){
+    if(e.responseStatus===409){pending=null;try{await ctx.api('bootstrap');if(tour>=0)closeTour();ctx.render();notice('Setup changed in another tab. The latest state is loaded; review it before trying again.');}catch(refreshError){notice(refreshError.message);}}
+    else notice(e.message);
+  }finally{saving=false;ctx.setBusy(false);}}
   function status(parent){const p=el('p','','access-error');p.id='host-status';p.setAttribute('role','alert');parent.append(p);}
   function welcome(root){
     const a=ctx.account();ctx.intro(`Welcome, ${a.displayName}.`,'I’m your Stoic Body guide. Let’s turn the things you care about into a day that fits your life.');
@@ -30,7 +33,7 @@ window.Host = (() => {
     const card=ctx.card('Here is what happens next');card.append(el('p','1. Tell me what matters.  2. Build a realistic starting point.  3. Take a guided tour.  4. Review your first plan.','muted'),el('p','About 20 optional questions in four groups. Save and return anytime. Health details are optional and stay in your local account.','muted'));status(card);root.append(card);
   }
   function question(root){
-    const index=guide().state.question,q=ctx.questions[index],saved=ctx.snapshot().answers[q[0]],group=Math.floor(index/5);
+    const index=conflict?.question??guide().state.question,q=ctx.questions[index],saved=ctx.snapshot().answers[q[0]],group=Math.floor(index/5);
     ctx.intro(['Your direction','Your everyday reality','Your health context','Your practice & preferences'][group],'Specific answers help. “Skip” and “unknown” are useful answers, too.');
     const card=ctx.card(q[1].replace(/^\d+\. /,''));card.append(el('span',`Question ${index+1} of 20`,'status-tag'));
     const progress=el('progress');progress.max=20;progress.value=count();progress.setAttribute('aria-label','Questions addressed');card.append(progress,el('p',q[2],'profile-prompt'));
@@ -38,14 +41,21 @@ window.Host = (() => {
     if(q[3]==='units'){for(const [value,title] of [['','Choose units'],['imperial','Imperial · pounds and inches'],['metric','Metric · kilograms and centimetres']]){const o=el('option',title);o.value=value;input.append(o);}}
     else if(q[3]==='number'){input.type='number';input.min=q[0]==='age'?'0':'1';input.max=q[0]==='age'?'120':'1000';input.step='any';}else input.maxLength=4000;
     input.value=drafts[q[0]]??(saved?.state==='answered'?saved.value:'');input.addEventListener('input',()=>{drafts[q[0]]=input.value;});label.append(input);form.append(label);
-    const submit=el('button','Save and continue','button primary');submit.type='submit';submit.dataset.save='';form.append(submit);
-    const move=async(changes)=>{await persist(changes);pending=null;ctx.render();};
+    if(conflict)card.append(el('p','This answer changed in another tab. Your draft is kept below. Compare it with the saved answer before replacing it.','warning'),el('p',`Latest saved answer: ${saved?.state==='answered'?saved.value:saved?.state||'Not answered'}`));
+    const submit=el('button',conflict?'Review and save my answer':'Save and continue','button primary');submit.type='submit';submit.dataset.save='';form.append(submit);
+    const move=async(changes)=>{await persist(changes);pending=null;conflict=null;ctx.render();};
     async function answer(state,pause=false){
       const key=JSON.stringify([q[0],state,input.value,pause]);
       if(!pending||pending.key!==key)pending={key,command:{schemaVersion:1,operationId:crypto.randomUUID(),deviceId:'local-browser',entityId:'profile',baseRevision:ctx.snapshot().profileRevision,type:'profile.answer',payload:{questionId:q[0],state,...(state==='answered'?{value:q[3]==='number'?Number(input.value):input.value}:{})}}};
-      await ctx.api('command',pending.command);
-      await move({stage:pause?'paused':index===19?'ready':'questions',question:pause?Math.min(19,index+1):Math.min(19,index+1)});
-      if(pause)ctx.navigate('today');
+      try {
+        await ctx.api('command',pending.command);
+        await move({stage:pause?'paused':index===19?'ready':'questions',question:Math.min(19,index+1)});
+        if(pause)ctx.navigate('today');
+      } catch(e) {
+        if(e.responseStatus && e.responseStatus<500 && e.responseStatus!==403)pending=null;
+        if(e.responseStatus!==409)throw e;
+        conflict={question:index};await ctx.api('bootstrap');ctx.render();
+      }
     }
     form.addEventListener('submit',e=>{e.preventDefault();void run(()=>answer('answered'));});card.append(form);
     const controls=el('div',undefined,'pilot-actions');
@@ -75,7 +85,7 @@ window.Host = (() => {
   }
   function render(){const root=document.querySelector('#main');
     if(panel==='help'){ctx.intro('You have a guide.','A quick explanation, a clear next step, or another look around.');checklist(root);const c=ctx.card('How this space works');stops.forEach(s=>{const row=el('details');row.append(el('summary',s[3]),el('p',s[4],'muted'));c.append(row);});status(c);root.append(c);return;}
-    if(guide().state.stage==='welcome'){welcome(root);return;}if(guide().state.stage==='questions'){question(root);return;}
+    if(conflict){question(root);return;}if(guide().state.stage==='welcome'){welcome(root);return;}if(guide().state.stage==='questions'){question(root);return;}
     ctx.intro('A starting point you can shape.','Your answers are saved. Begin with one goal, one action and one reviewed day.');checklist(root);
     const c=ctx.card('Your context at a glance');for(const q of ctx.questions){const a=ctx.snapshot().answers[q[0]];if(a)c.append(el('h3',q[1]),el('p',a.state==='answered'?`${a.value}${a.unit?` ${a.unit}`:''}`:a.state,'muted'));}status(c);root.append(c);
   }

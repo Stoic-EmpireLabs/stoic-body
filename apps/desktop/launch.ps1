@@ -1,5 +1,7 @@
 param([switch]$NoBrowser, [switch]$Stop)
 $ErrorActionPreference = 'Stop'
+$launchMutex = $null
+$hasLock = $false
 try {
     $appFolder = $PSScriptRoot
     $runtimePath = Join-Path $appFolder 'runtime\node.exe'
@@ -9,6 +11,12 @@ try {
     if ($port -lt 1 -or $port -gt 65535) { throw 'Choose a local port between 1 and 65535.' }
     $url = "http://127.0.0.1:$port"
     $pidFile = Join-Path $dataFolder "server-$port.json"
+    $lockKey = ($dataFolder.ToUpperInvariant() + ':' + $port)
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try { $lockHash = [BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($lockKey))).Replace('-','') } finally { $sha.Dispose() }
+    $launchMutex = New-Object Threading.Mutex($false, "Local\StoicBody-$lockHash")
+    try { $hasLock = $launchMutex.WaitOne(30000) } catch [Threading.AbandonedMutexException] { $hasLock = $true }
+    if (-not $hasLock) { throw 'Another start or stop is still running. Try again in a moment.' }
     function Get-OwnedProcess {
         if (-not (Test-Path -LiteralPath $pidFile)) { return $null }
         $saved = Get-Content -LiteralPath $pidFile -Raw | ConvertFrom-Json
@@ -35,13 +43,17 @@ try {
         $started = Start-Process -FilePath $runtimePath -ArgumentList ('"' + $serverPath + '"') -WorkingDirectory $appFolder -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $dataFolder 'startup.log') -RedirectStandardError (Join-Path $dataFolder 'startup-error.log')
         $processInfo = Get-CimInstance Win32_Process -Filter "ProcessId = $($started.Id)"
         if (-not $processInfo) { throw 'The local service could not start. Check the startup logs in your StoicBody data folder.' }
-        @{ id = $started.Id; created = $processInfo.CreationDate.ToUniversalTime().Ticks.ToString() } | ConvertTo-Json | Set-Content -LiteralPath $pidFile -Encoding UTF8
+        $pendingPidFile = "$pidFile.pending"
+        @{ id = $started.Id; created = $processInfo.CreationDate.ToUniversalTime().Ticks.ToString() } | ConvertTo-Json | Set-Content -LiteralPath $pendingPidFile -Encoding UTF8
+        if (Test-Path -LiteralPath $pidFile) { [IO.File]::Replace($pendingPidFile, $pidFile, "$pidFile.previous") } else { [IO.File]::Move($pendingPidFile, $pidFile) }
     }
     $ready = $false
     for ($attempt = 0; $attempt -lt 30; $attempt++) {
         try {
             $identity = Invoke-RestMethod -Uri "$url/api/identity" -TimeoutSec 1
-            if ($identity.product -eq 'Stoic Body' -and (Get-OwnedProcess)) { $ready = $true; break }
+            $running = Get-OwnedProcess
+            $activeListener = Get-NetTCPConnection -LocalAddress '127.0.0.1' -LocalPort $port -State Listen -ErrorAction SilentlyContinue
+            if ($identity.product -eq 'Stoic Body' -and $running -and $activeListener -and $activeListener.OwningProcess -eq $running.ProcessId) { $ready = $true; break }
         } catch { Start-Sleep -Milliseconds 200 }
     }
     if (-not $ready) { throw 'The local service did not become ready. Check startup-error.log in your StoicBody data folder.' }
@@ -49,3 +61,4 @@ try {
     Write-Host "Stoic Body is ready: $url"
     Write-Host "Saved data: $dataFolder"
 } catch { Write-Error $_.Exception.Message; exit 1 }
+finally { if ($hasLock) { $launchMutex.ReleaseMutex() }; if ($launchMutex) { $launchMutex.Dispose() } }
