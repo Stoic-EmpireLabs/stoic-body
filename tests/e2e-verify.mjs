@@ -78,9 +78,10 @@ async function verifyLiveApp() {
   await page.goto("https://stoic-body.vercel.app/calendar", { waitUntil: "networkidle" });
   const timelineHeader = await page.locator("text=Protected Buffer Timeline").first();
   console.log("✅ Protected Buffer Timeline verified");
-  const mvdButton = page.locator("button:has-text('Active Day View')");
+  const mvdButton = page.locator("button:has-text('Activate Minimum Viable Day')");
   await mvdButton.click();
-  console.log("✅ Switched to Minimum Viable Day (MVD) compressed schedule");
+  const mvdActiveBadge = await page.locator("text=MVD ACTIVE (COMPRESSED)").first();
+  console.log("✅ Switched to Minimum Viable Day (MVD) compressed schedule and verified toggle state");
 
   // 8. Settings & Sovereign License
   console.log("📍 Navigating to /settings ...");
