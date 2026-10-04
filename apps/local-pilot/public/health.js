@@ -7,6 +7,21 @@ window.Health = (() => {
   const edits = {};
   const historyLimits = {};
   let mealDraft = { id: 'chicken-bowl', amounts: {} };
+  function showMeals() {
+    const notes = String(edits.food?.data.notes || ''), library = catalog?.meals;
+    const recipe = library?.recipes.find(r => notes.startsWith(`Recipe ${r.id};`));
+    if (recipe) {
+      const amounts = {};
+      for (const portion of recipe.portions) {
+        const ingredient = library.ingredients.find(i => i.id === portion.ingredient);
+        const suffix = ` g ${ingredient.name}; reference `;
+        const line = notes.split('\n').find(line => line.includes(suffix));
+        if (line) { const grams = Number(line.slice(0, line.indexOf(suffix))); if (Number.isFinite(grams) && grams >= portion.min && grams <= portion.max) amounts[ingredient.id] = grams; }
+      }
+      mealDraft = { id: recipe.id, amounts };
+    }
+    tab = 'meals'; ctx.render();
+  }
   const el = (...a) => ctx.element(...a), button = (...a) => ctx.action(...a), records = () => ctx.snapshot().health || [];
   function field(form, name, label, type = 'text', value = '', options = [], required = true) {
     const wrapper = el('label', label), input = el(type === 'select' ? 'select' : type === 'textarea' ? 'textarea' : 'input'); input.name = name; input.setAttribute('aria-label', label);
@@ -69,14 +84,18 @@ window.Health = (() => {
     const columns = el('div', undefined, 'pilot-columns'), left = el('div', undefined, 'pilot-stack'), right = el('div', undefined, 'pilot-stack');
     const totals = ctx.card('What you recorded'); totals.append(el('p', 'Loading your day…', 'muted')); right.append(totals);
     const [food, f, d] = editor('food', 'Log a meal');
-    food.append(button('Choose a meal or drink', () => { tab = 'meals'; ctx.render(); }));
+    food.append(button('Choose a meal or drink', showMeals));
     if (d.notes?.startsWith('Recipe ')) f.append(el('p', 'Recipe estimate ready for review. Save only what you actually ate. To recalculate ingredient weights, return to Meals; changing the text here does not recalculate nutrients.', 'muted'));
     field(f, 'title', 'Food name', 'text', d.title); field(f, 'portion', 'Portion', 'text', d.portion);
     field(f, 'source', 'Nutrition source', 'select', d.source || 'estimate', [['estimate', 'My estimate'], ['label', 'Food label'], ['database', 'Database — identify it in notes']]);
     const detail = el('details'); detail.append(el('summary', 'Optional nutrients')); f.append(detail);
     for (const [key, label] of [['calories', 'Calories (optional)'], ['protein', 'Protein g (optional)'], ['carbs', 'Carbohydrate g (optional)'], ['fat', 'Fat g (optional)'], ['fiber', 'Fiber g (optional)']]) field(detail, key, label, 'number', d[key], [], false);
     field(f, 'notes', 'Food notes / source details', 'textarea', d.notes, [], false);
-    submit(f, 'Save food', () => save('food', { date: d.date, title: value(f, 'title'), portion: value(f, 'portion'), source: value(f, 'source'), notes: value(f, 'notes'), ...Object.fromEntries(['calories', 'protein', 'carbs', 'fat', 'fiber'].map(k => [k, numeric(f, k)])) })); left.append(food);
+    const readFood = () => ({ date: d.date, title: value(f, 'title'), portion: value(f, 'portion'), source: value(f, 'source'), notes: value(f, 'notes'), ...Object.fromEntries(['calories', 'protein', 'carbs', 'fat', 'fiber'].map(k => [k, numeric(f, k)])) });
+    const retainFoodDraft = () => { edits.food = { ...edits.food, data: readFood() }; };
+    f.addEventListener('input', retainFoodDraft); f.addEventListener('change', retainFoodDraft);
+    submit(f, 'Save food', () => save('food', readFood()));
+    if (edits.food) food.append(button(edits.food.id ? 'Cancel food edit' : 'Clear food draft', () => { edits.food = null; ctx.render(); })); left.append(food);
     const [water, wf, wd] = editor('water', 'Water and hydration'); field(wf, 'ml', 'Water (ml)', 'number', wd.ml); field(wf, 'notes', 'Hydration notes', 'text', wd.notes, [], false);
     submit(wf, 'Save water', () => save('water', { date: wd.date, ml: numeric(wf, 'ml'), notes: value(wf, 'notes') })); left.append(water);
     const [checkin, cf, cd] = editor('checkin', 'How you feel');
@@ -119,7 +138,16 @@ window.Health = (() => {
         const amounts = el('ul', undefined, 'meal-ingredients');
         result.ingredients.forEach(i => amounts.append(el('li', `${i.grams} g ${i.name}`))); if (result.waterMl) amounts.append(el('li', `${result.waterMl} ml water`)); panel.append(amounts);
         panel.append(el('p', 'A recipe estimate, not a daily target. Brand, cooking yield and rounded source data affect these numbers. Food logging earns no XP.', 'muted'));
-        panel.append(button('Use in food log', () => { edits.food = { data: { ...result.food, date: ctx.date() } }; tab = 'fuel'; ctx.render(); document.querySelector('#food-form input')?.focus(); }, true));
+        const editing = Boolean(edits.food?.id);
+        if (editing) panel.append(el('p', `Editing a saved food entry from ${edits.food.data.date}. Apply replaces its ingredient and nutrient draft; Save food confirms the correction.`, 'muted'));
+        else if (edits.food) panel.append(el('p', 'Use in food log replaces your current unsaved food draft with this reviewed recipe. Return to Fuel to keep that draft.', 'muted'));
+        const useFood = asNew => {
+          const target = asNew ? null : edits.food;
+          edits.food = { ...(target?.id ? { id: target.id, revision: target.revision } : {}), data: { ...result.food, date: target?.id ? target.data.date : ctx.date() } };
+          tab = 'fuel'; ctx.render(); document.querySelector('#food-form input')?.focus();
+        };
+        panel.append(button(editing ? 'Apply to edited food entry' : 'Use in food log', () => useFood(false), true));
+        if (editing) panel.append(button('Use as a new food entry', () => useFood(true)));
         const sources = el('details', undefined, 'meal-sources'); sources.append(el('summary', `Ingredient sources · reviewed ${library.reviewed}`));
         result.ingredients.forEach(i => { const p = el('p', undefined, 'health-source'); link(p, i.source); sources.append(p); }); panel.append(sources);
         if (recipe.allergens.length) panel.append(el('p', `Allergen notes: ${recipe.allergens.join('; ')}. Check all packaging and personal restrictions.`, 'muted'));
@@ -232,7 +260,7 @@ window.Health = (() => {
     const root = document.querySelector('#main'), toolbar = el('div', undefined, 'health-toolbar'), dateForm = el('div', undefined, 'pilot-form');
     const date = field(dateForm, 'health-date', 'Health date', 'date', ctx.date()); date.addEventListener('change', () => { if (date.value) { ctx.setDate(date.value); ctx.render(); } }); toolbar.append(dateForm);
     const tabs = el('nav', undefined, 'health-tabs'); tabs.setAttribute('aria-label', 'Health views');
-    for (const [key, label] of [['meals', 'Meals'], ['fuel', 'Fuel'], ['train', 'Train'], ['progress', 'Progress'], ['evidence', 'Evidence']]) { const b = button(label, () => { tab = key; ctx.render(); }); if (tab === key) b.setAttribute('aria-current', 'page'); tabs.append(b); } toolbar.append(tabs); root.append(toolbar);
+    for (const [key, label] of [['meals', 'Meals'], ['fuel', 'Fuel'], ['train', 'Train'], ['progress', 'Progress'], ['evidence', 'Evidence']]) { const b = button(label, () => { if (key === 'meals') showMeals(); else { tab = key; ctx.render(); } }); if (tab === key) b.setAttribute('aria-current', 'page'); tabs.append(b); } toolbar.append(tabs); root.append(toolbar);
     if (!catalog) { root.append(el('p', 'Opening the evidence library…', 'muted')); void ctx.api('health-content').then(data => { catalog = data; if (current === generation) ctx.render(); }).catch(e => { if (current === generation) root.append(el('p', e.message, 'warning')); }); return; }
     ({ meals, fuel, train, progress, evidence })[tab](root, current);
   }

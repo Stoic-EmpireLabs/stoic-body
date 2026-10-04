@@ -36,3 +36,5 @@ The latest requests add competitor research at every phase, a Brilliant-informed
 
 ## Meal correction — October 4
 Actual foods/portions requested by user are now implemented in Health → Meals. See meal-templates-checkpoint.md and research/meal-portions-and-drinks.md. This is an authorized correction within Health; daily targets still await missing inputs. Keep local branch/pilot and full launch requirements.
+
+Meal correction handoff: two independent review findings fixed with observed RED-to-GREEN tests. Final 107/107 automated tests, typecheck/lint, and read-only live meal smoke passed. Health browser journey passed 15 checks. Actual bowl estimates and remaining daily-target inputs are documented in meal-templates-checkpoint.md. Live service is running; user records were not seeded by testing.

@@ -119,4 +119,5 @@ Date: 2026-10-04. 101 requirements including the five learning additions below. 
 | L09 | User subscription answer | Cover Google AI Ultra when teaching Antigravity | Official plan/usage links and review exercise; 6A | Ultra quota/overage wording visible; actual account limits unverified |
 | L10 | User image and schedule request | AI, ML, DL, GenAI, LLMs, RAG, agentic AI, multimodal AI, fine-tuning, prompting and AI safety | Eleven-topic path and timeboxed shared-planner tasks; 6A | Core test verifies all topic IDs and scheduling integration; no automatic undisclosed calendar placement |
 
-| N15 | User meal correction 2026-10-04 | Actual fish/turkey/chicken, rice, vegetables, portions and drinks | Health Meals catalog, per-ingredient calculator and existing log/Plan integration; Phase 5 correction | 5 core plus 5 browser tests; meal-templates-checkpoint.md. Full-day personalization and groceries remain open. |
+| N15 | User meal correction 2026-10-04 | Actual fish/turkey/chicken, rice, vegetables, portions and drinks | Health Meals catalog, per-ingredient calculator and existing log/Plan integration; Phase 5 correction | 5 core plus 7 browser tests; meal-templates-checkpoint.md. Full-day personalization and groceries remain open. |
+

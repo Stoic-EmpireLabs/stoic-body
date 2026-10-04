@@ -80,3 +80,42 @@ test('meal endpoint validates amounts and leaves snapshot untouched', async () =
   const response = await page.request.post(new URL('/api/meal-preview', page.url()).href, { headers, data: {id:'turkey-bowl'} }); assert.equal(response.status(), 200);
   assert.deepEqual(await state(), before);
 }));
+
+test('recalculating a saved recipe preserves its identity, date and previous quantities', async () => fixture(async (page, state) => {
+  await openMeals(page);
+  await page.getByLabel('Skinless chicken breast, cooked / roasted (g)', { exact: true }).fill('120');
+  await page.getByRole('button', { name: 'Update portion', exact: true }).click();
+  await page.getByRole('button', { name: 'Use in food log', exact: true }).click();
+  await page.getByRole('button', { name: 'Save food', exact: true }).click(); await page.getByText('Health entry saved.', { exact: true }).waitFor();
+  const original = (await state()).health[0];
+  await openMeals(page); await page.getByLabel('Meal or drink').selectOption('salmon-bowl');
+  await page.getByRole('heading', { name: 'Your portion', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Fuel', exact: true }).click();
+  await page.getByRole('button', { name: 'Edit food', exact: true }).click();
+  await page.getByRole('button', { name: 'Choose a meal or drink', exact: true }).click();
+  await page.getByRole('heading', { name: 'Your portion', exact: true }).waitFor();
+  assert.equal(await page.getByLabel('Skinless chicken breast, cooked / roasted (g)', { exact: true }).inputValue(), '120');
+  await page.getByLabel('Skinless chicken breast, cooked / roasted (g)', { exact: true }).fill('85');
+  await page.getByRole('button', { name: 'Update portion', exact: true }).click();
+  await page.getByRole('button', { name: /^(Use in food log|Apply to edited food entry)$/ }).click();
+  await page.getByRole('button', { name: 'Save food', exact: true }).click(); await page.getByText('Health entry saved.', { exact: true }).waitFor();
+  const s = await state(); assert.equal(s.health.length, 1); assert.equal(s.health[0].id, original.id);
+  assert.equal(s.health[0].data.date, original.data.date); assert.equal(s.health[0].revision, original.revision + 1);
+  assert.equal(s.health[0].data.calories, 450); assert.equal(s.xpEvents.length, 0);
+}));
+
+test('unsaved food title, portions, nutrients and notes survive Meals and Fuel roundtrip', async () => fixture(async (page, state) => {
+  await openMeals(page); await page.getByRole('button', { name: 'Use in food log', exact: true }).click();
+  await page.getByLabel('Food name', { exact: true }).fill('Custom first meal');
+  await page.getByLabel('Portion', { exact: true }).fill('Actual weighed portion');
+  await page.getByText('Optional nutrients', { exact: true }).click();
+  await page.getByLabel('Calories (optional)', { exact: true }).fill('620');
+  await page.getByLabel('Food notes / source details').fill('My corrected sauce and source');
+  await page.getByRole('button', { name: 'Choose a meal or drink', exact: true }).click();
+  await page.getByRole('button', { name: 'Fuel', exact: true }).click();
+  assert.equal(await page.getByLabel('Food name', { exact: true }).inputValue(), 'Custom first meal');
+  assert.equal(await page.getByLabel('Portion', { exact: true }).inputValue(), 'Actual weighed portion');
+  assert.equal(await page.getByLabel('Calories (optional)', { exact: true }).inputValue(), '620');
+  assert.equal(await page.getByLabel('Food notes / source details').inputValue(), 'My corrected sauce and source');
+  assert.equal((await state()).health.length, 0);
+}));
