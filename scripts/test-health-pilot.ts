@@ -1,0 +1,54 @@
+import assert from 'node:assert/strict';
+import { chromium } from 'playwright';
+import { mkdirSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { resolve, join, dirname, basename } from 'node:path';
+import { startPilot } from '../apps/local-pilot/server';
+async function run() {
+  const dir = mkdtempSync(join(tmpdir(), 'stoic-health-'));
+  const pilot = await startPilot({ databasePath: join(dir, 'health.sqlite'), port: 0 });
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, timezoneId: 'America/Denver' });
+  const errors: string[] = [], checks: string[] = []; page.on('pageerror', e => errors.push(e.message));
+  const check = (name: string, value = true) => { assert.ok(value, name); checks.push(name); };
+  const saved = async (button: string) => { await page.getByRole('button', { name: button, exact: true }).click(); await page.getByText('Health entry saved.', { exact: true }).waitFor(); };
+  const evidence = resolve('docs/evidence/phase-5'); mkdirSync(evidence, { recursive: true }); page.setDefaultTimeout(5000);
+  try {
+    await page.goto(pilot.url); await page.getByRole('button', { name: 'Health', exact: true }).click();
+    await page.getByLabel('Health date').fill('2026-10-05');
+    await page.getByLabel('Food name', { exact: true }).fill('Synthetic lunch'); await page.getByLabel('Portion', { exact: true }).fill('1 plate');
+    await saved('Save food'); await page.getByText('Calories: unknown', { exact: true }).waitFor(); check('unknown calories are not shown as zero intake');
+    await page.getByRole('button', { name: 'Edit food', exact: true }).click();
+    await page.getByText('Optional nutrients', { exact: true }).click(); await page.getByLabel('Calories (optional)', { exact: true }).fill('450');
+    await saved('Save food'); await page.getByText('Calories: 450', { exact: true }).waitFor(); check('food edits replace the same entry');
+    await page.getByRole('button', { name: 'Use again', exact: true }).click(); await saved('Save food');
+    await page.getByText('Calories: 900', { exact: true }).waitFor(); check('reusing a food requires a reviewed save');
+    await page.getByLabel('Water (ml)', { exact: true }).fill('250'); await saved('Save water');
+    await page.getByText('Water logged: 250 ml', { exact: true }).waitFor(); check('hydration is logged without an invented target');
+    await page.getByRole('button', { name: 'Progress', exact: true }).click();
+    await page.getByLabel('Measurement value').fill('170'); await page.getByLabel('Measurement unit').selectOption('lb'); await page.getByLabel('Measurement method').fill('Home scale');
+    await saved('Save measurement'); await page.getByText(/7-day measured mean: 170.0 lb/).waitFor(); check('measurement units and visible trend assumptions');
+    await page.getByRole('button', { name: 'Evidence', exact: true }).click();
+    await page.getByLabel('First approach').selectOption('omad'); await page.getByLabel('Second approach').selectOption('carnivore');
+    check('diet evidence includes real source links', await page.locator('#diet-comparison a[href="https://pubmed.ncbi.nlm.nih.gov/17413096/"]').count() === 1);
+    await page.getByRole('button', { name: 'Train', exact: true }).click();
+    await page.getByRole('button', { name: 'Preview routine', exact: true }).click();
+    await page.getByText(/Starter generation is for adults/).waitFor(); check('unknown suitability cannot save a generated routine', await page.getByRole('button', { name: 'Save routine to tasks', exact: true }).count() === 0);
+    await page.getByLabel('I am 18 or older', { exact: true }).check(); await page.getByLabel('Relevant restrictions').selectOption('none'); await page.getByLabel('Cables', { exact: true }).check();
+    await page.getByRole('button', { name: 'Preview routine', exact: true }).click(); await page.getByRole('button', { name: 'Save routine to tasks', exact: true }).click();
+    await page.getByText('Routine saved. Review its place in Plan.', { exact: true }).waitFor(); check('routine is saved as an unscheduled task');
+    await page.getByLabel('Exercise', { exact: true }).selectOption({ label: 'Cable row' });
+    await page.getByLabel('Repetitions per set').fill('12'); await page.getByLabel('Load per set').fill('20'); await page.getByLabel('Effort (0–10, optional)').fill('6'); await saved('Save exercise log');
+    check('exercise log alone does not award XP', await page.locator('#total-xp').textContent() === '0 XP');
+    await page.screenshot({ path: join(evidence, 'health-desktop.png'), fullPage: true });
+    await page.getByRole('button', { name: 'Plan', exact: true }).click(); await page.getByRole('button', { name: 'Preview schedule', exact: true }).click(); await page.getByRole('button', { name: 'Accept schedule', exact: true }).click();
+    await page.getByRole('button', { name: 'Today', exact: true }).click(); await page.getByRole('button', { name: 'Complete', exact: true }).click(); await page.locator('#total-xp').filter({ hasText: '25 XP' }).waitFor(); check('scheduled workout grants the existing single award');
+    await page.reload(); await page.getByRole('button', { name: 'Health', exact: true }).click(); await page.getByLabel('Health date').fill('2026-10-05'); await page.getByText('Calories: 900', { exact: true }).waitFor(); check('health data survives page reload');
+    await page.setViewportSize({ width: 390, height: 844 }); check('health screen fits mobile width', await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    await page.screenshot({ path: join(evidence, 'health-mobile.png'), fullPage: true });
+    check('no browser runtime errors', errors.length === 0);
+    writeFileSync(join(evidence, 'browser-checks.json'), JSON.stringify({ at: new Date().toISOString(), checks, errors }, null, 2)); console.log(`${checks.length} health browser checks passed.`);
+  } catch (error) { console.error({ errors, displayedError: await page.locator('#error-message').textContent(), screenTail: (await page.locator('#main').innerText()).slice(-2000) }); throw error; }
+  finally { await browser.close(); await pilot.close(); const target = resolve(dir); assert.equal(dirname(target), resolve(tmpdir())); assert.ok(basename(target).startsWith('stoic-health-')); rmSync(target, { recursive: true, force: true }); }
+}
+run().catch(e => { console.error(e); process.exitCode = 1; });

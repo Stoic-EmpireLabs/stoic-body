@@ -6,6 +6,9 @@ import { CoreRepository, type Command } from '../../src/core/repository';
 import type { DayInput } from '../../src/core/schedule-store';
 import { resolveWallTime } from '../../src/core/time';
 import { object, keys, text, zone } from '../../src/core/validation';
+import { diets } from '../../src/core/health-content';
+import { summarizeHealth } from '../../src/core/health-metrics';
+import { buildRoutine, trainingStyles, progressionAdvice } from '../../src/core/training';
 
 export interface PilotOptions { databasePath: string; port: number }
 export interface PilotServer { url: string; close: () => Promise<void> }
@@ -13,6 +16,7 @@ class HttpError extends Error { constructor(readonly status: number, message: st
 const assets: Record<string, [string, string]> = {
   '/': ['apps/local-pilot/public/index.html', 'text/html'],
   '/app.js': ['apps/local-pilot/public/app.js', 'text/javascript'],
+  '/health.js': ['apps/local-pilot/public/health.js', 'text/javascript'],
   '/styles.css': ['apps/local-pilot/public/styles.css', 'text/css'],
   '/base.css': ['prototypes/phase-3/styles.css', 'text/css'],
   '/appearance.js': ['prototypes/phase-3/appearance.js', 'text/javascript'],
@@ -63,8 +67,15 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
         const supplied = request.headers['x-stoic-token'];
         if (!secretEquals(cookie, session) || typeof supplied !== 'string' || !secretEquals(supplied, token)) throw new HttpError(403, 'Your local session expired. Reload the app.');
         if (path === '/api/snapshot' && request.method === 'GET') { json(response, 200, { snapshot: repository.snapshot(owner) }); return; }
+        if (path === '/api/health-content' && request.method === 'GET') { json(response, 200, { diets, trainingStyles }); return; }
         if (request.method !== 'POST' || request.headers.origin !== origin) throw new HttpError(403, 'Save requests must come from this app.');
         const data = await body(request);
+        if (path === '/api/training-preview') { json(response, 200, buildRoutine(data)); return; }
+        if (path === '/api/health-summary') {
+          const p = object(data); keys(p, ['date', 'unit']); if (!['kg', 'lb'].includes(String(p.unit))) throw new Error('Choose weight units.');
+          json(response, 200, { summary: summarizeHealth(repository.snapshot(owner).health, text(p.date), p.unit as 'kg' | 'lb') }); return;
+        }
+        if (path === '/api/training-advice') { const p = object(data); keys(p, ['routineId', 'exercise']); json(response, 200, progressionAdvice(repository.snapshot(owner).health, text(p.routineId), text(p.exercise))); return; }
         if (path === '/api/command') {
           const receipt = repository.apply(owner, data as Command);
           json(response, receipt.status === 'conflict' ? 409 : 200, { receipt, snapshot: repository.snapshot(owner), ...(receipt.safeReason ? { error: receipt.safeReason } : {}) }); return;

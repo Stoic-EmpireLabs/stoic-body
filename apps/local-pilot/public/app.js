@@ -1,7 +1,7 @@
-/* global Appearance */
+/* global Appearance, Health */
 'use strict';
 const $ = selector => document.querySelector(selector);
-const labels = { today: 'Today', goals: 'Goals', plan: 'Plan', profile: 'Profile', settings: 'Settings' };
+const labels = { today: 'Today', goals: 'Goals', plan: 'Plan', health: 'Health', profile: 'Profile', settings: 'Settings' };
 const kinds = { task: 'Small task · 5 XP', focus: 'Focus / learning · 15 XP', workout: 'Workout · 25 XP', recovery: 'Recovery · 15 XP', reflection: 'Reflection · 10 XP', weeklyReview: 'Weekly review · 30 XP' };
 let snapshot, token, currentView = 'today', busy = false, pendingRequest = null, preview = null, editTask = null, editGoal = null;
 let timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -49,6 +49,7 @@ async function send(path, data, success) {
   setBusy(true); errorMessage('');
   try {
     const result = await api(path, data); pendingRequest = null;
+    Health.onResult(path, data, result);
     if (path === 'propose') { preview = result; timezone = result.proposal.timezone; selectedDate = data.date; }
     if (path === 'time') manualPreview = result;
     if (path === 'command') {
@@ -83,7 +84,7 @@ function render() {
   const l = level(snapshot.totalXp); $('#level-label').textContent = `Level ${l.rank}`;
   document.querySelectorAll('#navigation button').forEach(b => { if (b.dataset.view === currentView) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   $('#main').replaceChildren();
-  ({ today: renderToday, goals: renderGoals, plan: renderPlan, profile: renderProfile, settings: renderSettings })[currentView]();
+  ({ today: renderToday, goals: renderGoals, plan: renderPlan, health: Health.render, profile: renderProfile, settings: renderSettings })[currentView]();
   setBusy(busy);
 }
 function renderToday() {
@@ -229,4 +230,5 @@ async function boot() {
   } catch (error) { errorMessage(error.message); }
   finally { setBusy(false); }
 }
+Health.init({ element, action, card, intro, snapshot: () => snapshot, date: () => selectedDate, setDate: d => { selectedDate = d; }, api, command, send, render });
 void boot();
