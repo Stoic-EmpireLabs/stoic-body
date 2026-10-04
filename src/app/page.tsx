@@ -53,6 +53,17 @@ export default function TodayCommandCenter() {
       completed: false,
       boosted: false,
     },
+    {
+      id: "a4",
+      title: "AI Spectrum Mastery: Learn AI, ML, DL, GenAI, LLMs, RAG & Agentic AI",
+      subtitle: "11:30 Daily Session · Active Code Sandbox, Neural Nets & Swarms · Tier 2",
+      tier: DifficultyTier.Routine,
+      basePoints: 300,
+      attribute: "Intellect",
+      badgeClass: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+      completed: false,
+      boosted: false,
+    },
   ]);
 
   const [reflectionText, setReflectionText] = useState("");
