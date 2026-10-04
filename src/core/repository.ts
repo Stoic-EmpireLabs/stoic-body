@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import {object,keys,id,number,integer,text,canonical,instant,zone} from './validation';
 import { migratePlanning, executePlanning, readGoals, readTaskDetails, type CoreGoal } from './planning-store';
 import { earnedXp, type ActionKind } from './xp';
+import { migrateHealth, executeHealth, readHealth, type HealthRecord } from './health-store';
 export interface Command {
     schemaVersion: 1;
     operationId: string;
@@ -56,6 +57,7 @@ export interface XpEvent {
     revision: number;
 }
 export interface Snapshot {
+    health: HealthRecord[];
     schemaVersion: 1;
     ownerId: string;
     profileRevision: number;
@@ -79,7 +81,7 @@ export class CoreRepository {
         const version = (db.prepare('PRAGMA user_version').get() as {
             user_version: number;
         }).user_version;
-        if (version > 3) {
+        if (version > 4) {
             db.close();
             throw new Error('Database schema requires a newer application.');
         }
@@ -105,6 +107,7 @@ export class CoreRepository {
         }
         migratePlanning(db);
         migrateSchedules(db);
+        migrateHealth(db);
     }
     close() { this.database.close(); }
     ownerCount() { return (this.database.prepare('SELECT COUNT(*) AS count FROM core_owners').get() as {
@@ -128,7 +131,7 @@ export class CoreRepository {
         id(c.entityId);
         integer(c.baseRevision, 0);
         object(c.payload);
-        if (typeof c.type !== 'string' || !['task.create', 'task.update', 'task.archive', 'goal.create', 'goal.update', 'goal.archive', 'schedule.accept', 'schedule.undo', 'occurrence.move', 'occurrence.lock', 'occurrence.create', 'completion.set', 'profile.answer'].includes(c.type))
+        if (typeof c.type !== 'string' || !['health.save', 'health.archive', 'task.create', 'task.update', 'task.archive', 'goal.create', 'goal.update', 'goal.archive', 'schedule.accept', 'schedule.undo', 'occurrence.move', 'occurrence.lock', 'occurrence.create', 'completion.set', 'profile.answer'].includes(c.type))
             throw new Error('Unsupported command.');
         const serialized = canonical(c);
         if (Buffer.byteLength(serialized, 'utf8') > 1_048_576) throw new Error('Command size exceeds 1 MiB.');
@@ -161,6 +164,8 @@ export class CoreRepository {
     }
     private execute(ownerId: string, c: Command): Receipt {
         const p = object(c.payload), db = this.database;
+        const health = executeHealth(db, ownerId, c);
+        if (health) return health;
         const accepted = (revision: number): Receipt => ({ operationId: c.operationId, status: 'accepted', canonicalRevision: revision });
         const conflict = (revision: number): Receipt => ({ operationId: c.operationId, status: 'conflict', canonicalRevision: revision, safeReason: 'This record changed. Review the current version before applying your edit.' });
         const schedule = executeSchedule(db, ownerId, c, () => this.readSnapshot(ownerId));
@@ -276,6 +281,6 @@ export class CoreRepository {
         const occurrences = db.prepare('SELECT id,task_id AS taskId,start_at AS startAt,end_at AS endAt,timezone,locked,fraction,revision FROM core_occurrences o WHERE owner_id=? AND NOT EXISTS (SELECT 1 FROM core_cancelled_occurrences c WHERE c.owner_id=o.owner_id AND c.occurrence_id=o.id) ORDER BY start_at,id').all(ownerId) as unknown as CoreOccurrence[];
         const xpEvents = db.prepare('SELECT operation_id AS operationId,occurrence_id AS occurrenceId,delta,revision FROM core_xp_events WHERE owner_id=? ORDER BY sequence').all(ownerId) as unknown as XpEvent[];
         const pending = db.prepare('SELECT command_json FROM core_outbox WHERE owner_id=? ORDER BY sequence').all(ownerId).map(row => JSON.parse(String(row.command_json)) as Command);
-        return { schemaVersion: 1, ownerId, profileRevision: owner.profile_revision, answers: JSON.parse(owner.answers_json), scheduleBatches: readBatches(db, ownerId), goals: readGoals(db, ownerId), tasks, occurrences, xpEvents, totalXp: xpEvents.reduce((total, e) => total + e.delta, 0), pending };
+        return { schemaVersion: 1, ownerId, health: readHealth(db, ownerId), profileRevision: owner.profile_revision, answers: JSON.parse(owner.answers_json), scheduleBatches: readBatches(db, ownerId), goals: readGoals(db, ownerId), tasks, occurrences, xpEvents, totalXp: xpEvents.reduce((total, e) => total + e.delta, 0), pending };
     }
 }
