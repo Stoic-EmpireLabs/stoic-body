@@ -1,9 +1,10 @@
-/* global Appearance, Health, Learn */
+/* global Appearance, Health, Learn, Access, Host */
 'use strict';
 const $ = selector => document.querySelector(selector);
-const labels = { today: 'Today', goals: 'Goals', plan: 'Plan', health: 'Health', learn: 'Learn', profile: 'Profile', settings: 'Settings' };
+const labels = { today: 'Today', goals: 'Goals', plan: 'Plan', health: 'Health', learn: 'Learn', profile: 'Profile', settings: 'Settings', setup: 'Your guide' };
 const kinds = { task: 'Small task · 5 XP', focus: 'Focus / learning · 15 XP', workout: 'Workout · 25 XP', recovery: 'Recovery · 15 XP', reflection: 'Reflection · 10 XP', weeklyReview: 'Weekly review · 30 XP' };
 let snapshot, token, currentView = 'today', busy = false, pendingRequest = null, preview = null, editTask = null, editGoal = null;
+let account, guide;
 const requestedView = new URLSearchParams(location.search).get('view');
 if (Object.hasOwn(labels, requestedView)) currentView = requestedView;
 let timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -42,7 +43,10 @@ async function api(path, data) {
   try { response = await fetch(`/api/${path}`, { method: data === undefined ? 'GET' : 'POST', headers: { 'X-Stoic-Token': token || '', 'Content-Type': 'application/json' }, ...(data === undefined ? {} : { body: JSON.stringify(data) }) }); }
   catch { throw new Error('Could not reach the local app. Check that it is running, then retry.'); }
   const result = await response.json();
+  if (response.status === 401 && !path.startsWith('auth/')) { snapshot = null; token = null; document.querySelector('.pilot-shell').hidden = true; location.replace('/'); throw new Error('Please sign in again.'); }
   if (result.snapshot) snapshot = result.snapshot;
+  if (result.guide) guide = result.guide;
+  if (result.account) account = result.account;
   if (!response.ok) { const e = new Error(result.error || 'This change could not be saved.'); e.responseStatus = response.status; throw e; }
   return result;
 }
@@ -86,11 +90,13 @@ function render() {
   const l = level(snapshot.totalXp); $('#level-label').textContent = `Level ${l.rank}`;
   document.querySelectorAll('#navigation button').forEach(b => { if (b.dataset.view === currentView) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   $('#main').replaceChildren();
-  ({ today: renderToday, goals: renderGoals, plan: renderPlan, health: Health.render, learn: Learn.render, profile: renderProfile, settings: renderSettings })[currentView]();
+  ({ today: renderToday, goals: renderGoals, plan: renderPlan, health: Health.render, learn: Learn.render, profile: renderProfile, settings: renderSettings, setup: Host.render })[currentView]();
+  Host.afterRender();
   setBusy(busy);
 }
 function renderToday() {
   const heading = intro('Your day, your direction.', 'A little structure. A clear next action. Room for real life.');
+  Host.dashboard($('#main'));
   const date = element('label', 'Selected date', 'date-field'); const input = element('input'); input.type = 'date'; input.value = selectedDate; input.addEventListener('change', () => { selectedDate = input.value; render(); }); date.append(input); heading.append(date);
   const sessions = snapshot.occurrences.filter(o => dayOf(o.startAt) === selectedDate);
   const next = sessions.find(o => o.fraction < 1);
@@ -213,25 +219,35 @@ function renderProfile() {
   form.addEventListener('submit', event => { event.preventDefault(); void command('profile.answer', 'profile', { questionId, state: 'answered', value: question[3] === 'number' ? Number(input.value) : input.value }, snapshot.profileRevision); }); c.append(form);
   const controls = element('div', undefined, 'pilot-actions'); for (const [state, label] of [['skipped', 'Skip this question'], ['unknown', 'I do not know yet']]) controls.append(action(label, () => command('profile.answer', 'profile', { questionId, state }, snapshot.profileRevision)));
   c.append(controls, element('p', answer ? `Saved: ${answer.state}${answer.unit ? ` (${answer.unit})` : ''}` : 'Not answered yet', 'saved-state'));
-  c.append(element('p', `${questions.filter(q => snapshot.answers[q[0]]).length} of ${questions.length} questions addressed. Answers stay in the local database. Health planning is a later phase.`, 'muted')); $('#main').append(c);
+  c.append(element('p', `${questions.filter(q => snapshot.answers[q[0]]).length} of ${questions.length} questions addressed. Answers stay in your local account. Health contains meal templates and starter sessions; full personalization remains under development.`, 'muted')); $('#main').append(c);
 }
 function renderSettings() {
   intro('Make this space yours.', 'Choose the light, the colors and the mood of your daily practice.');
   const appearance = element('div'); appearance.innerHTML = Appearance.markup(); $('#main').append(appearance);
-  const storage = card('Your local pilot'); storage.append(element('p', 'Your goals, profile, calendar and XP are saved on this computer. Keep the local app running to use them. A reload does not erase your progress.', 'muted'), element('p', 'Device sync, account sign-in, native alarms and backup/restore are still being built. This pilot does not send your entries to an AI service.', 'muted')); $('#main').append(storage);
+  const storage = card('Your account'); storage.append(element('p', `Signed in as ${account.displayName} (@${account.username}). Your goals, profile, calendar and XP are saved on this computer. A reload does not erase your progress.`, 'muted'), element('p', 'Sign-in protects access through this app; it does not encrypt the database against someone with access to your operating-system files. Device sync, native alarms and backup/restore are still being built. This pilot does not send your entries to an AI service.', 'muted'),action('Open my guide',Host.help)); $('#main').append(storage);
 }
 document.addEventListener('click', event => { const b = event.target.closest('button[data-view]'); if (b) navigate(b.dataset.view); });
 $('#retry').addEventListener('click', () => { if (pendingRequest) { const p = pendingRequest; void send(p.path, p.data, p.success); } });
 $('#reload').addEventListener('click', () => { void boot(); });
+$('#help').addEventListener('click', () => { if (!busy && !pendingRequest) Host.help(); });
+$('#signout').addEventListener('click', () => { if (busy || pendingRequest) { message('Finish or retry your pending save before signing out.'); return; } void Access.signOut(); });
 async function boot() {
   if (busy) return;
   setBusy(true);
   try {
     const result = await api('bootstrap'); token = result.token;
+    if (!result.authenticated) { snapshot = null; pendingRequest = null; Access.show(); return; }
+    $('#access').hidden = true; document.querySelector('.pilot-shell').hidden = false;
+    if (['welcome','questions'].includes(guide.state.stage)) { currentView = 'setup'; Host.resetPanel(); }
     errorMessage(pendingRequest ? 'Reconnected. Your earlier save still needs a retry.' : ''); render();
-  } catch (error) { errorMessage(error.message); }
+  } catch (error) { if (!snapshot) Access.show(error.message); else errorMessage(error.message); }
   finally { setBusy(false); }
 }
 Health.init({ element, action, card, intro, snapshot: () => snapshot, date: () => selectedDate, setDate: d => { selectedDate = d; }, api, command, send, render });
 Learn.init({ element, action, card, intro, snapshot: () => snapshot, api, command, render, navigate });
+Access.init({element,card,api});
+Host.init({element,action,card,intro,questions,snapshot:()=>snapshot,account:()=>account,guide:()=>guide,api,render,navigate,setBusy});
+let idleTimer;
+function resetIdle() { clearTimeout(idleTimer); if (account) idleTimer = setTimeout(() => { void Access.signOut(); }, 30 * 60 * 1000); }
+document.addEventListener('pointerdown',resetIdle);document.addEventListener('keydown',resetIdle);
 void boot();

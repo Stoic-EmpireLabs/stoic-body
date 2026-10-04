@@ -21,6 +21,8 @@ const assets: Record<string, [string, string]> = {
   '/app.js': ['apps/local-pilot/public/app.js', 'text/javascript'],
   '/health.js': ['apps/local-pilot/public/health.js', 'text/javascript'],
   '/learn.js': ['apps/local-pilot/public/learn.js', 'text/javascript'],
+  '/access.js': ['apps/local-pilot/public/access.js', 'text/javascript'],
+  '/host.js': ['apps/local-pilot/public/host.js', 'text/javascript'],
   '/styles.css': ['apps/local-pilot/public/styles.css', 'text/css'],
   '/base.css': ['prototypes/phase-3/styles.css', 'text/css'],
   '/appearance.js': ['prototypes/phase-3/appearance.js', 'text/javascript'],

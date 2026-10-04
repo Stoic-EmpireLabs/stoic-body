@@ -269,5 +269,5 @@ window.Health = (() => {
     if (path === 'command' && data.type === 'health.save') edits[data.payload.kind] = null;
     if (path === 'command' && data.type === 'training.create') { selectedRoutine = data.entityId; selectedExercise = ''; preview = null; }
   }
-  return { init: context => { ctx = context; }, render, onResult };
+  return { init: context => { ctx = context; }, render, onResult, openTab: value => { if (['meals','fuel','train','progress','evidence'].includes(value)) { tab = value; ctx.render(); } } };
 })();

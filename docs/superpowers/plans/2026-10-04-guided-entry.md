@@ -54,7 +54,21 @@ Interfaces: Access handles guest forms and one-time recovery-key display, then r
 
 Completion command: node --import tsx --test tests/pilot/onboarding.test.ts
 
-## Task 3: Whole-flow verification and handoff
+## Task 3: Downloadable Windows package
+
+Added by the user's explicit GitHub/download clarification: his wife should download a fresh copy and customize her own account, goals and experience.
+
+Files: scripts/build-desktop.mjs; apps/desktop/launch.ps1; launcher CMD files; desktop guide; scripts/test-desktop.mjs; server identity/main configuration; README and package scripts.
+
+Interfaces: bundle the local service and an allowlist of UI assets with the installed Node Windows x64 executable and its matching official license. A launcher stores runtime data under LOCALAPPDATA/StoicBody, starts hidden and opens the browser. No owner database, private discovery file, environment file or developer dependencies in the archive. An explicit stop launcher verifies its own runtime PID/path before stopping.
+
+- [ ] Write a packaging smoke that checks the allowlist, startup, guest isolation and actual launcher/stop behavior using temporary user data. Observe failure before the package builder exists.
+- [ ] Build a standalone ZIP without needing Node/npm on the recipient's computer; retain the unsigned local-pilot boundary. Include a manifest/hash and current startup/update instructions. No new external account or paid service.
+- [ ] Verify bundled app and onboarding in isolated data, then commit packaging sources. Publication occurs only after final verification/review in Task 4.
+
+Completion command: npm run test:desktop
+
+## Task 4: Whole-flow verification and handoff
 
 Files: docs/guided-entry-checkpoint.md; docs/progress.md; docs/requirements.md; docs/decisions.md; docs/evidence/guided-entry/.
 
@@ -62,5 +76,6 @@ Files: docs/guided-entry-checkpoint.md; docs/progress.md; docs/requirements.md; 
 - [ ] Inspect synthetic screenshots at desktop/mobile, verify actual dialogs and keyboard flow. Commit evidence/docs.
 - [ ] Fresh reviewer examines complete immutable change. Fix Important/Critical findings in one RED→GREEN pass, then whole suite.
 - [ ] Restart live pilot, read-only guest smoke; retain existing local data. Present login/setup screen for user to create their own account. Keep branch and ignored evidence workspace.
+- [ ] User authorized GitHub distribution. Inspect outgoing files for private data, push the implementation branch, and publish a clearly labeled prerelease ZIP with exact run instructions. Do not merge or deploy the local service publicly. Verify uploaded asset size/hash and repository links.
 
 Completion command: npm test
