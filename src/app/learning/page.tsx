@@ -357,77 +357,73 @@ export default function LearningPage() {
           </div>
         </div>
 
-        {/* RESPONSIVE VIDEO SCREEN */}
-        <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden border border-red-900/60 shadow-2xl">
-          {isPlaying ? (
-            <div className="w-full h-full relative flex flex-col">
-              <iframe
-                src={`${selectedVideo.embedUrl}?autoplay=1&rel=0`}
-                title={selectedVideo.title}
-                className="w-full h-full border-0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              />
-              <button
-                onClick={() => setIsPlaying(false)}
-                className="absolute top-3 right-3 bg-black/80 hover:bg-black text-white text-xs px-3 py-1.5 rounded-lg border border-red-950 backdrop-blur-md font-bold transition flex items-center gap-1"
+        {/* RESPONSIVE VIDEO SCREEN / LAUNCHPAD */}
+        <div className="relative w-full aspect-video bg-gradient-to-br from-black via-[#140608] to-black rounded-xl overflow-hidden border border-red-900/60 shadow-2xl flex flex-col justify-between p-6">
+          <div className="flex justify-between items-start">
+            <span className="text-xs font-mono bg-black/90 backdrop-blur-md px-3 py-1 rounded text-white border border-red-900/40">
+              HD &bull; Verified Instructional Video Guide
+            </span>
+            <span className="text-xs font-mono text-amber-400 bg-black/90 px-2.5 py-1 rounded border border-amber-500/30 font-bold">
+              {selectedVideo.duration}
+            </span>
+          </div>
+
+          {/* PLAY BUTTON / ACTIVE VIEWER */}
+          <div className="self-center text-center my-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a
+                href={selectedVideo.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-20 h-20 rounded-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white flex items-center justify-center text-3xl shadow-2xl transition transform hover:scale-110 border-2 border-red-400/40 cursor-pointer"
+                title="Watch Video on YouTube"
               >
-                <span>✕</span> Close In-App Player
-              </button>
-            </div>
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-black via-[#0D0507] to-black flex flex-col justify-between p-6">
-              <div className="flex justify-between items-start">
-                <span className="text-xs font-mono bg-black/80 backdrop-blur-md px-3 py-1 rounded text-white border border-red-900/40">
-                  HD &bull; Verified Instructional Video Guide
-                </span>
-                <span className="text-xs font-mono text-amber-400 bg-black/80 px-2.5 py-1 rounded border border-amber-500/30 font-bold">
-                  {selectedVideo.duration}
-                </span>
-              </div>
+                ▶
+              </a>
 
-              {/* PLAY BUTTON / ACTIVE VIEWER */}
-              <div className="self-center text-center my-auto">
-                <div className="flex items-center justify-center gap-4">
-                  <button
-                    onClick={() => setIsPlaying(true)}
-                    className="w-16 h-16 rounded-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white flex items-center justify-center text-2xl shadow-2xl transition transform hover:scale-105 border border-red-400/30"
-                    title="Play Video In App"
-                  >
-                    ▶
-                  </button>
-                  <a
-                    href={selectedVideo.videoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-3 rounded-xl bg-[#121218] hover:bg-black border border-amber-500/50 hover:border-amber-400 text-amber-400 font-bold text-xs uppercase tracking-wider transition shadow flex items-center gap-2"
-                  >
-                    <span>↗</span> Open Direct Link
-                  </a>
-                </div>
-
-                <div className="text-xs text-white mt-4 font-bold tracking-wide">
-                  Click &ldquo;▶&rdquo; to Play In-App &bull; Or click &ldquo;Open Direct Link&rdquo; to watch on YouTube
-                </div>
-                <p className="text-[11px] text-slate-300 max-w-lg mx-auto mt-1 leading-relaxed">
-                  {selectedVideo.description}
-                </p>
-              </div>
-
-              {/* TIMELINE CHAPTERS */}
-              <div className="bg-black/80 backdrop-blur-md p-3 rounded-lg border border-red-950/80 flex flex-wrap gap-2 text-[11px] font-mono text-white overflow-x-auto">
-                <span className="text-amber-400 font-bold self-center">Chapters:</span>
-                {selectedVideo.chapters.map((ch, idx) => (
-                  <span
-                    key={idx}
-                    className="px-2.5 py-0.5 rounded bg-neutral-900/90 border border-red-950 hover:border-amber-400/50 cursor-pointer whitespace-nowrap text-white font-medium"
-                  >
-                    <strong className="text-amber-400 mr-1">{ch.time}</strong> {ch.title}
-                  </span>
-                ))}
+              <div className="flex flex-col gap-2">
+                <a
+                  href={selectedVideo.videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 text-white font-extrabold text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 border border-red-500/50"
+                >
+                  <span>▶</span> Watch Video Guide (Opens New Tab) ↗
+                </a>
+                <a
+                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(selectedVideo.title)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-2.5 rounded-xl bg-black hover:bg-neutral-900 text-amber-400 font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center gap-2 border border-amber-500/40"
+                >
+                  <span>🔍</span> Search Related Guides on YouTube ↗
+                </a>
               </div>
             </div>
-          )}
+
+            <div className="text-xs text-white mt-4 font-bold tracking-wide">
+              Click &ldquo;▶&rdquo; or &ldquo;Watch Video Guide&rdquo; to launch full video in high resolution.
+            </div>
+            <p className="text-xs text-slate-300 max-w-lg mx-auto mt-1 leading-relaxed">
+              {selectedVideo.description}
+            </p>
+          </div>
+
+          {/* TIMELINE CHAPTERS */}
+          <div className="bg-black/90 backdrop-blur-md p-3 rounded-lg border border-red-950/80 flex flex-wrap gap-2 text-[11px] font-mono text-white overflow-x-auto">
+            <span className="text-amber-400 font-bold self-center">Key Chapters:</span>
+            {selectedVideo.chapters.map((ch, idx) => (
+              <a
+                key={idx}
+                href={selectedVideo.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-2.5 py-0.5 rounded bg-neutral-900/90 border border-red-950 hover:border-amber-400/50 cursor-pointer whitespace-nowrap text-white font-medium hover:text-amber-300"
+              >
+                <strong className="text-amber-400 mr-1">{ch.time}</strong> {ch.title}
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -497,12 +493,12 @@ export default function LearningPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="text-red-400 hover:text-amber-300 font-semibold text-[10px] bg-black/60 px-2 py-0.5 rounded border border-red-950 transition"
+                      className="px-2.5 py-1 rounded bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-extrabold text-[10px] uppercase tracking-wider transition shadow"
                     >
-                      Link ↗
+                      ▶ Watch ↗
                     </a>
                     <span className={vid.watched ? "text-emerald-400 font-bold text-[10px]" : "text-slate-300 text-[10px]"}>
-                      {vid.watched ? "✓ Done" : "Watch"}
+                      {vid.watched ? "✓ Done" : ""}
                     </span>
                   </div>
                 </div>
