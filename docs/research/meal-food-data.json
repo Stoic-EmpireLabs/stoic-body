@@ -1,0 +1,111 @@
+[
+  {
+    "fdcId": 171477,
+    "description": "Chicken, broilers or fryers, breast, meat only, cooked, roasted",
+    "dataType": "SR Legacy",
+    "publicationDate": "4/1/2019",
+    "reviewed": "2026-10-04",
+    "basis": "per 100 g edible portion",
+    "nutrients": [
+      {
+        "id": 1008,
+        "name": "Energy",
+        "unit": "kcal",
+        "amount": 165.0
+      },
+      {
+        "id": 1003,
+        "name": "Protein",
+        "unit": "g",
+        "amount": 31.02
+      },
+      {
+        "id": 1004,
+        "name": "Total lipid (fat)",
+        "unit": "g",
+        "amount": 3.57
+      },
+      {
+        "id": 1005,
+        "name": "Carbohydrate, by difference",
+        "unit": "g",
+        "amount": 0.0
+      },
+      {
+        "id": 1079,
+        "name": "Fiber, total dietary",
+        "unit": "g",
+        "amount": 0.0
+      }
+    ],
+    "portions": [
+      {
+        "amount": 1.0,
+        "modifier": "cup, chopped or diced",
+        "gramWeight": 140.0
+      },
+      {
+        "amount": 1.0,
+        "modifier": "unit (yield from 1 lb ready-to-cook chicken)",
+        "gramWeight": 52.0
+      },
+      {
+        "amount": 0.5,
+        "modifier": "breast, bone and skin removed",
+        "gramWeight": 86.0
+      }
+    ]
+  },
+  {
+    "fdcId": 171496,
+    "description": "Turkey, whole, breast, meat only, cooked, roasted",
+    "dataType": "SR Legacy",
+    "publicationDate": "4/1/2019",
+    "reviewed": "2026-10-04",
+    "basis": "per 100 g edible portion",
+    "nutrients": [
+      {
+        "id": 1008,
+        "name": "Energy",
+        "unit": "kcal",
+        "amount": 147.0
+      },
+      {
+        "id": 1003,
+        "name": "Protein",
+        "unit": "g",
+        "amount": 30.13
+      },
+      {
+        "id": 1004,
+        "name": "Total lipid (fat)",
+        "unit": "g",
+        "amount": 2.08
+      },
+      {
+        "id": 1005,
+        "name": "Carbohydrate, by difference",
+        "unit": "g",
+        "amount": 0.0
+      },
+      {
+        "id": 1079,
+        "name": "Fiber, total dietary",
+        "unit": "g",
+        "amount": 0.0
+      }
+    ],
+    "portions": [
+      {
+        "amount": 3.0,
+        "modifier": "oz",
+        "gramWeight": 85.0
+      },
+      {
+        "amount": 1.0,
+        "modifier": "breast",
+        "gramWeight": 1413.0
+      }
+    ]
+  }
+]
