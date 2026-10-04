@@ -14,6 +14,8 @@ Implemented in the local pilot; the full nutrition/fitness phase remains open.
 
 Browser journey includes corrected unknown food totals, reused meals, source links, blocked unknown screening, invalidated stale routine previews and advice changing with the selected exercise. Screenshots use synthetic data under docs/evidence/phase-5/.
 
-Still open: numerical nutrition prescriptions, food database/barcodes/photos, recipes/groceries, comprehensive adaptive multiweek programs, independent technique/video coverage, body-goal forecasts, native device verification, sync, alarms, backup/restore and full privacy/security release review. Heavy lifting, sprint, HIIT and HIT resistance options are educational boundaries rather than generated programs. The app does not infer a physique or body-fat percentage from photos.
+Meal correction: [actual recipes and portions](meal-templates-checkpoint.md) adds chicken, turkey breast and salmon bowls, lemon/chia drinks, cooked ingredient weights, estimated macros, explicit food logging and meal-preparation tasks. Full-day targets and automatic personalized eating plans remain open.
+
+Still open: numerical nutrition prescriptions, food database/barcodes/photos, full recipe/grocery management, comprehensive adaptive multiweek programs, independent technique/video coverage, body-goal forecasts, native device verification, sync, alarms, backup/restore and full privacy/security release review. Heavy lifting, sprint, HIIT and HIT resistance options are educational boundaries rather than generated programs. The app does not infer a physique or body-fat percentage from photos.
 
 This is a Windows loopback pilot. It has not become a remotely authenticated or publicly deployable service. Source publication dates and refresh failures remain visible where not verified.

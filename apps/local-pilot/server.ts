@@ -10,6 +10,7 @@ import { diets } from '../../src/core/health-content';
 import { summarizeHealth } from '../../src/core/health-metrics';
 import { buildRoutine, trainingStyles, progressionAdvice } from '../../src/core/training';
 import { courses } from '../../src/core/learning-content';
+import { mealCatalog, previewMeal } from '../../src/core/meals';
 
 export interface PilotOptions { databasePath: string; port: number }
 export interface PilotServer { url: string; close: () => Promise<void> }
@@ -69,10 +70,11 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
         const supplied = request.headers['x-stoic-token'];
         if (!secretEquals(cookie, session) || typeof supplied !== 'string' || !secretEquals(supplied, token)) throw new HttpError(403, 'Your local session expired. Reload the app.');
         if (path === '/api/snapshot' && request.method === 'GET') { json(response, 200, { snapshot: repository.snapshot(owner) }); return; }
-        if (path === '/api/health-content' && request.method === 'GET') { json(response, 200, { diets, trainingStyles }); return; }
+        if (path === '/api/health-content' && request.method === 'GET') { json(response, 200, { diets, trainingStyles, meals: mealCatalog }); return; }
         if (path === '/api/learning-content' && request.method === 'GET') { json(response, 200, { courses }); return; }
         if (request.method !== 'POST' || request.headers.origin !== origin) throw new HttpError(403, 'Save requests must come from this app.');
         const data = await body(request);
+        if (path === '/api/meal-preview') { json(response, 200, previewMeal(data)); return; }
         if (path === '/api/training-preview') { json(response, 200, buildRoutine(data)); return; }
         if (path === '/api/health-summary') {
           const p = object(data); keys(p, ['date', 'unit']); if (!['kg', 'lb'].includes(String(p.unit))) throw new Error('Choose weight units.');

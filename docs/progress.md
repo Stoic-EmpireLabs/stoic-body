@@ -33,3 +33,6 @@ Local health/learning review and handoff are complete for the scoped slices. Lat
 
 The latest requests add competitor research at every phase, a Brilliant-informed learning companion, free external course resources, Google AI Ultra guidance, and an AI concepts roadmap from the supplied image. Original scope is retained. User-selected external courses replace a heavy embedded course engine for this slice. Current source research and acceptance mappings are in phase-5-health-checkpoint.md and phase-6-learning-checkpoint.md. Final independent review and updated totals are recorded in the continuation verification report.
 
+
+## Meal correction — October 4
+Actual foods/portions requested by user are now implemented in Health → Meals. See meal-templates-checkpoint.md and research/meal-portions-and-drinks.md. This is an authorized correction within Health; daily targets still await missing inputs. Keep local branch/pilot and full launch requirements.

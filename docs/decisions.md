@@ -73,3 +73,6 @@ Phase 0 was approved on 2026-10-04 by the user message: Great. continue throguh 
 - DEC-54 — Google AI Ultra guidance uses current official Antigravity plan documentation; account limits were not accessed. Distinguish included quota from optional paid credit overages and labs.
 - DEC-55 — Supplied infographic contributes eleven AI topics. Keep them in the existing app and shared planning system. The ordered roadmap is a suggested learning path; the pictured linear taxonomy is not repeated as fact.
 - DEC-56 — Retain the isolated local branch/worktree and working pilot for review. Do not deploy the personal SQLite service through the separate public prototype upload route. Full phase exit, store release and required sync remain outstanding.
+
+- DEC-57 — Meal request adds three cooked-weight protein/rice/broccoli recipes and two lemon/chia drink templates. Per-ingredient estimates retain provenance; no daily calorie or OMAD prescription is inferred from incomplete screening. Review before food logging; preparation enters the shared task list before schedule approval. No extra dependency, database schema, external account or deployment.
+- DEC-58 — Preserve the existing local branch and ignored evidence workspace. Continue the authorized feature without an extra phase-approval question; no unrelated next phase starts.

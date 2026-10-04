@@ -6,6 +6,7 @@ window.Health = (() => {
   let trainingDraft = { adult: false, restrictions: 'unknown', equipment: [], style: 'full-body', minutes: 30, preference: 'higher-reps', goalId: null };
   const edits = {};
   const historyLimits = {};
+  let mealDraft = { id: 'chicken-bowl', amounts: {} };
   const el = (...a) => ctx.element(...a), button = (...a) => ctx.action(...a), records = () => ctx.snapshot().health || [];
   function field(form, name, label, type = 'text', value = '', options = [], required = true) {
     const wrapper = el('label', label), input = el(type === 'select' ? 'select' : type === 'textarea' ? 'textarea' : 'input'); input.name = name; input.setAttribute('aria-label', label);
@@ -68,6 +69,8 @@ window.Health = (() => {
     const columns = el('div', undefined, 'pilot-columns'), left = el('div', undefined, 'pilot-stack'), right = el('div', undefined, 'pilot-stack');
     const totals = ctx.card('What you recorded'); totals.append(el('p', 'Loading your day…', 'muted')); right.append(totals);
     const [food, f, d] = editor('food', 'Log a meal');
+    food.append(button('Choose a meal or drink', () => { tab = 'meals'; ctx.render(); }));
+    if (d.notes?.startsWith('Recipe ')) f.append(el('p', 'Recipe estimate ready for review. Save only what you actually ate. To recalculate ingredient weights, return to Meals; changing the text here does not recalculate nutrients.', 'muted'));
     field(f, 'title', 'Food name', 'text', d.title); field(f, 'portion', 'Portion', 'text', d.portion);
     field(f, 'source', 'Nutrition source', 'select', d.source || 'estimate', [['estimate', 'My estimate'], ['label', 'Food label'], ['database', 'Database — identify it in notes']]);
     const detail = el('details'); detail.append(el('summary', 'Optional nutrients')); f.append(detail);
@@ -81,6 +84,65 @@ window.Health = (() => {
     field(cf, 'digestion', 'Digestion / symptoms', 'text', cd.digestion, [], false); field(cf, 'eatingWindow', 'Eating window, if you track one', 'text', cd.eatingWindow, [], false); field(cf, 'notes', 'Check-in notes', 'textarea', cd.notes, [], false);
     submit(cf, 'Save check-in', () => save('checkin', { date: cd.date, hunger: numeric(cf, 'hunger'), energy: numeric(cf, 'energy'), sleepHours: numeric(cf, 'sleepHours'), digestion: value(cf, 'digestion'), eatingWindow: value(cf, 'eatingWindow'), notes: value(cf, 'notes') })); left.append(checkin);
     list('food', right, 'Recent meals'); list('water', right, 'Recent hydration'); list('checkin', right, 'Recent check-ins'); columns.append(left, right); root.append(columns); void summary(totals, currentGeneration);
+  }
+  function meals(root, currentGeneration) {
+    const library = catalog.meals;
+    if (!library) { root.append(el('p', 'Restart the local pilot and reload to open the meal library.', 'warning')); return; }
+    const recipe = library.recipes.find(r => r.id === mealDraft.id), banner = el('section', undefined, 'pilot-hero meal-intro');
+    banner.append(el('span', 'PREPARE · FUEL · RECOVER', 'eyebrow'), el('h2', 'Real food. Clear portions.'), el('p', library.guidance[0])); root.append(banner);
+    const columns = el('div', undefined, 'pilot-columns meal-layout'), left = el('div', undefined, 'pilot-stack'), right = el('div', undefined, 'pilot-stack');
+    const chooser = ctx.card('Build your plate'), form = el('form', undefined, 'pilot-form'); chooser.classList.add('meal-builder'); chooser.append(form);
+    const select = field(form, 'meal', 'Meal or drink', 'select', mealDraft.id, library.recipes.map(r => [r.id, r.title]));
+    select.addEventListener('change', () => { mealDraft = { id: select.value, amounts: {} }; ctx.render(); });
+    form.append(el('p', 'Adjust individual ingredients. Meat, rice and broccoli are weighed after cooking; chia is weighed dry, then soaked.', 'muted'));
+    for (const portion of recipe.portions) {
+      const ingredient = library.ingredients.find(i => i.id === portion.ingredient);
+      const input = field(form, portion.ingredient, `${ingredient.name} (g)`, 'number', mealDraft.amounts[portion.ingredient] ?? portion.grams);
+      input.min = String(portion.min); input.max = String(portion.max); input.step = 'any';
+      const hint = el('small', portion.hint, 'muted'); hint.id = `meal-hint-${portion.ingredient}`; input.setAttribute('aria-describedby', hint.id); input.parentElement.append(hint);
+    }
+    if (recipe.waterMl) form.append(el('p', `Mix with ${recipe.waterMl} ml water. The food log counts the ingredients; log water separately if you track hydration.`, 'muted'));
+    const panel = ctx.card(); panel.id = 'meal-preview'; panel.setAttribute('aria-live', 'polite'); right.append(panel);
+    let request = 0;
+    const readAmounts = () => Object.fromEntries(recipe.portions.map(p => [p.ingredient, numeric(form, p.ingredient)]));
+    const active = version => version === request && currentGeneration === generation && panel.isConnected;
+    async function update() {
+      const version = ++request; mealDraft.amounts = readAmounts();
+      const input = { id: recipe.id, amounts: { ...mealDraft.amounts } };
+      panel.replaceChildren(el('p', 'Calculating your portion…', 'muted'));
+      try {
+        const result = await ctx.api('meal-preview', input);
+        if (!active(version)) return;
+        panel.replaceChildren(el('span', 'ESTIMATE · ONE SERVING', 'eyebrow'), el('h2', 'Your portion'));
+        panel.append(el('p', `~${result.nutrients.calories} kcal · ${result.nutrients.protein} g protein`, 'health-primary-metric'));
+        panel.append(el('p', `${result.nutrients.carbs} g carbohydrate · ${result.nutrients.fat} g fat · ${result.nutrients.fiber} g fiber`, 'muted'));
+        const amounts = el('ul', undefined, 'meal-ingredients');
+        result.ingredients.forEach(i => amounts.append(el('li', `${i.grams} g ${i.name}`))); if (result.waterMl) amounts.append(el('li', `${result.waterMl} ml water`)); panel.append(amounts);
+        panel.append(el('p', 'A recipe estimate, not a daily target. Brand, cooking yield and rounded source data affect these numbers. Food logging earns no XP.', 'muted'));
+        panel.append(button('Use in food log', () => { edits.food = { data: { ...result.food, date: ctx.date() } }; tab = 'fuel'; ctx.render(); document.querySelector('#food-form input')?.focus(); }, true));
+        const sources = el('details', undefined, 'meal-sources'); sources.append(el('summary', `Ingredient sources · reviewed ${library.reviewed}`));
+        result.ingredients.forEach(i => { const p = el('p', undefined, 'health-source'); link(p, i.source); sources.append(p); }); panel.append(sources);
+        if (recipe.allergens.length) panel.append(el('p', `Allergen notes: ${recipe.allergens.join('; ')}. Check all packaging and personal restrictions.`, 'muted'));
+      } catch (e) { if (active(version)) panel.replaceChildren(el('p', `Portion unavailable: ${e.message}`, 'warning')); }
+    }
+    submit(form, 'Update portion', () => { void update(); });
+    form.addEventListener('input', e => { if (e.target === select) return; mealDraft.amounts = readAmounts(); ++request; panel.replaceChildren(el('p', 'Portions changed. Update the portion before using it in your food log.', 'muted')); });
+    left.append(chooser);
+    const preparation = ctx.card(recipe.kind === 'meal' ? 'Prepare this meal' : 'Make this drink'); preparation.classList.add('meal-preparation');
+    preparation.append(el('p', `${recipe.minutes} minutes estimated · ${recipe.title}`, 'status-tag'), el('p', recipe.guidance, 'muted'));
+    const steps = el('ol', undefined, 'meal-steps'); recipe.steps.forEach(step => steps.append(el('li', step))); preparation.append(steps);
+    if (recipe.kind === 'meal') {
+      const taskId = `meal-prep-${ctx.date()}-${recipe.id}`, exists = ctx.snapshot().tasks.some(t => t.id === taskId);
+      const add = button(exists ? 'Preparation task already exists' : 'Add preparation to Plan', () => ctx.command('task.create', taskId, { title: `Prepare ${recipe.title} (${ctx.date()})`, kind: 'task', durationMinutes: recipe.minutes, prepMinutes: 0, travelMinutes: 0, bufferMinutes: 5, goalId: null, priority: 5, dependencies: [] }, 0, 'Preparation task added. Choose its time in Plan.'));
+      add.disabled = exists; if (exists) delete add.dataset.save;
+      preparation.append(add, el('p', 'This creates a preparation task only. Review its time in Plan. Completing preparation can earn 5 XP; eating fewer calories never earns points.', 'muted'));
+    }
+    right.append(preparation);
+    const drinks = ctx.card('Everyday drinks'); drinks.classList.add('meal-drinks'); library.drinks.forEach(t => drinks.append(el('p', t, 'muted')));
+    drinks.append(button('Use 350 ml in water log', () => { edits.water = { data: { ml: 350, date: ctx.date(), notes: 'Review the amount actually consumed before saving.' } }; tab = 'fuel'; ctx.render(); document.querySelector('#water-form input')?.focus(); })); left.append(drinks);
+    const context = ctx.card('Fit the meal to your day'); context.classList.add('meal-context'); library.guidance.slice(1).forEach(t => context.append(el('p', t, 'muted')));
+    const research = el('details', undefined, 'meal-sources'); research.append(el('summary', `Research and preparation sources · reviewed ${library.reviewed}`)); library.sources.forEach(s => { const p = el('p', undefined, 'health-source'); link(p, s); research.append(p); }); context.append(research); right.append(context);
+    columns.append(left, right); root.append(columns); void update();
   }
   function progress(root, currentGeneration) {
     const columns = el('div', undefined, 'pilot-columns'), [c, f, d] = editor('measurement', 'Record a measurement');
@@ -170,9 +232,9 @@ window.Health = (() => {
     const root = document.querySelector('#main'), toolbar = el('div', undefined, 'health-toolbar'), dateForm = el('div', undefined, 'pilot-form');
     const date = field(dateForm, 'health-date', 'Health date', 'date', ctx.date()); date.addEventListener('change', () => { if (date.value) { ctx.setDate(date.value); ctx.render(); } }); toolbar.append(dateForm);
     const tabs = el('nav', undefined, 'health-tabs'); tabs.setAttribute('aria-label', 'Health views');
-    for (const [key, label] of [['fuel', 'Fuel'], ['train', 'Train'], ['progress', 'Progress'], ['evidence', 'Evidence']]) { const b = button(label, () => { tab = key; ctx.render(); }); if (tab === key) b.setAttribute('aria-current', 'page'); tabs.append(b); } toolbar.append(tabs); root.append(toolbar);
+    for (const [key, label] of [['meals', 'Meals'], ['fuel', 'Fuel'], ['train', 'Train'], ['progress', 'Progress'], ['evidence', 'Evidence']]) { const b = button(label, () => { tab = key; ctx.render(); }); if (tab === key) b.setAttribute('aria-current', 'page'); tabs.append(b); } toolbar.append(tabs); root.append(toolbar);
     if (!catalog) { root.append(el('p', 'Opening the evidence library…', 'muted')); void ctx.api('health-content').then(data => { catalog = data; if (current === generation) ctx.render(); }).catch(e => { if (current === generation) root.append(el('p', e.message, 'warning')); }); return; }
-    ({ fuel, train, progress, evidence })[tab](root, current);
+    ({ meals, fuel, train, progress, evidence })[tab](root, current);
   }
   function onResult(path, data, result) {
     if (path === 'training-preview') { if (JSON.stringify(data) !== JSON.stringify(trainingDraft)) return false; preview = result; }
