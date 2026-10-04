@@ -2,17 +2,78 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useStoic } from "@/context/StoicContext";
+import { generateBoxingCombos, BoxingCombo } from "@/lib/health";
+
+interface IntervalPreset {
+  id: string;
+  name: string;
+  workSeconds: number;
+  restSeconds: number;
+  totalRounds: number;
+}
+
+const PRESETS: IntervalPreset[] = [
+  {
+    id: "championship",
+    name: "3m / 1m Championship (6 Rounds)",
+    workSeconds: 180,
+    restSeconds: 60,
+    totalRounds: 6,
+  },
+  {
+    id: "sprint",
+    name: "2m / 30s High-Velocity Sprint (8 Rounds)",
+    workSeconds: 120,
+    restSeconds: 30,
+    totalRounds: 8,
+  },
+  {
+    id: "heavybag",
+    name: "5m / 1m Heavy Bag Endurance (4 Rounds)",
+    workSeconds: 300,
+    restSeconds: 60,
+    totalRounds: 4,
+  },
+];
 
 export default function TrainingStudio() {
-  const { awardXp, playAnvilChime, playBoxingBell } = useStoic();
+  const { awardXp, playAnvilChime, playBellSound, playBoxingBell } = useStoic();
+
+  // Preset Selection
+  const [selectedPreset, setSelectedPreset] = useState<IntervalPreset>(PRESETS[0]);
 
   // Boxing Timer State
-  const [timerSeconds, setTimerSeconds] = useState(180);
+  const [timerSeconds, setTimerSeconds] = useState(PRESETS[0].workSeconds);
   const [isRunning, setIsRunning] = useState(false);
   const [currentRound, setCurrentRound] = useState(1);
   const [isRest, setIsRest] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Boxing Combos
+  const combos: BoxingCombo[] = generateBoxingCombos(5);
+  const [comboIndex, setComboIndex] = useState(0);
+
+  // Set Tracking State
+  const [setsState, setSetsState] = useState<Record<string, boolean>>({});
+  const [routineCompleted, setRoutineCompleted] = useState(false);
+
+  // Load from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedSets = localStorage.getItem("stoic_training_sets");
+      if (savedSets) {
+        try {
+          setSetsState(JSON.parse(savedSets));
+        } catch (e) {}
+      }
+      const savedCompleted = localStorage.getItem("stoic_calisthenics_completed");
+      if (savedCompleted) {
+        setRoutineCompleted(savedCompleted === "true");
+      }
+    }
+  }, []);
+
+  // Interval Countdown
   useEffect(() => {
     if (isRunning) {
       timerRef.current = setInterval(() => {
@@ -23,14 +84,23 @@ export default function TrainingStudio() {
             // Round / Rest Switch
             playBoxingBell();
             if (!isRest) {
-              // Transition to 1m Rest
+              // Transition to Rest
               setIsRest(true);
-              return 60;
+              return selectedPreset.restSeconds;
             } else {
               // Transition to Next Round
+              if (currentRound >= selectedPreset.totalRounds) {
+                // Workout Completed!
+                setIsRunning(false);
+                setIsRest(false);
+                awardXp(500, `Boxing Session Completed: ${selectedPreset.name}`, "Strength");
+                playBellSound();
+                return selectedPreset.workSeconds;
+              }
               setIsRest(false);
-              setCurrentRound((r) => Math.min(6, r + 1));
-              return 180;
+              setCurrentRound((r) => r + 1);
+              setComboIndex((c) => (c + 1) % combos.length);
+              return selectedPreset.workSeconds;
             }
           }
         });
@@ -42,7 +112,15 @@ export default function TrainingStudio() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isRunning, isRest, playBoxingBell]);
+  }, [isRunning, isRest, currentRound, selectedPreset, playBoxingBell, playBellSound, awardXp, combos.length]);
+
+  const handleSelectPreset = (preset: IntervalPreset) => {
+    setIsRunning(false);
+    setSelectedPreset(preset);
+    setIsRest(false);
+    setCurrentRound(1);
+    setTimerSeconds(preset.workSeconds);
+  };
 
   const handleStartTimer = () => {
     if (!isRunning) {
@@ -59,60 +137,97 @@ export default function TrainingStudio() {
     setIsRunning(false);
     setIsRest(false);
     setCurrentRound(1);
-    setTimerSeconds(180);
+    setTimerSeconds(selectedPreset.workSeconds);
   };
 
   const formatTime = (secs: number) => {
-    const m = Math.floor(secs / 60).toString().padStart(2, "0");
+    const m = Math.floor(secs / 60)
+      .toString()
+      .padStart(2, "0");
     const s = (secs % 60).toString().padStart(2, "0");
     return `${m}:${s}`;
   };
 
-  // Set Tracking State
-  const [setsState, setSetsState] = useState<Record<string, boolean>>({});
-
+  // Calisthenics Set Toggle
   const toggleSet = (exerciseKey: string, setIndex: number) => {
     playAnvilChime();
     const key = `${exerciseKey}-${setIndex}`;
-    setSetsState((prev) => ({ ...prev, [key]: !prev[key] }));
+    setSetsState((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      if (typeof window !== "undefined") {
+        localStorage.setItem("stoic_training_sets", JSON.stringify(next));
+      }
+      return next;
+    });
   };
-
-  const [routineCompleted, setRoutineCompleted] = useState(false);
 
   const completeCalisthenics = () => {
     if (routineCompleted) return;
     awardXp(750, "Full Calisthenics Core & High-Rep Routine", "Strength");
+    playBellSound();
     setRoutineCompleted(true);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("stoic_calisthenics_completed", "true");
+    }
   };
+
+  const completedSetsCount = Object.values(setsState).filter(Boolean).length;
+  const currentCombo = combos[comboIndex] || combos[0];
 
   return (
     <div className="space-y-6">
 
-      {/* BOXING ROUND TIMER */}
-      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl text-center relative overflow-hidden">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-xs font-bold uppercase tracking-wider text-red-500">
-            Home Boxing Round Timer
-          </span>
-          <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-red-950/80 text-amber-300 border border-amber-500/40">
-            ROUND {currentRound} of 6
+      {/* BOXING ROUND TIMER HERO */}
+      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl relative overflow-hidden">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-red-500 block">
+              Home Boxing &amp; Interval Studio
+            </span>
+            <span className="text-xs text-slate-300">
+              Championship pacing &middot; Heavy bag &amp; shadowboxing cadence.
+            </span>
+          </div>
+          <span className="text-xs font-mono font-bold px-3 py-1 rounded bg-red-950/80 text-amber-300 border border-amber-500/40">
+            ROUND {currentRound} OF {selectedPreset.totalRounds}
           </span>
         </div>
 
-        <div className="my-4">
-          <div className="text-6xl font-mono font-black tracking-tight text-white">
+        {/* Preset Selector Tabs */}
+        <div className="flex flex-wrap gap-2 mb-5">
+          {PRESETS.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => handleSelectPreset(p)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition border ${
+                selectedPreset.id === p.id
+                  ? "bg-red-900/60 border-red-500 text-white shadow"
+                  : "bg-black/60 border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
+              }`}
+            >
+              {p.name}
+            </button>
+          ))}
+        </div>
+
+        {/* Big Digital Display */}
+        <div className="my-5 text-center">
+          <div className="text-6xl sm:text-7xl font-mono font-black tracking-tight text-white">
             {formatTime(timerSeconds)}
           </div>
           <div
-            className={`text-xs font-bold uppercase tracking-widest mt-1.5 ${
+            className={`text-xs font-bold uppercase tracking-widest mt-2 ${
               isRest ? "text-amber-400" : "text-red-400"
             }`}
           >
-            {isRest ? "REST & BREATHE INTERVAL (60 SEC)" : "FIGHT · HIGH INTENSITY STRIKING"}
+            {isRest
+              ? `REST & BREATHE INTERVAL (${selectedPreset.restSeconds} SEC)`
+              : "FIGHT · HIGH INTENSITY STRIKING & FOOTWORK"}
           </div>
         </div>
 
-        <div className="flex justify-center gap-3">
+        {/* Timer Control Buttons */}
+        <div className="flex justify-center gap-3 mb-6">
           <button
             onClick={handleStartTimer}
             className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm transition shadow-xl shadow-red-950/50 border border-red-500/30 tracking-wider uppercase"
@@ -132,39 +247,83 @@ export default function TrainingStudio() {
             RESET
           </button>
         </div>
+
+        {/* ACTIVE COMBINATION DRILL CALLOUT */}
+        <div className="p-4 rounded-lg bg-[#121218] border border-red-950/70 text-left">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400">
+              Active Round Drill Callout &middot; Combination #{comboIndex + 1}
+            </span>
+            <div className="flex gap-1.5">
+              <button
+                onClick={() =>
+                  setComboIndex((c) => (c - 1 + combos.length) % combos.length)
+                }
+                className="px-2 py-0.5 rounded bg-black border border-red-950 text-slate-300 hover:text-white text-xs font-bold"
+              >
+                &larr; Prev
+              </button>
+              <button
+                onClick={() => setComboIndex((c) => (c + 1) % combos.length)}
+                className="px-2 py-0.5 rounded bg-black border border-red-950 text-slate-300 hover:text-white text-xs font-bold"
+              >
+                Next &rarr;
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <span className="text-base font-bold font-mono text-white block">
+                {currentCombo.callout}
+              </span>
+              <p className="text-xs text-slate-300 mt-0.5">{currentCombo.description}</p>
+            </div>
+            <div className="flex flex-wrap gap-1.5 shrink-0">
+              {currentCombo.comboSequence.map((strike, sIdx) => (
+                <span
+                  key={sIdx}
+                  className="px-2.5 py-1 rounded bg-black/80 border border-amber-500/30 text-[11px] font-mono font-bold text-amber-300"
+                >
+                  {strike}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* NO-DUMBBELL CALISTHENICS WORKOUT DECK */}
       <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wider text-white">
               Home Calisthenics &amp; High-Rep Suite
             </h3>
             <p className="text-xs text-slate-300">
-              Strict Equipment Constraint: Zero Dumbbells &middot; High Reps &middot; Progressive Overload
+              Zero Dumbbell Constraint &middot; Strict Form &middot; {completedSetsCount} Sets Completed
             </p>
           </div>
           <button
             onClick={completeCalisthenics}
             disabled={routineCompleted}
-            className={`text-xs font-mono font-bold px-3 py-1.5 rounded border transition ${
+            className={`text-xs font-mono font-bold px-3.5 py-1.5 rounded border transition ${
               routineCompleted
                 ? "bg-red-700 text-white border-red-500 cursor-default"
-                : "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black border-amber-400/50 shadow"
+                : "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black border-amber-400/50 shadow"
             }`}
           >
-            {routineCompleted ? "Completed (+750 XP)" : "Claim Routine (+750 XP)"}
+            {routineCompleted ? "✓ Routine Conquered (+750 XP)" : "Claim Routine (+750 XP)"}
           </button>
         </div>
 
         <div className="space-y-3">
           
           {/* Exercise 1 */}
-          <div className="p-3 rounded-lg bg-[#121218] border border-red-950/60 flex items-center justify-between">
+          <div className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h5 className="text-sm font-semibold text-white">Strict Overhand Pull-Ups</h5>
-              <p className="text-xs text-slate-300">Target: 3 Sets &times; Max Reps (RPE 9)</p>
+              <h5 className="text-sm font-bold text-white">Strict Overhand Pull-Ups</h5>
+              <p className="text-xs text-slate-300">Target: 3 Sets &times; Max Reps (RPE 9 &middot; Latissimus Hypertrophy)</p>
             </div>
             <div className="flex items-center gap-2">
               {[1, 2, 3].map((s) => {
@@ -173,7 +332,7 @@ export default function TrainingStudio() {
                   <button
                     key={s}
                     onClick={() => toggleSet("pullups", s)}
-                    className={`w-8 h-8 rounded font-mono text-xs font-bold transition ${
+                    className={`w-9 h-9 rounded font-mono text-xs font-bold transition ${
                       isDone
                         ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
                         : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
@@ -187,10 +346,10 @@ export default function TrainingStudio() {
           </div>
 
           {/* Exercise 2 */}
-          <div className="p-3 rounded-lg bg-[#121218] border border-red-950/60 flex items-center justify-between">
+          <div className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h5 className="text-sm font-semibold text-white">Parallel Bar Dips</h5>
-              <p className="text-xs text-slate-300">Target: 3 Sets &times; 15 Reps</p>
+              <h5 className="text-sm font-bold text-white">Parallel Bar Dips</h5>
+              <p className="text-xs text-slate-300">Target: 3 Sets &times; 15 Reps (Lower Chest &amp; Triceps Extension)</p>
             </div>
             <div className="flex items-center gap-2">
               {[1, 2, 3].map((s) => {
@@ -199,7 +358,7 @@ export default function TrainingStudio() {
                   <button
                     key={s}
                     onClick={() => toggleSet("dips", s)}
-                    className={`w-8 h-8 rounded font-mono text-xs font-bold transition ${
+                    className={`w-9 h-9 rounded font-mono text-xs font-bold transition ${
                       isDone
                         ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
                         : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
@@ -213,10 +372,10 @@ export default function TrainingStudio() {
           </div>
 
           {/* Exercise 3 */}
-          <div className="p-3 rounded-lg bg-[#121218] border border-red-950/60 flex items-center justify-between">
+          <div className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h5 className="text-sm font-semibold text-white">Diamond Push-Up Burnout</h5>
-              <p className="text-xs text-slate-300">Target: 3 Sets &times; 20 Reps (Triceps &amp; Chest Focus)</p>
+              <h5 className="text-sm font-bold text-white">Diamond Push-Up Burnout</h5>
+              <p className="text-xs text-slate-300">Target: 3 Sets &times; 20 Reps (Inward Chest Cleavage &amp; Triceps)</p>
             </div>
             <div className="flex items-center gap-2">
               {[1, 2, 3].map((s) => {
@@ -225,7 +384,7 @@ export default function TrainingStudio() {
                   <button
                     key={s}
                     onClick={() => toggleSet("pushups", s)}
-                    className={`w-8 h-8 rounded font-mono text-xs font-bold transition ${
+                    className={`w-9 h-9 rounded font-mono text-xs font-bold transition ${
                       isDone
                         ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
                         : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
@@ -239,10 +398,10 @@ export default function TrainingStudio() {
           </div>
 
           {/* Exercise 4 */}
-          <div className="p-3 rounded-lg bg-[#121218] border border-red-950/60 flex items-center justify-between">
+          <div className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h5 className="text-sm font-semibold text-white">Hanging Leg Raises &amp; Hollow Holds</h5>
-              <p className="text-xs text-slate-300">Target: 3 Sets &times; 12 Reps (Compressed Core for Abs)</p>
+              <h5 className="text-sm font-bold text-white">Hanging Leg Raises &amp; Hollow Holds</h5>
+              <p className="text-xs text-slate-300">Target: 3 Sets &times; 12 Reps (Compressed Core for Visible Abs)</p>
             </div>
             <div className="flex items-center gap-2">
               {[1, 2, 3].map((s) => {
@@ -251,7 +410,59 @@ export default function TrainingStudio() {
                   <button
                     key={s}
                     onClick={() => toggleSet("core", s)}
-                    className={`w-8 h-8 rounded font-mono text-xs font-bold transition ${
+                    className={`w-9 h-9 rounded font-mono text-xs font-bold transition ${
+                      isDone
+                        ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
+                        : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
+                    }`}
+                  >
+                    S{s}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Exercise 5 */}
+          <div className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h5 className="text-sm font-bold text-white">Inverted Australian Rows</h5>
+              <p className="text-xs text-slate-300">Target: 3 Sets &times; 12 Reps (Mid-Trap &amp; Rhomboid Thickness)</p>
+            </div>
+            <div className="flex items-center gap-2">
+              {[1, 2, 3].map((s) => {
+                const isDone = !!setsState[`rows-${s}`];
+                return (
+                  <button
+                    key={s}
+                    onClick={() => toggleSet("rows", s)}
+                    className={`w-9 h-9 rounded font-mono text-xs font-bold transition ${
+                      isDone
+                        ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
+                        : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
+                    }`}
+                  >
+                    S{s}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Exercise 6 */}
+          <div className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h5 className="text-sm font-bold text-white">Bodyweight Pistol Squat Progressions</h5>
+              <p className="text-xs text-slate-300">Target: 3 Sets &times; 15 Reps / Leg (Quad Hypertrophy &amp; Knee Health)</p>
+            </div>
+            <div className="flex items-center gap-2">
+              {[1, 2, 3].map((s) => {
+                const isDone = !!setsState[`squats-${s}`];
+                return (
+                  <button
+                    key={s}
+                    onClick={() => toggleSet("squats", s)}
+                    className={`w-9 h-9 rounded font-mono text-xs font-bold transition ${
                       isDone
                         ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
                         : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
@@ -277,16 +488,19 @@ export default function TrainingStudio() {
             Family Sanctuary
           </span>
         </div>
-        <p className="text-sm font-semibold text-white">
+        <p className="text-sm font-bold text-white">
           Daughter Flyer Base Fundamentals &amp; Balance Elevation
         </p>
         <p className="text-xs text-slate-300 mt-1">
-          Coaching cues: Chest upright, lock elbows at 90 degrees, absorb with deep quad drive, establish firm wrist lock under foot arches. Emphasize trust, locked core, and soft dismount catches.
+          Coaching cues: Chest upright, lock elbows at 90 degrees, absorb with deep quad drive, establish firm wrist lock under foot arches. Emphasize trust, locked core, and soft cradle catch absorption.
         </p>
         <div className="mt-3 pt-3 border-t border-red-950/70 flex justify-end">
           <button
-            onClick={() => awardXp(1500, "Cheer Flyer Partner Stunt Session", "Strength")}
-            className="px-4 py-2 rounded-lg bg-gradient-to-r from-rose-700 to-rose-800 hover:from-rose-600 text-white border border-rose-500/40 text-xs font-bold shadow-lg transition"
+            onClick={() => {
+              awardXp(1500, "Cheer Flyer Partner Stunt Session", "Strength");
+              playBellSound();
+            }}
+            className="px-4 py-2 rounded-lg bg-gradient-to-r from-rose-700 to-rose-800 hover:from-rose-600 text-white border border-rose-500/40 text-xs font-bold uppercase tracking-wider shadow-lg transition"
           >
             Log Practice Drill (+1,500 XP)
           </button>

@@ -18,3 +18,4 @@ data/*.sqlite-journal
 
 .vercel
 .env*
+*.png
