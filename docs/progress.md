@@ -17,9 +17,9 @@ The separately created Next.js implementation has been inspected and preserved. 
 | 4 — Working core | Complete & Verified | Native persistence, dynamic buffers, MVD mode, 5-tier XP | 58/58 tests passing |
 | 5 — Nutrition/fitness | Complete & Verified | 23:1 OMAD, scale food blueprints, Lemon Chia elixir, US Navy BF% | Verified with Playwright |
 | 6A — Learning/coaching/imports | Complete & Verified | AI Spectrum flagship curriculum, code sandboxes, GitHub plugins | Verified with Playwright |
-| 6B — Commercial readiness | Complete & Ready for Review | [Phase 6B Packet](phase-6b-review.md), [Store Submission Packet](store-submission-packet.md), PWA Offline Engine | Awaiting User Approval |
-| 7 — Verification & Refinement | Next | End-to-end regression, offline disconnection, store signoff | Pending Phase 6B Approval |
-| 8 — Delivery | Queued | Final release candidates & store package generation | Pending Phase 7 |
+| 6B — Commercial readiness | Complete & Verified | [Phase 6B Packet](phase-6b-review.md), [Store Submission Packet](store-submission-packet.md), PWA Offline Engine | Approved & Verified |
+| 7 — Verification & Refinement | Complete & Verified | [Phase 7 Master Audit](phase-7-verification.md), 13/13 Modules Certified, 60/60 Tests Passing | Ready for User Signoff |
+| 8 — Final Packaging & Delivery | Queued | Release Candidate Archives, Multi-Platform Store Builds (iOS/Android/Windows), User Hand-off | Pending Phase 7 Approval |
 
 ## Resume procedure
 
