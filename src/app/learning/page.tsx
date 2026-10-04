@@ -17,6 +17,16 @@ import {
   calculatePathwayProgress,
   LearningPathway,
 } from "@/lib/learning";
+import {
+  CURATED_GITHUB_PLUGINS,
+  GitHubRepoPlugin,
+  GitHubPluginCategory,
+  searchPlugins,
+  formatCloneCommand,
+  createCustomPlugin,
+  validateGitHubRepoString,
+  toggleBookmarkPlugin,
+} from "@/lib/github-plugins";
 
 interface HowToVideo {
   id: string;
@@ -112,8 +122,23 @@ const DEFAULT_VIDEOS: HowToVideo[] = [
 export default function LearningPage() {
   const { awardXp, playAnvilChime, playBellSound } = useStoic();
 
-  // Tab View Mode: 'brilliant-courses' vs 'video-guides'
-  const [activeTab, setActiveTab] = useState<"brilliant-courses" | "video-guides">("brilliant-courses");
+  // Tab View Mode: 'github-plugins' | 'brilliant-courses' | 'video-guides'
+  const [activeTab, setActiveTab] = useState<"github-plugins" | "brilliant-courses" | "video-guides">("github-plugins");
+
+  // GitHub Repo Plugins & Free Open-Source Catalog State
+  const [plugins, setPlugins] = useState<GitHubRepoPlugin[]>(CURATED_GITHUB_PLUGINS);
+  const [pluginCategoryFilter, setPluginCategoryFilter] = useState<string>("All");
+  const [pluginSearchQuery, setPluginSearchQuery] = useState<string>("");
+  const [bookmarkedPluginIds, setBookmarkedPluginIds] = useState<string[]>([]);
+  const [copiedCloneId, setCopiedCloneId] = useState<string | null>(null);
+
+  // Custom Plugin Modal State
+  const [showPluginModal, setShowPluginModal] = useState<boolean>(false);
+  const [customPluginTitle, setCustomPluginTitle] = useState<string>("");
+  const [customPluginRepo, setCustomPluginRepo] = useState<string>("");
+  const [customPluginCategory, setCustomPluginCategory] = useState<GitHubPluginCategory>("Google Antigravity & AI");
+  const [customPluginDesc, setCustomPluginDesc] = useState<string>("");
+  const [customPluginTags, setCustomPluginTags] = useState<string>("");
 
   // Brilliant-Style Interactive Courses State
   const [courses, setCourses] = useState<InteractiveCourse[]>(FOUNDER_AI_COURSES);
@@ -176,6 +201,22 @@ export default function LearningPage() {
           if (Array.isArray(parsed) && parsed.length > 0) setVideos(parsed);
         } catch (e) {}
       }
+
+      const savedPlugins = localStorage.getItem("stoic_github_plugins");
+      if (savedPlugins) {
+        try {
+          const parsed = JSON.parse(savedPlugins);
+          if (Array.isArray(parsed) && parsed.length > 0) setPlugins(parsed);
+        } catch (e) {}
+      }
+
+      const savedBookmarks = localStorage.getItem("stoic_bookmarked_plugins");
+      if (savedBookmarks) {
+        try {
+          const parsed = JSON.parse(savedBookmarks);
+          if (Array.isArray(parsed)) setBookmarkedPluginIds(parsed);
+        } catch (e) {}
+      }
     }
   }, []);
 
@@ -186,6 +227,75 @@ export default function LearningPage() {
       localStorage.setItem("stoic_interactive_courses", JSON.stringify(updated));
     }
   };
+
+  // GitHub Plugins Handlers
+  const handleOpenPlugin = (plugin: GitHubRepoPlugin) => {
+    window.open(plugin.url, "_blank", "noopener,noreferrer");
+    awardXp(50, `Explored GitHub Repo: ${plugin.title}`, "Intellect");
+    playBellSound();
+  };
+
+  const handleCopyClone = (plugin: GitHubRepoPlugin) => {
+    const cmd = formatCloneCommand(plugin.repo);
+    navigator.clipboard.writeText(cmd);
+    setCopiedCloneId(plugin.id);
+    setTimeout(() => setCopiedCloneId(null), 2500);
+    playAnvilChime();
+  };
+
+  const handleToggleBookmark = (pluginId: string) => {
+    const updated = toggleBookmarkPlugin(bookmarkedPluginIds, pluginId);
+    setBookmarkedPluginIds(updated);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("stoic_bookmarked_plugins", JSON.stringify(updated));
+    }
+  };
+
+  const handleCreateCustomPlugin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customPluginTitle.trim() || !customPluginRepo.trim()) return;
+    if (!validateGitHubRepoString(customPluginRepo)) {
+      alert("Please provide a valid GitHub repo in format 'owner/repo' or 'https://github.com/owner/repo'");
+      return;
+    }
+
+    const tags = customPluginTags
+      .split(",")
+      .map((t) => t.trim().toLowerCase())
+      .filter(Boolean);
+
+    const newPlugin = createCustomPlugin({
+      title: customPluginTitle.trim(),
+      repo: customPluginRepo.trim(),
+      category: customPluginCategory,
+      description: customPluginDesc.trim(),
+      tags: tags.length > 0 ? tags : undefined,
+    });
+
+    const updated = [newPlugin, ...plugins];
+    setPlugins(updated);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("stoic_github_plugins", JSON.stringify(updated));
+    }
+
+    setShowPluginModal(false);
+    setCustomPluginTitle("");
+    setCustomPluginRepo("");
+    setCustomPluginDesc("");
+    setCustomPluginTags("");
+
+    awardXp(100, `Plugged Custom GitHub Repo: ${newPlugin.title}`, "Intellect");
+    playBellSound();
+  };
+
+  // Filtered GitHub Plugins
+  const displayedPlugins = searchPlugins(
+    pluginCategoryFilter === "★ Bookmarked"
+      ? plugins.filter((p) => bookmarkedPluginIds.includes(p.id))
+      : plugins,
+    pluginSearchQuery,
+    pluginCategoryFilter === "★ Bookmarked" ? "All" : pluginCategoryFilter
+  );
 
   // Find active course and lesson
   const currentCourse = courses.find((c) => c.id === selectedCourseId) || courses[0];
@@ -368,12 +478,22 @@ export default function LearningPage() {
           </div>
 
           {/* MODE TOGGLES */}
-          <div className="flex rounded-lg bg-black border border-red-950 p-1 gap-1">
+          <div className="flex flex-wrap rounded-lg bg-black border border-red-950 p-1 gap-1">
+            <button
+              onClick={() => setActiveTab("github-plugins")}
+              className={`px-3 py-1.5 rounded text-xs font-bold transition flex items-center gap-1.5 ${
+                activeTab === "github-plugins"
+                  ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow font-extrabold"
+                  : "text-slate-300 hover:text-white"
+              }`}
+            >
+              <span>📦</span> GitHub Plugins &amp; Free Repos
+            </button>
             <button
               onClick={() => setActiveTab("brilliant-courses")}
-              className={`px-3.5 py-1.5 rounded text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded text-xs font-bold transition flex items-center gap-1.5 ${
                 activeTab === "brilliant-courses"
-                  ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
+                  ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow font-extrabold"
                   : "text-slate-300 hover:text-white"
               }`}
             >
@@ -381,9 +501,9 @@ export default function LearningPage() {
             </button>
             <button
               onClick={() => setActiveTab("video-guides")}
-              className={`px-3.5 py-1.5 rounded text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded text-xs font-bold transition flex items-center gap-1.5 ${
                 activeTab === "video-guides"
-                  ? "bg-gradient-to-r from-red-600 to-red-700 text-white shadow"
+                  ? "bg-gradient-to-r from-red-600 to-red-700 text-white shadow font-extrabold"
                   : "text-slate-300 hover:text-white"
               }`}
             >
@@ -458,6 +578,217 @@ export default function LearningPage() {
           </div>
         </div>
       </section>
+
+      {/* ============================================================== */}
+      {/* TAB 0: OPEN-SOURCE GITHUB PLUGINS & FREE REPOSITORIES HUB       */}
+      {/* ============================================================== */}
+      {activeTab === "github-plugins" && (
+        <div className="space-y-6">
+          {/* HEADER & CONTROLS BANNER */}
+          <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-red-950 pb-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono uppercase bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
+                    Zero App Bloat &bull; 100% Free Open-Source
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-300 bg-neutral-900 px-2 py-0.5 rounded border border-red-950 font-bold">
+                    {plugins.length} Curated Repos &bull; 600k+ Stars
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-white mt-1.5 flex items-center gap-2">
+                  <span>GitHub Repository Plugins &amp; Sovereign Curricula</span>
+                </h3>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  1-Click open in GitHub, instant terminal clone snippets, and zero bloated payloads. Master vibe coding, Antigravity, and mass production directly from upstream source code.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowPluginModal(true)}
+                  className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-extrabold uppercase tracking-wider shadow"
+                >
+                  + Add Custom GitHub Repo
+                </button>
+              </div>
+            </div>
+
+            {/* SEARCH & CATEGORY FILTER BAR */}
+            <div className="space-y-3">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search repositories by topic (e.g. vibe coding, gemini cookbook, playwright, nextjs, remotion, nanogpt)..."
+                  value={pluginSearchQuery}
+                  onChange={(e) => setPluginSearchQuery(e.target.value)}
+                  className="w-full bg-black border border-red-950/90 rounded-lg px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                />
+                {pluginSearchQuery && (
+                  <button
+                    onClick={() => setPluginSearchQuery("")}
+                    className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-white"
+                  >
+                    ✕ Clear
+                  </button>
+                )}
+              </div>
+
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  "All",
+                  "★ Bookmarked",
+                  "Google Antigravity & AI",
+                  "Vibe Coding & Prompting",
+                  "Web Design & UI/UX",
+                  "Autonomous Automation",
+                  "Full-Stack & Backend",
+                  "YouTube & Video Automation",
+                  "Local LLMs & MCP",
+                ].map((cat) => {
+                  const isSelected = pluginCategoryFilter === cat;
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => setPluginCategoryFilter(cat)}
+                      className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition border ${
+                        isSelected
+                          ? "bg-red-800 text-white border-red-500 shadow"
+                          : "bg-black border-red-950 text-slate-400 hover:text-white"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* REPOSITORY CARDS GRID */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {displayedPlugins.map((plugin) => {
+              const isBookmarked = bookmarkedPluginIds.includes(plugin.id);
+              const isCopied = copiedCloneId === plugin.id;
+
+              return (
+                <div
+                  key={plugin.id}
+                  className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl flex flex-col justify-between hover:border-amber-500/50 transition duration-200"
+                >
+                  <div>
+                    {/* Header Row */}
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-mono uppercase bg-black px-2 py-0.5 rounded text-amber-400 border border-amber-500/30 font-bold">
+                          {plugin.category}
+                        </span>
+                        <span className="text-[10px] font-mono text-slate-300 bg-neutral-900 px-2 py-0.5 rounded border border-red-950 font-bold">
+                          {plugin.stars}
+                        </span>
+                        {plugin.isCustom && (
+                          <span className="text-[10px] font-mono bg-purple-950 text-purple-300 px-1.5 py-0.5 rounded border border-purple-800">
+                            Custom
+                          </span>
+                        )}
+                      </div>
+
+                      <button
+                        onClick={() => handleToggleBookmark(plugin.id)}
+                        title={isBookmarked ? "Remove Bookmark" : "Bookmark Repo"}
+                        className={`text-sm px-1.5 py-0.5 rounded border transition ${
+                          isBookmarked
+                            ? "bg-amber-500/20 text-amber-400 border-amber-500"
+                            : "bg-black text-slate-500 border-red-950 hover:text-amber-400"
+                        }`}
+                      >
+                        {isBookmarked ? "★" : "☆"}
+                      </button>
+                    </div>
+
+                    {/* Title & Repo Link */}
+                    <h4 className="text-base font-bold text-white leading-snug">
+                      {plugin.title}
+                    </h4>
+                    <span className="text-xs font-mono text-amber-400/90 block mt-0.5 font-bold">
+                      github.com/{plugin.repo}
+                    </span>
+
+                    {/* Description */}
+                    <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                      {plugin.description}
+                    </p>
+
+                    {/* Recommended Starting Path */}
+                    <div className="mt-3 p-2 rounded bg-black/80 border border-red-950/60 text-[11px] font-mono text-slate-300">
+                      <span className="text-amber-400 font-bold">Direct Entry Point:</span>{" "}
+                      <span className="text-slate-200">{plugin.recommendedPath}</span>
+                    </div>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1 mt-3">
+                      {plugin.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-[10px] font-mono text-slate-400 bg-[#121218] px-2 py-0.5 rounded border border-red-950/40"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Actions Bar */}
+                  <div className="mt-4 pt-3 border-t border-red-950/80 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleOpenPlugin(plugin)}
+                        className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-extrabold uppercase tracking-wider shadow flex items-center gap-1.5"
+                      >
+                        <span>Open Repo</span> &rarr;
+                      </button>
+
+                      <button
+                        onClick={() => handleCopyClone(plugin)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition ${
+                          isCopied
+                            ? "bg-emerald-950 border-emerald-500 text-emerald-300"
+                            : "bg-black border-red-950 text-slate-300 hover:text-white hover:border-slate-700"
+                        }`}
+                      >
+                        {isCopied ? "✓ Copied Clone CMD!" : "📋 Copy Clone"}
+                      </button>
+                    </div>
+
+                    <span className="text-[11px] font-mono text-amber-400 font-bold">
+                      +{plugin.xpReward} XP
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {displayedPlugins.length === 0 && (
+            <div className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-8 text-center space-y-2">
+              <span className="text-3xl block">🔍</span>
+              <h4 className="text-sm font-bold text-white">No Repositories Found</h4>
+              <p className="text-xs text-slate-400">
+                Try clearing your search query or choosing another category filter.
+              </p>
+              <button
+                onClick={() => {
+                  setPluginSearchQuery("");
+                  setPluginCategoryFilter("All");
+                }}
+                className="mt-2 px-3 py-1.5 bg-red-900/60 border border-red-800 text-white rounded text-xs font-bold"
+              >
+                Reset Filters
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ============================================================== */}
       {/* TAB 1: BRILLIANT INTERACTIVE COURSES & ACTIVE LEARNING STUDIO */}
@@ -1162,6 +1493,115 @@ export default function LearningPage() {
                   className="px-5 py-2 rounded bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-bold uppercase tracking-wider shadow"
                 >
                   Save &amp; Launch In-App Course (+500 XP)
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* CUSTOM GITHUB REPO PLUGIN MODAL */}
+      {showPluginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#0A0A0F] border border-amber-500/60 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-red-950 pb-3">
+              <div>
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <span>+ Plug In Free GitHub Repository</span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Plug any open-source GitHub repository into your sovereign hub with zero bloat.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowPluginModal(false)}
+                className="text-slate-400 hover:text-white text-lg font-bold px-2 py-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateCustomPlugin} className="space-y-4 text-xs">
+              <div>
+                <label className="text-xs text-white font-bold block mb-1">Repository Name / Title</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Nano Vibe Coding Boilerplate"
+                  value={customPluginTitle}
+                  onChange={(e) => setCustomPluginTitle(e.target.value)}
+                  className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-white font-bold block mb-1">
+                  GitHub Repository (owner/repo or full URL)
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. karpathy/nanoGPT or https://github.com/karpathy/nanoGPT"
+                  value={customPluginRepo}
+                  onChange={(e) => setCustomPluginRepo(e.target.value)}
+                  className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-slate-300 font-bold block mb-1">Category</label>
+                <select
+                  value={customPluginCategory}
+                  onChange={(e) => setCustomPluginCategory(e.target.value as GitHubPluginCategory)}
+                  className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                >
+                  <option value="Google Antigravity & AI">Google Antigravity &amp; AI</option>
+                  <option value="Vibe Coding & Prompting">Vibe Coding &amp; Prompting</option>
+                  <option value="Web Design & UI/UX">Web Design &amp; UI/UX</option>
+                  <option value="Autonomous Automation">Autonomous Automation</option>
+                  <option value="Full-Stack & Backend">Full-Stack &amp; Backend</option>
+                  <option value="YouTube & Video Automation">YouTube &amp; Video Automation</option>
+                  <option value="Local LLMs & MCP">Local LLMs &amp; MCP</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs text-white font-bold block mb-1">Description / Focus Area</label>
+                <textarea
+                  rows={2}
+                  placeholder="Why is this repository valuable? What does it teach or automate?"
+                  value={customPluginDesc}
+                  onChange={(e) => setCustomPluginDesc(e.target.value)}
+                  className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-slate-300 font-bold block mb-1">
+                  Tags (comma-separated, optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. ai, vibe-coding, agents, python"
+                  value={customPluginTags}
+                  onChange={(e) => setCustomPluginTags(e.target.value)}
+                  className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-red-950">
+                <button
+                  type="button"
+                  onClick={() => setShowPluginModal(false)}
+                  className="px-4 py-2 rounded-lg bg-black text-slate-300 hover:text-white border border-red-950 text-xs font-bold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-extrabold uppercase tracking-wider shadow"
+                >
+                  Plug Repository (+100 XP)
                 </button>
               </div>
             </form>

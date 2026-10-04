@@ -15,10 +15,11 @@ echo   [4] Build & Deploy Latest Code to Vercel Production
 echo   [5] Run Full Automated Test Suite & Audit
 echo   [6] Open Project Directory in File Explorer
 echo   [7] Open Project in VS Code / IDE
+echo   [8] Open GitHub Repos & Plugins Hub (Zero Bloat Courses)
 echo   [0] Exit
 echo.
 echo ========================================================================
-set /p choice="Enter option [0-7]: "
+set /p choice="Enter option [0-8]: "
 
 if "%choice%"=="1" goto LAUNCH_APP
 if "%choice%"=="2" goto LOCAL_DEV
@@ -27,6 +28,7 @@ if "%choice%"=="4" goto DEPLOY_VERCEL
 if "%choice%"=="5" goto RUN_TESTS
 if "%choice%"=="6" goto OPEN_DIR
 if "%choice%"=="7" goto OPEN_IDE
+if "%choice%"=="8" goto OPEN_REPOS
 if "%choice%"=="0" exit
 goto MENU
 
@@ -93,4 +95,14 @@ goto MENU
 :OPEN_IDE
 cd /d "C:\Users\stoic\AntigravityWorkspace\projects\stoic-body"
 code .
+goto MENU
+
+:OPEN_REPOS
+cls
+echo Launching Stoic Body -- GitHub Repos & Free Courses Hub...
+if exist "C:\Program Files\Google\Chrome\Application\chrome.exe" (
+    start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --app=https://stoic-body.vercel.app/learning --user-data-dir="C:\Users\stoic\.stoic-body\app-profile"
+) else (
+    start "" "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --app=https://stoic-body.vercel.app/learning --user-data-dir="C:\Users\stoic\.stoic-body\app-profile"
+)
 goto MENU
