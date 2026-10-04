@@ -134,7 +134,7 @@ export default function LearningPage() {
   const [showCourseModal, setShowCourseModal] = useState<boolean>(false);
   const [customTitle, setCustomTitle] = useState("");
   const [customRepo, setCustomRepo] = useState("");
-  const [customCategory, setCustomCategory] = useState<InteractiveCourse["category"]>("AI Agents & MCP");
+  const [customCategory, setCustomCategory] = useState<InteractiveCourse["category"]>("Google Antigravity Mastery");
   const [customLevel, setCustomLevel] = useState<InteractiveCourse["level"]>("Advanced");
   const [customDesc, setCustomDesc] = useState("");
   const [customLessonTitle, setCustomLessonTitle] = useState("");
@@ -666,10 +666,13 @@ export default function LearningPage() {
               <div className="flex flex-wrap gap-1.5">
                 {[
                   "All",
+                  "Google Antigravity Mastery",
+                  "Vibe Coding & AI Dev",
+                  "Web & UI/UX Design",
+                  "Autonomous Automation",
+                  "Full-Stack Frontend & Backend",
                   "AI Agents & MCP",
                   "Local Sovereign LLMs",
-                  "Full-Stack AI Apps",
-                  "Multi-Agent Systems",
                   "Mechanical & Craft",
                 ].map((cat) => (
                   <button
@@ -1004,10 +1007,13 @@ export default function LearningPage() {
                     onChange={(e) => setCustomCategory(e.target.value as any)}
                     className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
                   >
+                    <option value="Google Antigravity Mastery">Google Antigravity Mastery</option>
+                    <option value="Vibe Coding & AI Dev">Vibe Coding &amp; AI Dev</option>
+                    <option value="Web & UI/UX Design">Web &amp; UI/UX Design</option>
+                    <option value="Autonomous Automation">Autonomous Automation</option>
+                    <option value="Full-Stack Frontend & Backend">Full-Stack Frontend &amp; Backend</option>
                     <option value="AI Agents & MCP">AI Agents &amp; MCP</option>
                     <option value="Local Sovereign LLMs">Local Sovereign LLMs</option>
-                    <option value="Full-Stack AI Apps">Full-Stack AI Apps</option>
-                    <option value="Multi-Agent Systems">Multi-Agent Systems</option>
                     <option value="Mechanical & Craft">Mechanical &amp; Craft</option>
                   </select>
                 </div>

@@ -23,17 +23,22 @@ export interface CourseModule {
   lessons: InteractiveLesson[];
 }
 
+export type CourseCategory =
+  | "Vibe Coding & AI Dev"
+  | "Web & UI/UX Design"
+  | "Google Antigravity Mastery"
+  | "Autonomous Automation"
+  | "Full-Stack Frontend & Backend"
+  | "AI Agents & MCP"
+  | "Local Sovereign LLMs"
+  | "Mechanical & Craft";
+
 export interface InteractiveCourse {
   id: string;
   title: string;
   repoSource: string;
   repoStars: string;
-  category:
-    | "AI Agents & MCP"
-    | "Local Sovereign LLMs"
-    | "Full-Stack AI Apps"
-    | "Multi-Agent Systems"
-    | "Mechanical & Craft";
+  category: CourseCategory;
   level: "Beginner" | "Intermediate" | "Advanced" | "Sovereign Architect";
   description: string;
   estimatedHours: number;
@@ -66,7 +71,7 @@ export interface CreateCourseInput {
   title: string;
   repoSource: string;
   repoStars: string;
-  category: InteractiveCourse["category"];
+  category: CourseCategory;
   level: InteractiveCourse["level"];
   description: string;
   estimatedHours: number;
@@ -187,9 +192,379 @@ export function createCustomCourse(input: CreateCourseInput): InteractiveCourse 
 }
 
 /**
- * Pre-loaded interactive AI & Sovereign Engineering courses based on top GitHub repos
+ * Pre-loaded interactive AI, Vibe Coding, Web Design, Automation, and Antigravity courses
  */
 export const FOUNDER_AI_COURSES: InteractiveCourse[] = [
+  // 1. GOOGLE ANTIGRAVITY MASTERY
+  {
+    id: "antigravity-mastery-engine",
+    title: "Google Antigravity Mastery: Mass Software Production Engine",
+    repoSource: "google-deepmind/antigravity",
+    repoStars: "Sovereign ★",
+    category: "Google Antigravity Mastery",
+    level: "Sovereign Architect",
+    description:
+      "Get maximum ROI from your Antigravity subscription: Multi-subagent swarm orchestration, background daemons, MCP tooling, browser automation, and shipping production software in minutes.",
+    estimatedHours: 5,
+    xpReward: 2500,
+    modules: [
+      {
+        id: "agy-mod-1",
+        title: "Module 1: Subagent Swarms & Autonomous Daemons",
+        lessons: [
+          {
+            id: "agy-l1",
+            title: "Subagent Swarm Orchestration (invoke_subagent)",
+            concept:
+              "Instead of overloading a single conversation context with research, test runs, and multi-file edits, Antigravity lets you invoke parallel subagents. Each subagent has its own independent context window and reports back structured results without cluttering your primary workspace memory.",
+            codeSnippet: `// Example invoke_subagent call in Antigravity
+{
+  "Subagents": [
+    {
+      "Role": "Security & Dependency Auditor",
+      "TypeName": "research",
+      "Prompt": "Audit all npm dependencies in package.json for CVE vulnerabilities and outdated packages. Return JSON report."
+    },
+    {
+      "Role": "Playwright E2E Tester",
+      "TypeName": "self",
+      "Prompt": "Launch headless browser, verify all 12 routes return 200, take screenshots, report violations."
+    }
+  ]
+}`,
+            codeLanguage: "json",
+            actionPrompt: "Delegate parallel research and audits to subagents rather than serial execution.",
+            quiz: {
+              question: "What is the primary advantage of delegating tasks to subagents via invoke_subagent?",
+              options: [
+                "It deletes all git branches",
+                "It isolates heavy token generation and tool calls into parallel contexts, keeping the main architect clean and high-speed",
+                "It slows down execution by 50%",
+              ],
+              correctIndex: 1,
+              explanation:
+                "Subagents prevent token window bloat and execute independent tasks concurrently, giving you a full software team in parallel.",
+            },
+            xpReward: 200,
+            completed: true,
+          },
+          {
+            id: "agy-l2",
+            title: "Autonomous 24/7 Daemons & Background Cron Tasks",
+            concept:
+              "For watchers, dev servers, or recurring health checks, launch them with `IsDaemon: true` or use the `schedule` tool. Antigravity notifies you reactively when background tasks complete without wasteful polling loops.",
+            codeSnippet: `# Running persistent server as daemon
+run_command(
+  CommandLine="npm run dev",
+  Cwd="C:\\Users\\stoic\\AntigravityWorkspace\\projects\\stoic-body",
+  IsDaemon=true,
+  WaitMsBeforeAsync=500
+)
+
+# Scheduling recurring health audits via cron
+schedule(
+  CronExpression="0 */4 * * *",
+  Prompt="Run full test suite and verify production health"
+)`,
+            codeLanguage: "bash",
+            actionPrompt: "Set IsDaemon: true when starting dev servers or background scrapers.",
+            quiz: {
+              question: "How should you wait for a background process to finish in Antigravity?",
+              options: [
+                "Poll the status command in an infinite while loop",
+                "Simply call no more tools or continue other work; the reactive wakeup system automatically resumes when the task notifies you",
+                "Close the IDE completely",
+              ],
+              correctIndex: 1,
+              explanation:
+                "Antigravity's reactive wakeup system automatically resumes your agent turn when a background task or subagent finishes.",
+            },
+            xpReward: 200,
+            completed: false,
+          },
+        ],
+      },
+    ],
+  },
+
+  // 2. VIBE CODING & RAPID PROTOTYPING
+  {
+    id: "vibe-coding-agentic-dev",
+    title: "Vibe Coding: Agentic Rapid Prototyping & Flow-State Development",
+    repoSource: "karpathy/vibe-coding",
+    repoStars: "38.9k ★",
+    category: "Vibe Coding & AI Dev",
+    level: "Intermediate",
+    description:
+      "Master the new paradigm of software creation: guiding autonomous AI models through natural language, spec-driven development, rapid iteration, and shipping at 10x speed.",
+    estimatedHours: 3,
+    xpReward: 1200,
+    modules: [
+      {
+        id: "vc-mod-1",
+        title: "Module 1: The Vibe Coding Architecture",
+        lessons: [
+          {
+            id: "vc-l1",
+            title: "The Lead Architect Mindset: Steering vs Typing",
+            concept:
+              "In vibe coding, you are the Lead Systems Architect and Chief Code Reviewer. You do not type individual lines of syntax. Instead, you declare the desired end-state, strict architectural constraints (e.g. 'local-first SQLite, Black/Red/Gold theme, zero external trackers'), and let the agent write, test, and debug.",
+            codeSnippet: `### THE PERFECT VIBE CODING PROMPT PATTERN:
+1. ROLE & IDENTITY: "Act as an elite Next.js full-stack engineer."
+2. GOAL: "Build an interactive 23:1 OMAD fasting clock with real-time biological stages."
+3. CONSTRAINTS: "Obsidian black theme (#000000), Tailwind CSS, local-first localStorage persistence."
+4. VERIFICATION: "Write unit tests in tests/ before modifying page.tsx. Confirm all tests pass."`,
+            codeLanguage: "bash",
+            actionPrompt: "Always include constraints and verification criteria in your vibe coding prompts.",
+            quiz: {
+              question: "What is the number one cause of vibe coding hallucinations or broken builds?",
+              options: [
+                "Using modern AI models",
+                "Underspecified constraints and lacking automated verification criteria",
+                "Having too many tests",
+              ],
+              correctIndex: 1,
+              explanation:
+                "When you give an agent a vague goal without architectural boundaries or verification tests, it makes arbitrary assumptions that drift from your vision.",
+            },
+            xpReward: 150,
+            completed: false,
+          },
+          {
+            id: "vc-l2",
+            title: "TDD as the Vibe Coding Guardrail (Self-Healing Code)",
+            concept:
+              "The secret to building massive apps without breaking existing features is Test-Driven Development (TDD). When you ask the agent to write a test suite first, the agent uses the test runner as an objective feedback loop to self-diagnose and fix its own bugs before you even look at the code.",
+            codeSnippet: `// tests/feature.test.ts
+import test from "node:test";
+import assert from "node:assert/strict";
+
+test("Vibe Coding Guardrail — validates meal macro math", () => {
+  const result = calculateDailyMacros([{ calories: 500, protein: 40, carbs: 10, fat: 20 }]);
+  assert.equal(result.totalCalories, 500);
+  assert.equal(result.totalProtein, 40);
+});`,
+            codeLanguage: "typescript",
+            actionPrompt: "Tell the agent: 'Write tests first, run them, and show green output before finishing.'",
+            quiz: {
+              question: "Why does writing automated unit tests make vibe coding 5x faster instead of slower?",
+              options: [
+                "It gives the AI agent an autonomous verification loop so it can self-heal errors without asking you",
+                "It deletes slow dependencies",
+                "It replaces the database",
+              ],
+              correctIndex: 0,
+              explanation:
+                "With automated tests, the agent immediately knows if a change broke something, fixing it in seconds before presenting the solution to you.",
+            },
+            xpReward: 180,
+            completed: false,
+          },
+        ],
+      },
+    ],
+  },
+
+  // 3. MODERN WEB & UI/UX DESIGN
+  {
+    id: "modern-web-ui-ux-design",
+    title: "Modern Web Design, UI/UX & High-CTR Media Systems",
+    repoSource: "shadcn/ui",
+    repoStars: "82.1k ★",
+    category: "Web & UI/UX Design",
+    level: "Advanced",
+    description:
+      "Elite visual aesthetics: Obsidian dark luxury, brutalist typography, glassmorphism, micro-interactions, responsive grid layouts, and high-converting YouTube media systems.",
+    estimatedHours: 4,
+    xpReward: 1500,
+    modules: [
+      {
+        id: "ui-mod-1",
+        title: "Module 1: Obsidian Luxury & High-Contrast Typography",
+        lessons: [
+          {
+            id: "ui-l1",
+            title: "Dark Luxury Architecture: Black, Red & Gold Color Theory",
+            concept:
+              "Amateur dark mode uses generic medium gray backgrounds (`#1F2937`) with low-contrast text. Elite dark luxury uses true Obsidian Black (`#000000`, `#0A0A0F`), subtle Imperial Red border luminescence (`border-red-950/80`), and high-value Gold/Amber accents (`#F59E0B`), paired with crisp white text (`text-white`, `font-bold`).",
+            codeSnippet: `/* Tailwind Dark Luxury Card Stack */
+<div className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl relative overflow-hidden">
+  <div className="flex justify-between items-center mb-3">
+    <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
+      Sovereign Telemetry
+    </span>
+    <span className="px-2 py-0.5 rounded bg-red-950/80 text-amber-300 font-mono text-xs border border-amber-500/40">
+      ACTIVE
+    </span>
+  </div>
+  <p className="text-sm font-bold text-white">Crisp, readable white typography.</p>
+</div>`,
+            codeLanguage: "typescript",
+            actionPrompt: "Avoid low-contrast gray text on dark cards; use text-white or text-slate-100.",
+            quiz: {
+              question: "What creates visual depth and elegance in dark-themed enterprise UI?",
+              options: [
+                "Using bright white backgrounds everywhere",
+                "Deep obsidian surfaces paired with subtle colored border luminescence and high-contrast typography",
+                "Using Comic Sans font",
+              ],
+              correctIndex: 1,
+              explanation:
+                "Layering obsidian surfaces with colored border luminescence (e.g. red-950) creates a 3D physical card aesthetic without visual glare.",
+            },
+            xpReward: 150,
+            completed: false,
+          },
+          {
+            id: "ui-l2",
+            title: "Generative UI: Radial SVG Rings & Micro-Interactions",
+            concept:
+              "Static progress bars feel cheap. Generative UI leverages SVG `strokeDasharray` math to render interactive circular countdown rings and visual gauges with CSS transitions and Web Audio tactile cues.",
+            codeSnippet: `// SVG Radial Countdown Formula:
+// dasharray = (percent, 100) on a 36x36 viewBox with r=15.9155
+<svg className="w-32 h-32 -rotate-90" viewBox="0 0 36 36">
+  <path className="text-neutral-900" strokeWidth="3" stroke="currentColor" fill="none"
+    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+  <path className="text-amber-500 transition-all duration-500"
+    strokeDasharray="\${percent}, 100" strokeWidth="3" strokeLinecap="round" stroke="currentColor" fill="none"
+    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+</svg>`,
+            codeLanguage: "typescript",
+            actionPrompt: "Use radius 15.9155 so the perimeter is exactly 2 * pi * 15.9155 = 100 units.",
+            quiz: {
+              question: "Why is a radius of 15.9155 used in SVG circular progress rings?",
+              options: [
+                "Because 2 * π * 15.9155 equals exactly 100, allowing direct percentage binding to strokeDasharray",
+                "It makes the SVG download 5x smaller",
+                "It disables browser caching",
+              ],
+              correctIndex: 0,
+              explanation:
+                "The circumference equals exactly 100, so a 75% progress value directly maps to `75, 100` without complex trigonometric conversions.",
+            },
+            xpReward: 180,
+            completed: false,
+          },
+        ],
+      },
+    ],
+  },
+
+  // 4. AUTONOMOUS AUTOMATION & PIPELINES
+  {
+    id: "autonomous-automation-pipelines",
+    title: "Autonomous Automation: Headless Scraping & Webhook Pipelines",
+    repoSource: "microsoft/playwright",
+    repoStars: "78.3k ★",
+    category: "Autonomous Automation",
+    level: "Advanced",
+    description:
+      "End-to-end automation pipelines: Replacing expensive third-party scrapers with native Playwright Chromium, resilient webhook queues, and autonomous scheduling.",
+    estimatedHours: 4,
+    xpReward: 1600,
+    modules: [
+      {
+        id: "auto-mod-1",
+        title: "Module 1: Headless Browser Scraping & E2E Verification",
+        lessons: [
+          {
+            id: "auto-l1",
+            title: "Playwright Headless Shell: Zero-Dependency Extraction",
+            concept:
+              "Third-party scraping APIs charge high fees and leak data. Playwright runs headless Chromium directly on your hardware, navigating JavaScript SPAs, waiting for network idle, taking audit screenshots, and extracting DOM data with zero recurring cost.",
+            codeSnippet: `import { chromium } from "playwright";
+
+async function scrapeSovereignData(targetUrl: string) {
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  await page.goto(targetUrl, { waitUntil: "networkidle" });
+  
+  const telemetry = await page.evaluate(() => {
+    return Array.from(document.querySelectorAll(".metric-card")).map(el => el.textContent?.trim());
+  });
+  
+  await browser.close();
+  return telemetry;
+}`,
+            codeLanguage: "typescript",
+            actionPrompt: "Run Playwright headless locally to bypass anti-bot headers and paywalls.",
+            quiz: {
+              question: "Why is Playwright superior to a raw fetch() or axios request for scraping modern websites?",
+              options: [
+                "Playwright executes clientside JavaScript, renders the full DOM, and waits for dynamic React/Next.js hydration",
+                "Playwright uses 90% less electricity",
+                "Playwright only works with static HTML files",
+              ],
+              correctIndex: 0,
+              explanation:
+                "Modern SPAs render blank HTML on raw HTTP fetch; Playwright runs the full Chromium JavaScript runtime so dynamic elements appear.",
+            },
+            xpReward: 150,
+            completed: false,
+          },
+        ],
+      },
+    ],
+  },
+
+  // 5. FULL-STACK ENGINEERING: FRONTEND & BACKEND
+  {
+    id: "full-stack-nextjs-fastapi",
+    title: "Full-Stack Engineering: Next.js 15, React 19 & High-Performance Backends",
+    repoSource: "vercel/next.js",
+    repoStars: "130k ★",
+    category: "Full-Stack Frontend & Backend",
+    level: "Sovereign Architect",
+    description:
+      "Full-stack mastery: React 19 Server Components, Next.js 15 App Router streaming, Python FastAPI microservices, and local-first SQLite persistence.",
+    estimatedHours: 5,
+    xpReward: 2000,
+    modules: [
+      {
+        id: "fs-mod-1",
+        title: "Module 1: Next.js 15 App Router & Server Actions",
+        lessons: [
+          {
+            id: "fs-l1",
+            title: "Server Components vs Client Components Composition",
+            concept:
+              "Next.js App Router renders Server Components by default with 0 bytes added to the client JavaScript bundle. Keep data fetching and static markup in Server Components, and push `'use client'` leaves down to interactive buttons and forms for maximum performance.",
+            codeSnippet: `// app/page.tsx (Server Component - 0kB client JS)
+import { getSovereignTasks } from "@/lib/db";
+import InteractiveTaskToggle from "@/components/InteractiveTaskToggle";
+
+export default async function Page() {
+  const tasks = await getSovereignTasks();
+  return (
+    <div className="space-y-4">
+      {tasks.map(t => (
+        <InteractiveTaskToggle key={t.id} task={t} />
+      ))}
+    </div>
+  );
+}`,
+            codeLanguage: "typescript",
+            actionPrompt: "Push 'use client' to the smallest leaf components to minimize bundle size.",
+            quiz: {
+              question: "Where should database queries be executed in Next.js 15 App Router?",
+              options: [
+                "Inside a client useEffect hook with an exposed API key",
+                "Directly inside Server Components on the server with zero client exposure",
+                "In the browser local storage only",
+              ],
+              correctIndex: 1,
+              explanation:
+                "Server Components run securely on the server, allowing direct database queries with zero client bundle overhead and zero secret leakage.",
+            },
+            xpReward: 180,
+            completed: false,
+          },
+        ],
+      },
+    ],
+  },
+
+  // 6. MODEL CONTEXT PROTOCOL (MCP)
   {
     id: "mcp-server-architecture",
     title: "Model Context Protocol (MCP) Server Architecture & Tooling",
@@ -276,7 +651,7 @@ if __name__ == "__main__":
               ],
               correctIndex: 1,
               explanation:
-                "FastMCP inspects native Python type annotations (`subsystem: str`) and the docstring to dynamically build the JSON schema.",
+                "FastMCP inspects native Python type annotations and docstrings to dynamically build the JSON schema.",
             },
             xpReward: 150,
             completed: false,
@@ -285,6 +660,8 @@ if __name__ == "__main__":
       },
     ],
   },
+
+  // 7. LOCAL SOVEREIGN LLMS
   {
     id: "ollama-local-inference",
     title: "Local Sovereign LLMs: GGUF Quantization & Zero-Cloud Inference",
@@ -330,44 +707,18 @@ ollama run qwen2.5:14b-instruct-q4_K_M`,
             xpReward: 100,
             completed: false,
           },
-          {
-            id: "ollama-l2",
-            title: "Crafting Sovereign Modelfiles & System Anchors",
-            concept:
-              "An Ollama Modelfile allows you to bake system personas, temperature parameters, and stop tokens into a standalone model binary.",
-            codeSnippet: `# Modelfile
-FROM qwen2.5:14b
-PARAMETER temperature 0.3
-PARAMETER top_p 0.9
-PARAMETER stop "<|im_end|>"
-
-SYSTEM """You are Ultron, a sovereign offline AI advisor for Stoic discipline, systems programming, and high-performance engineering. Be concise, rigorous, and direct."""`,
-            codeLanguage: "bash",
-            actionPrompt: "Build the image using `ollama create ultron-sovereign -f Modelfile`.",
-            quiz: {
-              question: "What parameter lowers hallucination when writing factual code and logic?",
-              options: [
-                "Setting temperature to 1.8",
-                "Lowering temperature towards 0.1 - 0.3",
-                "Increasing max tokens to 100,000",
-              ],
-              correctIndex: 1,
-              explanation:
-                "Lower temperature (0.1–0.3) makes token selection deterministic, drastically reducing hallucinations for technical and coding tasks.",
-            },
-            xpReward: 120,
-            completed: false,
-          },
         ],
       },
     ],
   },
+
+  // 8. VERCEL AI SDK
   {
     id: "vercel-ai-sdk",
     title: "Vercel AI SDK: Streaming Generative UI & Agentic Workflows",
     repoSource: "vercel/ai",
     repoStars: "22.8k ★",
-    category: "Full-Stack AI Apps",
+    category: "Full-Stack Frontend & Backend",
     level: "Intermediate",
     description:
       "Build real-time full-stack AI applications with React 19, Server-Sent Events (SSE), tool calling, and dynamic component hydration in Next.js App Router.",
@@ -416,12 +767,14 @@ export async function POST(req: Request) {
       },
     ],
   },
+
+  // 9. MULTI-AGENT STATE GRAPHS
   {
     id: "langgraph-multi-agent",
     title: "Cyclic Multi-Agent State Graphs & Autonomous Supervisors",
     repoSource: "langchain-ai/langgraph",
     repoStars: "21.5k ★",
-    category: "Multi-Agent Systems",
+    category: "AI Agents & MCP",
     level: "Sovereign Architect",
     description:
       "Transition from fragile linear chains to resilient cyclical state graphs. Implement supervisor agents, human-in-the-loop review gates, and persistent state checkpoints.",
@@ -447,7 +800,6 @@ class AgentState(TypedDict):
     iterations: Annotated[int, operator.add]
 
 def test_runner(state: AgentState):
-    # Execute verification test
     passed = run_pytest(state["code"])
     return {"test_passed": passed, "iterations": 1}
 
@@ -475,6 +827,8 @@ def router(state: AgentState):
       },
     ],
   },
+
+  // 10. MECHANICAL & FABRICATION ENGINEERING
   {
     id: "mechanical-s550-engineering",
     title: "S550 Mechanical & Home Fabrication Engineering",
