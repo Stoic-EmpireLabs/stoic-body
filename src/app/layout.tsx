@@ -7,6 +7,16 @@ import Nav from "@/components/Nav";
 export const metadata: Metadata = {
   title: "Stoic Body — Discipline, Movement & Sovereign Life Game",
   description: "Offline-first, addictive 5-tier gamified life coordination, calisthenics, OMAD nutrition, and Stoic wisdom engine.",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/favicon.ico",
+    apple: "/icon-512.png",
+  },
+};
+
+export const viewport = {
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
