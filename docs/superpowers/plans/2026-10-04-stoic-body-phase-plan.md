@@ -71,7 +71,7 @@ Prerequisite: Phase 1 approval.
 - [x] Create proposed product trust-boundary/privacy design and acceptance criteria; no repository security scan is claimed.
 - [x] Write separate implementation plans for core, health modules, content/imports and commercial packaging.
 - [ ] Review written specification, then written implementation plans and execution method.
-- [ ] Obtain Phase 2 approval.
+- [x] Obtain provisional Phase 2 approval: direct user “for now yes,” 2026-10-04.
 
 Exit: concrete reviewable spec and plans. No unapproved stack assumptions.
 
@@ -79,12 +79,12 @@ Exit: concrete reviewable spec and plans. No unapproved stack assumptions.
 
 Prerequisite: Phase 2 approval.
 
-- [ ] Propose multiple directions including purple/charcoal/gold.
-- [ ] Show onboarding, Today, calendar, goals, nutrition, workout and progress screens.
-- [ ] Demonstrate fast daily loop, simple navigation, completion reward, error/empty/offline states and calm mode.
-- [ ] Include commercial onboarding/paywall screens only for the approved business model.
-- [ ] Evaluate layout, readability, accessibility and perceived friction.
-- [ ] Label prototype/simulated behavior.
+- [x] Propose multiple directions including purple/charcoal/gold.
+- [x] Show onboarding, Today, calendar, goals, nutrition, workout and progress screens.
+- [x] Demonstrate fast daily loop, simple navigation, completion reward, staged import and simulated sync states, plus calm mode; full offline engine remains Phase 4.
+- [ ] Commercial paywall deferred: no approved business model yet.
+- [x] Evaluate layout/readability and scoped keyboard/reduced-motion behavior. Full accessibility and user usability review remain pending.
+- [x] Label prototype/simulated behavior.
 - [ ] Obtain Phase 3 approval.
 
 Exit: approved visual system and interaction flows.
@@ -189,5 +189,7 @@ Completed work → concrete artifact/demo → covered requirement IDs → actual
 
 Do not equate a discovery reply with phase approval.
 
+
+Phase 3 packet: [review](../../phase-3-review.md). Three visual directions are available locally and on the user-authorized Vercel preview. User style selection and Phase 3 approval remain pending.
 
 Phase 2 packet: [review](../../phase-2-review.md). Four subsystem plans and architecture contracts are proposed for review; automatic sync is required at launch. Existing app source is separately assessed rather than treated as approved Phase 4/5 completion.

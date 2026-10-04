@@ -48,3 +48,6 @@ Phase 0 was approved on 2026-10-04 by the user message: Great. continue throguh 
 
 - DEC-36 — Provisionally approved: Phase 2 by the direct user reply “for now yes.” Proceed with Phase 3 visual prototypes; hosting/build/commercial unknowns remain open.
 - DEC-37 — Phase 3 implementation choice: isolated dependency-free prototype under prototypes/phase-3, synthetic data and in-memory interactions only. Existing Next.js app is preserved; this is visual evaluation, not native production implementation.
+
+- DEC-38 — Authorized: direct user request “upload to vercel account i have and github account.” Verified existing GitHub Stoic-EmpireLabs/stoic-body and Vercel stoic-dev-team/stoic-body. Existing source was already uploaded. Publish only the synthetic Phase 3 static preview and review evidence from this workstream; preserve the separate production app. No spending or store submission is authorized.
+- DEC-39 — Published: Phase 3 preview dpl_FVEZq7aFMbFp61b1MgqV3DWKpQ7V in the existing Vercel project, with account authentication retained. Seven allowlisted assets; no owner records or environment files. Style selection and Phase 3 approval are still pending.

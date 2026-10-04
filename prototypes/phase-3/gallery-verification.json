@@ -1,0 +1,24 @@
+{
+  "checked_at": "2026-10-04T18:21:36.108Z",
+  "checks": [
+    {
+      "width": 1440,
+      "images": true,
+      "noOverflow": true,
+      "threeDirections": true
+    },
+    {
+      "width": 834,
+      "images": true,
+      "noOverflow": true,
+      "threeDirections": true
+    },
+    {
+      "width": 390,
+      "images": true,
+      "noOverflow": true,
+      "threeDirections": true
+    }
+  ],
+  "themeLinksPassed": 3
+}

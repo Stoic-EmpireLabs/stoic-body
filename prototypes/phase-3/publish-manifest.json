@@ -1,0 +1,40 @@
+{
+  "scope": "Synthetic static prototype only",
+  "files": [
+    {
+      "file": "index.html",
+      "bytes": 2810,
+      "sha256": "81e684c59815b638226eff4ad841624082775f9e48eeef9a36a9500193ca7c9f"
+    },
+    {
+      "file": "gallery.html",
+      "bytes": 5048,
+      "sha256": "57abaa66e27755c8ff5c86bdefef68a518519e2b2e540dd1c7e9832d10736165"
+    },
+    {
+      "file": "app.js",
+      "bytes": 56677,
+      "sha256": "8515a6c252e2fde62176d179d0118a8a1ae593bcf326e403031abf98433ca25b"
+    },
+    {
+      "file": "styles.css",
+      "bytes": 26221,
+      "sha256": "4a4b5ca8654696e7e5dac3f65b2399c836a94a3fcd25ccc002c58a9882e7d92a"
+    },
+    {
+      "file": "night-today-desktop.png",
+      "bytes": 239357,
+      "sha256": "68671047f8b5e55f386dd9ee3b680e1f2e4d62daddcf85c73b5e41a236d1f48e"
+    },
+    {
+      "file": "marble-today-desktop.png",
+      "bytes": 251312,
+      "sha256": "795afbf81acea4c118216f87235baaaab31aab0a09d72063a17187105e2c84d5"
+    },
+    {
+      "file": "journal-today-desktop.png",
+      "bytes": 257779,
+      "sha256": "d1855f66ad1c19c5c1fcd81269b076667f199d3d03e999eea305c92a8f82c6e1"
+    }
+  ]
+}

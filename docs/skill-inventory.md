@@ -6,9 +6,9 @@ Snapshot: 2026-10-04. Scope: every entry in this Codex session's available-skill
 - Distinct skill names: 100.
 - Duplicate named entries: 21.
 - Every listed SKILL.md path was checked and exists.
-- Status totals: Not applicable 20; Conditional 60; Planned 12; Active 8; Duplicate 21.
+- Status totals: Not applicable 20; Conditional 59; Planned 12; Active 9; Duplicate 21.
 
-“Active” means applied to this documentation task. “Planned” means expected later, subject to phase scope. “Conditional” means use only when its dependency actually arises. “Not applicable” gives a reason; it is not a missing capability. Duplicate entries are alternative installations of the same named capability; they are not claimed to be byte-identical.
+“Active” means applied in this project workstream. “Planned” means expected later, subject to phase scope. “Conditional” means use only when its dependency actually arises. “Not applicable” gives a reason; it is not a missing capability. Duplicate entries are alternative installations of the same named capability; they are not claimed to be byte-identical.
 
 Evaluation uses the session catalog descriptions and task fit. Full instructions are read when a skill is applied. Do not claim that every file has been executed or read in full. Writing-plans and verification-before-completion were read for this Phase 0 work; brainstorming was read earlier in this conversation.
 
@@ -134,7 +134,7 @@ Delegation skills are conditional execution choices, not current dispatch author
 | 099 | [superpowers:requesting-code-review](<C:/Users/stoic/.agents/skills/superpowers/requesting-code-review/SKILL.md>) | Duplicate | — | Duplicate entry; use curated version above. | Canonical skill | No duplicate invocation | Present |
 | 100 | [superpowers:subagent-driven-development](<C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/subagent-driven-development/SKILL.md>) | Conditional | 4–7 | Alternative execution method if selected. | Approved plan and delegation method | Task implementation and review | Present |
 | 101 | [superpowers:subagent-driven-development](<C:/Users/stoic/.agents/skills/superpowers/subagent-driven-development/SKILL.md>) | Duplicate | — | Duplicate entry; use curated version above. | Canonical skill | No duplicate invocation | Present |
-| 102 | [superpowers:systematic-debugging](<C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/systematic-debugging/SKILL.md>) | Conditional | 4–7 | Find root causes before fixing failures. | Reproducible failure | Diagnosis and verified fix | Present |
+| 102 | [superpowers:systematic-debugging](<C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/systematic-debugging/SKILL.md>) | Active | 3–7 | Applied to prototype timezone, timer and keyboard-focus failures before fixes. | Reproducible failure | Diagnosis and passing browser checks | Present |
 | 103 | [superpowers:systematic-debugging](<C:/Users/stoic/.agents/skills/superpowers/systematic-debugging/SKILL.md>) | Duplicate | — | Duplicate entry; use curated version above. | Canonical skill | No duplicate invocation | Present |
 | 104 | [superpowers:test-driven-development](<C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/test-driven-development/SKILL.md>) | Planned | 4–7 | Test scheduling, XP and calculations before core implementation. | Approved interfaces and rules | Failing-to-passing core tests | Present |
 | 105 | [superpowers:test-driven-development](<C:/Users/stoic/.agents/skills/superpowers/test-driven-development/SKILL.md>) | Duplicate | — | Duplicate entry; use curated version above. | Canonical skill | No duplicate invocation | Present |
