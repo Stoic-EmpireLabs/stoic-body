@@ -1,0 +1,8 @@
+{
+  "name": "stoic-body-quality-tools",
+  "private": true,
+  "devDependencies": {
+    "eslint": "10.12.0",
+    "typescript-eslint": "8.71.0"
+  }
+}

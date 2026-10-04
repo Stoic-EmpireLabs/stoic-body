@@ -1,0 +1,44 @@
+
+> stoic-body@1.0.0 test
+> node --import tsx --test tests/**/*.test.ts
+
+✔ Stoic Body — Historical Quotations & Authenticity (0.7612ms)
+✔ Stoic Body — Multi-Tone Coaching Engine (0.3001ms)
+▶ Stoic Body — Local SQLite Storage Engine (node:sqlite)
+  ✔ initializes schema and tables in memory without error (1.9006ms)
+  ✔ seeds founder profile and morning anchor tasks correctly (1.0527ms)
+✔ Stoic Body — Local SQLite Storage Engine (node:sqlite) (3.8218ms)
+✔ Stoic Body — Commercial Pricing & Sovereign Tier Verification (0.8028ms)
+▶ Stoic Body — 5-Tier Gamification Engine
+  ✔ calculates base XP for all 5 difficulty tiers correctly (0.7403ms)
+  ✔ applies streak multipliers accurately (0.1589ms)
+  ✔ applies punctuality critical hit (1.2x) when on-time (0.0946ms)
+  ✔ adds flow combo bonuses for chaining tasks (0.1506ms)
+  ✔ effort boost bumps tier by +1 for high-gravity sessions (0.0985ms)
+  ✔ calculates level progress and prestige title hierarchy correctly (0.2264ms)
+  ✔ anti-exploit inversion negates points symmetrically (0.1087ms)
+✔ Stoic Body — 5-Tier Gamification Engine (2.642ms)
+✔ Stoic Body — Weekly Goals Progress & Increments (0.8224ms)
+✔ Stoic Body — Calendar Event Scheduling Across Dates (0.1986ms)
+✔ Stoic Body — Document & Media Importer Security & Validation (2.2972ms)
+✔ Stoic Body — Deconstructed Learning Curricula & Pathways (0.8216ms)
+✔ Stoic Body — Spaced Review Interval Scheduling (SM-2 Lite) (0.8965ms)
+▶ Stoic Body — Nutrition & Body Composition Engine
+  ✔ calculates macro calories with 4-4-9 formula accurately (0.7434ms)
+  ✔ provides adherence-neutral coaching status without guilt or shame (0.152ms)
+  ✔ computes 7-day rolling weight average filtering water weight noise (0.1127ms)
+  ✔ detects fatigue buildup and recommends proactive deload (0.1028ms)
+✔ Stoic Body — Nutrition & Body Composition Engine (2.2225ms)
+▶ Stoic Body — Scheduling & Buffer Engine
+  ✔ calculates transition buffer with formula max(15m, 0.20 * duration) (1.8265ms)
+  ✔ detects schedule overflow when total duration + buffers exceed available waking day (0.5251ms)
+✔ Stoic Body — Scheduling & Buffer Engine (3.6444ms)
+✔ Stoic Body — Storage Durability & Backup Integrity (2.7958ms)
+ℹ tests 24
+ℹ suites 4
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 341.6133

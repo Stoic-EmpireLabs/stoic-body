@@ -37,7 +37,7 @@ Create services/sync/src/{auth,commands,changes,accounts,storage}.ts and tests/{
 
 Common result types: Result<T> contains value or typed DomainError; DomainError codes include invalidInput, conflict, missingConsent, unavailable and unsupported. Command contains the fields in the domain contract. Receipt contains operationId, status, canonicalRevision and optional conflictId. Profile/Task/Occurrence/Proposal/Completion/XpEvent fields are defined in that contract and serialized by versioned schemas.
 
-## C01 — Native foundations and storage feasibility
+## Task 1: C01 — Native foundations and storage feasibility
 
 Create apps/stoic_body/{pubspec.yaml,lib/main.dart,lib/data/database.dart,lib/platform/secure_storage.dart}; tests storage_test.dart and migrations_test.dart. Output: `Future<Database> openDatabase(DatabaseConfig config)` and `Future<void> migrate(Database db, int targetVersion)`; no global founder seed.
 
@@ -47,7 +47,7 @@ Create apps/stoic_body/{pubspec.yaml,lib/main.dart,lib/data/database.dart,lib/pl
 - [ ] Run `flutter analyze` and `flutter test test/storage_test.dart test/migrations_test.dart`; require zero analyzer errors and all assertions passing. Record package versions and exact build prerequisites.
 - [ ] Review the deliverable; do not proceed if either target has no viable persistence/key path.
 
-## C02 — Profiles, goals and transaction boundary
+## Task 2: C02 — Profiles, goals and transaction boundary
 
 Create lib/features/onboarding/, lib/data/repository.dart and lib/domain/models.dart; tests onboarding_test.dart and repository_test.dart. Interfaces: `Future<Profile> saveAnswer(String profileId, Answer answer, int baseRevision)`; `Future<Receipt> applyLocal(Command command)`; `Stream<Snapshot> watchSnapshot(String profileId)`.
 
@@ -56,7 +56,7 @@ Create lib/features/onboarding/, lib/data/repository.dart and lib/domain/models.
 - [ ] Add resumable onboarding and goal/project/task CRUD using the approved prototype, with explicit empty/error states and keyboard semantics.
 - [ ] Run `flutter test test/onboarding_test.dart test/repository_test.dart` and `flutter analyze`; save restart evidence.
 
-## C03 — Completion, XP and rewards
+## Task 3: C03 — Completion, XP and rewards
 
 Create lib/domain/xp.dart and lib/features/rewards/; tests xp_test.dart and completion_test.dart. Interfaces: `int thresholdForLevel(int level)`; `LevelProgress levelProgress(int totalXp)`; `int earnedXp(int budget, double fraction)`; completion commands are applied only through C02's repository.
 
@@ -65,7 +65,7 @@ Create lib/domain/xp.dart and lib/features/rewards/; tests xp_test.dart and comp
 - [ ] Implement calm mode, user-selected rewards and optional grace-day streak displays without XP multipliers or unsafe-health rewards.
 - [ ] Run `flutter test test/xp_test.dart test/completion_test.dart` and `flutter analyze`; verify app restart preserves completion, corrections and the entire ledger.
 
-## C04 — Calendar and explainable scheduling
+## Task 4: C04 — Calendar and explainable scheduling
 
 Create lib/domain/scheduler.dart and lib/features/planning/; tests scheduler_test.dart, recurrence_test.dart and proposal_test.dart. Interfaces: `Proposal proposeSchedule(ScheduleInput input)`; `Validation validateProposal(Proposal proposal, Snapshot latest)`; accepted proposals use C02's command path.
 
@@ -75,7 +75,7 @@ Create lib/domain/scheduler.dart and lib/features/planning/; tests scheduler_tes
 - [ ] Implement morning/evening/weekly review and minimum viable day as explicit proposals, not silent mutations.
 - [ ] Run `flutter test test/scheduler_test.dart test/recurrence_test.dart test/proposal_test.dart` and `flutter analyze`; demonstrate missing a task without overloading tomorrow.
 
-## C05 — Authenticated automatic sync
+## Task 5: C05 — Authenticated automatic sync
 
 Create services/sync package, contracts/, fixtures/sync/, app lib/sync/client.dart and test/sync_test.dart. Server interfaces: `applyCommands(session: Session, commands: Command[]): Promise<Receipt[]>`; `readChanges(session: Session, cursor: string | null): Promise<ChangePage>`; `revokeDevice(session: Session, deviceId: string): Promise<void>`.
 
@@ -86,7 +86,7 @@ Create services/sync package, contracts/, fixtures/sync/, app lib/sync/client.da
 - [ ] Use two isolated local clients and an isolated test database: disconnect both, complete the same task, reconnect in both orders, kill/restart server, and assert equal snapshots/one award. Public exposure is not required for this test.
 - [ ] Review hosting reachability, TLS, durable disk, backup and authentication before any authorized external pilot deployment.
 
-## C06 — Complete backup, restoration and deletion
+## Task 6: C06 — Complete backup, restoration and deletion
 
 Create lib/data/backup.dart and services/sync/src/accounts.ts; tests backup_test.dart and service recovery.test.ts. Interfaces: `Future<ExportManifest> exportData(ExportRequest request)`; `Future<RestorePreview> inspectBackup(String path)`; `Future<Receipt> applyRestore(RestoreApproval approval)`.
 
@@ -94,7 +94,7 @@ Create lib/data/backup.dart and services/sync/src/accounts.ts; tests backup_test
 - [ ] Run failing tests, implement staging/confirmation/snapshot and account deletion/revocation semantics, then run app/service tests, analyze/typecheck and lint.
 - [ ] Perform a restart-and-restore drill and compare record counts, hashes, XP and next-session state, not just a download alert.
 
-## C07 — Native reminder adapters and integrated core
+## Task 7: C07 — Native reminder adapters and integrated core
 
 Create lib/platform/notifications.dart and platform-specific implementations; tests notification_contract_test.dart plus integration_test/core_journey_test.dart. Interface: `Future<ReminderRegistration> reconcileReminder(Reminder reminder, DeviceCapabilities capabilities)`; status never implies observed delivery.
 

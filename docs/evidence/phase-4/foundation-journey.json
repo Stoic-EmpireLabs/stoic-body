@@ -1,0 +1,99 @@
+{
+  "recordedAt": "2026-10-04T19:21:28.446Z",
+  "runtime": "v24.19.0",
+  "status": "EXECUTION-VERIFIED local foundation; synthetic fixture; not an integrated app or sync test",
+  "completion": {
+    "balances": [
+      0,
+      12,
+      25,
+      0
+    ],
+    "repeatAttempts": 100,
+    "afterRestartXp": 25,
+    "afterCorrection": {
+      "level": 1,
+      "totalXp": 0,
+      "xpWithinLevel": 0,
+      "costToNextLevel": 100,
+      "progressFraction": 0
+    },
+    "pendingCommands": 7
+  },
+  "proposal": {
+    "policyVersion": 1,
+    "horizonStart": "2026-10-05T13:00:00.000Z",
+    "horizonEnd": "2026-10-05T23:00:00.000Z",
+    "timezone": "America/Denver",
+    "baseRevisions": {
+      "tasks": {
+        "movement": 1,
+        "study": 1,
+        "home-task": 1,
+        "large-project": 1
+      },
+      "reserved": {
+        "protected-family": 1
+      }
+    },
+    "placements": [
+      {
+        "taskId": "movement",
+        "startAt": "2026-10-05T13:10:00.000Z",
+        "endAt": "2026-10-05T13:55:00.000Z",
+        "occupiedStartAt": "2026-10-05T13:00:00.000Z",
+        "occupiedEndAt": "2026-10-05T14:05:00.000Z",
+        "reason": "Earliest available slot after prerequisites; priority 3. Reserves 65 minutes including preparation, travel and buffer. Protected blocks remain unchanged."
+      },
+      {
+        "taskId": "study",
+        "startAt": "2026-10-05T16:05:00.000Z",
+        "endAt": "2026-10-05T16:50:00.000Z",
+        "occupiedStartAt": "2026-10-05T16:00:00.000Z",
+        "occupiedEndAt": "2026-10-05T17:00:00.000Z",
+        "reason": "Earliest available slot after prerequisites; priority 2. Reserves 60 minutes including preparation, travel and buffer. Protected blocks remain unchanged."
+      },
+      {
+        "taskId": "home-task",
+        "startAt": "2026-10-05T14:05:00.000Z",
+        "endAt": "2026-10-05T14:35:00.000Z",
+        "occupiedStartAt": "2026-10-05T14:05:00.000Z",
+        "occupiedEndAt": "2026-10-05T14:35:00.000Z",
+        "reason": "Earliest available slot after prerequisites; priority 1. Reserves 30 minutes including preparation, travel and buffer. Protected blocks remain unchanged."
+      }
+    ],
+    "unplaced": [
+      {
+        "taskId": "large-project",
+        "reason": "insufficient-capacity",
+        "requiredMinutes": 120,
+        "largestGapMinutes": 25,
+        "alternatives": [
+          "Reduce scope",
+          "Revise the deadline",
+          "Change priority",
+          "Free available time"
+        ]
+      }
+    ],
+    "violations": []
+  },
+  "dst": {
+    "spring": {
+      "requestedLocal": "2026-03-08T02:30",
+      "resolvedLocal": "2026-03-08T03:30",
+      "timezone": "America/Denver",
+      "startAt": "2026-03-08T09:30:00.000Z",
+      "status": "shifted-gap",
+      "explanation": "This local time does not exist. Previewing a shift forward by the offset gap; confirm before scheduling."
+    },
+    "fall": {
+      "requestedLocal": "2026-11-01T01:30",
+      "resolvedLocal": "2026-11-01T01:30",
+      "timezone": "America/Denver",
+      "startAt": "2026-11-01T07:30:00.000Z",
+      "status": "ambiguous-earlier",
+      "explanation": "This local time repeats during an offset change. Previewing the earlier occurrence."
+    }
+  }
+}

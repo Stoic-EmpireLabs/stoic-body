@@ -1,0 +1,80 @@
+
+> stoic-body@1.0.0 test
+> node --import tsx --test tests/**/*.test.ts
+
+✔ Stoic Body — Historical Quotations & Authenticity (0.7496ms)
+✔ Stoic Body — Multi-Tone Coaching Engine (0.2768ms)
+✔ startup is empty and data survives closing and reopening a real file (37.8235ms)
+✔ completion retries, partial progress and correction produce one durable ledger (6.5097ms)
+✔ stale partial or undo requests conflict, and reused operation ids cannot change meaning (2.8284ms)
+✔ owners cannot read or mutate each other through guessed entity ids (1.4462ms)
+✔ a failed write rolls back completion, reward and outbox together (1.4689ms)
+✔ server-assigned rewards reject manipulated budgets and invalid input (1.3049ms)
+✔ onboarding preserves skipped answers and settings, and confirms units before weight inputs (1.0947ms)
+✔ body measurements retain original units when display preferences change (0.8175ms)
+✔ restarting preserves replay receipts and correction history (22.7991ms)
+✔ an outbox failure rolls back the reward, completion and operation receipt (3.1458ms)
+✔ database foreign keys reject cross-owner relations and a future schema remains intact (15.0544ms)
+✔ commands must survive JSON transport unchanged and reject unbounded payloads (3.7373ms)
+✔ snapshot is consistent when a second connection commits during its reads (13.5728ms)
+✔ answer enum values must be strings and invalid input leaves no record (1.5747ms)
+✔ SQLite automatic rollback preserves the original disk-full error and accepted records (3.0653ms)
+✔ adjacent sessions fit and proposal generation does not mutate input (20.5386ms)
+✔ preparation, travel and buffers consume capacity and unsplittable work stays whole (0.7307ms)
+✔ sleep, locked appointments and family time are protected and existing overlap is disclosed (0.6009ms)
+✔ dependencies precede dependents while priority, deadline and stable id break ties (0.5473ms)
+✔ invalid and cyclic dependencies fail explicitly (1.0933ms)
+✔ infeasible deadlines and unplaced dependencies never spill into another day (0.3127ms)
+✔ overlapping availability is merged, not counted twice (0.3037ms)
+✔ explicit instants support cross-midnight sessions without truncation (0.2488ms)
+✔ unknown zones, nonfinite durations and excessive horizons cannot silently schedule (0.5087ms)
+✔ Denver spring-forward gap is a visible proposed shift for a user routine (18.1981ms)
+✔ an imported recurrence skips a nonexistent generated local time (0.5564ms)
+✔ Denver fall-back defaults earlier and permits an explicit later user choice (0.9731ms)
+✔ routine zone changes alter the instant only when the caller explicitly changes zone (1.3035ms)
+✔ half-hour DST transitions and quarter-hour zones retain their actual offsets (0.6076ms)
+✔ unknown imported timezone, invalid date and unsupported policies fail visibly (0.6347ms)
+✔ approved actions use sustainable fixed rewards (2.9624ms)
+✔ level boundaries match the approved increasing costs (5.1895ms)
+✔ partial completion and correction never inflate the original budget (0.3073ms)
+✔ splitting reserves a single parent budget including remainders (2.3471ms)
+✔ invalid numbers are rejected rather than silently granting rewards (3.353ms)
+✔ large safe totals retain exact integer boundaries (0.2078ms)
+▶ Stoic Body — Local SQLite Storage Engine (node:sqlite)
+  ✔ initializes schema and tables in memory without error (6.203ms)
+  ✔ seeds founder profile and morning anchor tasks correctly (1.2225ms)
+✔ Stoic Body — Local SQLite Storage Engine (node:sqlite) (8.5623ms)
+✔ Stoic Body — Commercial Pricing & Sovereign Tier Verification (1.0035ms)
+▶ Stoic Body — 5-Tier Gamification Engine
+  ✔ calculates base XP for all 5 difficulty tiers correctly (0.6731ms)
+  ✔ applies streak multipliers accurately (0.1064ms)
+  ✔ applies punctuality critical hit (1.2x) when on-time (0.0805ms)
+  ✔ adds flow combo bonuses for chaining tasks (0.0908ms)
+  ✔ effort boost bumps tier by +1 for high-gravity sessions (0.093ms)
+  ✔ calculates level progress and prestige title hierarchy correctly (0.191ms)
+  ✔ anti-exploit inversion negates points symmetrically (0.0897ms)
+✔ Stoic Body — 5-Tier Gamification Engine (2.2347ms)
+✔ Stoic Body — Weekly Goals Progress & Increments (0.795ms)
+✔ Stoic Body — Calendar Event Scheduling Across Dates (0.197ms)
+✔ Stoic Body — Document & Media Importer Security & Validation (1.6031ms)
+✔ Stoic Body — Deconstructed Learning Curricula & Pathways (1.2239ms)
+✔ Stoic Body — Spaced Review Interval Scheduling (SM-2 Lite) (0.9627ms)
+▶ Stoic Body — Nutrition & Body Composition Engine
+  ✔ calculates macro calories with 4-4-9 formula accurately (0.3657ms)
+  ✔ provides adherence-neutral coaching status without guilt or shame (0.1612ms)
+  ✔ computes 7-day rolling weight average filtering water weight noise (0.1022ms)
+  ✔ detects fatigue buildup and recommends proactive deload (0.0773ms)
+✔ Stoic Body — Nutrition & Body Composition Engine (1.3949ms)
+▶ Stoic Body — Scheduling & Buffer Engine
+  ✔ calculates transition buffer with formula max(15m, 0.20 * duration) (0.5105ms)
+  ✔ detects schedule overflow when total duration + buffers exceed available waking day (0.1919ms)
+✔ Stoic Body — Scheduling & Buffer Engine (1.3936ms)
+✔ Stoic Body — Storage Durability & Backup Integrity (2.5481ms)
+ℹ tests 60
+ℹ suites 4
+ℹ pass 60
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 334.4867
