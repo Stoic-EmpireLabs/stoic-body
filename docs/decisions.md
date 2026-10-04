@@ -53,3 +53,5 @@ Phase 0 was approved on 2026-10-04 by the user message: Great. continue throguh 
 - DEC-39 — Published: Phase 3 preview dpl_FVEZq7aFMbFp61b1MgqV3DWKpQ7V in the existing Vercel project, with account authentication retained. Seven allowlisted assets; no owner records or environment files. Style selection and Phase 3 approval are still pending.
 
 - DEC-40 — Selected: direct user correction “no red and black and gold.” Replace the initial purple direction with black surfaces, red actions/navigation and gold progress/reward details. Default prototype label: Crimson & Gold. Updated the authorized GitHub/Vercel preview; later phase approval remains scoped to the reviewed artifacts.
+
+- DEC-41 — User approved the red/black/gold direction and requested theme/color Settings. Implemented in the Phase 3 preview: Dark/Light/System, presets, accent and reward color pickers, immediate preview and reset. Only appearance preferences persist in browser storage; no personal entries persist and no cross-device synchronization is claimed. Updated the previously authorized GitHub/Vercel preview.

@@ -4,7 +4,7 @@ Date: 2026-10-04. Phase 2 provisionally approved by “for now yes.” Phase 3 d
 
 ## Open the result
 
-- [Three design directions on Vercel](https://stoic-body-qv8gdjf3o-stoic-dev-team.vercel.app/gallery.html) — existing Vercel account authentication applies.
+- [Three design directions on Vercel](https://stoic-body-mmzb80wyk-stoic-dev-team.vercel.app/gallery.html) — existing Vercel account authentication applies.
 - [Prototype source on GitHub](https://github.com/Stoic-EmpireLabs/stoic-body/tree/main/prototypes/phase-3).
 - [Local gallery](http://127.0.0.1:4327/gallery.html), while the preview server is running.
 - [Existing separately developed app](https://stoic-body.vercel.app), preserved. It is not the same artifact as this design preview.
@@ -15,7 +15,7 @@ The user selected red, black and gold on 2026-10-04. The default direction is no
 
 Five primary destinations — Today, Plan, Train, Fuel and Growth — lead to eleven preview screens: Today, Plan, Train, Fuel, Growth, Goals, evening reflection, weekly review, onboarding, imports and settings. Phone navigation moves to the bottom; tablet and desktop layouts use the available space. The prototype includes calm mode, reduced-motion behavior, keyboard focus styling and labeled controls.
 
-All examples use the fictional profile Alex. Interactions operate in memory and reset on refresh. No owner intake, account, real file upload or external AI service is connected.
+All examples use the fictional profile Alex. Sample planning and logging interactions operate in memory and reset on refresh. Appearance preferences alone are saved in this browser. No owner intake, account, real file upload or external AI service is connected.
 
 ## Review this journey
 
@@ -52,7 +52,7 @@ The earlier [24-competitor study](research/competitors/README.md) and [26-step e
 
 ## Verification and limitations
 
-[Verification record](phase-3-verification.md): 126 local browser checks passed, plus gallery checks at three widths and three theme-link checks. The scoped prototype lint and JavaScript typecheck pass. Seventeen screen captures and a gallery image are available in the prototype directory. The complete production accessibility and native-device alarm checks remain future work.
+[Verification record](phase-3-verification.md): 126 general browser checks and 18 appearance checks passed, plus gallery checks at three widths and three theme-link checks. The scoped prototype lint and JavaScript typecheck pass. Seventeen screen captures and a gallery image are available in the prototype directory. The complete production accessibility and native-device alarm checks remain future work.
 
 No native app, login, persistent health log, automatic sync, actual file extraction, encryption, purchases or dependable closed-app notifications is implemented by this prototype. Some controls acknowledge a proposed action in a dialog. Settings and sync screens are explicitly simulated. Diet cards and workout examples are design material, not an individualized prescription. Forecasts are fictional and do not calculate the owner's progress.
 
@@ -61,3 +61,7 @@ The separate app changed during this workstream. Its TypeScript check now passes
 ## Next checkpoint
 
 The palette is selected. Review the revised red/black/gold screens and approve or revise the daily journey. Phase 4 then implements the approved core: resumable onboarding, goals, feasible scheduling, persistent checklists and XP, sync at launch and actual reminder adapters. Hosting, Apple build access, minimum OS versions and commercial choices remain unresolved. Publishing this preview does not satisfy those decisions or grant approval for later phases.
+
+## Theme and color controls — user addition
+
+The user approved the red/black/gold direction and requested a theme and color setting. Settings now includes Dark, Light and System modes, three presets, separate custom accent/reward color pickers, immediate preview and reset. The header gear opens these controls on phone and desktop. Color pairs adjust for readable text. Appearance alone survives refresh in local browser storage; this does not implement account/device synchronization. [18 focused checks](../prototypes/phase-3/appearance-verification.json) cover media changes, persisted colors, default recovery, separation from sample logs and unavailable storage.
