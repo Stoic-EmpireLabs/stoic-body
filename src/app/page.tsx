@@ -57,6 +57,39 @@ export default function TodayCommandCenter() {
 
   const [reflectionText, setReflectionText] = useState("");
   const [reflectionSaved, setReflectionSaved] = useState(false);
+  const [showAddTaskModal, setShowAddTaskModal] = useState(false);
+  const [customTitle, setCustomTitle] = useState("");
+  const [customSubtitle, setCustomSubtitle] = useState("");
+  const [customTier, setCustomTier] = useState<DifficultyTier>(DifficultyTier.Routine);
+  const [customAttribute, setCustomAttribute] = useState("Discipline");
+
+  const handleAddCustomTask = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customTitle.trim()) return;
+    const basePointsMap: Record<DifficultyTier, number> = {
+      [DifficultyTier.Micro]: 100,
+      [DifficultyTier.Routine]: 300,
+      [DifficultyTier.Challenging]: 750,
+      [DifficultyTier.Boss]: 1500,
+      [DifficultyTier.Legendary]: 3500,
+    };
+    const newItem: AnchorItem = {
+      id: `custom-${Date.now()}`,
+      title: customTitle.trim(),
+      subtitle: customSubtitle.trim() || "Custom founder objective",
+      tier: customTier,
+      basePoints: basePointsMap[customTier] || 300,
+      attribute: customAttribute,
+      badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+      completed: false,
+      boosted: false,
+    };
+    setAnchors((prev) => [...prev, newItem]);
+    awardXp(100, `Objective Declared: ${newItem.title}`, customAttribute);
+    setCustomTitle("");
+    setCustomSubtitle("");
+    setShowAddTaskModal(false);
+  };
 
   const toggleTask = (index: number, e: React.MouseEvent) => {
     const item = anchors[index];
@@ -128,9 +161,17 @@ export default function TodayCommandCenter() {
               Morning Anchor &middot; 05:30 AM
             </h2>
           </div>
-          <span className="text-xs text-slate-400 font-mono">
-            Streak Multiplier: <strong className="text-amber-300">1.25x</strong>
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-slate-400 font-mono hidden sm:inline">
+              Streak Multiplier: <strong className="text-amber-300">1.25x</strong>
+            </span>
+            <button
+              onClick={() => setShowAddTaskModal(true)}
+              className="px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30 text-xs font-bold font-mono transition flex items-center gap-1"
+            >
+              <span>+</span> Add Task / Item
+            </button>
+          </div>
         </div>
 
         <div className="space-y-3">
@@ -363,6 +404,107 @@ export default function TodayCommandCenter() {
           </button>
         </div>
       </section>
+
+      {/* ADD TASK MODAL */}
+      {showAddTaskModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#13141C] border border-[#232636] rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[#232636] pb-3">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-100">
+                Add Daily Task / Item
+              </h3>
+              <button
+                onClick={() => setShowAddTaskModal(false)}
+                className="text-slate-400 hover:text-white text-lg"
+              >
+                &times;
+              </button>
+            </div>
+
+            <form onSubmit={handleAddCustomTask} className="space-y-3.5 text-xs">
+              <div>
+                <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                  Task Title
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Check Mustang 15mm Bolt / Pitch Client on Fiverr"
+                  value={customTitle}
+                  onChange={(e) => setCustomTitle(e.target.value)}
+                  className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                  Subtitle / Context
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. 6.0 qt 5W-20 / Zone 2 Heart Rate / Review rubric"
+                  value={customSubtitle}
+                  onChange={(e) => setCustomSubtitle(e.target.value)}
+                  className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                    Friction Tier (XP)
+                  </label>
+                  <select
+                    value={customTier}
+                    onChange={(e) => setCustomTier(Number(e.target.value) as DifficultyTier)}
+                    className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-amber-500"
+                  >
+                    <option value={DifficultyTier.Micro}>Tier 1: Micro (+100 XP)</option>
+                    <option value={DifficultyTier.Routine}>Tier 2: Routine (+300 XP)</option>
+                    <option value={DifficultyTier.Challenging}>Tier 3: Labor (+750 XP)</option>
+                    <option value={DifficultyTier.Boss}>Tier 4: Boss (+1,500 XP)</option>
+                    <option value={DifficultyTier.Legendary}>Tier 5: Legendary (+3,500 XP)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1 font-semibold uppercase text-[11px]">
+                    Stoic Attribute
+                  </label>
+                  <select
+                    value={customAttribute}
+                    onChange={(e) => setCustomAttribute(e.target.value)}
+                    className="w-full bg-[#181924] border border-[#232636] rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-amber-500"
+                  >
+                    <option value="Discipline">Discipline</option>
+                    <option value="Strength">Strength (Physical)</option>
+                    <option value="Endurance">Endurance</option>
+                    <option value="Intellect">Intellect (DBA / AI)</option>
+                    <option value="Dominion">Dominion (Consulting)</option>
+                    <option value="Recovery">Recovery (OMAD / Fast)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-[#232636]">
+                <button
+                  type="button"
+                  onClick={() => setShowAddTaskModal(false)}
+                  className="px-3.5 py-2 rounded bg-slate-800 text-slate-300 hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase tracking-wider transition"
+                >
+                  Add Task
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );

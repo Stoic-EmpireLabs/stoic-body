@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { calculateLevelProgress, LevelInfo } from "@/lib/gamification";
 
-interface Transaction {
+export interface Transaction {
   id: string;
   label: string;
   amount: number;
@@ -12,18 +12,80 @@ interface Transaction {
   timestamp: string;
 }
 
+export interface CustomTaskItem {
+  id: string;
+  title: string;
+  durationMinutes: number;
+  tier: number;
+  completed: boolean;
+  time?: string;
+  attribute?: string;
+}
+
+export interface WeeklyGoal {
+  id: string;
+  title: string;
+  targetCount: number;
+  currentCount: number;
+  category: "Physical" | "Consulting" | "DBA" | "Recovery" | "Family";
+  xpReward: number;
+}
+
+export interface LifeGoal {
+  id: string;
+  title: string;
+  category: string;
+  targetDate: string;
+  milestones: string[];
+  completed: boolean;
+  xpReward: number;
+}
+
+export interface CalendarEvent {
+  id: string;
+  date: string; // YYYY-MM-DD
+  title: string;
+  time: string;
+  durationMinutes: number;
+  tier: number;
+  completed?: boolean;
+}
+
+export interface UserProfile {
+  name: string;
+  age: number;
+  currentWeight: number;
+  targetWeight: number;
+  height: string;
+  diet: string;
+  dailyProtein: number;
+}
+
 interface StoicContextType {
   totalXp: number;
   streakDays: number;
   calmMode: boolean;
   levelInfo: LevelInfo;
   transactions: Transaction[];
+  dailyTasks: CustomTaskItem[];
+  weeklyGoals: WeeklyGoal[];
+  lifeGoals: LifeGoal[];
+  calendarEvents: CalendarEvent[];
+  userProfile: UserProfile;
   toggleCalmMode: () => void;
   awardXp: (amount: number, label: string, attribute?: string) => void;
   reverseXp: (amount: number, label: string) => void;
   playAnvilChime: () => void;
   playBellSound: () => void;
   isFounderMode: boolean;
+  addTask: (task: Omit<CustomTaskItem, "id" | "completed">) => void;
+  toggleTask: (id: string) => void;
+  addWeeklyGoal: (goal: Omit<WeeklyGoal, "id" | "currentCount">) => void;
+  incrementWeeklyGoal: (id: string) => void;
+  addLifeGoal: (goal: Omit<LifeGoal, "id" | "completed">) => void;
+  toggleLifeGoal: (id: string) => void;
+  addCalendarEvent: (event: Omit<CalendarEvent, "id">) => void;
+  updateProfile: (updates: Partial<UserProfile>) => void;
 }
 
 const StoicContext = createContext<StoicContextType | undefined>(undefined);
@@ -32,6 +94,178 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
   const [totalXp, setTotalXp] = useState<number>(26450);
   const [streakDays, setStreakDays] = useState<number>(14);
   const [calmMode, setCalmMode] = useState<boolean>(false);
+  const isFounderMode = true; // Permanent Founder Sovereign Mode
+
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    name: "Stoic",
+    age: 33,
+    currentWeight: 170.0,
+    targetWeight: 155.0,
+    height: "5'10\"",
+    diet: "23:1 OMAD",
+    dailyProtein: 140,
+  });
+
+  const [dailyTasks, setDailyTasks] = useState<CustomTaskItem[]>([
+    {
+      id: "task-1",
+      title: "Morning 24oz Filtered Water + Electrolytes (Sodium, Potassium, Magnesium)",
+      durationMinutes: 10,
+      tier: 1,
+      completed: true,
+      time: "05:30",
+      attribute: "Recovery",
+    },
+    {
+      id: "task-2",
+      title: "Dumbbell-Free Calisthenics: Push-ups, Strict Chin-ups & Hollow Hold",
+      durationMinutes: 25,
+      tier: 2,
+      completed: true,
+      time: "05:45",
+      attribute: "Physical",
+    },
+    {
+      id: "task-3",
+      title: "12% Incline Treadmill Walk at 3.0 MPH (Zone 2 Heart Rate)",
+      durationMinutes: 30,
+      tier: 2,
+      completed: false,
+      time: "06:15",
+      attribute: "Physical",
+    },
+    {
+      id: "task-4",
+      title: "Stoic Business Consulting: High-Margin Fiverr AI Automation Retainers",
+      durationMinutes: 120,
+      tier: 3,
+      completed: false,
+      time: "09:00",
+      attribute: "Dominion",
+    },
+    {
+      id: "task-5",
+      title: "Doctoral DBA Research: Literature Gap Analysis & Resubmission",
+      durationMinutes: 90,
+      tier: 3,
+      completed: false,
+      time: "14:00",
+      attribute: "Intellect",
+    },
+    {
+      id: "task-6",
+      title: "Ultron Private LLM: Quantized GPU Offload & Skill Vector Embeddings",
+      durationMinutes: 60,
+      tier: 3,
+      completed: false,
+      time: "16:00",
+      attribute: "Intellect",
+    },
+  ]);
+
+  const [weeklyGoals, setWeeklyGoals] = useState<WeeklyGoal[]>([
+    {
+      id: "wg-1",
+      title: "Complete 5 Dumbbell-Free Calisthenics Sessions",
+      targetCount: 5,
+      currentCount: 3,
+      category: "Physical",
+      xpReward: 1200,
+    },
+    {
+      id: "wg-2",
+      title: "Daily Morning Hydration & Electrolytes (7/7 Days)",
+      targetCount: 7,
+      currentCount: 5,
+      category: "Recovery",
+      xpReward: 700,
+    },
+    {
+      id: "wg-3",
+      title: "Execute 15 Boxing Interval Rounds (3m Work / 1m Rest)",
+      targetCount: 15,
+      currentCount: 8,
+      category: "Physical",
+      xpReward: 1500,
+    },
+    {
+      id: "wg-4",
+      title: "Pitch 5 Local Commercial Businesses for AI Consulting in Town",
+      targetCount: 5,
+      currentCount: 2,
+      category: "Consulting",
+      xpReward: 2500,
+    },
+    {
+      id: "wg-5",
+      title: "Resubmit 2 Doctoral DBA Research Assignments for Higher Grades",
+      targetCount: 2,
+      currentCount: 1,
+      category: "DBA",
+      xpReward: 2000,
+    },
+    {
+      id: "wg-6",
+      title: "Weekend Dedicated Family Sanctuary Time (Cheer Stunting Outing)",
+      targetCount: 2,
+      currentCount: 1,
+      category: "Family",
+      xpReward: 1000,
+    },
+  ]);
+
+  const [lifeGoals, setLifeGoals] = useState<LifeGoal[]>([
+    {
+      id: "lg-1",
+      title: "Reach 155 lbs Baseline with Visible Abs via 23:1 OMAD",
+      category: "Physical",
+      targetDate: "2026-12-15",
+      milestones: ["170 -> 165 lbs (Phase 1)", "165 -> 160 lbs (Phase 2)", "160 -> 155 lbs (Visible Abs)"],
+      completed: false,
+      xpReward: 5000,
+    },
+    {
+      id: "lg-2",
+      title: "Scale Stoic Business Consulting Firm to $15,000/mo Retainers",
+      category: "Consulting",
+      targetDate: "2027-01-31",
+      milestones: ["3 High-Converting Fiverr Gigs", "First 3 Local Town SMB Retainers", "$10k MRR Milestone"],
+      completed: false,
+      xpReward: 7500,
+    },
+    {
+      id: "lg-3",
+      title: "Defend Doctoral DBA Dissertation with Distinction",
+      category: "DBA",
+      targetDate: "2027-06-01",
+      milestones: ["Resubmit All Historical Assignments for A-grades", "Quantitative Methodology Synthesis", "Final Defense Presentation"],
+      completed: false,
+      xpReward: 10000,
+    },
+    {
+      id: "lg-4",
+      title: "Master Father & Daughter Cheerleading Flyer Stunting",
+      category: "Family",
+      targetDate: "2026-11-20",
+      milestones: ["Hollow Body Balance", "Thigh Stand Lockout", "Elevator Extension & Cradle Catch"],
+      completed: false,
+      xpReward: 3500,
+    },
+  ]);
+
+  const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([
+    { id: "ce-1", date: "2026-10-04", title: "Morning Anchor (Water, Calisthenics, Incline Walk)", time: "05:30", durationMinutes: 65, tier: 1, completed: true },
+    { id: "ce-2", date: "2026-10-04", title: "Stoic Consulting Client Acquisition & Outreach", time: "09:00", durationMinutes: 120, tier: 3, completed: false },
+    { id: "ce-3", date: "2026-10-04", title: "2015 Ford Mustang V6 3.7L Oil Change Execution", time: "14:00", durationMinutes: 60, tier: 4, completed: false },
+    { id: "ce-4", date: "2026-10-04", title: "23:1 OMAD Feeding Window (140g Protein)", time: "18:00", durationMinutes: 60, tier: 1, completed: false },
+    { id: "ce-5", date: "2026-10-05", title: "Doctoral DBA Research Resubmission Prep", time: "08:30", durationMinutes: 90, tier: 3, completed: false },
+    { id: "ce-6", date: "2026-10-05", title: "Home Boxing 5 Rounds & Shadow Mechanics", time: "16:00", durationMinutes: 30, tier: 2, completed: false },
+    { id: "ce-7", date: "2026-10-06", title: "Local Town SMB In-Person Executive AI Pitches", time: "10:00", durationMinutes: 120, tier: 4, completed: false },
+    { id: "ce-8", date: "2026-10-07", title: "Ultron Private LLM Embeddings Indexing", time: "13:00", durationMinutes: 60, tier: 3, completed: false },
+    { id: "ce-9", date: "2026-10-10", title: "Weekend Family Sanctuary & Cheer Flyer Park Practice", time: "10:00", durationMinutes: 180, tier: 4, completed: false },
+    { id: "ce-10", date: "2026-10-11", title: "King Bed Frame Structural Completion & Leveling", time: "13:00", durationMinutes: 120, tier: 3, completed: false },
+  ]);
+
   const [transactions, setTransactions] = useState<Transaction[]>([
     {
       id: "tx-1",
@@ -57,7 +291,6 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
   ]);
 
   const levelInfo = calculateLevelProgress(totalXp);
-  const isFounderMode = true; // Permanent Founder Sovereign Mode
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -154,6 +387,109 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
     ]);
   };
 
+  // ADD TASK
+  const addTask = (task: Omit<CustomTaskItem, "id" | "completed">) => {
+    const newTask: CustomTaskItem = {
+      ...task,
+      id: `task-${Date.now()}`,
+      completed: false,
+    };
+    setDailyTasks((prev) => [newTask, ...prev]);
+    awardXp(100, `Task Created: ${task.title}`, "Discipline");
+  };
+
+  // TOGGLE TASK
+  const toggleTask = (id: string) => {
+    setDailyTasks((prev) =>
+      prev.map((t) => {
+        if (t.id !== id) return t;
+        const nowCompleted = !t.completed;
+        const xpMap: Record<number, number> = { 1: 100, 2: 300, 3: 750, 4: 1500, 5: 3500 };
+        const xp = xpMap[t.tier] || 250;
+        if (nowCompleted) {
+          awardXp(xp, `Completed: ${t.title}`, t.attribute || "Discipline");
+        } else {
+          reverseXp(xp, `Unchecked: ${t.title}`);
+        }
+        return { ...t, completed: nowCompleted };
+      })
+    );
+  };
+
+  // ADD WEEKLY GOAL
+  const addWeeklyGoal = (goal: Omit<WeeklyGoal, "id" | "currentCount">) => {
+    const newGoal: WeeklyGoal = {
+      ...goal,
+      id: `wg-${Date.now()}`,
+      currentCount: 0,
+    };
+    setWeeklyGoals((prev) => [newGoal, ...prev]);
+    awardXp(200, `Weekly Target Declared: ${goal.title}`, "Dominion");
+  };
+
+  // INCREMENT WEEKLY GOAL
+  const incrementWeeklyGoal = (id: string) => {
+    setWeeklyGoals((prev) =>
+      prev.map((g) => {
+        if (g.id !== id) return g;
+        const nextCount = Math.min(g.targetCount, g.currentCount + 1);
+        const reachedTarget = nextCount === g.targetCount && g.currentCount < g.targetCount;
+        if (reachedTarget) {
+          awardXp(g.xpReward, `🏆 Weekly Target Conquered: ${g.title}`, "Dominion");
+          playBellSound();
+        } else {
+          awardXp(100, `Weekly Goal Progress (+1): ${g.title}`, "Discipline");
+        }
+        return { ...g, currentCount: nextCount };
+      })
+    );
+  };
+
+  // ADD LIFE GOAL
+  const addLifeGoal = (goal: Omit<LifeGoal, "id" | "completed">) => {
+    const newLifeGoal: LifeGoal = {
+      ...goal,
+      id: `lg-${Date.now()}`,
+      completed: false,
+    };
+    setLifeGoals((prev) => [newLifeGoal, ...prev]);
+    awardXp(500, `Strategic Milestone Initialized: ${goal.title}`, "Dominion");
+  };
+
+  // TOGGLE LIFE GOAL
+  const toggleLifeGoal = (id: string) => {
+    setLifeGoals((prev) =>
+      prev.map((lg) => {
+        if (lg.id !== id) return lg;
+        const nowCompleted = !lg.completed;
+        if (nowCompleted) {
+          awardXp(lg.xpReward, `🌟 Strategic Milestone Conquered: ${lg.title}`, "Dominion");
+          playBellSound();
+        } else {
+          reverseXp(lg.xpReward, `Milestone Reopened: ${lg.title}`);
+        }
+        return { ...lg, completed: nowCompleted };
+      })
+    );
+  };
+
+  // ADD CALENDAR EVENT
+  const addCalendarEvent = (event: Omit<CalendarEvent, "id">) => {
+    const newEvent: CalendarEvent = {
+      ...event,
+      id: `ce-${Date.now()}`,
+      completed: false,
+    };
+    setCalendarEvents((prev) => [...prev, newEvent]);
+    awardXp(150, `Scheduled Event on ${event.date}: ${event.title}`, "Discipline");
+  };
+
+  // UPDATE PROFILE
+  const updateProfile = (updates: Partial<UserProfile>) => {
+    setUserProfile((prev) => ({ ...prev, ...updates }));
+    awardXp(100, "Biometrics & Profile Baseline Updated", "Discipline");
+  };
+
   return (
     <StoicContext.Provider
       value={{
@@ -162,12 +498,25 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
         calmMode,
         levelInfo,
         transactions,
+        dailyTasks,
+        weeklyGoals,
+        lifeGoals,
+        calendarEvents,
+        userProfile,
         toggleCalmMode,
         awardXp,
         reverseXp,
         playAnvilChime,
         playBellSound,
         isFounderMode,
+        addTask,
+        toggleTask,
+        addWeeklyGoal,
+        incrementWeeklyGoal,
+        addLifeGoal,
+        toggleLifeGoal,
+        addCalendarEvent,
+        updateProfile,
       }}
     >
       {children}

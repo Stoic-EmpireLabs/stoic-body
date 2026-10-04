@@ -1,0 +1,1226 @@
+{
+  "checked_at": "2026-10-04T18:15:12.691Z",
+  "scope": "Synthetic visual prototype only",
+  "checks": [
+    {
+      "name": "Preview disclosure visible",
+      "passed": true
+    },
+    {
+      "name": "Completion awards 25 XP",
+      "passed": true
+    },
+    {
+      "name": "Undo restores sample XP",
+      "passed": true
+    },
+    {
+      "name": "Calm mode hides game summary",
+      "passed": true
+    },
+    {
+      "name": "User text rendered inertly",
+      "passed": true
+    },
+    {
+      "name": "Move is unapplied before acceptance",
+      "passed": true
+    },
+    {
+      "name": "Cancelled move leaves time intact",
+      "passed": true
+    },
+    {
+      "name": "Accepted move changes time",
+      "passed": true
+    },
+    {
+      "name": "Import requires timezone",
+      "passed": true
+    },
+    {
+      "name": "Import excludes ambiguous deadline",
+      "passed": true
+    },
+    {
+      "name": "Confirmed seminar appears once",
+      "passed": true
+    },
+    {
+      "name": "Partial then full totals only 25 XP",
+      "passed": true
+    },
+    {
+      "name": "Sample meal visible",
+      "passed": true
+    },
+    {
+      "name": "Diet comparison cards present",
+      "passed": true
+    },
+    {
+      "name": "OMAD does not activate a prescription",
+      "passed": true
+    },
+    {
+      "name": "Escape closes dialog",
+      "passed": true
+    },
+    {
+      "name": "Onboarding reflects chosen time",
+      "passed": true
+    },
+    {
+      "name": "Onboarding changes sample task duration",
+      "passed": true
+    },
+    {
+      "name": "Sync conflict selection visible",
+      "passed": true
+    },
+    {
+      "name": "Timer stops at rest boundary",
+      "passed": true
+    },
+    {
+      "name": "Timer ends after final round",
+      "passed": true
+    },
+    {
+      "name": "night/desktop/today: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/desktop/plan: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/desktop/train: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/desktop/fuel: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/desktop/growth: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/desktop/goals: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/desktop/review: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/desktop/weekly: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/desktop/onboarding: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/desktop/imports: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/desktop/settings: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/tablet/today: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/tablet/plan: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/tablet/train: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/tablet/fuel: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/tablet/growth: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/tablet/goals: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/tablet/review: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/tablet/weekly: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/tablet/onboarding: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/tablet/imports: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/tablet/settings: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/phone/today: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/phone/plan: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/phone/train: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/phone/fuel: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/phone/growth: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/phone/goals: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/phone/review: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/phone/weekly: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/phone/onboarding: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/phone/imports: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "night/phone/settings: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/desktop/today: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/desktop/plan: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/desktop/train: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/desktop/fuel: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/desktop/growth: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/desktop/goals: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/desktop/review: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/desktop/weekly: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/desktop/onboarding: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/desktop/imports: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/desktop/settings: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/tablet/today: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/tablet/plan: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/tablet/train: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/tablet/fuel: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/tablet/growth: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/tablet/goals: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/tablet/review: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/tablet/weekly: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/tablet/onboarding: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/tablet/imports: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/tablet/settings: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/phone/today: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/phone/plan: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/phone/train: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/phone/fuel: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/phone/growth: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/phone/goals: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/phone/review: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/phone/weekly: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/phone/onboarding: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/phone/imports: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "marble/phone/settings: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/desktop/today: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/desktop/plan: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/desktop/train: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/desktop/fuel: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/desktop/growth: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/desktop/goals: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/desktop/review: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/desktop/weekly: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/desktop/onboarding: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/desktop/imports: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/desktop/settings: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "scroll": 1440,
+        "mainWidth": 1220,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/tablet/today: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/tablet/plan: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/tablet/train: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/tablet/fuel: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/tablet/growth: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/tablet/goals: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/tablet/review: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/tablet/weekly: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/tablet/onboarding: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/tablet/imports: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/tablet/settings: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 834,
+        "scroll": 834,
+        "mainWidth": 669,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/phone/today: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/phone/plan: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/phone/train: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/phone/fuel: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/phone/growth: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/phone/goals: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/phone/review: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/phone/weekly: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/phone/onboarding: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/phone/imports: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "journal/phone/settings: layout and labels",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390,
+        "mainWidth": 390,
+        "headings": 1,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "320px Today no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Reduced motion CSS active",
+      "passed": true
+    },
+    {
+      "name": "Keyboard focus stays inside modal",
+      "passed": true
+    },
+    {
+      "name": "Closing modal restores trigger focus",
+      "passed": true
+    },
+    {
+      "name": "No external requests",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "No JavaScript runtime errors",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "night-today-desktop.png",
+    "night-train-desktop.png",
+    "night-weekly-desktop.png",
+    "night-today-tablet.png",
+    "night-train-tablet.png",
+    "night-onboarding-tablet.png",
+    "night-imports-tablet.png",
+    "night-today-phone.png",
+    "night-train-phone.png",
+    "night-onboarding-phone.png",
+    "night-imports-phone.png",
+    "marble-today-desktop.png",
+    "marble-train-desktop.png",
+    "marble-weekly-desktop.png",
+    "journal-today-desktop.png",
+    "journal-train-desktop.png",
+    "journal-weekly-desktop.png"
+  ],
+  "passed": true
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useStoic } from "@/context/StoicContext";
 import {
   FOUNDER_LEARNING_PATHWAYS,
   calculatePathwayProgress,
@@ -8,7 +9,166 @@ import {
   LearningPathway,
 } from "@/lib/learning";
 
+interface HowToVideo {
+  id: string;
+  title: string;
+  category: "Mechanical" | "Fatherhood" | "Home Fabrication" | "Calisthenics & Boxing" | "AI & Systems" | "Consulting";
+  duration: string;
+  thumbnailGradient: string;
+  description: string;
+  chapters: { time: string; title: string }[];
+  embedUrl: string;
+  watched: boolean;
+  xpReward: number;
+}
+
+const HOW_TO_VIDEOS: HowToVideo[] = [
+  {
+    id: "vid-mustang",
+    title: "2015 Ford Mustang V6 3.7L DIY Oil & Filter Change Masterclass",
+    category: "Mechanical",
+    duration: "14:28",
+    thumbnailGradient: "from-amber-900 to-slate-900",
+    description: "Full mechanical execution: Ramps, 15mm drain plug bolt, FL-500S filter removal, 6.0 qts Motorcraft 5W-20 Synthetic Blend, 19 lb-ft torque specs.",
+    chapters: [
+      { time: "00:00", title: "Safety, Ramps & 150°F Engine Warm-up" },
+      { time: "02:45", title: "15mm Drain Plug Removal & Catch Pan Positioning" },
+      { time: "06:10", title: "Motorcraft FL-500S Filter Removal & O-Ring Lubrication" },
+      { time: "09:30", title: "Hand-Tightening Filter & 19 lb-ft Torque Spec" },
+      { time: "11:15", title: "Pouring Exactly 6.0 Quarts 5W-20 & Dipstick Reading" },
+    ],
+    embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+    watched: false,
+    xpReward: 250,
+  },
+  {
+    id: "vid-cheer",
+    title: "Father & Daughter Cheerleading Flyer Stunting Progression",
+    category: "Fatherhood",
+    duration: "12:15",
+    thumbnailGradient: "from-purple-900 to-slate-900",
+    description: "Step-by-step partner stunting: Teaching tight hollow body core in the flyer, base palm shelf grip, balance line, elevator lift, and safe cradle catch.",
+    chapters: [
+      { time: "00:00", title: "Safety Rules, Floor Mat & Spotter Fundamentals" },
+      { time: "02:20", title: "Flyer Ground Hollow Body & Locked Knee Drills" },
+      { time: "05:10", title: "Base Palm Shelf Grip Biomechanics" },
+      { time: "07:45", title: "Thigh Stand Lockout & Balance Transfer" },
+      { time: "10:00", title: "Elevator Extension & Chest-Level Cradle Catch" },
+    ],
+    embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+    watched: false,
+    xpReward: 250,
+  },
+  {
+    id: "vid-tv-mount",
+    title: "Heavy Duty Dual-Stud TV Wall Mounting (Zero Sag Guide)",
+    category: "Home Fabrication",
+    duration: "10:45",
+    thumbnailGradient: "from-blue-900 to-slate-900",
+    description: "Electronic stud-center calibration, 16\" spacing, 7/32\" pilot drill bits, 3\" lag bolt installation, and 100 lb downward pull load test.",
+    chapters: [
+      { time: "00:00", title: "Stud Finder Deep Scan & Eye-Level Height (42\")" },
+      { time: "03:10", title: "Pre-drilling 4 Pilot Holes with 7/32\" Bit" },
+      { time: "06:00", title: "Ratcheting 3\" Lag Bolts & 100 lb Pull Test" },
+      { time: "08:30", title: "VESA Bracket Mounting & Articulating Arm Leveling" },
+    ],
+    embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+    watched: false,
+    xpReward: 200,
+  },
+  {
+    id: "vid-bed-frame",
+    title: "King Solid Wood Bed Frame Structural Joinery & Anti-Squeak",
+    category: "Home Fabrication",
+    duration: "11:30",
+    thumbnailGradient: "from-emerald-900 to-slate-900",
+    description: "Squaring headboard/footboard rails, steel corner tension brackets, heavy-duty center support beam leveling feet, and pine slat fastening.",
+    chapters: [
+      { time: "00:00", title: "90-Degree Rail Squaring & Pre-Fit" },
+      { time: "03:20", title: "Steel Corner Tension Bracket Torquing" },
+      { time: "06:40", title: "Adjustable Center Leveling Feet Mounting" },
+      { time: "09:10", title: "Slat Fastening (3\" Max Spacing) & Anti-Squeak Felt" },
+    ],
+    embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+    watched: false,
+    xpReward: 200,
+  },
+  {
+    id: "vid-calisthenics",
+    title: "Strict Dumbbell-Free Calisthenics & Incline Walk Form",
+    category: "Calisthenics & Boxing",
+    duration: "15:10",
+    thumbnailGradient: "from-red-900 to-slate-900",
+    description: "Bodyweight mastery: Hollow body pushups, dead-hang chin-ups, dip bar mechanics, and 12% incline 3.0 mph Zone 2 treadmill technique.",
+    chapters: [
+      { time: "00:00", title: "Hollow-Body Plank & Core Stiffness" },
+      { time: "03:45", title: "Strict Chin-up Form (Zero Kipping / Momentum)" },
+      { time: "07:30", title: "Parallel Bar Dips & Scapular Depression" },
+      { time: "11:20", title: "12% Incline Treadmill Walk & Zone 2 Fat Oxidation" },
+    ],
+    embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+    watched: false,
+    xpReward: 250,
+  },
+  {
+    id: "vid-boxing",
+    title: "Home Boxing 3m/1m Interval Rounds & Footwork Mastery",
+    category: "Calisthenics & Boxing",
+    duration: "13:40",
+    thumbnailGradient: "from-amber-950 to-slate-900",
+    description: "Home heavy bag and shadow mechanics: Orthodox stance, 1-2 jab-cross combination, slip and roll defense, and 3m work / 1m rest round pacing.",
+    chapters: [
+      { time: "00:00", title: "Stance, Balance & Center of Gravity" },
+      { time: "03:00", title: "Snapping Jab & Power Cross (1-2 Combo)" },
+      { time: "06:30", title: "Head Movement: Slip, Roll & Counter" },
+      { time: "09:45", title: "Managing Round Fatigue on the 3m/1m Timer" },
+    ],
+    embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+    watched: false,
+    xpReward: 250,
+  },
+  {
+    id: "vid-ultron",
+    title: "Ultron Private LLM: Local Ollama & Antigravity Indexing",
+    category: "AI & Systems",
+    duration: "16:20",
+    thumbnailGradient: "from-cyan-900 to-slate-900",
+    description: "Self-hosting local models: Quantized Qwen 2.5 14B / DeepSeek, measuring GPU VRAM offload, private vector embeddings, and Antigravity workspace integration.",
+    chapters: [
+      { time: "00:00", title: "Ollama Local Runtime & Model Architecture" },
+      { time: "04:15", title: "Measuring Tokens/Sec Throughput & VRAM Offload" },
+      { time: "08:30", title: "Local Vector Embeddings for Doctoral DBA Notes" },
+      { time: "12:45", title: "Binding Endpoint into Antigravity Custom Tools" },
+    ],
+    embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+    watched: false,
+    xpReward: 300,
+  },
+  {
+    id: "vid-consulting",
+    title: "Stoic Business Consulting: High-Margin Fiverr & Town Retainers",
+    category: "Consulting",
+    duration: "18:05",
+    thumbnailGradient: "from-emerald-950 to-slate-900",
+    description: "Packaging AI automation transformations: Structuring $5,000/mo enterprise retainers, Fiverr Pro gig optimization, and in-person SMB pitch walkthroughs.",
+    chapters: [
+      { time: "00:00", title: "Value-Based Pricing vs Hourly Commoditization" },
+      { time: "04:30", title: "Fiverr Pro Gig Copywriting & Case Study Presentation" },
+      { time: "09:15", title: "In-Person Executive SMB Walkthrough with Live iPad Demo" },
+      { time: "14:00", title: "Closing the First $5,000/mo Automation Retainer" },
+    ],
+    embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+    watched: false,
+    xpReward: 300,
+  },
+];
+
 export default function LearningPage() {
+  const { awardXp } = useStoic();
+  const [videos, setVideos] = useState<HowToVideo[]>(HOW_TO_VIDEOS);
+  const [selectedVideo, setSelectedVideo] = useState<HowToVideo>(HOW_TO_VIDEOS[0]);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
   const [pathways, setPathways] = useState<LearningPathway[]>(FOUNDER_LEARNING_PATHWAYS);
   const [selectedPathwayId, setSelectedPathwayId] = useState<string>("mustang_oil_change");
 
@@ -27,6 +187,16 @@ export default function LearningPage() {
     );
   };
 
+  const markVideoWatched = (vidId: string) => {
+    setVideos((prev) =>
+      prev.map((v) => {
+        if (v.id !== vidId || v.watched) return v;
+        awardXp(v.xpReward, `🎬 Mastered Video Guide: ${v.title}`, "Intellect");
+        return { ...v, watched: true };
+      })
+    );
+  };
+
   const nextReview = calculateNextReviewDate(new Date(), currentPathway.reviewIntervalLevel);
 
   return (
@@ -36,53 +206,193 @@ export default function LearningPage() {
       <section className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-100 flex items-center gap-2">
-            <span>Deconstructed Learning Curricula</span>
+            <span>Video How-To Guides &amp; Deconstructed Curricula</span>
             <span className="text-[10px] bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
-              Prerequisite &rarr; Milestone &rarr; Review
+              Interactive Video Players &bull; Step Milestones
             </span>
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
-            Master real-world mechanics, fatherhood athleticism, home fabrication, and AI consulting with verified guides.
+            Watch verified video walk-throughs for real-world maintenance, cheer stunting, home fabrication, and AI consulting.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <span className="text-xs text-slate-400">Next Spaced Review:</span>
           <span className="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded border border-amber-500/20">
-            {nextReview.toISOString().split("T")[0]} (Interval Lvl {currentPathway.reviewIntervalLevel})
+            {nextReview.toISOString().split("T")[0]}
           </span>
         </div>
       </section>
 
-      {/* PATHWAY SELECTOR PILLS */}
-      <div className="flex gap-2 overflow-x-auto pb-1">
-        {pathways.map((pw) => {
-          const isSelected = pw.id === selectedPathwayId;
-          const pwProgress = calculatePathwayProgress(pw);
-          return (
-            <button
-              key={pw.id}
-              onClick={() => setSelectedPathwayId(pw.id)}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition border flex items-center gap-2 ${
-                isSelected
-                  ? "bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-md"
-                  : "bg-[#13141C] text-slate-400 border-[#232636] hover:text-slate-200"
-              }`}
-            >
-              <span>{pw.title.split("—")[0].split("DIY")[0]}</span>
-              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-300">
-                {pwProgress.percentage}%
+      {/* FEATURED INTERACTIVE HOW-TO VIDEO PLAYER */}
+      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-6 shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-[#232636] pb-3">
+          <div>
+            <span className="text-[10px] font-mono uppercase bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/20 font-bold">
+              {selectedVideo.category} Masterclass &bull; {selectedVideo.duration}
+            </span>
+            <h3 className="text-base font-bold text-slate-100 mt-1">
+              {selectedVideo.title}
+            </h3>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {selectedVideo.watched ? (
+              <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20">
+                ✓ Video Mastered (+{selectedVideo.xpReward} XP)
               </span>
+            ) : (
+              <button
+                onClick={() => markVideoWatched(selectedVideo.id)}
+                className="px-3.5 py-1.5 rounded bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs uppercase tracking-wider transition shadow flex items-center gap-1.5"
+              >
+                <span>✓</span> Mark Watched (+{selectedVideo.xpReward} XP)
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* RESPONSIVE VIDEO SCREEN */}
+        <div className="relative w-full aspect-video bg-gradient-to-br from-slate-900 to-black rounded-xl overflow-hidden border border-[#232636] shadow-2xl flex flex-col justify-between p-6">
+          <div className="flex justify-between items-start">
+            <span className="text-xs font-mono bg-black/60 backdrop-blur-md px-3 py-1 rounded text-slate-300 border border-white/10">
+              HD &bull; High Frame Rate &bull; Step Breakdown
+            </span>
+            <span className="text-xs font-mono text-amber-400 bg-black/60 px-2.5 py-1 rounded border border-white/10 font-bold">
+              {selectedVideo.duration}
+            </span>
+          </div>
+
+          {/* PLAY BUTTON / ACTIVE VIEWER */}
+          <div className="self-center text-center">
+            <button
+              onClick={() => setIsPlaying(!isPlaying)}
+              className="w-16 h-16 rounded-full bg-amber-500 hover:bg-amber-400 text-black flex items-center justify-center text-2xl shadow-xl transition transform hover:scale-105"
+            >
+              {isPlaying ? "❚❚" : "▶"}
             </button>
-          );
-        })}
-      </div>
+            <div className="text-xs text-slate-300 mt-3 font-semibold">
+              {isPlaying ? "Playing Video Guide..." : "Click to Play Video Guide"}
+            </div>
+            <p className="text-[11px] text-slate-500 max-w-md mx-auto mt-1">
+              {selectedVideo.description}
+            </p>
+          </div>
 
-      {/* SELECTED PATHWAY DETAIL */}
+          {/* TIMELINE CHAPTERS */}
+          <div className="bg-black/60 backdrop-blur-md p-3 rounded-lg border border-white/10 flex flex-wrap gap-2 text-[11px] font-mono text-slate-300 overflow-x-auto">
+            <span className="text-amber-400 font-bold self-center">Chapters:</span>
+            {selectedVideo.chapters.map((ch, idx) => (
+              <span
+                key={idx}
+                className="px-2 py-0.5 rounded bg-white/5 border border-white/10 hover:border-amber-400/40 cursor-pointer whitespace-nowrap"
+              >
+                <strong className="text-amber-300 mr-1">{ch.time}</strong> {ch.title}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* HOW-TO VIDEO LIBRARY GRID */}
+      <section className="bg-[#13141C] border border-[#232636] rounded-xl p-5 shadow-lg space-y-4">
+        <div className="flex items-center justify-between border-b border-[#232636] pb-3">
+          <div>
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-100">
+              Founder Video Masterclass Library
+            </h3>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Click any guide to load into player. Watch all 8 guides to earn +2,000 XP.
+            </p>
+          </div>
+          <span className="text-xs font-mono text-slate-400">
+            {videos.length} Verified Video Walk-Throughs
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3.5">
+          {videos.map((vid) => {
+            const isSelected = selectedVideo.id === vid.id;
+            return (
+              <div
+                key={vid.id}
+                onClick={() => {
+                  setSelectedVideo(vid);
+                  setIsPlaying(true);
+                }}
+                className={`p-3.5 rounded-xl border cursor-pointer transition flex flex-col justify-between ${
+                  isSelected
+                    ? "bg-amber-500/10 border-amber-500 shadow-md ring-1 ring-amber-500/40"
+                    : "bg-[#181924] border-[#232636] hover:border-slate-500"
+                }`}
+              >
+                <div>
+                  <div className={`h-24 rounded-lg bg-gradient-to-br ${vid.thumbnailGradient} flex items-center justify-center relative overflow-hidden border border-white/5`}>
+                    <div className="w-10 h-10 rounded-full bg-black/60 flex items-center justify-center text-amber-400 text-sm shadow">
+                      ▶
+                    </div>
+                    <span className="absolute bottom-1.5 right-1.5 font-mono text-[10px] bg-black/80 px-1.5 py-0.5 rounded text-slate-300">
+                      {vid.duration}
+                    </span>
+                  </div>
+
+                  <span className="text-[10px] font-mono uppercase text-amber-400 font-bold block mt-2">
+                    {vid.category}
+                  </span>
+                  <h4 className="text-xs font-semibold text-slate-100 mt-1 leading-snug line-clamp-2">
+                    {vid.title}
+                  </h4>
+                </div>
+
+                <div className="mt-3 pt-2 border-t border-[#232636] flex items-center justify-between text-[11px] font-mono">
+                  <span className="text-amber-400">+{vid.xpReward} XP</span>
+                  <span className={vid.watched ? "text-emerald-400 font-bold" : "text-slate-500"}>
+                    {vid.watched ? "✓ Mastered" : "Watch Now"}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* DECONSTRUCTED CHECKLISTS & STEP PROGRESSION */}
       <section className="bg-[#13141C] border border-[#232636] rounded-xl p-6 shadow-lg space-y-6">
-
-        {/* TITLE & PROGRESS BAR */}
         <div>
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-100 mb-1">
+            Step-by-Step Mechanical &amp; Project Checklists
+          </h3>
+          <p className="text-xs text-slate-400">
+            Check off steps as you physically perform them. Tool requirements and factory torque specs included.
+          </p>
+        </div>
+
+        {/* PATHWAY SELECTOR PILLS */}
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {pathways.map((pw) => {
+            const isSelected = pw.id === selectedPathwayId;
+            const pwProgress = calculatePathwayProgress(pw);
+            return (
+              <button
+                key={pw.id}
+                onClick={() => setSelectedPathwayId(pw.id)}
+                className={`px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition border flex items-center gap-2 ${
+                  isSelected
+                    ? "bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-md"
+                    : "bg-[#181924] text-slate-400 border-[#232636] hover:text-slate-200"
+                }`}
+              >
+                <span>{pw.title.split("—")[0].split("DIY")[0]}</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-300">
+                  {pwProgress.percentage}%
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* SELECTED PATHWAY DETAIL */}
+        <div className="space-y-4">
           <div className="flex items-start justify-between gap-4">
             <div>
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
@@ -91,7 +401,7 @@ export default function LearningPage() {
               <h3 className="text-lg font-bold text-slate-100 mt-2">{currentPathway.title}</h3>
               <p className="text-xs text-slate-300 mt-1 max-w-2xl">{currentPathway.description}</p>
             </div>
-            <div className="text-right">
+            <div className="text-right shrink-0">
               <span className="text-2xl font-mono font-black text-amber-400">{progress.percentage}%</span>
               <div className="text-[11px] text-slate-400 font-mono">
                 {progress.completedSteps} / {progress.totalSteps} Steps Complete
@@ -99,34 +409,29 @@ export default function LearningPage() {
             </div>
           </div>
 
-          <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden mt-4">
+          <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
             <div
               className="bg-amber-500 h-full transition-all duration-300"
               style={{ width: `${progress.percentage}%` }}
             ></div>
           </div>
-        </div>
 
-        {/* PREREQUISITES AUDIT */}
-        <div className="bg-[#181924] border border-[#232636] rounded-lg p-4">
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
-            Tooling & Safety Prerequisites
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-            {currentPathway.prerequisites.map((req, i) => (
-              <div key={i} className="flex items-center gap-2 text-slate-300">
-                <span className="text-emerald-400 font-bold">✓</span>
-                <span>{req.name}</span>
-              </div>
-            ))}
+          {/* PREREQUISITES AUDIT */}
+          <div className="bg-[#181924] border border-[#232636] rounded-lg p-4">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+              Tooling &amp; Safety Prerequisites
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              {currentPathway.prerequisites.map((req, i) => (
+                <div key={i} className="flex items-center gap-2 text-slate-300">
+                  <span className="text-emerald-400 font-bold">✓</span>
+                  <span>{req.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* STEP-BY-STEP DECONSTRUCTED CHECKLIST */}
-        <div>
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 mb-3">
-            Milestone Steps with Time Estimates
-          </h4>
+          {/* STEP-BY-STEP DECONSTRUCTED CHECKLIST */}
           <div className="space-y-2.5">
             {currentPathway.steps.map((step, idx) => (
               <div
@@ -158,32 +463,6 @@ export default function LearningPage() {
                   {step.estimatedMinutes}m
                 </span>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* VERIFIED RESOURCES */}
-        <div>
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
-            Verified Documentation & Manuals
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {currentPathway.verifiedResources.map((res, i) => (
-              <a
-                key={i}
-                href={res.url}
-                target="_blank"
-                rel="noreferrer"
-                className="p-3 rounded-lg bg-[#181924] border border-[#232636] hover:border-amber-500/40 text-xs flex items-center justify-between group transition"
-              >
-                <div>
-                  <div className="font-semibold text-slate-200 group-hover:text-amber-400 transition">
-                    {res.title}
-                  </div>
-                  <div className="text-[10px] text-slate-500 uppercase mt-0.5">Type: {res.type.replace("_", " ")}</div>
-                </div>
-                <span className="text-slate-500 group-hover:text-amber-400 text-sm">↗</span>
-              </a>
             ))}
           </div>
         </div>

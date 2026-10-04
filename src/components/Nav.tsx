@@ -8,17 +8,18 @@ export default function Nav() {
   const pathname = usePathname();
 
   const links = [
-    { href: "/", label: "Today Command" },
-    { href: "/training", label: "Calisthenics & Boxing" },
-    { href: "/nutrition", label: "23:1 OMAD Nutrition" },
-    { href: "/progress", label: "170→155 Recomposition" },
-    { href: "/calendar", label: "Timeline & MVD" },
-    { href: "/learning", label: "Learning Curricula" },
-    { href: "/coaching", label: "Stoic Advisory" },
+    { href: "/", label: "Today" },
+    { href: "/calendar", label: "Calendar" },
+    { href: "/goals", label: "Goals & Weekly" },
+    { href: "/training", label: "Boxing & Calisthenics" },
+    { href: "/nutrition", label: "23:1 OMAD" },
+    { href: "/progress", label: "170→155 Recomp" },
+    { href: "/learning", label: "How-To Videos" },
+    { href: "/coaching", label: "Stoic Coach" },
+    { href: "/quests", label: "Quests" },
+    { href: "/character", label: "Character HUD" },
     { href: "/imports", label: "Document Vault" },
-    { href: "/character", label: "Character Status" },
-    { href: "/quests", label: "Quest Vault" },
-    { href: "/settings", label: "Founder Sovereign" },
+    { href: "/settings", label: "⚙️ Settings" },
   ];
 
   return (

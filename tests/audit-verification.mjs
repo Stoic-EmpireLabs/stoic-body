@@ -10,12 +10,13 @@ const ROUTES = [
   { path: "/nutrition", name: "23:1 OMAD Fasting & Macros", selector: "text=23:1 OMAD Protocol" },
   { path: "/progress", name: "170→155 Recomposition Vault", selector: "text=Target Body Goal" },
   { path: "/calendar", name: "Structured Buffer Timeline", selector: "text=Unified Temporal Calendar" },
-  { path: "/learning", name: "Deconstructed Learning Curricula", selector: "text=Deconstructed Learning Curricula" },
+  { path: "/goals", name: "Goals & Weekly Targets Hub", selector: "text=Weekly Targets & Quotas" },
+  { path: "/learning", name: "Video How-To Guides & Curricula", selector: "text=Video How-To Guides" },
   { path: "/coaching", name: "Multi-Tone Stoic Advisory", selector: "text=Multi-Tone Stoic Advisory" },
   { path: "/imports", name: "Document & Media Staging Vault", selector: "text=Vault Index & Two-Step Confirmation Gate" },
   { path: "/character", name: "5-Axis Character Radar & Ladder", selector: "canvas" },
   { path: "/quests", name: "Quest Vault & Milestones", selector: "text=2015 Ford Mustang" },
-  { path: "/settings", name: "Founder Sovereign License", selector: "text=Founder Sovereign License" },
+  { path: "/settings", name: "System Settings & Profile", selector: "text=Profile & Recomposition Biometrics" },
 ];
 
 async function runComprehensiveAudit() {
