@@ -3,9 +3,18 @@
 import React, { useState, useEffect } from "react";
 import { useStoic } from "@/context/StoicContext";
 import {
+  InteractiveCourse,
+  InteractiveLesson,
+  FOUNDER_AI_COURSES,
+  calculateCourseMastery,
+  evaluateQuizAnswer,
+  calculateDailyLearningTarget,
+  createCustomCourse,
+  CreateCourseInput,
+} from "@/lib/courses";
+import {
   FOUNDER_LEARNING_PATHWAYS,
   calculatePathwayProgress,
-  calculateNextReviewDate,
   LearningPathway,
 } from "@/lib/learning";
 
@@ -23,17 +32,7 @@ interface HowToVideo {
   xpReward: number;
 }
 
-function toEmbedUrl(url: string): string {
-  if (!url) return "";
-  if (url.includes("youtube.com/embed/")) return url;
-  const ytMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
-  if (ytMatch && ytMatch[1]) {
-    return `https://www.youtube.com/embed/${ytMatch[1]}`;
-  }
-  return url;
-}
-
-const DEFAULT_HOW_TO_VIDEOS: HowToVideo[] = [
+const DEFAULT_VIDEOS: HowToVideo[] = [
   {
     id: "vid-mustang",
     title: "2015 Ford Mustang V6 3.7L DIY Oil & Filter Change Masterclass",
@@ -73,78 +72,6 @@ const DEFAULT_HOW_TO_VIDEOS: HowToVideo[] = [
     xpReward: 250,
   },
   {
-    id: "vid-tv-mount",
-    title: "Heavy Duty Dual-Stud TV Wall Mounting (Zero Sag Guide)",
-    category: "Home Fabrication",
-    duration: "10:45",
-    thumbnailGradient: "from-blue-900 to-slate-900",
-    description: "Electronic stud-center calibration, 16\" spacing, 7/32\" pilot drill bits, 3\" lag bolt installation, and 100 lb downward pull load test.",
-    chapters: [
-      { time: "00:00", title: "Stud Finder Deep Scan & Eye-Level Height (42\")" },
-      { time: "03:10", title: "Pre-drilling 4 Pilot Holes with 7/32\" Bit" },
-      { time: "06:00", title: "Ratcheting 3\" Lag Bolts & 100 lb Pull Test" },
-      { time: "08:30", title: "VESA Bracket Mounting & Articulating Arm Leveling" },
-    ],
-    videoUrl: "https://www.youtube.com/watch?v=Z7bB0-3T10o",
-    embedUrl: "https://www.youtube.com/embed/Z7bB0-3T10o",
-    watched: false,
-    xpReward: 200,
-  },
-  {
-    id: "vid-bed-frame",
-    title: "King Solid Wood Bed Frame Structural Joinery & Anti-Squeak",
-    category: "Home Fabrication",
-    duration: "11:30",
-    thumbnailGradient: "from-emerald-900 to-slate-900",
-    description: "Squaring headboard/footboard rails, steel corner tension brackets, heavy-duty center support beam leveling feet, and pine slat fastening.",
-    chapters: [
-      { time: "00:00", title: "90-Degree Rail Squaring & Pre-Fit" },
-      { time: "03:20", title: "Steel Corner Tension Bracket Torquing" },
-      { time: "06:40", title: "Adjustable Center Leveling Feet Mounting" },
-      { time: "09:10", title: "Slat Fastening (3\" Max Spacing) & Anti-Squeak Felt" },
-    ],
-    videoUrl: "https://www.youtube.com/watch?v=gT8oW3w-6iE",
-    embedUrl: "https://www.youtube.com/embed/gT8oW3w-6iE",
-    watched: false,
-    xpReward: 200,
-  },
-  {
-    id: "vid-calisthenics",
-    title: "Strict Dumbbell-Free Calisthenics & Incline Walk Form",
-    category: "Calisthenics & Boxing",
-    duration: "15:10",
-    thumbnailGradient: "from-red-900 to-slate-900",
-    description: "Bodyweight mastery: Hollow body pushups, dead-hang chin-ups, dip bar mechanics, and 12% incline 3.0 mph Zone 2 treadmill technique.",
-    chapters: [
-      { time: "00:00", title: "Hollow-Body Plank & Core Stiffness" },
-      { time: "03:45", title: "Strict Chin-up Form (Zero Kipping / Momentum)" },
-      { time: "07:30", title: "Parallel Bar Dips & Scapular Depression" },
-      { time: "11:20", title: "12% Incline Treadmill Walk & Zone 2 Fat Oxidation" },
-    ],
-    videoUrl: "https://www.youtube.com/watch?v=IODxDxX7oi4",
-    embedUrl: "https://www.youtube.com/embed/IODxDxX7oi4",
-    watched: false,
-    xpReward: 250,
-  },
-  {
-    id: "vid-boxing",
-    title: "Home Boxing 3m/1m Interval Rounds & Footwork Mastery",
-    category: "Calisthenics & Boxing",
-    duration: "13:40",
-    thumbnailGradient: "from-amber-950 to-slate-900",
-    description: "Home heavy bag and shadow mechanics: Orthodox stance, 1-2 jab-cross combination, slip and roll defense, and 3m work / 1m rest round pacing.",
-    chapters: [
-      { time: "00:00", title: "Stance, Balance & Center of Gravity" },
-      { time: "03:00", title: "Snapping Jab & Power Cross (1-2 Combo)" },
-      { time: "06:30", title: "Head Movement: Slip, Roll & Counter" },
-      { time: "09:45", title: "Managing Round Fatigue on the 3m/1m Timer" },
-    ],
-    videoUrl: "https://www.youtube.com/watch?v=u31qw1GIE8E",
-    embedUrl: "https://www.youtube.com/embed/u31qw1GIE8E",
-    watched: false,
-    xpReward: 250,
-  },
-  {
     id: "vid-ultron",
     title: "Ultron Private LLM: Local Ollama & Antigravity Indexing",
     category: "AI & Systems",
@@ -163,109 +90,254 @@ const DEFAULT_HOW_TO_VIDEOS: HowToVideo[] = [
     xpReward: 300,
   },
   {
-    id: "vid-consulting",
-    title: "Stoic Business Consulting: High-Margin Fiverr & Town Retainers",
-    category: "Consulting",
-    duration: "18:05",
-    thumbnailGradient: "from-emerald-950 to-slate-900",
-    description: "Packaging AI automation transformations: Structuring $5,000/mo enterprise retainers, Fiverr Pro gig optimization, and in-person SMB pitch walkthroughs.",
+    id: "vid-tv-mount",
+    title: "Heavy Duty Dual-Stud TV Wall Mounting (Zero Sag Guide)",
+    category: "Home Fabrication",
+    duration: "10:45",
+    thumbnailGradient: "from-blue-900 to-slate-900",
+    description: "Electronic stud-center calibration, 16\" spacing, 7/32\" pilot drill bits, 3\" lag bolt installation, and 100 lb downward pull load test.",
     chapters: [
-      { time: "00:00", title: "Value-Based Pricing vs Hourly Commoditization" },
-      { time: "04:30", title: "Fiverr Pro Gig Copywriting & Case Study Presentation" },
-      { time: "09:15", title: "In-Person Executive SMB Walkthrough with Live iPad Demo" },
-      { time: "14:00", title: "Closing the First $5,000/mo Automation Retainer" },
+      { time: "00:00", title: "Stud Finder Deep Scan & Eye-Level Height (42\")" },
+      { time: "03:10", title: "Pre-drilling 4 Pilot Holes with 7/32\" Bit" },
+      { time: "06:00", title: "Ratcheting 3\" Lag Bolts & 100 lb Pull Test" },
+      { time: "08:30", title: "VESA Bracket Mounting & Articulating Arm Leveling" },
     ],
-    videoUrl: "https://www.youtube.com/watch?v=e2fR99a0JgU",
-    embedUrl: "https://www.youtube.com/embed/e2fR99a0JgU",
+    videoUrl: "https://www.youtube.com/watch?v=Z7bB0-3T10o",
+    embedUrl: "https://www.youtube.com/embed/Z7bB0-3T10o",
     watched: false,
-    xpReward: 300,
+    xpReward: 200,
   },
 ];
 
 export default function LearningPage() {
-  const { awardXp } = useStoic();
-  const [videos, setVideos] = useState<HowToVideo[]>(DEFAULT_HOW_TO_VIDEOS);
-  const [selectedVideo, setSelectedVideo] = useState<HowToVideo>(DEFAULT_HOW_TO_VIDEOS[0]);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const { awardXp, playAnvilChime, playBellSound } = useStoic();
 
-  // New Video Form State
-  const [newTitle, setNewTitle] = useState("");
-  const [newUrl, setNewUrl] = useState("");
-  const [newCategory, setNewCategory] = useState<HowToVideo["category"]>("Mechanical");
-  const [newDuration, setNewDuration] = useState("10:00");
-  const [newDescription, setNewDescription] = useState("");
-  const [newXp, setNewXp] = useState(250);
+  // Tab View Mode: 'brilliant-courses' vs 'video-guides'
+  const [activeTab, setActiveTab] = useState<"brilliant-courses" | "video-guides">("brilliant-courses");
 
+  // Brilliant-Style Interactive Courses State
+  const [courses, setCourses] = useState<InteractiveCourse[]>(FOUNDER_AI_COURSES);
+  const [selectedCourseId, setSelectedCourseId] = useState<string>(FOUNDER_AI_COURSES[0].id);
+  const [activeLessonId, setActiveLessonId] = useState<string>(
+    FOUNDER_AI_COURSES[0].modules[0].lessons[0].id
+  );
+  const [categoryFilter, setCategoryFilter] = useState<string>("All");
+
+  // Brilliant Scoring & Quiz Interaction State
+  const [selectedQuizIndex, setSelectedQuizIndex] = useState<number | null>(null);
+  const [quizSubmitted, setQuizSubmitted] = useState<boolean>(false);
+  const [quizFeedback, setQuizFeedback] = useState<{ isCorrect: boolean; feedback: string } | null>(null);
+  const [copiedCode, setCopiedCode] = useState<boolean>(false);
+  const [dailyCompletedCount, setDailyCompletedCount] = useState<number>(2);
+
+  // Custom Course Builder Modal State
+  const [showCourseModal, setShowCourseModal] = useState<boolean>(false);
+  const [customTitle, setCustomTitle] = useState("");
+  const [customRepo, setCustomRepo] = useState("");
+  const [customCategory, setCustomCategory] = useState<InteractiveCourse["category"]>("AI Agents & MCP");
+  const [customLevel, setCustomLevel] = useState<InteractiveCourse["level"]>("Advanced");
+  const [customDesc, setCustomDesc] = useState("");
+  const [customLessonTitle, setCustomLessonTitle] = useState("");
+  const [customConcept, setCustomConcept] = useState("");
+  const [customCode, setCustomCode] = useState("");
+  const [customQuestion, setCustomQuestion] = useState("");
+  const [customOpt1, setCustomOpt1] = useState("");
+  const [customOpt2, setCustomOpt2] = useState("");
+  const [customOpt3, setCustomOpt3] = useState("");
+  const [customCorrectIdx, setCustomCorrectIdx] = useState(0);
+  const [customExplanation, setCustomExplanation] = useState("");
+
+  // Video Library State
+  const [videos, setVideos] = useState<HowToVideo[]>(DEFAULT_VIDEOS);
+  const [selectedVideo, setSelectedVideo] = useState<HowToVideo>(DEFAULT_VIDEOS[0]);
+
+  // Mechanical Checklists State
   const [pathways, setPathways] = useState<LearningPathway[]>(FOUNDER_LEARNING_PATHWAYS);
   const [selectedPathwayId, setSelectedPathwayId] = useState<string>("mustang_oil_change");
 
-  // Load any saved videos from localStorage on mount
+  // Load from localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("stoic_learning_videos");
-      if (stored) {
+      const savedCourses = localStorage.getItem("stoic_interactive_courses");
+      if (savedCourses) {
         try {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setVideos(parsed);
-            setSelectedVideo(parsed[0]);
-          }
+          const parsed = JSON.parse(savedCourses);
+          if (Array.isArray(parsed) && parsed.length > 0) setCourses(parsed);
+        } catch (e) {}
+      }
+
+      const savedCount = localStorage.getItem("stoic_daily_learning_count");
+      if (savedCount) setDailyCompletedCount(Number(savedCount));
+
+      const savedVideos = localStorage.getItem("stoic_learning_videos");
+      if (savedVideos) {
+        try {
+          const parsed = JSON.parse(savedVideos);
+          if (Array.isArray(parsed) && parsed.length > 0) setVideos(parsed);
         } catch (e) {}
       }
     }
   }, []);
 
-  const saveVideos = (updated: HowToVideo[]) => {
-    setVideos(updated);
+  // Save courses to localStorage
+  const saveCourses = (updated: InteractiveCourse[]) => {
+    setCourses(updated);
     if (typeof window !== "undefined") {
-      localStorage.setItem("stoic_learning_videos", JSON.stringify(updated));
+      localStorage.setItem("stoic_interactive_courses", JSON.stringify(updated));
     }
   };
 
-  const handleAddVideo = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTitle.trim() || !newUrl.trim()) return;
+  // Find active course and lesson
+  const currentCourse = courses.find((c) => c.id === selectedCourseId) || courses[0];
+  const allCurrentLessons = currentCourse.modules.flatMap((m) => m.lessons);
+  const currentLesson =
+    allCurrentLessons.find((l) => l.id === activeLessonId) || allCurrentLessons[0] || currentCourse.modules[0]?.lessons[0];
 
-    const embed = toEmbedUrl(newUrl.trim());
-    const newVideoItem: HowToVideo = {
-      id: `vid-${Date.now()}`,
-      title: newTitle.trim(),
-      category: newCategory,
-      duration: newDuration.trim() || "10:00",
-      thumbnailGradient: "from-red-950 to-black",
-      description: newDescription.trim() || "Instructional guide and video walk-through.",
-      chapters: [
-        { time: "00:00", title: "Introduction & Setup" },
-        { time: "03:00", title: "Core Step Execution" },
-        { time: "07:00", title: "Final Inspection & Review" },
-      ],
-      videoUrl: newUrl.trim(),
-      embedUrl: embed,
-      watched: false,
-      xpReward: Number(newXp) || 250,
-    };
+  const courseMastery = calculateCourseMastery(currentCourse);
+  const dailyTarget = calculateDailyLearningTarget(dailyCompletedCount, 3);
 
-    const updated = [newVideoItem, ...videos];
-    saveVideos(updated);
-    setSelectedVideo(newVideoItem);
-    setIsPlaying(true);
-    setShowAddModal(false);
-    awardXp(150, `New Video Guide Added: ${newVideoItem.title}`, "Knowledge");
+  // Total Concepts Mastered across all courses
+  const totalMasteredCount = courses
+    .flatMap((c) => c.modules)
+    .flatMap((m) => m.lessons)
+    .filter((l) => l.completed).length;
 
-    // Reset Form
-    setNewTitle("");
-    setNewUrl("");
-    setNewDescription("");
+  // Handle Quiz Submission (Brilliant-Style Active Feedback)
+  const handleAnswerQuiz = (index: number) => {
+    if (quizSubmitted) return;
+    setSelectedQuizIndex(index);
+    const result = evaluateQuizAnswer(currentLesson.quiz, index, currentLesson.xpReward);
+    setQuizFeedback(result);
+    setQuizSubmitted(true);
+
+    if (result.isCorrect) {
+      playAnvilChime();
+      awardXp(currentLesson.xpReward, `Active Mastery Check: ${currentLesson.title}`, "Intellect");
+      // Mark lesson completed
+      const updatedCourses = courses.map((c) => {
+        if (c.id !== currentCourse.id) return c;
+        return {
+          ...c,
+          modules: c.modules.map((m) => ({
+            ...m,
+            lessons: m.lessons.map((l) => (l.id === currentLesson.id ? { ...l, completed: true } : l)),
+          })),
+        };
+      });
+      saveCourses(updatedCourses);
+
+      const nextCount = dailyCompletedCount + 1;
+      setDailyCompletedCount(nextCount);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("stoic_daily_learning_count", String(nextCount));
+      }
+
+      if (nextCount === 3) {
+        awardXp(250, "🏆 Daily Learning Target Conquered (3/3 Concepts)", "Intellect");
+        playBellSound();
+      }
+    }
   };
 
-  const currentPathway = pathways.find((p) => p.id === selectedPathwayId) || pathways[0];
-  const progress = calculatePathwayProgress(currentPathway);
+  const handleResetQuiz = () => {
+    setSelectedQuizIndex(null);
+    setQuizSubmitted(false);
+    setQuizFeedback(null);
+  };
 
-  const toggleStep = (stepId: string) => {
+  const handleSelectLesson = (lesson: InteractiveLesson) => {
+    setActiveLessonId(lesson.id);
+    handleResetQuiz();
+  };
+
+  const handleCopyCode = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
+
+  // Next Lesson Progression
+  const handleNextLesson = () => {
+    const currentIndex = allCurrentLessons.findIndex((l) => l.id === currentLesson.id);
+    if (currentIndex >= 0 && currentIndex < allCurrentLessons.length - 1) {
+      const nextLesson = allCurrentLessons[currentIndex + 1];
+      setActiveLessonId(nextLesson.id);
+      handleResetQuiz();
+    } else {
+      // Completed all lessons in course!
+      awardXp(currentCourse.xpReward, `🌟 Full Course Mastered: ${currentCourse.title}`, "Intellect");
+      playBellSound();
+      alert(`Course "${currentCourse.title}" fully conquered! +${currentCourse.xpReward} XP awarded.`);
+    }
+  };
+
+  // Handle Custom Course Creation
+  const handleCreateCourse = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customTitle.trim() || !customLessonTitle.trim()) return;
+
+    const input: CreateCourseInput = {
+      title: customTitle.trim(),
+      repoSource: customRepo.trim() || "Stoic-EmpireLabs/custom",
+      repoStars: "Custom ★",
+      category: customCategory,
+      level: customLevel,
+      description: customDesc.trim() || "User-authored sovereign curriculum.",
+      estimatedHours: 2,
+      xpReward: 1000,
+      lessons: [
+        {
+          title: customLessonTitle.trim(),
+          concept: customConcept.trim() || "Key mental model and core architecture.",
+          codeSnippet: customCode.trim() || "# Run and inspect\nprint('Mastery initialized')",
+          codeLanguage: "python",
+          actionPrompt: "Execute and verify expected behavior.",
+          quizQuestion: customQuestion.trim() || "What is the primary architectural takeaway?",
+          quizOptions: [
+            customOpt1.trim() || "Option A",
+            customOpt2.trim() || "Option B",
+            customOpt3.trim() || "Option C",
+          ],
+          correctIndex: customCorrectIdx,
+          explanation: customExplanation.trim() || "Reinforces foundational mechanics.",
+        },
+      ],
+    };
+
+    const newCourse = createCustomCourse(input);
+    const updated = [newCourse, ...courses];
+    saveCourses(updated);
+    setSelectedCourseId(newCourse.id);
+    setActiveLessonId(newCourse.modules[0].lessons[0].id);
+    setShowCourseModal(false);
+    handleResetQuiz();
+
+    awardXp(500, `New Custom Course Authored: ${newCourse.title}`, "Intellect");
+    playBellSound();
+
+    // Reset Form
+    setCustomTitle("");
+    setCustomRepo("");
+    setCustomDesc("");
+    setCustomLessonTitle("");
+    setCustomConcept("");
+    setCustomCode("");
+    setCustomQuestion("");
+    setCustomOpt1("");
+    setCustomOpt2("");
+    setCustomOpt3("");
+    setCustomExplanation("");
+  };
+
+  // Filter courses by category
+  const filteredCourses =
+    categoryFilter === "All" ? courses : courses.filter((c) => c.category === categoryFilter);
+
+  // Toggle Mechanical Step
+  const togglePathwayStep = (stepId: string) => {
     setPathways((prev) =>
       prev.map((pw) => {
-        if (pw.id !== currentPathway.id) return pw;
+        if (pw.id !== selectedPathwayId) return pw;
         return {
           ...pw,
           steps: pw.steps.map((s) => (s.id === stepId ? { ...s, completed: !s.completed } : s)),
@@ -274,476 +346,822 @@ export default function LearningPage() {
     );
   };
 
-  const markVideoWatched = (vidId: string) => {
-    const updated = videos.map((v) => {
-      if (v.id !== vidId || v.watched) return v;
-      awardXp(v.xpReward, `🎬 Mastered Video Guide: ${v.title}`, "Intellect");
-      return { ...v, watched: true };
-    });
-    saveVideos(updated);
-    if (selectedVideo.id === vidId) {
-      setSelectedVideo({ ...selectedVideo, watched: true });
-    }
-  };
-
-  const nextReview = calculateNextReviewDate(new Date(), currentPathway.reviewIntervalLevel);
+  const currentPathway = pathways.find((p) => p.id === selectedPathwayId) || pathways[0];
+  const pathwayProgress = calculatePathwayProgress(currentPathway);
 
   return (
     <div className="space-y-6">
 
-      {/* HEADER SECTION */}
-      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
-            <span>Video How-To Guides &amp; Deconstructed Curricula</span>
-            <span className="text-[10px] bg-red-950/80 text-amber-300 px-2.5 py-0.5 rounded border border-amber-500/40 font-mono font-bold">
-              Direct Video Links &bull; Live Player &bull; Mass Production Ready
-            </span>
-          </h2>
-          <p className="text-xs text-slate-300 mt-0.5">
-            Click to watch verified video walk-throughs in-app, open direct external video links, or paste new video links.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-300">Next Spaced Review:</span>
-          <span className="text-xs font-mono font-bold text-amber-300 bg-red-950/60 px-2.5 py-1 rounded border border-amber-500/30">
-            {nextReview.toISOString().split("T")[0]}
-          </span>
-        </div>
-      </section>
-
-      {/* FEATURED INTERACTIVE HOW-TO VIDEO PLAYER */}
-      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-red-950/70 pb-3">
+      {/* BRILLIANT METRICS & SCORING HERO DECK */}
+      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl relative overflow-hidden">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono uppercase bg-red-950/80 text-amber-300 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
-                {selectedVideo.category} Masterclass &bull; {selectedVideo.duration}
+            <h2 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
+              <span>Interactive Active Learning &middot; Video How-To Guides</span>
+              <span className="text-[10px] bg-red-950/80 text-amber-300 px-2.5 py-0.5 rounded border border-amber-500/40 font-mono font-bold">
+                Brilliant Engine &bull; Learn by Doing &bull; Top GitHub AI Repos
               </span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-700/40">
-                Direct Link Connected
-              </span>
-            </div>
-            <h3 className="text-base font-bold text-white mt-1.5">
-              {selectedVideo.title}
-            </h3>
-          </div>
-
-          <div className="flex items-center gap-2 flex-wrap">
-            {/* DIRECT EXTERNAL VIDEO LINK */}
-            <a
-              href={selectedVideo.videoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-xs uppercase tracking-wider transition shadow flex items-center gap-1.5"
-            >
-              <span>▶</span> Open Video Link ↗
-            </a>
-
-            {/* MARK WATCHED BUTTON */}
-            {selectedVideo.watched ? (
-              <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/80 px-3 py-2 rounded border border-emerald-500/30">
-                ✓ Video Mastered (+{selectedVideo.xpReward} XP)
-              </span>
-            ) : (
-              <button
-                onClick={() => markVideoWatched(selectedVideo.id)}
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-xs uppercase tracking-wider transition shadow flex items-center gap-1.5"
-              >
-                <span>✓</span> Mark Watched (+{selectedVideo.xpReward} XP)
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* RESPONSIVE VIDEO SCREEN / LAUNCHPAD */}
-        <div className="relative w-full aspect-video bg-gradient-to-br from-black via-[#140608] to-black rounded-xl overflow-hidden border border-red-900/60 shadow-2xl flex flex-col justify-between p-6">
-          <div className="flex justify-between items-start">
-            <span className="text-xs font-mono bg-black/90 backdrop-blur-md px-3 py-1 rounded text-white border border-red-900/40">
-              HD &bull; Verified Instructional Video Guide
-            </span>
-            <span className="text-xs font-mono text-amber-400 bg-black/90 px-2.5 py-1 rounded border border-amber-500/30 font-bold">
-              {selectedVideo.duration}
-            </span>
-          </div>
-
-          {/* PLAY BUTTON / ACTIVE VIEWER */}
-          <div className="self-center text-center my-auto">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a
-                href={selectedVideo.videoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-20 h-20 rounded-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white flex items-center justify-center text-3xl shadow-2xl transition transform hover:scale-110 border-2 border-red-400/40 cursor-pointer"
-                title="Watch Video on YouTube"
-              >
-                ▶
-              </a>
-
-              <div className="flex flex-col gap-2">
-                <a
-                  href={selectedVideo.videoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 text-white font-extrabold text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 border border-red-500/50"
-                >
-                  <span>▶</span> Watch Video Guide (Opens New Tab) ↗
-                </a>
-                <a
-                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(selectedVideo.title)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-2.5 rounded-xl bg-black hover:bg-neutral-900 text-amber-400 font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center gap-2 border border-amber-500/40"
-                >
-                  <span>🔍</span> Search Related Guides on YouTube ↗
-                </a>
-              </div>
-            </div>
-
-            <div className="text-xs text-white mt-4 font-bold tracking-wide">
-              Click &ldquo;▶&rdquo; or &ldquo;Watch Video Guide&rdquo; to launch full video in high resolution.
-            </div>
-            <p className="text-xs text-slate-300 max-w-lg mx-auto mt-1 leading-relaxed">
-              {selectedVideo.description}
-            </p>
-          </div>
-
-          {/* TIMELINE CHAPTERS */}
-          <div className="bg-black/90 backdrop-blur-md p-3 rounded-lg border border-red-950/80 flex flex-wrap gap-2 text-[11px] font-mono text-white overflow-x-auto">
-            <span className="text-amber-400 font-bold self-center">Key Chapters:</span>
-            {selectedVideo.chapters.map((ch, idx) => (
-              <a
-                key={idx}
-                href={selectedVideo.videoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-2.5 py-0.5 rounded bg-neutral-900/90 border border-red-950 hover:border-amber-400/50 cursor-pointer whitespace-nowrap text-white font-medium hover:text-amber-300"
-              >
-                <strong className="text-amber-400 mr-1">{ch.time}</strong> {ch.title}
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* HOW-TO VIDEO LIBRARY GRID */}
-      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-red-950/70 pb-3">
-          <div>
-            <h3 className="text-sm font-bold uppercase tracking-wider text-white">
-              Founder Video Masterclass Library
-            </h3>
+            </h2>
             <p className="text-xs text-slate-300 mt-0.5">
-              Click any guide to load into player, or click &ldquo;Watch Link ↗&rdquo; to open directly. Mass produce by clicking &ldquo;+ Add Video Link&rdquo;.
+              Active problem solving with live code challenges, conceptual mental models, and in-app course authoring.
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-mono font-bold text-amber-300">
-              {videos.length} Video Guides
-            </span>
+
+          {/* MODE TOGGLES */}
+          <div className="flex rounded-lg bg-black border border-red-950 p-1 gap-1">
             <button
-              onClick={() => setShowAddModal(true)}
-              className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-xs uppercase tracking-wider transition shadow flex items-center gap-1.5"
+              onClick={() => setActiveTab("brilliant-courses")}
+              className={`px-3.5 py-1.5 rounded text-xs font-bold transition flex items-center gap-1.5 ${
+                activeTab === "brilliant-courses"
+                  ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
+                  : "text-slate-300 hover:text-white"
+              }`}
             >
-              <span>+</span> Add Video Link
+              <span>⚡</span> Brilliant AI Courses &amp; Studio
+            </button>
+            <button
+              onClick={() => setActiveTab("video-guides")}
+              className={`px-3.5 py-1.5 rounded text-xs font-bold transition flex items-center gap-1.5 ${
+                activeTab === "video-guides"
+                  ? "bg-gradient-to-r from-red-600 to-red-700 text-white shadow"
+                  : "text-slate-300 hover:text-white"
+              }`}
+            >
+              <span>🎬</span> Video How-To Guides
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3.5">
-          {videos.map((vid) => {
-            const isSelected = selectedVideo.id === vid.id;
-            return (
-              <div
-                key={vid.id}
-                onClick={() => {
-                  setSelectedVideo(vid);
-                  setIsPlaying(true);
-                }}
-                className={`p-3.5 rounded-xl border cursor-pointer transition flex flex-col justify-between ${
-                  isSelected
-                    ? "bg-red-950/40 border-amber-500 shadow-xl ring-2 ring-amber-500/60"
-                    : "bg-[#121218] border-red-950/60 hover:border-amber-500/50"
-                }`}
-              >
-                <div>
-                  <div className={`h-24 rounded-lg bg-gradient-to-br ${vid.thumbnailGradient} flex items-center justify-center relative overflow-hidden border border-white/5`}>
-                    <div className="w-10 h-10 rounded-full bg-black/80 flex items-center justify-center text-amber-400 text-sm shadow border border-amber-500/30">
-                      ▶
-                    </div>
-                    <span className="absolute bottom-1.5 right-1.5 font-mono text-[10px] bg-black/90 px-1.5 py-0.5 rounded text-white font-bold">
-                      {vid.duration}
-                    </span>
-                  </div>
+        {/* 4 BRILLIANT METRICS TILES */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+          {/* Tile 1: Daily Learning Streak */}
+          <div className="p-3 rounded-lg bg-[#121218] border border-red-950/60">
+            <div className="flex items-center justify-between text-xs text-amber-400 font-bold uppercase mb-1">
+              <span>Daily Streak</span>
+              <span>🔥</span>
+            </div>
+            <div className="text-xl font-mono font-black text-white">
+              {dailyTarget.streakDays} <span className="text-xs text-amber-400 font-bold">Days</span>
+            </div>
+            <span className="text-[10px] text-emerald-400 font-mono font-bold mt-0.5 block">
+              ✓ Streak Shield Active
+            </span>
+          </div>
 
-                  <span className="text-[10px] font-mono uppercase text-amber-400 font-bold block mt-2">
-                    {vid.category}
+          {/* Tile 2: Daily Goal Progress */}
+          <div className="p-3 rounded-lg bg-[#121218] border border-red-950/60">
+            <div className="flex items-center justify-between text-xs text-emerald-400 font-bold uppercase mb-1">
+              <span>Daily Target</span>
+              <span>🎯</span>
+            </div>
+            <div className="text-xl font-mono font-black text-white">
+              {dailyTarget.completedToday} / {dailyTarget.dailyTarget}{" "}
+              <span className="text-xs text-slate-300 font-bold">Concepts</span>
+            </div>
+            <div className="w-full bg-black rounded-full h-1.5 mt-1.5 overflow-hidden border border-red-950">
+              <div
+                className="bg-emerald-500 h-full transition-all duration-500"
+                style={{
+                  width: `${Math.min(100, (dailyTarget.completedToday / dailyTarget.dailyTarget) * 100)}%`,
+                }}
+              ></div>
+            </div>
+          </div>
+
+          {/* Tile 3: Total Concepts Mastered */}
+          <div className="p-3 rounded-lg bg-[#121218] border border-red-950/60">
+            <div className="flex items-center justify-between text-xs text-blue-400 font-bold uppercase mb-1">
+              <span>Mastered Lessons</span>
+              <span>🧠</span>
+            </div>
+            <div className="text-xl font-mono font-black text-white">
+              {totalMasteredCount}{" "}
+              <span className="text-xs text-blue-400 font-bold">Completed</span>
+            </div>
+            <span className="text-[10px] text-slate-400 font-mono mt-0.5 block">
+              Across all {courses.length} curricula
+            </span>
+          </div>
+
+          {/* Tile 4: Founder League Tier */}
+          <div className="p-3 rounded-lg bg-[#121218] border border-red-950/60">
+            <div className="flex items-center justify-between text-xs text-purple-400 font-bold uppercase mb-1">
+              <span>League Tier</span>
+              <span>💎</span>
+            </div>
+            <div className="text-sm font-bold text-white mt-1">
+              Diamond Centurion
+            </div>
+            <span className="text-[10px] text-purple-300 font-mono mt-0.5 block">
+              Top 1% Sovereign Bracket
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================== */}
+      {/* TAB 1: BRILLIANT INTERACTIVE COURSES & ACTIVE LEARNING STUDIO */}
+      {/* ============================================================== */}
+      {activeTab === "brilliant-courses" && (
+        <div className="space-y-6">
+
+          {/* ACTIVE INTERACTIVE LESSON PLAYER (THE BRILLIANT ACTIVE EXPERIENCE) */}
+          <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl space-y-5 relative">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-red-950 pb-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono uppercase bg-red-950/80 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30 font-bold">
+                    {currentCourse.category} &bull; {currentCourse.repoStars}
                   </span>
-                  <h4 className="text-xs font-bold text-white mt-1 leading-snug line-clamp-2">
-                    {vid.title}
-                  </h4>
+                  <span className="text-[10px] font-mono text-slate-300 bg-neutral-900 px-2 py-0.5 rounded border border-red-950">
+                    Repo: {currentCourse.repoSource}
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-white mt-1.5 flex items-center gap-2">
+                  <span>{currentCourse.title}</span>
+                  <span className="text-xs font-mono font-bold text-amber-400">
+                    &bull; {courseMastery.percentage}% Mastered
+                  </span>
+                </h3>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowCourseModal(true)}
+                  className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-bold uppercase tracking-wider shadow"
+                >
+                  + Create Custom Course
+                </button>
+              </div>
+            </div>
+
+            {/* LESSON NAVIGATION TABS */}
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {allCurrentLessons.map((lesson, idx) => {
+                const isActive = lesson.id === currentLesson.id;
+                return (
+                  <button
+                    key={lesson.id}
+                    onClick={() => handleSelectLesson(lesson)}
+                    className={`px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition border flex items-center gap-2 ${
+                      isActive
+                        ? "bg-red-900/60 border-amber-500 text-white shadow-md ring-1 ring-amber-500/40"
+                        : lesson.completed
+                        ? "bg-black/60 border-emerald-900/50 text-emerald-300"
+                        : "bg-[#121218] border-red-950 text-slate-300 hover:text-white"
+                    }`}
+                  >
+                    <span>{lesson.completed ? "✓" : `${idx + 1}.`}</span>
+                    <span>{lesson.title}</span>
+                    <span className="text-[10px] font-mono text-amber-400 font-bold">
+                      +{lesson.xpReward} XP
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* BRILLIANT ACTIVE LESSON CARD */}
+            <div className="space-y-4 p-5 rounded-xl bg-[#121218] border border-red-950/70">
+              {/* STEP 1: CONCEPTUAL INTUITION */}
+              <div>
+                <span className="text-xs font-mono uppercase text-amber-400 font-bold block mb-1">
+                  1. The Mental Model &amp; Core Architecture
+                </span>
+                <h4 className="text-base font-bold text-white mb-2">{currentLesson.title}</h4>
+                <p className="text-xs text-slate-200 leading-relaxed bg-black/50 p-3.5 rounded-lg border border-red-950">
+                  {currentLesson.concept}
+                </p>
+              </div>
+
+              {/* STEP 2: INTERACTIVE CODE / TERMINAL SNIPPET */}
+              <div>
+                <div className="flex items-center justify-between text-xs mb-1">
+                  <span className="text-xs font-mono uppercase text-blue-400 font-bold">
+                    2. Code &amp; Terminal Execution Prompt
+                  </span>
+                  <button
+                    onClick={() => handleCopyCode(currentLesson.codeSnippet)}
+                    className="text-[11px] font-mono font-bold text-amber-300 hover:text-white transition px-2 py-0.5 rounded bg-black border border-red-950"
+                  >
+                    {copiedCode ? "✓ Copied to Clipboard!" : "📋 Copy Code"}
+                  </button>
                 </div>
 
-                <div className="mt-3 pt-2.5 border-t border-red-950/70 flex items-center justify-between gap-2 text-[11px] font-mono font-bold">
-                  <span className="text-amber-400">+{vid.xpReward} XP</span>
-                  <div className="flex items-center gap-2">
+                <div className="relative">
+                  <pre className="p-4 rounded-lg bg-black border border-red-950/80 font-mono text-xs text-slate-200 overflow-x-auto leading-relaxed shadow-inner">
+                    <code>{currentLesson.codeSnippet}</code>
+                  </pre>
+                </div>
+                <span className="text-[11px] text-slate-400 mt-1 block italic">
+                  💡 Action Prompt: {currentLesson.actionPrompt}
+                </span>
+              </div>
+
+              {/* STEP 3: BRILLIANT-STYLE INTERACTIVE ACTIVE KNOWLEDGE CHECK */}
+              <div className="pt-2 border-t border-red-950/80">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-mono uppercase text-emerald-400 font-bold">
+                    3. Active Problem-Solving Challenge
+                  </span>
+                  <span className="text-[10px] font-mono text-amber-400 font-bold bg-black px-2 py-0.5 rounded border border-amber-500/30">
+                    Mastery Check &bull; Instant Feedback
+                  </span>
+                </div>
+
+                <p className="text-sm font-semibold text-white mb-3">
+                  {currentLesson.quiz.question}
+                </p>
+
+                {/* Multiple-Choice Options */}
+                <div className="space-y-2 mb-3">
+                  {currentLesson.quiz.options.map((option, optIdx) => {
+                    const isSelected = selectedQuizIndex === optIdx;
+                    const isCorrect = optIdx === currentLesson.quiz.correctIndex;
+                    let btnClass = "bg-black/70 border-red-950 text-slate-200 hover:border-amber-500/50";
+
+                    if (quizSubmitted) {
+                      if (isCorrect) {
+                        btnClass = "bg-emerald-950/60 border-emerald-500 text-emerald-300 font-bold";
+                      } else if (isSelected && !isCorrect) {
+                        btnClass = "bg-red-950/60 border-red-600 text-red-300 font-bold";
+                      }
+                    } else if (isSelected) {
+                      btnClass = "bg-amber-950/40 border-amber-500 text-amber-300 font-bold";
+                    }
+
+                    return (
+                      <button
+                        key={optIdx}
+                        onClick={() => handleAnswerQuiz(optIdx)}
+                        disabled={quizSubmitted}
+                        className={`w-full p-3 rounded-lg text-left text-xs transition border flex items-center justify-between gap-3 ${btnClass}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="w-5 h-5 rounded-full border border-slate-700 flex items-center justify-center font-mono text-[10px] shrink-0">
+                            {String.fromCharCode(65 + optIdx)}
+                          </span>
+                          <span>{option}</span>
+                        </div>
+                        {quizSubmitted && isCorrect && (
+                          <span className="text-emerald-400 font-mono text-xs font-bold">✓ CORRECT</span>
+                        )}
+                        {quizSubmitted && isSelected && !isCorrect && (
+                          <span className="text-red-400 font-mono text-xs font-bold">✕ WRONG</span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Instant Pedagogical Feedback */}
+                {quizFeedback && (
+                  <div
+                    className={`p-3.5 rounded-lg border text-xs leading-relaxed mb-3 ${
+                      quizFeedback.isCorrect
+                        ? "bg-emerald-950/50 border-emerald-500/60 text-emerald-200"
+                        : "bg-red-950/50 border-red-600/60 text-red-200"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <p>{quizFeedback.feedback}</p>
+                      {!quizFeedback.isCorrect && (
+                        <button
+                          onClick={handleResetQuiz}
+                          className="px-2.5 py-1 rounded bg-black text-amber-400 hover:text-white border border-amber-500/40 font-bold text-[10px] shrink-0"
+                        >
+                          Try Again
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Next Lesson Action */}
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    onClick={handleNextLesson}
+                    className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-extrabold uppercase tracking-wider shadow flex items-center gap-1.5"
+                  >
+                    <span>Next Lesson</span> &rarr;
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* GITHUB TOP AI REPOS COURSE CATALOG */}
+          <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-red-950 pb-3">
+              <div>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-white">
+                  Curated GitHub AI Masterclasses &amp; Full Courses
+                </h3>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  Reverse-engineered from top GitHub repositories for AI engineering, local LLMs, and agent systems.
+                </p>
+              </div>
+
+              {/* Category Filters */}
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  "All",
+                  "AI Agents & MCP",
+                  "Local Sovereign LLMs",
+                  "Full-Stack AI Apps",
+                  "Multi-Agent Systems",
+                  "Mechanical & Craft",
+                ].map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setCategoryFilter(cat)}
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition border ${
+                      categoryFilter === cat
+                        ? "bg-red-800 text-white border-red-500 shadow"
+                        : "bg-black border-red-950 text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredCourses.map((c) => {
+                const mastery = calculateCourseMastery(c);
+                const isSelected = c.id === selectedCourseId;
+                return (
+                  <div
+                    key={c.id}
+                    onClick={() => {
+                      setSelectedCourseId(c.id);
+                      setActiveLessonId(c.modules[0].lessons[0].id);
+                      handleResetQuiz();
+                    }}
+                    className={`p-4 rounded-xl border cursor-pointer transition flex flex-col justify-between ${
+                      isSelected
+                        ? "bg-red-950/30 border-amber-500 shadow-xl ring-2 ring-amber-500/50"
+                        : "bg-[#121218] border-red-950/60 hover:border-amber-500/40"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-1.5">
+                        <span className="text-[10px] font-mono uppercase bg-black px-2 py-0.5 rounded text-amber-400 border border-amber-500/30 font-bold">
+                          {c.category}
+                        </span>
+                        <span className="text-[10px] font-mono text-slate-300 bg-neutral-900 px-2 py-0.5 rounded border border-red-950 font-bold">
+                          {c.repoStars} &bull; {c.level}
+                        </span>
+                      </div>
+
+                      <h4 className="text-sm font-bold text-white leading-snug">{c.title}</h4>
+                      <span className="text-[11px] font-mono text-slate-400 block mt-0.5">
+                        GitHub: {c.repoSource}
+                      </span>
+                      <p className="text-xs text-slate-300 mt-2 line-clamp-2 leading-relaxed">
+                        {c.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-red-950/70">
+                      <div className="flex justify-between items-center text-xs mb-1.5">
+                        <span className="text-slate-300 font-semibold">Mastery Progress</span>
+                        <span className="font-mono font-bold text-amber-400">
+                          {mastery.percentage}% ({mastery.completedLessons}/{mastery.totalLessons} Lessons)
+                        </span>
+                      </div>
+                      <div className="w-full bg-black rounded-full h-2 overflow-hidden border border-red-950 mb-3">
+                        <div
+                          className="bg-gradient-to-r from-amber-500 to-amber-400 h-full transition-all duration-300"
+                          style={{ width: `${mastery.percentage}%` }}
+                        ></div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-mono font-bold text-amber-300">
+                          +{c.xpReward} Total XP
+                        </span>
+                        <button
+                          className={`px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition ${
+                            isSelected
+                              ? "bg-amber-500 text-black shadow"
+                              : "bg-black text-white border border-red-950 hover:border-amber-500"
+                          }`}
+                        >
+                          {isSelected ? "Current Course" : "Select Course"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* TAB 2: ORIGINAL VIDEO MASTERCLASSES & MECHANICAL CHECKLISTS   */}
+      {/* ============================================================== */}
+      {activeTab === "video-guides" && (
+        <div className="space-y-6">
+
+          {/* FEATURED VIDEO PLAYER */}
+          <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-red-950/70 pb-3">
+              <div>
+                <span className="text-[10px] font-mono uppercase bg-red-950/80 text-amber-300 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
+                  {selectedVideo.category} Masterclass &bull; {selectedVideo.duration}
+                </span>
+                <h3 className="text-base font-bold text-white mt-1.5">{selectedVideo.title}</h3>
+              </div>
+
+              <a
+                href={selectedVideo.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 text-white font-bold text-xs uppercase tracking-wider transition shadow flex items-center gap-1.5"
+              >
+                <span>▶</span> Open Video Link ↗
+              </a>
+            </div>
+
+            {/* VIDEO LAUNCHPAD */}
+            <div className="relative w-full aspect-video bg-gradient-to-br from-black via-[#140608] to-black rounded-xl overflow-hidden border border-red-900/60 shadow-2xl flex flex-col justify-between p-6 text-center">
+              <div className="flex justify-between items-start">
+                <span className="text-xs font-mono bg-black/90 px-3 py-1 rounded text-white border border-red-900/40">
+                  HD &bull; Verified Instructional Video Guide
+                </span>
+                <span className="text-xs font-mono text-amber-400 bg-black/90 px-2.5 py-1 rounded border border-amber-500/30 font-bold">
+                  {selectedVideo.duration}
+                </span>
+              </div>
+
+              <div className="my-auto">
+                <a
+                  href={selectedVideo.videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-20 h-20 mx-auto rounded-full bg-gradient-to-r from-red-600 to-red-700 text-white flex items-center justify-center text-3xl shadow-2xl transition transform hover:scale-110 border-2 border-red-400/40 cursor-pointer mb-3"
+                >
+                  ▶
+                </a>
+                <p className="text-xs text-slate-300 max-w-lg mx-auto leading-relaxed">
+                  {selectedVideo.description}
+                </p>
+              </div>
+
+              {/* TIMELINE CHAPTERS */}
+              <div className="bg-black/90 p-3 rounded-lg border border-red-950/80 flex flex-wrap gap-2 text-[11px] font-mono text-white overflow-x-auto justify-center">
+                <span className="text-amber-400 font-bold self-center">Key Chapters:</span>
+                {selectedVideo.chapters.map((ch, idx) => (
+                  <a
+                    key={idx}
+                    href={selectedVideo.videoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2.5 py-0.5 rounded bg-neutral-900 border border-red-950 hover:border-amber-400 text-white font-medium"
+                  >
+                    <strong className="text-amber-400 mr-1">{ch.time}</strong> {ch.title}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* VIDEO LIST */}
+          <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl space-y-4">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white">
+              Video Masterclass Catalog ({videos.length} Guides)
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3.5">
+              {videos.map((vid) => (
+                <div
+                  key={vid.id}
+                  onClick={() => setSelectedVideo(vid)}
+                  className={`p-3.5 rounded-xl border cursor-pointer transition flex flex-col justify-between ${
+                    selectedVideo.id === vid.id
+                      ? "bg-red-950/40 border-amber-500 shadow-xl"
+                      : "bg-[#121218] border-red-950/60 hover:border-amber-500/50"
+                  }`}
+                >
+                  <div>
+                    <span className="text-[10px] font-mono uppercase text-amber-400 font-bold block mb-1">
+                      {vid.category}
+                    </span>
+                    <h4 className="text-xs font-bold text-white line-clamp-2">{vid.title}</h4>
+                  </div>
+                  <div className="mt-3 pt-2 border-t border-red-950/70 flex justify-between items-center text-[10px] font-mono">
+                    <span className="text-amber-400 font-bold">+{vid.xpReward} XP</span>
                     <a
                       href={vid.videoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="px-2.5 py-1 rounded bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-extrabold text-[10px] uppercase tracking-wider transition shadow"
+                      className="px-2 py-0.5 bg-red-800 text-white rounded font-bold"
                     >
                       ▶ Watch ↗
                     </a>
-                    <span className={vid.watched ? "text-emerald-400 font-bold text-[10px]" : "text-slate-300 text-[10px]"}>
-                      {vid.watched ? "✓ Done" : ""}
-                    </span>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+              ))}
+            </div>
+          </section>
 
-      {/* MASS PRODUCTION: ADD NEW VIDEO MODAL */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-[#0A0A0F] border border-red-950/90 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-red-950/70 pb-3">
+          {/* DECONSTRUCTED MECHANICAL CHECKLISTS */}
+          <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl space-y-6">
+            <div className="flex items-center justify-between border-b border-red-950 pb-3">
+              <div>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-white">
+                  Step-by-Step Mechanical &amp; Fabrication Checklists
+                </h3>
+                <p className="text-xs text-slate-300">
+                  Physical execution checklists with safety checks and factory torque specs.
+                </p>
+              </div>
+              <span className="text-xs font-mono font-bold text-amber-400">
+                {pathwayProgress.percentage}% Mastered
+              </span>
+            </div>
+
+            {/* Pathway Selectors */}
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {pathways.map((pw) => {
+                const isSelected = pw.id === selectedPathwayId;
+                const prog = calculatePathwayProgress(pw);
+                return (
+                  <button
+                    key={pw.id}
+                    onClick={() => setSelectedPathwayId(pw.id)}
+                    className={`px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition border ${
+                      isSelected
+                        ? "bg-gradient-to-r from-red-700 to-red-800 text-white border-red-500"
+                        : "bg-black text-slate-300 border-red-950 hover:text-white"
+                    }`}
+                  >
+                    <span>{pw.title.split("DIY")[0].split("—")[0]}</span>{" "}
+                    <span className="text-amber-400">({prog.percentage}%)</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Current Pathway Steps */}
+            <div className="space-y-3">
+              <h4 className="text-base font-bold text-white">{currentPathway.title}</h4>
+              <p className="text-xs text-slate-300">{currentPathway.description}</p>
+
+              <div className="space-y-2 mt-3">
+                {currentPathway.steps.map((step, idx) => (
+                  <div
+                    key={step.id}
+                    onClick={() => togglePathwayStep(step.id)}
+                    className={`p-3 rounded-lg border cursor-pointer transition flex items-center justify-between gap-4 ${
+                      step.completed
+                        ? "bg-black/60 border-red-950/40 text-slate-400"
+                        : "bg-[#121218] border-red-950/70 hover:border-amber-500/40 text-white"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-5 h-5 rounded flex items-center justify-center text-xs font-bold ${
+                          step.completed ? "bg-amber-500 text-black font-bold" : "border border-red-900/60 bg-black"
+                        }`}
+                      >
+                        {step.completed && "✓"}
+                      </div>
+                      <span className={`text-xs ${step.completed ? "line-through text-slate-500" : "font-semibold text-white"}`}>
+                        Step {idx + 1}: {step.title}
+                      </span>
+                    </div>
+                    <span className="text-xs font-mono text-amber-400 font-bold shrink-0">
+                      {step.estimatedMinutes}m
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* MODAL: CREATE CUSTOM IN-APP COURSE (STUDIO)                   */}
+      {/* ============================================================== */}
+      {showCourseModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="bg-[#0A0A0F] border border-red-950 rounded-2xl p-6 max-w-2xl w-full shadow-2xl space-y-4 my-8">
+            <div className="flex items-center justify-between border-b border-red-950 pb-3">
               <div>
                 <h3 className="text-sm font-bold uppercase tracking-wider text-amber-400">
-                  Mass Production: Add Video Guide Link
+                  In-App Course Authoring Studio
                 </h3>
-                <p className="text-xs text-slate-300 mt-0.5">
-                  Paste any YouTube, Vimeo, or video link to immediately add to the curriculum.
+                <p className="text-xs text-slate-300">
+                  Build full-on interactive courses for anything you want to learn. Includes code actions and active quiz checks.
                 </p>
               </div>
               <button
-                onClick={() => setShowAddModal(false)}
-                className="text-slate-400 hover:text-white text-base px-2 py-1 font-bold"
+                onClick={() => setShowCourseModal(false)}
+                className="text-slate-400 hover:text-white text-lg font-bold"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleAddVideo} className="space-y-3.5">
-              <div>
-                <label className="block text-xs font-bold text-slate-200 mb-1">
-                  Video Title
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g., 2015 Mustang Brake Pad Replacement"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full bg-[#121218] border border-red-900/60 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-200 mb-1">
-                  Video Link URL (YouTube, Vimeo, Loom, MP4)
-                </label>
-                <input
-                  type="url"
-                  required
-                  placeholder="https://www.youtube.com/watch?v=..."
-                  value={newUrl}
-                  onChange={(e) => setNewUrl(e.target.value)}
-                  className="w-full bg-[#121218] border border-red-900/60 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
-                />
-                <span className="text-[10px] text-slate-400 mt-1 block">
-                  YouTube watch links automatically convert to embedded players and direct links.
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+            <form onSubmit={handleCreateCourse} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-200 mb-1">
-                    Category
-                  </label>
-                  <select
-                    value={newCategory}
-                    onChange={(e) => setNewCategory(e.target.value as any)}
-                    className="w-full bg-[#121218] border border-red-900/60 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
-                  >
-                    <option value="Mechanical" className="bg-black text-white">Mechanical</option>
-                    <option value="Fatherhood" className="bg-black text-white">Fatherhood</option>
-                    <option value="Home Fabrication" className="bg-black text-white">Home Fabrication</option>
-                    <option value="Calisthenics & Boxing" className="bg-black text-white">Calisthenics & Boxing</option>
-                    <option value="AI & Systems" className="bg-black text-white">AI & Systems</option>
-                    <option value="Consulting" className="bg-black text-white">Consulting</option>
-                  </select>
+                  <label className="text-xs text-white font-bold block mb-1">Course Title</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Python FastMCP Tooling & Agent Sandboxes"
+                    value={customTitle}
+                    onChange={(e) => setCustomTitle(e.target.value)}
+                    className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                  />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-200 mb-1">
-                    Duration (MM:SS)
-                  </label>
+                  <label className="text-xs text-white font-bold block mb-1">GitHub Repo Source (Optional)</label>
                   <input
                     type="text"
-                    placeholder="12:45"
-                    value={newDuration}
-                    onChange={(e) => setNewDuration(e.target.value)}
-                    className="w-full bg-[#121218] border border-red-900/60 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                    placeholder="e.g. modelcontextprotocol/python-sdk"
+                    value={customRepo}
+                    onChange={(e) => setCustomRepo(e.target.value)}
+                    className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
                   />
                 </div>
               </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-slate-300 font-bold block mb-1">Category</label>
+                  <select
+                    value={customCategory}
+                    onChange={(e) => setCustomCategory(e.target.value as any)}
+                    className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                  >
+                    <option value="AI Agents & MCP">AI Agents &amp; MCP</option>
+                    <option value="Local Sovereign LLMs">Local Sovereign LLMs</option>
+                    <option value="Full-Stack AI Apps">Full-Stack AI Apps</option>
+                    <option value="Multi-Agent Systems">Multi-Agent Systems</option>
+                    <option value="Mechanical & Craft">Mechanical &amp; Craft</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-xs text-slate-300 font-bold block mb-1">Difficulty Level</label>
+                  <select
+                    value={customLevel}
+                    onChange={(e) => setCustomLevel(e.target.value as any)}
+                    className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                  >
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                    <option value="Sovereign Architect">Sovereign Architect</option>
+                  </select>
+                </div>
+              </div>
+
               <div>
-                <label className="block text-xs font-bold text-slate-200 mb-1">
-                  Brief Description &amp; Milestones
-                </label>
+                <label className="text-xs text-white font-bold block mb-1">Course Overview &amp; Objective</label>
                 <textarea
                   rows={2}
-                  placeholder="Key steps, tools, torque specs or learning notes..."
-                  value={newDescription}
-                  onChange={(e) => setNewDescription(e.target.value)}
-                  className="w-full bg-[#121218] border border-red-900/60 rounded-lg p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                  placeholder="What core architectural ability does this course impart?"
+                  value={customDesc}
+                  onChange={(e) => setCustomDesc(e.target.value)}
+                  className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
-              <div className="flex items-center justify-between pt-2">
-                <span className="text-xs font-mono text-amber-400 font-bold">
-                  Reward: +{newXp} XP
+              {/* Lesson 1 Definition */}
+              <div className="p-4 rounded-xl bg-black border border-red-950/80 space-y-3">
+                <span className="text-xs font-mono font-bold text-amber-400 block uppercase">
+                  Lesson 1: Concept, Code &amp; Brilliant Challenge Check
                 </span>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowAddModal(false)}
-                    className="px-3 py-2 rounded-lg bg-black border border-red-950 text-xs font-bold text-slate-300 hover:text-white"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-xs uppercase tracking-wider transition shadow"
-                  >
-                    + Add Video Guide
-                  </button>
+
+                <div>
+                  <label className="text-xs text-slate-300 font-bold block mb-1">Lesson Title</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Declaring Asynchronous FastMCP Tools with Type Annotations"
+                    value={customLessonTitle}
+                    onChange={(e) => setCustomLessonTitle(e.target.value)}
+                    className="w-full bg-[#121218] border border-red-950 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500"
+                  />
                 </div>
+
+                <div>
+                  <label className="text-xs text-slate-300 font-bold block mb-1">Mental Model / Explanation</label>
+                  <textarea
+                    rows={2}
+                    placeholder="Clear intuitive breakdown of how and why this works..."
+                    value={customConcept}
+                    onChange={(e) => setCustomConcept(e.target.value)}
+                    className="w-full bg-[#121218] border border-red-950 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-slate-300 font-bold block mb-1">Code Snippet or Terminal Command</label>
+                  <textarea
+                    rows={3}
+                    placeholder="paste executable code or shell commands..."
+                    value={customCode}
+                    onChange={(e) => setCustomCode(e.target.value)}
+                    className="w-full bg-[#121218] border border-red-950 rounded px-3 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
+                {/* Challenge Question */}
+                <div className="space-y-2 pt-2 border-t border-red-950">
+                  <label className="text-xs text-emerald-400 font-bold block">
+                    Interactive Challenge Question
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Which decorator exposes the function to the MCP protocol?"
+                    value={customQuestion}
+                    onChange={(e) => setCustomQuestion(e.target.value)}
+                    className="w-full bg-[#121218] border border-red-950 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500"
+                  />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <input
+                      type="text"
+                      placeholder="Option A (Correct default)"
+                      value={customOpt1}
+                      onChange={(e) => setCustomOpt1(e.target.value)}
+                      className="w-full bg-[#121218] border border-red-950 rounded px-2.5 py-1 text-xs text-white"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Option B"
+                      value={customOpt2}
+                      onChange={(e) => setCustomOpt2(e.target.value)}
+                      className="w-full bg-[#121218] border border-red-950 rounded px-2.5 py-1 text-xs text-white"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Option C"
+                      value={customOpt3}
+                      onChange={(e) => setCustomOpt3(e.target.value)}
+                      className="w-full bg-[#121218] border border-red-950 rounded px-2.5 py-1 text-xs text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-slate-300 font-bold block mb-1">
+                      Correct Option Index (0 = Option A, 1 = Option B, 2 = Option C)
+                    </label>
+                    <select
+                      value={customCorrectIdx}
+                      onChange={(e) => setCustomCorrectIdx(Number(e.target.value))}
+                      className="bg-[#121218] border border-red-950 rounded px-3 py-1 text-xs text-white"
+                    >
+                      <option value={0}>Option A</option>
+                      <option value={1}>Option B</option>
+                      <option value={2}>Option C</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-slate-300 font-bold block mb-1">Pedagogical Explanation</label>
+                    <input
+                      type="text"
+                      placeholder="Why this answer is correct..."
+                      value={customExplanation}
+                      onChange={(e) => setCustomExplanation(e.target.value)}
+                      className="w-full bg-[#121218] border border-red-950 rounded px-3 py-1.5 text-xs text-white"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-red-950">
+                <button
+                  type="button"
+                  onClick={() => setShowCourseModal(false)}
+                  className="px-4 py-2 rounded bg-neutral-900 text-slate-300 text-xs font-bold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-bold uppercase tracking-wider shadow"
+                >
+                  Save &amp; Launch In-App Course (+500 XP)
+                </button>
               </div>
             </form>
           </div>
         </div>
       )}
-
-      {/* DECONSTRUCTED CHECKLISTS & STEP PROGRESSION */}
-      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl space-y-6">
-        <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-1">
-            Step-by-Step Mechanical &amp; Project Checklists
-          </h3>
-          <p className="text-xs text-slate-300">
-            Check off steps as you physically perform them. Tool requirements and factory torque specs included.
-          </p>
-        </div>
-
-        {/* PATHWAY SELECTOR PILLS */}
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          {pathways.map((pw) => {
-            const isSelected = pw.id === selectedPathwayId;
-            const pwProgress = calculatePathwayProgress(pw);
-            return (
-              <button
-                key={pw.id}
-                onClick={() => setSelectedPathwayId(pw.id)}
-                className={`px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition border flex items-center gap-2 ${
-                  isSelected
-                    ? "bg-gradient-to-r from-red-700 to-red-800 text-white border-red-500/60 shadow-md"
-                    : "bg-black text-slate-300 border-red-950/70 hover:text-white"
-                }`}
-              >
-                <span>{pw.title.split("—")[0].split("DIY")[0]}</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-red-950/80 text-amber-300 border border-amber-500/30">
-                  {pwProgress.percentage}%
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* SELECTED PATHWAY DETAIL */}
-        <div className="space-y-4">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-300 bg-red-950/80 px-2.5 py-0.5 rounded border border-amber-500/30">
-                Category: {currentPathway.category.replace("_", " ")}
-              </span>
-              <h3 className="text-lg font-bold text-white mt-2">{currentPathway.title}</h3>
-              <p className="text-xs text-slate-200 mt-1 max-w-2xl">{currentPathway.description}</p>
-            </div>
-            <div className="text-right shrink-0">
-              <span className="text-2xl font-mono font-black text-amber-400">{progress.percentage}%</span>
-              <div className="text-[11px] text-slate-300 font-mono">
-                {progress.completedSteps} / {progress.totalSteps} Steps Complete
-              </div>
-            </div>
-          </div>
-
-          <div className="w-full bg-neutral-900 h-2 rounded-full overflow-hidden border border-red-950/80">
-            <div
-              className="bg-gradient-to-r from-amber-500 to-amber-400 h-full transition-all duration-300"
-              style={{ width: `${progress.percentage}%` }}
-            ></div>
-          </div>
-
-          {/* PREREQUISITES AUDIT */}
-          <div className="bg-black border border-red-950/80 rounded-lg p-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">
-              Tooling &amp; Safety Prerequisites
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              {currentPathway.prerequisites.map((req, i) => (
-                <div key={i} className="flex items-center gap-2 text-white">
-                  <span className="text-emerald-400 font-bold">✓</span>
-                  <span>{req.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* STEP-BY-STEP DECONSTRUCTED CHECKLIST */}
-          <div className="space-y-2.5">
-            {currentPathway.steps.map((step, idx) => (
-              <div
-                key={step.id}
-                onClick={() => toggleStep(step.id)}
-                className={`p-3.5 rounded-lg border cursor-pointer transition flex items-center justify-between gap-4 ${
-                  step.completed
-                    ? "bg-black/60 border-red-950/40 text-slate-400"
-                    : "bg-[#121218] border-red-950/70 hover:border-amber-500/40 text-white"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-5 h-5 rounded flex items-center justify-center text-xs font-bold ${
-                      step.completed ? "bg-amber-500 text-black font-bold" : "border border-red-900/60 bg-black"
-                    }`}
-                  >
-                    {step.completed && "✓"}
-                  </div>
-                  <div>
-                    <span className="text-xs font-mono text-amber-400 font-bold mr-2">Step {idx + 1}</span>
-                    <span className={`text-sm ${step.completed ? "line-through text-slate-500" : "font-semibold text-white"}`}>
-                      {step.title}
-                    </span>
-                  </div>
-                </div>
-
-                <span className="text-xs font-mono px-2 py-0.5 rounded bg-black text-amber-300 font-bold border border-red-950 shrink-0">
-                  {step.estimatedMinutes}m
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-      </section>
 
     </div>
   );
