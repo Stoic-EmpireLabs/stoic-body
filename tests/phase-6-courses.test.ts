@@ -154,3 +154,36 @@ test("Phase 6 Courses — Pre-loaded GitHub AI Courses Verification", () => {
     }
   }
 });
+
+test("Phase 6 Courses — AI Hierarchy Spectrum Flagship Curriculum Verification", () => {
+  const spectrumCourse = FOUNDER_AI_COURSES.find((c) => c.id === "ai-spectrum-hierarchy");
+  assert.ok(spectrumCourse, "AI Hierarchy Spectrum course must exist in FOUNDER_AI_COURSES");
+  assert.equal(spectrumCourse.category, "AI Architecture Spectrum");
+  assert.equal(spectrumCourse.level, "Sovereign Architect");
+
+  const module1 = spectrumCourse.modules[0];
+  assert.ok(module1, "Spectrum course must have module 1");
+  assert.equal(module1.lessons.length, 8, "Must have exactly 8 lessons matching the infographic");
+
+  const expectedLessonIds = [
+    "ai-l1-umbrella",
+    "ai-l2-ml",
+    "ai-l3-dl",
+    "ai-l4-genai",
+    "ai-l5-llms",
+    "ai-l6-rag",
+    "ai-l7-agentic",
+    "ai-l8-modern-concepts",
+  ];
+
+  for (let i = 0; i < expectedLessonIds.length; i++) {
+    const lesson = module1.lessons[i];
+    assert.equal(lesson.id, expectedLessonIds[i], `Lesson index ${i} ID mismatch`);
+    assert.ok(lesson.title.length > 5, `Lesson ${lesson.id} must have descriptive title`);
+    assert.ok(lesson.concept.length > 20, `Lesson ${lesson.id} must have in-depth concept text`);
+    assert.ok(lesson.codeSnippet.length > 10, `Lesson ${lesson.id} must have executable code snippet`);
+    assert.ok(lesson.quiz.options.length >= 2, `Lesson ${lesson.id} quiz must have >= 2 choices`);
+    assert.ok(lesson.quiz.explanation.length > 10, `Lesson ${lesson.id} quiz must have educational explanation`);
+    assert.ok(lesson.xpReward >= 100, `Lesson ${lesson.id} must reward >= 100 XP`);
+  }
+});

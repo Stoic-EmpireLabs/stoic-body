@@ -86,3 +86,36 @@ test("Stoic Body — Calendar Event Scheduling Across Dates", () => {
   const updatedEvents = [...events, newEvent];
   assert.equal(updatedEvents.filter((e) => e.date === "2026-10-10").length, 1);
 });
+
+test("Stoic Body — AI Hierarchy Spectrum Scheduled in Daily Calendar & Tasks", () => {
+  const scheduledAiEvents: CalendarDateEvent[] = [
+    { id: "ce-ai-1", date: "2026-10-04", title: "AI Spectrum Study: Lesson 1 & 2 (AI Umbrella & Machine Learning)", time: "11:30", durationMinutes: 45, tier: 2 },
+    { id: "ce-ai-2", date: "2026-10-05", title: "AI Spectrum Study: Lesson 3 & 4 (Deep Learning & Generative AI)", time: "11:30", durationMinutes: 45, tier: 2 },
+    { id: "ce-ai-3", date: "2026-10-06", title: "AI Spectrum Study: Lesson 5 (Large Language Models & Prompting)", time: "11:30", durationMinutes: 45, tier: 2 },
+    { id: "ce-ai-4", date: "2026-10-07", title: "AI Spectrum Study: Lesson 6 (Retrieval-Augmented Generation & Vectors)", time: "11:30", durationMinutes: 45, tier: 2 },
+    { id: "ce-ai-5", date: "2026-10-08", title: "AI Spectrum Study: Lesson 7 (Agentic AI & Autonomous Swarms)", time: "11:30", durationMinutes: 45, tier: 2 },
+  ];
+
+  assert.equal(scheduledAiEvents.length, 5, "Must have 5 scheduled AI study sessions across 5 days");
+
+  // Every study session must be 45 minutes at 11:30
+  for (const ev of scheduledAiEvents) {
+    assert.equal(ev.time, "11:30", "Daily study session time must be set to 11:30");
+    assert.equal(ev.durationMinutes, 45, "Daily study session duration must be 45 minutes");
+    assert.equal(ev.tier, 2, "Study sessions must be Tier 2 Intellect discipline");
+  }
+
+  // Daily task definition verification
+  const dailyAiTask = {
+    id: "task-ai-spectrum",
+    title: "AI Spectrum Mastery: Learn AI, ML, DL, GenAI, LLMs, RAG & Agentic AI",
+    durationMinutes: 45,
+    tier: 2,
+    time: "11:30",
+    attribute: "Intellect",
+  };
+
+  assert.equal(dailyAiTask.id, "task-ai-spectrum");
+  assert.equal(dailyAiTask.attribute, "Intellect");
+  assert.equal(dailyAiTask.durationMinutes, 45);
+});

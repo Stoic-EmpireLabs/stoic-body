@@ -27,7 +27,7 @@ export interface WeeklyGoal {
   title: string;
   targetCount: number;
   currentCount: number;
-  category: "Physical" | "Consulting" | "DBA" | "Recovery" | "Family";
+  category: "Physical" | "Consulting" | "DBA" | "Recovery" | "Family" | "Intellect";
   xpReward: number;
 }
 
@@ -167,9 +167,26 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
       time: "16:00",
       attribute: "Intellect",
     },
+    {
+      id: "task-ai-spectrum",
+      title: "AI Spectrum Mastery: Learn AI, ML, DL, GenAI, LLMs, RAG & Agentic AI",
+      durationMinutes: 45,
+      tier: 2,
+      completed: false,
+      time: "11:30",
+      attribute: "Intellect",
+    },
   ]);
 
   const [weeklyGoals, setWeeklyGoals] = useState<WeeklyGoal[]>([
+    {
+      id: "wg-ai-spectrum",
+      title: "Master 5 AI Spectrum Lessons (AI ➔ ML ➔ DL ➔ GenAI ➔ LLMs ➔ RAG ➔ Agents)",
+      targetCount: 5,
+      currentCount: 2,
+      category: "Intellect",
+      xpReward: 1800,
+    },
     {
       id: "wg-1",
       title: "Complete 5 Dumbbell-Free Calisthenics Sessions",
@@ -261,13 +278,18 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
 
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([
     { id: "ce-1", date: "2026-10-04", title: "Morning Anchor (Water, Calisthenics, Incline Walk)", time: "05:30", durationMinutes: 65, tier: 1, completed: true },
+    { id: "ce-ai-1", date: "2026-10-04", title: "AI Spectrum Study: Lesson 1 & 2 (AI Umbrella & Machine Learning)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
     { id: "ce-2", date: "2026-10-04", title: "Stoic Consulting Client Acquisition & Outreach", time: "09:00", durationMinutes: 120, tier: 3, completed: false },
     { id: "ce-3", date: "2026-10-04", title: "2015 Ford Mustang V6 3.7L Oil Change Execution", time: "14:00", durationMinutes: 60, tier: 4, completed: false },
     { id: "ce-4", date: "2026-10-04", title: "23:1 OMAD Feeding Window (140g Protein)", time: "18:00", durationMinutes: 60, tier: 1, completed: false },
+    { id: "ce-ai-2", date: "2026-10-05", title: "AI Spectrum Study: Lesson 3 & 4 (Deep Learning & Generative AI)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
     { id: "ce-5", date: "2026-10-05", title: "Doctoral DBA Research Resubmission Prep", time: "08:30", durationMinutes: 90, tier: 3, completed: false },
     { id: "ce-6", date: "2026-10-05", title: "Home Boxing 5 Rounds & Shadow Mechanics", time: "16:00", durationMinutes: 30, tier: 2, completed: false },
+    { id: "ce-ai-3", date: "2026-10-06", title: "AI Spectrum Study: Lesson 5 (Large Language Models & Prompting)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
     { id: "ce-7", date: "2026-10-06", title: "Local Town SMB In-Person Executive AI Pitches", time: "10:00", durationMinutes: 120, tier: 4, completed: false },
+    { id: "ce-ai-4", date: "2026-10-07", title: "AI Spectrum Study: Lesson 6 (Retrieval-Augmented Generation & Vectors)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
     { id: "ce-8", date: "2026-10-07", title: "Ultron Private LLM Embeddings Indexing", time: "13:00", durationMinutes: 60, tier: 3, completed: false },
+    { id: "ce-ai-5", date: "2026-10-08", title: "AI Spectrum Study: Lesson 7 (Agentic AI & Autonomous Swarms)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
     { id: "ce-9", date: "2026-10-10", title: "Weekend Family Sanctuary & Cheer Flyer Park Practice", time: "10:00", durationMinutes: 180, tier: 4, completed: false },
     { id: "ce-10", date: "2026-10-11", title: "King Bed Frame Structural Completion & Leveling", time: "13:00", durationMinutes: 120, tier: 3, completed: false },
   ]);
@@ -308,13 +330,69 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
       if (savedMvd) setMvdActive(savedMvd === "true");
 
       const savedTasks = localStorage.getItem("stoic_daily_tasks");
-      if (savedTasks) try { setDailyTasks(JSON.parse(savedTasks)); } catch (e) {}
+      if (savedTasks) {
+        try {
+          const parsed = JSON.parse(savedTasks);
+          if (Array.isArray(parsed)) {
+            const hasAiSpectrum = parsed.some((t: any) => t.id === "task-ai-spectrum");
+            if (!hasAiSpectrum) {
+              parsed.push({
+                id: "task-ai-spectrum",
+                title: "AI Spectrum Mastery: Learn AI, ML, DL, GenAI, LLMs, RAG & Agentic AI",
+                durationMinutes: 45,
+                tier: 2,
+                completed: false,
+                time: "11:30",
+                attribute: "Intellect",
+              });
+            }
+            setDailyTasks(parsed);
+          }
+        } catch (e) {}
+      }
+
       const savedWg = localStorage.getItem("stoic_weekly_goals");
-      if (savedWg) try { setWeeklyGoals(JSON.parse(savedWg)); } catch (e) {}
+      if (savedWg) {
+        try {
+          const parsed = JSON.parse(savedWg);
+          if (Array.isArray(parsed)) {
+            const hasAiWg = parsed.some((g: any) => g.id === "wg-ai-spectrum");
+            if (!hasAiWg) {
+              parsed.unshift({
+                id: "wg-ai-spectrum",
+                title: "Master 5 AI Spectrum Lessons (AI ➔ ML ➔ DL ➔ GenAI ➔ LLMs ➔ RAG ➔ Agents)",
+                targetCount: 5,
+                currentCount: 2,
+                category: "Intellect",
+                xpReward: 1800,
+              });
+            }
+            setWeeklyGoals(parsed);
+          }
+        } catch (e) {}
+      }
+
       const savedLg = localStorage.getItem("stoic_life_goals");
       if (savedLg) try { setLifeGoals(JSON.parse(savedLg)); } catch (e) {}
+
       const savedCe = localStorage.getItem("stoic_calendar_events");
-      if (savedCe) try { setCalendarEvents(JSON.parse(savedCe)); } catch (e) {}
+      if (savedCe) {
+        try {
+          const parsed = JSON.parse(savedCe);
+          if (Array.isArray(parsed)) {
+            const existingCeIds = new Set(parsed.map((e: any) => e.id));
+            const aiEvents = [
+              { id: "ce-ai-1", date: "2026-10-04", title: "AI Spectrum Study: Lesson 1 & 2 (AI Umbrella & Machine Learning)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
+              { id: "ce-ai-2", date: "2026-10-05", title: "AI Spectrum Study: Lesson 3 & 4 (Deep Learning & Generative AI)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
+              { id: "ce-ai-3", date: "2026-10-06", title: "AI Spectrum Study: Lesson 5 (Large Language Models & Prompting)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
+              { id: "ce-ai-4", date: "2026-10-07", title: "AI Spectrum Study: Lesson 6 (Retrieval-Augmented Generation & Vectors)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
+              { id: "ce-ai-5", date: "2026-10-08", title: "AI Spectrum Study: Lesson 7 (Agentic AI & Autonomous Swarms)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
+            ].filter((e) => !existingCeIds.has(e.id));
+            setCalendarEvents([...parsed, ...aiEvents]);
+          }
+        } catch (e) {}
+      }
+
       const savedProf = localStorage.getItem("stoic_user_profile");
       if (savedProf) try { setUserProfile(JSON.parse(savedProf)); } catch (e) {}
       const savedTx = localStorage.getItem("stoic_transactions");

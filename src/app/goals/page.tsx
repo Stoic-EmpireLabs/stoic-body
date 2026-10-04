@@ -18,7 +18,7 @@ export default function GoalsPage() {
 
   // Form states
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState<"Physical" | "Consulting" | "DBA" | "Recovery" | "Family">("Physical");
+  const [category, setCategory] = useState<"Physical" | "Consulting" | "DBA" | "Recovery" | "Family" | "Intellect">("Physical");
   const [targetCount, setTargetCount] = useState("5");
   const [targetDate, setTargetDate] = useState("2026-11-30");
   const [xpReward, setXpReward] = useState("1000");
@@ -82,6 +82,14 @@ export default function GoalsPage() {
           tag: "bg-emerald-600 text-white font-bold",
           bar: "bg-emerald-400",
           xpText: "text-emerald-400",
+        };
+      case "Intellect":
+        return {
+          cardBg: "bg-[#100B1A]",
+          border: "border-purple-600/40 hover:border-purple-400",
+          tag: "bg-purple-600 text-white font-bold",
+          bar: "bg-purple-400",
+          xpText: "text-purple-300",
         };
       case "Family":
       default:
@@ -370,6 +378,7 @@ export default function GoalsPage() {
                     <option value="DBA">Doctoral DBA (Blue Accent)</option>
                     <option value="Recovery">Recovery (Emerald Accent)</option>
                     <option value="Family">Family Sanctuary (Rose Accent)</option>
+                    <option value="Intellect">Intellect / AI Mastery (Purple Accent)</option>
                   </select>
                 </div>
 

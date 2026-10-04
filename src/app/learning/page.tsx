@@ -17,16 +17,15 @@ import {
   calculatePathwayProgress,
   LearningPathway,
 } from "@/lib/learning";
+import { fireBrilliantConfetti, fireMilestoneConfetti } from "@/lib/confetti";
 import {
-  CURATED_GITHUB_PLUGINS,
-  GitHubRepoPlugin,
-  GitHubPluginCategory,
-  searchPlugins,
-  formatCloneCommand,
-  createCustomPlugin,
-  validateGitHubRepoString,
-  toggleBookmarkPlugin,
-} from "@/lib/github-plugins";
+  simulateCodeExecution,
+  simulateAntigravitySwarm,
+  simulateVibePrompt,
+  simulateWebDesignStyles,
+  CodeExecutionResult,
+  SwarmSimulationResult,
+} from "@/lib/interactive-runner";
 
 interface HowToVideo {
   id: string;
@@ -120,25 +119,29 @@ const DEFAULT_VIDEOS: HowToVideo[] = [
 ];
 
 export default function LearningPage() {
-  const { awardXp, playAnvilChime, playBellSound } = useStoic();
+  const { awardXp, playAnvilChime, playBellSound, addCalendarEvent } = useStoic();
 
-  // Tab View Mode: 'github-plugins' | 'brilliant-courses' | 'video-guides'
-  const [activeTab, setActiveTab] = useState<"github-plugins" | "brilliant-courses" | "video-guides">("github-plugins");
+  // Tab View Mode: 'brilliant-courses' | 'video-guides'
+  const [activeTab, setActiveTab] = useState<"brilliant-courses" | "video-guides">("brilliant-courses");
 
-  // GitHub Repo Plugins & Free Open-Source Catalog State
-  const [plugins, setPlugins] = useState<GitHubRepoPlugin[]>(CURATED_GITHUB_PLUGINS);
-  const [pluginCategoryFilter, setPluginCategoryFilter] = useState<string>("All");
-  const [pluginSearchQuery, setPluginSearchQuery] = useState<string>("");
-  const [bookmarkedPluginIds, setBookmarkedPluginIds] = useState<string[]>([]);
-  const [copiedCloneId, setCopiedCloneId] = useState<string | null>(null);
+  // In-Browser Code Sandbox Runner State
+  const [editableCode, setEditableCode] = useState<string>(
+    FOUNDER_AI_COURSES[0].modules[0].lessons[0].codeSnippet
+  );
+  const [codeRunning, setCodeRunning] = useState<boolean>(false);
+  const [executionResult, setExecutionResult] = useState<CodeExecutionResult | null>(null);
 
-  // Custom Plugin Modal State
-  const [showPluginModal, setShowPluginModal] = useState<boolean>(false);
-  const [customPluginTitle, setCustomPluginTitle] = useState<string>("");
-  const [customPluginRepo, setCustomPluginRepo] = useState<string>("");
-  const [customPluginCategory, setCustomPluginCategory] = useState<GitHubPluginCategory>("Google Antigravity & AI");
-  const [customPluginDesc, setCustomPluginDesc] = useState<string>("");
-  const [customPluginTags, setCustomPluginTags] = useState<string>("");
+  // Interactive Simulators State
+  const [swarmTask, setSwarmTask] = useState<string>("Mass Software Production");
+  const [swarmRunning, setSwarmRunning] = useState<boolean>(false);
+  const [swarmResult, setSwarmResult] = useState<SwarmSimulationResult | null>(null);
+  const [contextPrecision, setContextPrecision] = useState<number>(90);
+  const [tddStrictness, setTddStrictness] = useState<number>(95);
+  const [autonomy, setAutonomy] = useState<number>(85);
+  const [designAccent, setDesignAccent] = useState<"gold" | "red" | "emerald">("gold");
+  const [designRadius, setDesignRadius] = useState<number>(12);
+  const [designGlass, setDesignGlass] = useState<boolean>(true);
+  const [playwrightStep, setPlaywrightStep] = useState<number>(0);
 
   // Brilliant-Style Interactive Courses State
   const [courses, setCourses] = useState<InteractiveCourse[]>(FOUNDER_AI_COURSES);
@@ -154,12 +157,13 @@ export default function LearningPage() {
   const [quizFeedback, setQuizFeedback] = useState<{ isCorrect: boolean; feedback: string } | null>(null);
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
   const [dailyCompletedCount, setDailyCompletedCount] = useState<number>(2);
+  const [scheduleFeedback, setScheduleFeedback] = useState<string | null>(null);
 
   // Custom Course Builder Modal State
   const [showCourseModal, setShowCourseModal] = useState<boolean>(false);
   const [customTitle, setCustomTitle] = useState("");
   const [customRepo, setCustomRepo] = useState("");
-  const [customCategory, setCustomCategory] = useState<InteractiveCourse["category"]>("Google Antigravity Mastery");
+  const [customCategory, setCustomCategory] = useState<InteractiveCourse["category"]>("AI Architecture Spectrum");
   const [customLevel, setCustomLevel] = useState<InteractiveCourse["level"]>("Advanced");
   const [customDesc, setCustomDesc] = useState("");
   const [customLessonTitle, setCustomLessonTitle] = useState("");
@@ -180,14 +184,19 @@ export default function LearningPage() {
   const [pathways, setPathways] = useState<LearningPathway[]>(FOUNDER_LEARNING_PATHWAYS);
   const [selectedPathwayId, setSelectedPathwayId] = useState<string>("mustang_oil_change");
 
-  // Load from localStorage
+  // Load from localStorage & merge defaults
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedCourses = localStorage.getItem("stoic_interactive_courses");
       if (savedCourses) {
         try {
           const parsed = JSON.parse(savedCourses);
-          if (Array.isArray(parsed) && parsed.length > 0) setCourses(parsed);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            // Guarantee built-in courses (like ai-spectrum-hierarchy) always exist
+            const existingIds = new Set(parsed.map((c: any) => c.id));
+            const missing = FOUNDER_AI_COURSES.filter((c) => !existingIds.has(c.id));
+            setCourses([...missing, ...parsed]);
+          }
         } catch (e) {}
       }
 
@@ -201,22 +210,6 @@ export default function LearningPage() {
           if (Array.isArray(parsed) && parsed.length > 0) setVideos(parsed);
         } catch (e) {}
       }
-
-      const savedPlugins = localStorage.getItem("stoic_github_plugins");
-      if (savedPlugins) {
-        try {
-          const parsed = JSON.parse(savedPlugins);
-          if (Array.isArray(parsed) && parsed.length > 0) setPlugins(parsed);
-        } catch (e) {}
-      }
-
-      const savedBookmarks = localStorage.getItem("stoic_bookmarked_plugins");
-      if (savedBookmarks) {
-        try {
-          const parsed = JSON.parse(savedBookmarks);
-          if (Array.isArray(parsed)) setBookmarkedPluginIds(parsed);
-        } catch (e) {}
-      }
     }
   }, []);
 
@@ -228,74 +221,43 @@ export default function LearningPage() {
     }
   };
 
-  // GitHub Plugins Handlers
-  const handleOpenPlugin = (plugin: GitHubRepoPlugin) => {
-    window.open(plugin.url, "_blank", "noopener,noreferrer");
-    awardXp(50, `Explored GitHub Repo: ${plugin.title}`, "Intellect");
-    playBellSound();
+  // In-Browser Code Sandbox Execution
+  const handleRunCode = () => {
+    setCodeRunning(true);
+    setTimeout(() => {
+      const res = simulateCodeExecution(
+        editableCode,
+        currentLesson?.codeLanguage || "typescript",
+        currentLesson?.id || "lesson"
+      );
+      setExecutionResult(res);
+      setCodeRunning(false);
+      if (res.status === "success") {
+        playBellSound();
+        awardXp(25, `Ran Code Sandbox: ${currentLesson?.title}`, "Intellect");
+      }
+    }, 300);
   };
 
-  const handleCopyClone = (plugin: GitHubRepoPlugin) => {
-    const cmd = formatCloneCommand(plugin.repo);
-    navigator.clipboard.writeText(cmd);
-    setCopiedCloneId(plugin.id);
-    setTimeout(() => setCopiedCloneId(null), 2500);
-    playAnvilChime();
-  };
-
-  const handleToggleBookmark = (pluginId: string) => {
-    const updated = toggleBookmarkPlugin(bookmarkedPluginIds, pluginId);
-    setBookmarkedPluginIds(updated);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("stoic_bookmarked_plugins", JSON.stringify(updated));
+  const handleResetCode = () => {
+    if (currentLesson) {
+      setEditableCode(currentLesson.codeSnippet);
+      setExecutionResult(null);
     }
   };
 
-  const handleCreateCustomPlugin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!customPluginTitle.trim() || !customPluginRepo.trim()) return;
-    if (!validateGitHubRepoString(customPluginRepo)) {
-      alert("Please provide a valid GitHub repo in format 'owner/repo' or 'https://github.com/owner/repo'");
-      return;
-    }
-
-    const tags = customPluginTags
-      .split(",")
-      .map((t) => t.trim().toLowerCase())
-      .filter(Boolean);
-
-    const newPlugin = createCustomPlugin({
-      title: customPluginTitle.trim(),
-      repo: customPluginRepo.trim(),
-      category: customPluginCategory,
-      description: customPluginDesc.trim(),
-      tags: tags.length > 0 ? tags : undefined,
-    });
-
-    const updated = [newPlugin, ...plugins];
-    setPlugins(updated);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("stoic_github_plugins", JSON.stringify(updated));
-    }
-
-    setShowPluginModal(false);
-    setCustomPluginTitle("");
-    setCustomPluginRepo("");
-    setCustomPluginDesc("");
-    setCustomPluginTags("");
-
-    awardXp(100, `Plugged Custom GitHub Repo: ${newPlugin.title}`, "Intellect");
-    playBellSound();
+  // Antigravity Swarm Simulator Execution
+  const handleRunSwarm = () => {
+    setSwarmRunning(true);
+    setTimeout(() => {
+      const res = simulateAntigravitySwarm(swarmTask, ["planner", "coder", "verifier"]);
+      setSwarmResult(res);
+      setSwarmRunning(false);
+      playAnvilChime();
+      fireBrilliantConfetti();
+      awardXp(50, `Simulated Swarm Pipeline: ${swarmTask}`, "Intellect");
+    }, 450);
   };
-
-  // Filtered GitHub Plugins
-  const displayedPlugins = searchPlugins(
-    pluginCategoryFilter === "★ Bookmarked"
-      ? plugins.filter((p) => bookmarkedPluginIds.includes(p.id))
-      : plugins,
-    pluginSearchQuery,
-    pluginCategoryFilter === "★ Bookmarked" ? "All" : pluginCategoryFilter
-  );
 
   // Find active course and lesson
   const currentCourse = courses.find((c) => c.id === selectedCourseId) || courses[0];
@@ -322,6 +284,7 @@ export default function LearningPage() {
 
     if (result.isCorrect) {
       playAnvilChime();
+      fireBrilliantConfetti();
       awardXp(currentLesson.xpReward, `Active Mastery Check: ${currentLesson.title}`, "Intellect");
       // Mark lesson completed
       const updatedCourses = courses.map((c) => {
@@ -342,7 +305,8 @@ export default function LearningPage() {
         localStorage.setItem("stoic_daily_learning_count", String(nextCount));
       }
 
-      if (nextCount === 3) {
+      if (nextCount >= 3) {
+        fireMilestoneConfetti();
         awardXp(250, "🏆 Daily Learning Target Conquered (3/3 Concepts)", "Intellect");
         playBellSound();
       }
@@ -355,8 +319,40 @@ export default function LearningPage() {
     setQuizFeedback(null);
   };
 
+  // Schedule current lesson to user's daily calendar
+  const handleScheduleCurrentLesson = () => {
+    const today = new Date().toISOString().split("T")[0];
+    addCalendarEvent({
+      date: today,
+      title: `AI Study: ${currentLesson.title}`,
+      time: "11:30",
+      durationMinutes: 45,
+      tier: 2,
+      completed: false,
+    });
+    awardXp(100, `Scheduled Study Session: ${currentLesson.title}`, "Intellect");
+    playBellSound();
+    fireBrilliantConfetti();
+    setScheduleFeedback(`✓ Added "${currentLesson.title}" to today's schedule at 11:30 (+100 XP)!`);
+    setTimeout(() => setScheduleFeedback(null), 5000);
+  };
+
+  // Jump directly to an AI Hierarchy Spectrum pillar
+  const handleJumpToPillar = (lessonId: string) => {
+    setSelectedCourseId("ai-spectrum-hierarchy");
+    const aiCourse = courses.find((c) => c.id === "ai-spectrum-hierarchy") || FOUNDER_AI_COURSES[0];
+    const targetLesson =
+      aiCourse.modules[0].lessons.find((l) => l.id === lessonId) || aiCourse.modules[0].lessons[0];
+    setActiveLessonId(targetLesson.id);
+    setEditableCode(targetLesson.codeSnippet);
+    setExecutionResult(null);
+    handleResetQuiz();
+  };
+
   const handleSelectLesson = (lesson: InteractiveLesson) => {
     setActiveLessonId(lesson.id);
+    setEditableCode(lesson.codeSnippet);
+    setExecutionResult(null);
     handleResetQuiz();
   };
 
@@ -478,36 +474,26 @@ export default function LearningPage() {
           </div>
 
           {/* MODE TOGGLES */}
-          <div className="flex flex-wrap rounded-lg bg-black border border-red-950 p-1 gap-1">
-            <button
-              onClick={() => setActiveTab("github-plugins")}
-              className={`px-3 py-1.5 rounded text-xs font-bold transition flex items-center gap-1.5 ${
-                activeTab === "github-plugins"
-                  ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow font-extrabold"
-                  : "text-slate-300 hover:text-white"
-              }`}
-            >
-              <span>📦</span> GitHub Plugins &amp; Free Repos
-            </button>
+          <div className="flex rounded-lg bg-black border border-red-950 p-1 gap-1">
             <button
               onClick={() => setActiveTab("brilliant-courses")}
-              className={`px-3 py-1.5 rounded text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded text-xs font-bold transition flex items-center gap-1.5 ${
                 activeTab === "brilliant-courses"
                   ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow font-extrabold"
                   : "text-slate-300 hover:text-white"
               }`}
             >
-              <span>⚡</span> Brilliant AI Courses &amp; Studio
+              <span>⚡</span> Brilliant AI Interactive Studio &amp; Player
             </button>
             <button
               onClick={() => setActiveTab("video-guides")}
-              className={`px-3 py-1.5 rounded text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded text-xs font-bold transition flex items-center gap-1.5 ${
                 activeTab === "video-guides"
                   ? "bg-gradient-to-r from-red-600 to-red-700 text-white shadow font-extrabold"
                   : "text-slate-300 hover:text-white"
               }`}
             >
-              <span>🎬</span> Video How-To Guides
+              <span>🎬</span> Video How-To Guides &amp; Checklists
             </button>
           </div>
         </div>
@@ -580,221 +566,123 @@ export default function LearningPage() {
       </section>
 
       {/* ============================================================== */}
-      {/* TAB 0: OPEN-SOURCE GITHUB PLUGINS & FREE REPOSITORIES HUB       */}
-      {/* ============================================================== */}
-      {activeTab === "github-plugins" && (
-        <div className="space-y-6">
-          {/* HEADER & CONTROLS BANNER */}
-          <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-red-950 pb-3">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono uppercase bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
-                    Zero App Bloat &bull; 100% Free Open-Source
-                  </span>
-                  <span className="text-[10px] font-mono text-slate-300 bg-neutral-900 px-2 py-0.5 rounded border border-red-950 font-bold">
-                    {plugins.length} Curated Repos &bull; 600k+ Stars
-                  </span>
-                </div>
-                <h3 className="text-base font-bold text-white mt-1.5 flex items-center gap-2">
-                  <span>GitHub Repository Plugins &amp; Sovereign Curricula</span>
-                </h3>
-                <p className="text-xs text-slate-300 mt-0.5">
-                  1-Click open in GitHub, instant terminal clone snippets, and zero bloated payloads. Master vibe coding, Antigravity, and mass production directly from upstream source code.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setShowPluginModal(true)}
-                  className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-extrabold uppercase tracking-wider shadow"
-                >
-                  + Add Custom GitHub Repo
-                </button>
-              </div>
-            </div>
-
-            {/* SEARCH & CATEGORY FILTER BAR */}
-            <div className="space-y-3">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search repositories by topic (e.g. vibe coding, gemini cookbook, playwright, nextjs, remotion, nanogpt)..."
-                  value={pluginSearchQuery}
-                  onChange={(e) => setPluginSearchQuery(e.target.value)}
-                  className="w-full bg-black border border-red-950/90 rounded-lg px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
-                />
-                {pluginSearchQuery && (
-                  <button
-                    onClick={() => setPluginSearchQuery("")}
-                    className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-white"
-                  >
-                    ✕ Clear
-                  </button>
-                )}
-              </div>
-
-              <div className="flex flex-wrap gap-1.5">
-                {[
-                  "All",
-                  "★ Bookmarked",
-                  "Google Antigravity & AI",
-                  "Vibe Coding & Prompting",
-                  "Web Design & UI/UX",
-                  "Autonomous Automation",
-                  "Full-Stack & Backend",
-                  "YouTube & Video Automation",
-                  "Local LLMs & MCP",
-                ].map((cat) => {
-                  const isSelected = pluginCategoryFilter === cat;
-                  return (
-                    <button
-                      key={cat}
-                      onClick={() => setPluginCategoryFilter(cat)}
-                      className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition border ${
-                        isSelected
-                          ? "bg-red-800 text-white border-red-500 shadow"
-                          : "bg-black border-red-950 text-slate-400 hover:text-white"
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-
-          {/* REPOSITORY CARDS GRID */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {displayedPlugins.map((plugin) => {
-              const isBookmarked = bookmarkedPluginIds.includes(plugin.id);
-              const isCopied = copiedCloneId === plugin.id;
-
-              return (
-                <div
-                  key={plugin.id}
-                  className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl flex flex-col justify-between hover:border-amber-500/50 transition duration-200"
-                >
-                  <div>
-                    {/* Header Row */}
-                    <div className="flex items-center justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-mono uppercase bg-black px-2 py-0.5 rounded text-amber-400 border border-amber-500/30 font-bold">
-                          {plugin.category}
-                        </span>
-                        <span className="text-[10px] font-mono text-slate-300 bg-neutral-900 px-2 py-0.5 rounded border border-red-950 font-bold">
-                          {plugin.stars}
-                        </span>
-                        {plugin.isCustom && (
-                          <span className="text-[10px] font-mono bg-purple-950 text-purple-300 px-1.5 py-0.5 rounded border border-purple-800">
-                            Custom
-                          </span>
-                        )}
-                      </div>
-
-                      <button
-                        onClick={() => handleToggleBookmark(plugin.id)}
-                        title={isBookmarked ? "Remove Bookmark" : "Bookmark Repo"}
-                        className={`text-sm px-1.5 py-0.5 rounded border transition ${
-                          isBookmarked
-                            ? "bg-amber-500/20 text-amber-400 border-amber-500"
-                            : "bg-black text-slate-500 border-red-950 hover:text-amber-400"
-                        }`}
-                      >
-                        {isBookmarked ? "★" : "☆"}
-                      </button>
-                    </div>
-
-                    {/* Title & Repo Link */}
-                    <h4 className="text-base font-bold text-white leading-snug">
-                      {plugin.title}
-                    </h4>
-                    <span className="text-xs font-mono text-amber-400/90 block mt-0.5 font-bold">
-                      github.com/{plugin.repo}
-                    </span>
-
-                    {/* Description */}
-                    <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                      {plugin.description}
-                    </p>
-
-                    {/* Recommended Starting Path */}
-                    <div className="mt-3 p-2 rounded bg-black/80 border border-red-950/60 text-[11px] font-mono text-slate-300">
-                      <span className="text-amber-400 font-bold">Direct Entry Point:</span>{" "}
-                      <span className="text-slate-200">{plugin.recommendedPath}</span>
-                    </div>
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-1 mt-3">
-                      {plugin.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-[10px] font-mono text-slate-400 bg-[#121218] px-2 py-0.5 rounded border border-red-950/40"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Actions Bar */}
-                  <div className="mt-4 pt-3 border-t border-red-950/80 flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleOpenPlugin(plugin)}
-                        className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-extrabold uppercase tracking-wider shadow flex items-center gap-1.5"
-                      >
-                        <span>Open Repo</span> &rarr;
-                      </button>
-
-                      <button
-                        onClick={() => handleCopyClone(plugin)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition ${
-                          isCopied
-                            ? "bg-emerald-950 border-emerald-500 text-emerald-300"
-                            : "bg-black border-red-950 text-slate-300 hover:text-white hover:border-slate-700"
-                        }`}
-                      >
-                        {isCopied ? "✓ Copied Clone CMD!" : "📋 Copy Clone"}
-                      </button>
-                    </div>
-
-                    <span className="text-[11px] font-mono text-amber-400 font-bold">
-                      +{plugin.xpReward} XP
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {displayedPlugins.length === 0 && (
-            <div className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-8 text-center space-y-2">
-              <span className="text-3xl block">🔍</span>
-              <h4 className="text-sm font-bold text-white">No Repositories Found</h4>
-              <p className="text-xs text-slate-400">
-                Try clearing your search query or choosing another category filter.
-              </p>
-              <button
-                onClick={() => {
-                  setPluginSearchQuery("");
-                  setPluginCategoryFilter("All");
-                }}
-                className="mt-2 px-3 py-1.5 bg-red-900/60 border border-red-800 text-white rounded text-xs font-bold"
-              >
-                Reset Filters
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ============================================================== */}
       {/* TAB 1: BRILLIANT INTERACTIVE COURSES & ACTIVE LEARNING STUDIO */}
       {/* ============================================================== */}
       {activeTab === "brilliant-courses" && (
         <div className="space-y-6">
+
+          {/* AI HIERARCHY SPECTRUM INTERACTIVE ROADMAP BANNER */}
+          <section className="bg-gradient-to-r from-[#0d0914] via-[#12080a] to-[#0A0A0F] border border-amber-500/30 rounded-xl p-5 shadow-2xl space-y-4 relative overflow-hidden">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono uppercase bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded border border-amber-500/40 font-bold">
+                    GenAI.works Infographic Blueprint &bull; Flagship Curriculum
+                  </span>
+                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30 font-bold">
+                    📅 Scheduled Daily at 11:30 (45m)
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-white mt-1.5 flex items-center gap-2">
+                  <span>The AI Hierarchy Spectrum: From Machine Learning to Agentic AI</span>
+                </h3>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  <strong className="text-amber-400">Related, NOT interchangeable.</strong> Think of them as a hierarchy that keeps building up. Click any pillar to jump to its interactive simulator &amp; challenge.
+                </p>
+              </div>
+
+              <button
+                onClick={handleScheduleCurrentLesson}
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-lg flex items-center gap-2 border border-amber-400/40"
+              >
+                <span>📅</span>
+                <span>Schedule Study Session</span>
+              </button>
+            </div>
+
+            {/* SCHEDULE FEEDBACK NOTIFICATION */}
+            {scheduleFeedback && (
+              <div className="p-2.5 rounded-lg bg-emerald-950/80 border border-emerald-500/60 text-emerald-200 text-xs font-mono font-bold flex items-center justify-between">
+                <span>{scheduleFeedback}</span>
+                <span className="text-[10px] text-emerald-400 uppercase">Synchronized to Calendar</span>
+              </div>
+            )}
+
+            {/* 7 PILLARS HORIZONTAL INTERACTIVE FLOW */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 pt-1">
+              {[
+                { id: "ai-l1-umbrella", num: "1", tag: "AI", label: "Artificial Intelligence", sub: "The Broad Umbrella", border: "border-blue-500/40", activeGlow: "ring-2 ring-blue-400 border-blue-400", badgeColor: "text-blue-300 bg-blue-950/80" },
+                { id: "ai-l2-ml", num: "2", tag: "ML", label: "Machine Learning", sub: "Patterns from Data", border: "border-cyan-500/40", activeGlow: "ring-2 ring-cyan-400 border-cyan-400", badgeColor: "text-cyan-300 bg-cyan-950/80" },
+                { id: "ai-l3-dl", num: "3", tag: "DL", label: "Deep Learning", sub: "Neural Networks", border: "border-emerald-500/40", activeGlow: "ring-2 ring-emerald-400 border-emerald-400", badgeColor: "text-emerald-300 bg-emerald-950/80" },
+                { id: "ai-l4-genai", num: "4", tag: "GenAI", label: "Generative AI", sub: "Content Creation", border: "border-purple-500/40", activeGlow: "ring-2 ring-purple-400 border-purple-400", badgeColor: "text-purple-300 bg-purple-950/80" },
+                { id: "ai-l5-llms", num: "5", tag: "LLMs", label: "Large Lang Models", sub: "Reasoning Engines", border: "border-pink-500/40", activeGlow: "ring-2 ring-pink-400 border-pink-400", badgeColor: "text-pink-300 bg-pink-950/80" },
+                { id: "ai-l6-rag", num: "6", tag: "RAG", label: "Retrieval-Aug Gen", sub: "Grounded Knowledge", border: "border-amber-500/40", activeGlow: "ring-2 ring-amber-400 border-amber-400", badgeColor: "text-amber-300 bg-amber-950/80" },
+                { id: "ai-l7-agentic", num: "7", tag: "Agentic AI", label: "Agentic AI & Swarms", sub: "Autonomous Action", border: "border-red-500/50", activeGlow: "ring-2 ring-red-400 border-red-400", badgeColor: "text-red-300 bg-red-950/80" },
+              ].map((pillar) => {
+                const isSelected = selectedCourseId === "ai-spectrum-hierarchy" && activeLessonId === pillar.id;
+                const isCompleted = courses
+                  .find((c) => c.id === "ai-spectrum-hierarchy")
+                  ?.modules[0]?.lessons.find((l) => l.id === pillar.id)?.completed;
+
+                return (
+                  <button
+                    key={pillar.id}
+                    onClick={() => handleJumpToPillar(pillar.id)}
+                    className={`p-2.5 rounded-lg text-left transition border flex flex-col justify-between relative group ${
+                      isSelected
+                        ? `bg-black/90 ${pillar.activeGlow} shadow-lg`
+                        : `bg-[#0e0e14] ${pillar.border} hover:border-amber-400/80 hover:bg-black/60`
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className={`text-[10px] font-mono font-black px-1.5 py-0.5 rounded ${pillar.badgeColor}`}>
+                          {pillar.num}. {pillar.tag}
+                        </span>
+                        {isCompleted && (
+                          <span className="text-emerald-400 text-xs font-bold" title="Lesson Mastered">
+                            ✓
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs font-bold text-white leading-tight mt-1 line-clamp-1">
+                        {pillar.label}
+                      </div>
+                      <div className="text-[10px] font-mono text-slate-400 mt-0.5 leading-snug">
+                        {pillar.sub}
+                      </div>
+                    </div>
+                    <div className="mt-2 pt-1 border-t border-red-950/50 flex justify-between items-center text-[10px] font-mono text-amber-400">
+                      <span>{isSelected ? "● Active" : "Practice"}</span>
+                      <span className="text-slate-300 group-hover:text-amber-300">&rarr;</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* MODERN MATRIX BOTTOM BAR */}
+            <div
+              onClick={() => handleJumpToPillar("ai-l8-modern-concepts")}
+              className={`p-3 rounded-lg border cursor-pointer transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 ${
+                selectedCourseId === "ai-spectrum-hierarchy" && activeLessonId === "ai-l8-modern-concepts"
+                  ? "bg-amber-950/40 border-amber-400 ring-2 ring-amber-400/60"
+                  : "bg-black/60 border-amber-500/20 hover:border-amber-400/60"
+              }`}
+            >
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[10px] font-mono font-bold uppercase bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
+                  Tier 8 &bull; Modern Concept Matrix
+                </span>
+                <span className="text-xs text-white font-bold">
+                  Multimodal AI &bull; Fine-Tuning &bull; Prompt Engineering &bull; AI Safety &bull; Subagent Swarms
+                </span>
+              </div>
+              <span className="text-[11px] font-mono font-bold text-amber-400 shrink-0">
+                Explore Matrix &rarr;
+              </span>
+            </div>
+          </section>
 
           {/* ACTIVE INTERACTIVE LESSON PLAYER (THE BRILLIANT ACTIVE EXPERIENCE) */}
           <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl space-y-5 relative">
@@ -817,6 +705,13 @@ export default function LearningPage() {
               </div>
 
               <div className="flex items-center gap-2">
+                <button
+                  onClick={handleScheduleCurrentLesson}
+                  className="px-3 py-1.5 rounded-lg bg-red-950/80 hover:bg-red-900 border border-red-700/60 text-white text-xs font-bold transition flex items-center gap-1.5 shadow"
+                  title="Add this lesson to your daily schedule and calendar"
+                >
+                  <span>📅</span> Add to Schedule
+                </button>
                 <button
                   onClick={() => setShowCourseModal(true)}
                   className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-bold uppercase tracking-wider shadow"
@@ -865,28 +760,390 @@ export default function LearningPage() {
                 </p>
               </div>
 
-              {/* STEP 2: INTERACTIVE CODE / TERMINAL SNIPPET */}
+              {/* STEP 2: LIVE INTERACTIVE CODE SANDBOX & TERMINAL RUNNER */}
               <div>
-                <div className="flex items-center justify-between text-xs mb-1">
-                  <span className="text-xs font-mono uppercase text-blue-400 font-bold">
-                    2. Code &amp; Terminal Execution Prompt
-                  </span>
-                  <button
-                    onClick={() => handleCopyCode(currentLesson.codeSnippet)}
-                    className="text-[11px] font-mono font-bold text-amber-300 hover:text-white transition px-2 py-0.5 rounded bg-black border border-red-950"
-                  >
-                    {copiedCode ? "✓ Copied to Clipboard!" : "📋 Copy Code"}
-                  </button>
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono uppercase text-blue-400 font-bold">
+                      2. Live Interactive Code Sandbox &amp; Terminal Runner
+                    </span>
+                    <span className="text-[10px] font-mono uppercase bg-blue-950 text-blue-300 px-2 py-0.5 rounded border border-blue-800 font-bold">
+                      Editable &bull; In-Browser Execution
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handleResetCode}
+                      className="text-[11px] font-mono font-bold text-slate-400 hover:text-white transition px-2.5 py-1 rounded bg-black border border-red-950"
+                    >
+                      ↺ Reset
+                    </button>
+                    <button
+                      onClick={() => handleCopyCode(editableCode)}
+                      className="text-[11px] font-mono font-bold text-amber-300 hover:text-white transition px-2.5 py-1 rounded bg-black border border-red-950"
+                    >
+                      {copiedCode ? "✓ Copied!" : "📋 Copy"}
+                    </button>
+                    <button
+                      onClick={handleRunCode}
+                      disabled={codeRunning}
+                      className="px-3.5 py-1 rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 text-black text-xs font-black uppercase tracking-wider shadow flex items-center gap-1.5"
+                    >
+                      {codeRunning ? (
+                        <span>⏳ Running Sandbox...</span>
+                      ) : (
+                        <span>▶ Run &amp; Test Code</span>
+                      )}
+                    </button>
+                  </div>
                 </div>
 
-                <div className="relative">
-                  <pre className="p-4 rounded-lg bg-black border border-red-950/80 font-mono text-xs text-slate-200 overflow-x-auto leading-relaxed shadow-inner">
-                    <code>{currentLesson.codeSnippet}</code>
-                  </pre>
+                {/* EDITABLE CODE TEXTAREA / EDITOR */}
+                <div className="relative rounded-lg bg-black border border-red-950/80 overflow-hidden shadow-inner">
+                  <div className="flex items-center justify-between px-3 py-1.5 bg-[#0e0e14] border-b border-red-950 text-[11px] font-mono text-slate-400">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-red-600/80 inline-block"></span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block"></span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block"></span>
+                      <span className="text-slate-300 ml-1 font-bold">{currentLesson.codeLanguage || "typescript"}</span>
+                    </div>
+                    <span>Editable In-Browser Sandbox</span>
+                  </div>
+
+                  <textarea
+                    rows={Math.max(6, Math.min(14, editableCode.split("\n").length + 2))}
+                    value={editableCode}
+                    onChange={(e) => setEditableCode(e.target.value)}
+                    className="w-full bg-black font-mono text-xs text-amber-300/90 p-4 leading-relaxed focus:outline-none resize-y selection:bg-red-900 selection:text-white"
+                    spellCheck={false}
+                  />
                 </div>
-                <span className="text-[11px] text-slate-400 mt-1 block italic">
+
+                {/* LIVE SIMULATED TERMINAL OUTPUT */}
+                {executionResult && (
+                  <div className="mt-3 p-3.5 rounded-lg bg-[#08080C] border border-emerald-900/60 font-mono text-xs space-y-1.5 shadow-2xl animate-in fade-in duration-150">
+                    <div className="flex items-center justify-between border-b border-emerald-950/80 pb-1.5 text-[11px]">
+                      <span className="text-emerald-400 font-bold flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        TERMINAL STDOUT &bull; {executionResult.executionTimeMs}ms
+                      </span>
+                      <span className="text-slate-400">Exit Code: 0</span>
+                    </div>
+                    <div className="pt-1 text-slate-300 space-y-1 leading-relaxed">
+                      {executionResult.stdout.map((line, idx) => (
+                        <div key={idx} className="flex gap-2">
+                          <span className="text-slate-600 select-none">&gt;</span>
+                          <span className={line.startsWith("[ASSERT]") || line.includes("Verified") ? "text-emerald-300 font-bold" : "text-slate-200"}>
+                            {line}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="pt-1.5 border-t border-emerald-950 text-[11px] text-emerald-400 font-bold">
+                      {executionResult.feedback}
+                    </div>
+                  </div>
+                )}
+
+                <span className="text-[11px] text-slate-400 mt-1.5 block italic">
                   💡 Action Prompt: {currentLesson.actionPrompt}
                 </span>
+              </div>
+
+              {/* STEP 2.5: INTERACTIVE SIMULATION WIDGET (LEARN BY DOING) */}
+              <div className="p-4 rounded-xl bg-black/80 border border-amber-500/30 space-y-3">
+                <div className="flex items-center justify-between border-b border-red-950 pb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">🔬</span>
+                    <span className="text-xs font-mono uppercase text-amber-400 font-extrabold tracking-wider">
+                      Interactive Visual Simulation &bull; Hands-On Lab
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-400 bg-neutral-900 px-2 py-0.5 rounded border border-red-950">
+                    Brilliant Active Lab
+                  </span>
+                </div>
+
+                {/* 1. ANTIGRAVITY MULTI-AGENT SWARM SIMULATOR */}
+                {currentCourse.category === "Google Antigravity Mastery" && (
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <label className="text-xs text-slate-300 font-bold">
+                        Simulate Autonomous Swarm Workflow:
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <select
+                          value={swarmTask}
+                          onChange={(e) => setSwarmTask(e.target.value)}
+                          className="bg-[#121218] border border-red-950 text-white rounded px-2.5 py-1 text-xs font-mono"
+                        >
+                          <option value="Mass Software Production">Mass Software Production</option>
+                          <option value="Headless Playwright Scraping">Headless Playwright Scraping</option>
+                          <option value="YouTube Media & Video Pipeline">YouTube Media &amp; Video Pipeline</option>
+                          <option value="FastAPI Microservice Swarm">FastAPI Microservice Swarm</option>
+                        </select>
+                        <button
+                          onClick={handleRunSwarm}
+                          disabled={swarmRunning}
+                          className="px-3 py-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-black uppercase rounded shadow"
+                        >
+                          {swarmRunning ? "Swarm Executing..." : "Dispatch Swarm 🚀"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {swarmResult && (
+                      <div className="space-y-2 pt-2 border-t border-red-950">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                          {swarmResult.steps.map((st, sIdx) => (
+                            <div key={sIdx} className="p-2.5 rounded bg-[#0e0e14] border border-red-950/80 space-y-1">
+                              <div className="flex items-center justify-between">
+                                <span className="font-bold text-amber-400 text-[11px]">{st.agent}</span>
+                                <span className="text-[10px] font-mono text-slate-400">{st.durationMs}ms</span>
+                              </div>
+                              <p className="text-[11px] text-slate-300">{st.action}</p>
+                              <code className="text-[10px] font-mono text-emerald-300 block bg-black p-1 rounded">
+                                {st.toolCall}
+                              </code>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="text-[11px] text-emerald-400 font-mono font-bold flex items-center justify-between p-2 rounded bg-emerald-950/40 border border-emerald-900/60">
+                          <span>✓ Swarm pipeline completed in {swarmResult.totalDurationMs}ms</span>
+                          <span>Autonomy: 100%</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 2. VIBE CODING PROMPT SCULPTOR */}
+                {currentCourse.category === "Vibe Coding & AI Dev" && (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="text-slate-300 font-bold">Context Precision</span>
+                          <span className="font-mono text-amber-400 font-bold">{contextPrecision}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="30"
+                          max="100"
+                          value={contextPrecision}
+                          onChange={(e) => setContextPrecision(Number(e.target.value))}
+                          className="w-full accent-amber-500"
+                        />
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="text-slate-300 font-bold">TDD Strictness</span>
+                          <span className="font-mono text-amber-400 font-bold">{tddStrictness}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="30"
+                          max="100"
+                          value={tddStrictness}
+                          onChange={(e) => setTddStrictness(Number(e.target.value))}
+                          className="w-full accent-amber-500"
+                        />
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="text-slate-300 font-bold">Autonomy Level</span>
+                          <span className="font-mono text-amber-400 font-bold">{autonomy}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="30"
+                          max="100"
+                          value={autonomy}
+                          onChange={(e) => setAutonomy(Number(e.target.value))}
+                          className="w-full accent-amber-500"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Vibe Evaluation Result */}
+                    {(() => {
+                      const evalResult = simulateVibePrompt({
+                        contextPrecision,
+                        tddStrictness,
+                        autonomy,
+                      });
+                      return (
+                        <div className="p-3 rounded-lg bg-[#0e0e14] border border-red-950 space-y-2">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-white">Prompt Rigor Score:</span>
+                            <span className="font-mono font-black text-amber-400 text-sm">
+                              {evalResult.score} / 100 &bull; {evalResult.tier}
+                            </span>
+                          </div>
+                          <pre className="p-2 rounded bg-black border border-red-950 font-mono text-[10px] text-slate-300 leading-snug">
+                            {evalResult.generatedPrompt}
+                          </pre>
+                          <div className="text-[11px] text-emerald-400 font-mono">
+                            {evalResult.tips[0]}
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+
+                {/* 3. WEB DESIGN & UI/UX CSS COMPONENT SANDBOX */}
+                {currentCourse.category === "Web & UI/UX Design" && (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center">
+                      <div>
+                        <label className="text-xs text-slate-300 font-bold block mb-1">Accent Theme</label>
+                        <div className="flex gap-1.5">
+                          {(["gold", "red", "emerald"] as const).map((col) => (
+                            <button
+                              key={col}
+                              onClick={() => setDesignAccent(col)}
+                              className={`px-2.5 py-1 rounded text-[11px] font-bold uppercase transition border ${
+                                designAccent === col
+                                  ? "bg-black border-amber-500 text-white shadow"
+                                  : "bg-[#121218] border-red-950 text-slate-400"
+                              }`}
+                            >
+                              {col}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="text-slate-300 font-bold">Corner Radius</span>
+                          <span className="font-mono text-amber-400 font-bold">{designRadius}px</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="4"
+                          max="24"
+                          step="4"
+                          value={designRadius}
+                          onChange={(e) => setDesignRadius(Number(e.target.value))}
+                          className="w-full accent-amber-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs text-slate-300 font-bold block mb-1">Glassmorphism</label>
+                        <button
+                          onClick={() => setDesignGlass(!designGlass)}
+                          className={`px-3 py-1 rounded text-xs font-bold border transition ${
+                            designGlass
+                              ? "bg-purple-950 border-purple-500 text-purple-200"
+                              : "bg-black border-red-950 text-slate-400"
+                          }`}
+                        >
+                          {designGlass ? "✓ Backdrop Blur Active" : "Opaque Obsidian"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* LIVE COMPONENT PREVIEW */}
+                    {(() => {
+                      const styleOut = simulateWebDesignStyles({
+                        accent: designAccent,
+                        radius: designRadius,
+                        glassmorphism: designGlass,
+                      });
+                      return (
+                        <div className={styleOut.containerClass}>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-white uppercase tracking-wider">
+                              Dynamic Rendered Preview
+                            </span>
+                            <span className="font-mono font-bold" style={{ color: styleOut.accentColorHex }}>
+                              {designAccent.toUpperCase()} GLOW
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                            Zero boilerplate luxury typography with active geometric radii and radial dark-mode gradients.
+                          </p>
+                          <div className="mt-3 flex gap-2">
+                            <button
+                              className="px-3 py-1 text-black font-extrabold text-xs rounded uppercase tracking-wider"
+                              style={{ backgroundColor: styleOut.accentColorHex }}
+                            >
+                              Action Button
+                            </button>
+                            <span className="text-[11px] font-mono text-slate-400 self-center">
+                              Radius: {designRadius}px
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+
+                {/* 4. AUTONOMOUS AUTOMATION PLAYWRIGHT STEP SIMULATOR */}
+                {currentCourse.category === "Autonomous Automation" && (
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-xs text-slate-300 font-bold">
+                        Interactive Headless Browser Execution Steps:
+                      </span>
+                      <div className="flex gap-1.5">
+                        {["1. Launch", "2. Goto URL", "3. Fill & Click", "4. Assert"].map((stName, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => setPlaywrightStep(idx)}
+                            className={`px-2.5 py-1 rounded text-[11px] font-bold transition border ${
+                              playwrightStep === idx
+                                ? "bg-red-800 text-white border-red-500 shadow"
+                                : "bg-black border-red-950 text-slate-400"
+                            }`}
+                          >
+                            {stName}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-[#0e0e14] border border-red-950 font-mono text-xs space-y-1">
+                      <div className="flex justify-between text-[11px] text-slate-400 border-b border-red-950 pb-1">
+                        <span>Virtual Chromium Shell v1.63</span>
+                        <span className="text-emerald-400">● Live Target: https://stoic-body.vercel.app</span>
+                      </div>
+                      <div className="pt-1 text-slate-200">
+                        {playwrightStep === 0 && (
+                          <p className="text-amber-300">
+                            &gt; const browser = await chromium.launch({`{ headless: true }`});<br />
+                            ✓ Chromium process spawned with isolated context (PID 4812).
+                          </p>
+                        )}
+                        {playwrightStep === 1 && (
+                          <p className="text-amber-300">
+                            &gt; await page.goto("https://stoic-body.vercel.app/learning");<br />
+                            ✓ Network idle achieved in 794ms. HTTP 200 OK.
+                          </p>
+                        )}
+                        {playwrightStep === 2 && (
+                          <p className="text-amber-300">
+                            &gt; await page.click(&apos;button:has-text(&quot;Run &amp; Test Code&quot;)&apos;);<br />
+                            ✓ Target selector dispatched click event cleanly.
+                          </p>
+                        )}
+                        {playwrightStep === 3 && (
+                          <p className="text-emerald-400 font-bold">
+                            &gt; expect(page.locator(&quot;text=✓ Verified&quot;)).toBeVisible();<br />
+                            ✓ PASS: Assertion passed. All 12 routes 100% verified!
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* STEP 3: BRILLIANT-STYLE INTERACTIVE ACTIVE KNOWLEDGE CHECK */}
@@ -997,6 +1254,7 @@ export default function LearningPage() {
               <div className="flex flex-wrap gap-1.5">
                 {[
                   "All",
+                  "AI Architecture Spectrum",
                   "Google Antigravity Mastery",
                   "Vibe Coding & AI Dev",
                   "Web & UI/UX Design",
@@ -1493,115 +1751,6 @@ export default function LearningPage() {
                   className="px-5 py-2 rounded bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-bold uppercase tracking-wider shadow"
                 >
                   Save &amp; Launch In-App Course (+500 XP)
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* CUSTOM GITHUB REPO PLUGIN MODAL */}
-      {showPluginModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#0A0A0F] border border-amber-500/60 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-red-950 pb-3">
-              <div>
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <span>+ Plug In Free GitHub Repository</span>
-                </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Plug any open-source GitHub repository into your sovereign hub with zero bloat.
-                </p>
-              </div>
-              <button
-                onClick={() => setShowPluginModal(false)}
-                className="text-slate-400 hover:text-white text-lg font-bold px-2 py-1"
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateCustomPlugin} className="space-y-4 text-xs">
-              <div>
-                <label className="text-xs text-white font-bold block mb-1">Repository Name / Title</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Nano Vibe Coding Boilerplate"
-                  value={customPluginTitle}
-                  onChange={(e) => setCustomPluginTitle(e.target.value)}
-                  className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs text-white font-bold block mb-1">
-                  GitHub Repository (owner/repo or full URL)
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. karpathy/nanoGPT or https://github.com/karpathy/nanoGPT"
-                  value={customPluginRepo}
-                  onChange={(e) => setCustomPluginRepo(e.target.value)}
-                  className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs text-slate-300 font-bold block mb-1">Category</label>
-                <select
-                  value={customPluginCategory}
-                  onChange={(e) => setCustomPluginCategory(e.target.value as GitHubPluginCategory)}
-                  className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
-                >
-                  <option value="Google Antigravity & AI">Google Antigravity &amp; AI</option>
-                  <option value="Vibe Coding & Prompting">Vibe Coding &amp; Prompting</option>
-                  <option value="Web Design & UI/UX">Web Design &amp; UI/UX</option>
-                  <option value="Autonomous Automation">Autonomous Automation</option>
-                  <option value="Full-Stack & Backend">Full-Stack &amp; Backend</option>
-                  <option value="YouTube & Video Automation">YouTube &amp; Video Automation</option>
-                  <option value="Local LLMs & MCP">Local LLMs &amp; MCP</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="text-xs text-white font-bold block mb-1">Description / Focus Area</label>
-                <textarea
-                  rows={2}
-                  placeholder="Why is this repository valuable? What does it teach or automate?"
-                  value={customPluginDesc}
-                  onChange={(e) => setCustomPluginDesc(e.target.value)}
-                  className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs text-slate-300 font-bold block mb-1">
-                  Tags (comma-separated, optional)
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. ai, vibe-coding, agents, python"
-                  value={customPluginTags}
-                  onChange={(e) => setCustomPluginTags(e.target.value)}
-                  className="w-full bg-[#121218] border border-red-950 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-red-950">
-                <button
-                  type="button"
-                  onClick={() => setShowPluginModal(false)}
-                  className="px-4 py-2 rounded-lg bg-black text-slate-300 hover:text-white border border-red-950 text-xs font-bold"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-extrabold uppercase tracking-wider shadow"
-                >
-                  Plug Repository (+100 XP)
                 </button>
               </div>
             </form>

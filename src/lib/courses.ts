@@ -24,6 +24,7 @@ export interface CourseModule {
 }
 
 export type CourseCategory =
+  | "AI Architecture Spectrum"
   | "Vibe Coding & AI Dev"
   | "Web & UI/UX Design"
   | "Google Antigravity Mastery"
@@ -195,6 +196,318 @@ export function createCustomCourse(input: CreateCourseInput): InteractiveCourse 
  * Pre-loaded interactive AI, Vibe Coding, Web Design, Automation, and Antigravity courses
  */
 export const FOUNDER_AI_COURSES: InteractiveCourse[] = [
+  // 0. THE AI HIERARCHY SPECTRUM (EXACT INFOGRAPHIC ROADMAP)
+  {
+    id: "ai-spectrum-hierarchy",
+    title: "AI Hierarchy Spectrum: From Machine Learning to Agentic AI",
+    repoSource: "GenAI.works/ai-hierarchy-curriculum",
+    repoStars: "Infographic Roadmap ★",
+    category: "AI Architecture Spectrum",
+    level: "Sovereign Architect",
+    description:
+      "Master the complete hierarchical spectrum of modern AI: AI (The Umbrella) ➔ Machine Learning ➔ Deep Learning ➔ Generative AI ➔ LLMs ➔ RAG ➔ Agentic AI, plus Multimodal, Fine-tuning, and Safety.",
+    estimatedHours: 4,
+    xpReward: 3500,
+    modules: [
+      {
+        id: "ai-mod-spectrum",
+        title: "Module 1: The 7 Pillars of Modern Artificial Intelligence",
+        lessons: [
+          // 1. Artificial Intelligence (AI)
+          {
+            id: "ai-l1-umbrella",
+            title: "1. Artificial Intelligence (AI) — The Broad Umbrella",
+            concept:
+              "KEY IDEA: Related, NOT interchangeable. Think of them as a hierarchy that keeps building up. AI is the broad umbrella: systems that can think, reason, and act intelligently. Real-world examples include robotics, expert systems, game AI (Deep Blue, chess engines), and search algorithms.",
+            codeSnippet: `// Classical Symbolic AI: Rule-Based Expert System
+interface ClinicalState { fever: boolean; cough: boolean; daysIll: number; }
+
+function evaluatePatientRule(state: ClinicalState): string {
+  // Explicit logic written by human experts, not learned from data
+  if (state.fever && state.cough && state.daysIll > 3) {
+    return "Recommendation: Order chest X-ray and viral PCR panel.";
+  }
+  return "Recommendation: Conservative hydration & observation.";
+}
+
+console.log(evaluatePatientRule({ fever: true, cough: true, daysIll: 5 }));`,
+            codeLanguage: "typescript",
+            actionPrompt: "Modify the expert rule threshold and observe deterministic symbolic inference.",
+            quiz: {
+              question: "Why are classical expert systems considered AI, but NOT Machine Learning?",
+              options: [
+                "Because they are coded with hardcoded rules and heuristics rather than learning patterns from data",
+                "Because they require quantum computing chips",
+                "Because expert systems can only process images and video"
+              ],
+              correctIndex: 0,
+              explanation: "AI is the broad umbrella. Classical expert systems use explicit hand-crafted rules to reason and act, whereas Machine Learning algorithms derive their own rules from training data.",
+            },
+            xpReward: 150,
+            completed: false,
+          },
+          // 2. Machine Learning (ML)
+          {
+            id: "ai-l2-ml",
+            title: "2. Machine Learning (ML) — Learning Patterns from Data",
+            concept:
+              "A subset of AI that learns patterns from data instead of relying on explicit hardcoded rules. The machine optimizes weights and decision boundaries from historical observations. Real-world examples: Spam detection, Recommender systems (Netflix, Spotify), Fraud detection, Predictive analytics.",
+            codeSnippet: `# Machine Learning: Logistic Regression Decision Boundary
+def predict_fraud_risk(transaction_amount: float, foreign_ip: bool, time_delta_s: float) -> str:
+    # Learned statistical weights: w1*amount + w2*ip + w3*(1/time)
+    risk_score = (transaction_amount * 0.002) + (3.5 if foreign_ip else 0.0) + (50.0 / max(1.0, time_delta_s))
+    threshold = 6.0
+    return "FLAGGED: High Fraud Probability" if risk_score >= threshold else "APPROVED: Normal Behavior"
+
+print(predict_fraud_risk(transaction_amount=2450.0, foreign_ip=True, time_delta_s=2.0))`,
+            codeLanguage: "python",
+            actionPrompt: "Adjust the transaction parameters to observe statistical classification.",
+            quiz: {
+              question: "What is the defining distinction between traditional software and Machine Learning?",
+              options: [
+                "Traditional software learns from data; ML requires human hand-written rules",
+                "Traditional software follows explicit programmer-written rules; ML learns patterns and weights from data",
+                "Traditional software only runs in the cloud; ML only runs locally"
+              ],
+              correctIndex: 1,
+              explanation: "In classical programming: Rules + Data = Answers. In Machine Learning: Data + Answers = Rules (weights/models).",
+            },
+            xpReward: 150,
+            completed: false,
+          },
+          // 3. Deep Learning (DL)
+          {
+            id: "ai-l3-dl",
+            title: "3. Deep Learning (DL) — Multi-Layer Neural Networks",
+            concept:
+              "A subset of ML using artificial neural networks with many stacked hidden layers. Instead of humans manually handcrafting features (like edges or histograms), deep networks automatically learn hierarchical feature representations. Real-world examples: Image recognition, Speech recognition, Self-driving cars (Tesla FSD), Language translation.",
+            codeSnippet: `# Deep Learning: Multi-Layer Neural Representation Forward Pass
+def relu(x: float) -> float: return max(0.0, x)
+
+def neural_layer(inputs: list[float], weights: list[list[float]], biases: list[float]) -> list[float]:
+    # Each layer transforms raw inputs into higher-level abstract features
+    return [relu(sum(i * w for i, w in zip(inputs, neuron_w)) + b) 
+            for neuron_w, b in zip(weights, biases)]
+
+# Layer 1 extracts edges; Layer 2 extracts textures; Layer 3 extracts object classes
+hidden_1 = neural_layer([0.5, 0.8, -0.2], [[0.4, 0.3, 0.1], [-0.2, 0.7, 0.5]], [0.1, -0.1])
+print(f"Hierarchical Feature Activations: {hidden_1}")`,
+            codeLanguage: "python",
+            actionPrompt: "Execute the forward-pass matrix multiplication across artificial neural layers.",
+            quiz: {
+              question: "What primary breakthrough allowed Deep Learning to surpass classical Machine Learning?",
+              options: [
+                "It eliminated the need for manual feature engineering by learning hierarchical representations across deep layers",
+                "It stopped using floating point math",
+                "It only works on relational SQL databases"
+              ],
+              correctIndex: 0,
+              explanation: "Classical ML required human engineers to painstakingly design features. Deep Learning neural networks automatically discover abstract, high-level features directly from raw data.",
+            },
+            xpReward: 150,
+            completed: false,
+          },
+          // 4. Generative AI (GenAI)
+          {
+            id: "ai-l4-genai",
+            title: "4. Generative AI (GenAI) — Content Creation Machines",
+            concept:
+              "A subset of DL that creates entirely new, original content rather than just classifying or predicting existing labels. Generates novel text, photorealistic images, studio audio, synthetic video, and executable code. Real-world examples: ChatGPT, Midjourney, DALL-E, Claude, Stable Diffusion, Suno (audio), Runway (video).",
+            codeSnippet: `# Generative AI: Probabilistic Token Sampling from Latent Distribution
+import random
+
+def sample_generative_token(token_probabilities: dict[str, float], temperature: float = 0.7) -> str:
+    # Temperature scales entropy: lower = deterministic, higher = creative
+    tokens = list(token_probabilities.keys())
+    logits = [p ** (1.0 / max(0.01, temperature)) for p in token_probabilities.values()]
+    total = sum(logits)
+    probs = [l / total for l in logits]
+    return random.choices(tokens, weights=probs, k=1)[0]
+
+distribution = {"sovereign": 0.55, "autonomous": 0.30, "disciplined": 0.15}
+sampled = sample_generative_token(distribution, temperature=0.5)
+print(f"Synthesized Generative Token: '{sampled}'")`,
+            codeLanguage: "python",
+            actionPrompt: "Adjust temperature to control creative entropy versus deterministic output.",
+            quiz: {
+              question: "How does Generative AI fundamentally differ from discriminative Machine Learning models?",
+              options: [
+                "Generative AI creates new synthetic content (text, image, video); discriminative models classify or predict labels",
+                "Generative AI cannot run on GPUs",
+                "Generative AI only produces black and white pictures"
+              ],
+              correctIndex: 0,
+              explanation: "Discriminative models model P(Label|Input) to categorize or score. Generative models model P(Data) or P(Content|Prompt) to synthesize brand new, high-dimensional media.",
+            },
+            xpReward: 150,
+            completed: false,
+          },
+          // 5. Large Language Models (LLMs)
+          {
+            id: "ai-l5-llms",
+            title: "5. Large Language Models (LLMs) — The Semantic Reasoning Engine",
+            concept:
+              "A specialized type of GenAI focused on understanding, reasoning over, and generating natural language and code. Built on self-attention transformers with billions of parameters and vast context windows. Real-world examples: GPT-4/5, Claude 3/3.7, Gemini 1.5/2.5, Llama 3, Mistral, Qwen.",
+            codeSnippet: `// LLM In-Context Semantic Reasoning Interface
+interface LLMCompletionRequest {
+  model: "gemini-2.5-flash" | "claude-3-7-sonnet" | "llama-3.3-70b";
+  systemPrompt: string;
+  userPrompt: string;
+  temperature: number;
+}
+
+function buildReasoningPayload(req: LLMCompletionRequest) {
+  return {
+    ...req,
+    contextWindow: "1,000,000 tokens",
+    semanticRole: "Executive Technical Advisory",
+    format: "Structured JSON schema with step-by-step thinking",
+  };
+}
+
+console.log(buildReasoningPayload({
+  model: "gemini-2.5-flash",
+  systemPrompt: "You are Antigravity, the user's sovereign AI development platform.",
+  userPrompt: "Synthesize full-stack architecture for zero-latency local caching.",
+  temperature: 0.2,
+}));`,
+            codeLanguage: "typescript",
+            actionPrompt: "Construct an LLM completion payload with low temperature for deterministic reasoning.",
+            quiz: {
+              question: "What is an LLM's core pre-training task that gives rise to emergent reasoning?",
+              options: [
+                "Next-token prediction across massive corpora of text and code",
+                "Manually playing chess against human grandmasters",
+                "Memorizing relational database tables"
+              ],
+              correctIndex: 0,
+              explanation: "By predicting the next token over trillions of tokens, models build internal world models, semantic abstractions, and reasoning capabilities.",
+            },
+            xpReward: 150,
+            completed: false,
+          },
+          // 6. Retrieval-Augmented Generation (RAG)
+          {
+            id: "ai-l6-rag",
+            title: "6. Retrieval-Augmented Generation (RAG) — Grounded Knowledge",
+            concept:
+              "Combines GenAI / LLMs with external non-parametric knowledge bases. Instead of relying solely on the static training weights of the model (which have knowledge cutoffs and hallucinations), RAG retrieves authoritative document chunks via semantic vector embeddings and injects them directly into the context window. Real-world examples: Enterprise chatbots, Company copilot, Document Q&A, Legal & medical knowledge bases.",
+            codeSnippet: `# RAG: Semantic Vector Search & Context Injection
+import math
+
+def cosine_similarity(vec_a: list[float], vec_b: list[float]) -> float:
+    dot = sum(a * b for a, b in zip(vec_a, vec_b))
+    norm_a = math.sqrt(sum(a * a for a in vec_a))
+    norm_b = math.sqrt(sum(b * b for b in vec_b))
+    return dot / (norm_a * norm_b)
+
+kb_chunks = [
+    {"id": "c1", "text": "Ford Mustang 3.7L V6 requires FL-500S filter torqued to 19 lb-ft.", "embedding": [0.92, 0.11]},
+    {"id": "c2", "text": "23:1 OMAD targets a 1-hour feeding window with 140g protein.", "embedding": [0.12, 0.88]},
+]
+
+query_vec = [0.90, 0.15] # Query: 'Mustang oil filter torque specs'
+scored = sorted(kb_chunks, key=lambda c: cosine_similarity(c["embedding"], query_vec), reverse=True)
+top_chunk = scored[0]["text"]
+augmented_prompt = f"Grounded Context: {top_chunk}\\nQuestion: What torque spec?\\nAnswer with zero hallucination:"
+print(augmented_prompt)`,
+            codeLanguage: "python",
+            actionPrompt: "Calculate cosine similarity and observe grounded context prepended to prompt.",
+            quiz: {
+              question: "Why is RAG preferred over fine-tuning for proprietary or rapidly changing enterprise knowledge?",
+              options: [
+                "Because RAG provides verifiable citations, real-time updates without retraining, and eliminates hallucinations",
+                "Because fine-tuning is illegal",
+                "Because RAG doesn't require electricity"
+              ],
+              correctIndex: 0,
+              explanation: "RAG retrieves the exact up-to-date document chunks at query time, guaranteeing verifiable citations and instant knowledge updates without costly multi-day retraining.",
+            },
+            xpReward: 150,
+            completed: false,
+          },
+          // 7. Agentic AI (Autonomous Agents)
+          {
+            id: "ai-l7-agentic",
+            title: "7. Agentic AI — Autonomous Goal-Directed Systems",
+            concept:
+              "The frontier of modern AI: Systems that reason, plan, use tools, call external APIs, inspect outcomes, and take iterative actions toward high-level goals without human hand-holding. They run autonomous loops (ReAct: Reason ➔ Act ➔ Observe) and orchestrate subagent teams. Real-world examples: Antigravity Swarms, OpenAI Agents, Claude Computer Use, AutoGPT, LangGraph state agents, Manus AI.",
+            codeSnippet: `// Agentic AI: Autonomous ReAct Tool Execution Loop
+interface AgentStep {
+  thought: string;
+  tool: string;
+  arguments: Record<string, any>;
+  observation?: string;
+}
+
+async function runAutonomousAgentLoop(goal: string): Promise<string> {
+  console.log(\`[AGENT GOAL]: \${goal}\`);
+  const step1: AgentStep = {
+    thought: "Need to verify all 12 routes return 200 before deploying.",
+    tool: "run_command",
+    arguments: { CommandLine: "node tests/audit-verification.mjs" }
+  };
+  console.log(\`[THOUGHT]: \${step1.thought}\`);
+  console.log(\`[TOOL CALL]: \${step1.tool}(\${JSON.stringify(step1.arguments)})\`);
+  
+  step1.observation = "12/12 routes 100% passed in 794ms.";
+  console.log(\`[OBSERVATION]: \${step1.observation}\`);
+  
+  return "Autonomous Goal Achieved: Production Verified & Ready.";
+}
+
+runAutonomousAgentLoop("Deploy Stoic Body Sovereign Learning Engine").then(console.log);`,
+            codeLanguage: "typescript",
+            actionPrompt: "Simulate an autonomous agent executing tools, observing feedback, and completing goals.",
+            quiz: {
+              question: "What core capability fundamentally elevates an LLM into an Agentic AI system?",
+              options: [
+                "The ability to autonomously plan, execute tools/commands, observe outcomes, and self-heal in a loop toward a goal",
+                "Having a larger font size in the chat UI",
+                "Only generating rhyming poetry"
+              ],
+              correctIndex: 0,
+              explanation: "An LLM is a text generator. Agentic AI gives the LLM agency: planning, tool use (terminal, browser, APIs), reflection, and autonomous multi-step execution.",
+            },
+            xpReward: 200,
+            completed: false,
+          },
+          // 8. Key Modern Concepts
+          {
+            id: "ai-l8-modern-concepts",
+            title: "8. Modern AI Architecture Matrix (Multimodal, Fine-Tuning, Safety)",
+            concept:
+              "Beyond the core 7 pillars, modern production AI relies on 5 critical capabilities: (1) Multimodal AI (seamlessly understanding audio, video, image, and code simultaneously), (2) Fine-Tuning (adapting model weights for specialized domain style), (3) Prompt Engineering (sculpting system directives for maximum deterministic rigor), (4) AI Safety (guardrails, evaluation benchmarks, and alignment), (5) Subagent Swarms.",
+            codeSnippet: `// Modern Sovereign AI Architecture Matrix
+const SOVEREIGN_AI_STACK = {
+  multimodal: ["Gemini 2.5 Flash Native Audio/Video", "Claude Vision"],
+  promptEngineering: ["TDD-First Guardrails", "Strict JSON Schema Output"],
+  safety: ["Deterministic Test Verification", "Evidence-Before-Assertion Policy"],
+  agenticOrchestration: ["invoke_subagent", "Background Daemons", "schedule cron"],
+  deployment: ["Vercel Edge / Serverless", "Local Sovereign Quantized GGUF"]
+};
+
+console.log("Sovereign AI Architecture Stack initialized:", Object.keys(SOVEREIGN_AI_STACK));`,
+            codeLanguage: "typescript",
+            actionPrompt: "Review the full sovereign modern AI toolkit and verify each architectural tier.",
+            quiz: {
+              question: "Which approach is most appropriate when you need an AI model to adopt a highly specialized jargon and tone across millions of interactions with zero extra prompt tokens?",
+              options: [
+                "Fine-tuning model weights on domain-specific corpora",
+                "Reinstalling Windows OS",
+                "Deleting the vector database"
+              ],
+              correctIndex: 0,
+              explanation: "Fine-tuning internalizes vocabulary, style, and tone directly into model weights, saving prompt tokens and latency across repeated invocations.",
+            },
+            xpReward: 150,
+            completed: false,
+          },
+        ],
+      },
+    ],
+  },
+
   // 1. GOOGLE ANTIGRAVITY MASTERY
   {
     id: "antigravity-mastery-engine",
