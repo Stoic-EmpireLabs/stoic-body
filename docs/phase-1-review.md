@@ -8,9 +8,12 @@ Phase 0 approval: user said “Great. continue throguh phases” on 2026-10-04.
 
 The brief now supports a concrete architecture decision: a commercial, enjoyable life-planning app with an offline-capable core, a shared calendar, health-content boundaries, reviewed imports and platform-specific reminders.
 
-The owner-first profile has 28 goals/routines, including home boxing and the parent goal of helping a daughter become a cheer flyer. The product register has 92 requirements. The research register has 37 official or original-research sources, with access level and limitations recorded.
+The owner-first profile has 28 goals/routines, including home boxing and the parent goal of helping a daughter become a cheer flyer. The product register now has 95 requirements. The initial research register has 37 official or original-research sources. The competitor expansion adds a separate 50-reference register, 24-product comparison, ten curated visual references and a 26-step experience map, with access limits recorded.
 
 ## Review these artifacts
+
+- [Competitor research and recommended adaptations](research/competitors/README.md).
+- [Visual interface board](research/competitors/interface-board.html) and [every journey step](research/competitors/experience-patterns.md).
 
 - [Nutrition, training and family learning](research/health-and-training.md).
 - [Platform and commercial feasibility](research/platform-and-launch.md).
@@ -66,7 +69,7 @@ These targets are proposals and have not been measured. Commercial analysis is q
 
 Research informs nutrition requirements N01–N14, training F01–F11, learning L01–L05, imports S11/V04/V05, reminders/privacy T01–T06 and commercialization B01–B09. Source coverage varies and production content still needs focused review.
 
-Executed document checks passed: all five JSON records parse; requirement/goal/source IDs are unique; all 88 goal-to-requirement references resolve; source access/limitations are recorded; all 160 local links checked before the verification report was added resolve. The 92 requirements, 28 goals and 121 skill entries are consistent with the saved registers. Boxing and cheer-support additions are preserved with unknown readiness inputs explicit. See the companion verification file for the exact boundary of these checks.
+The initial packet's verification is retained as a historical snapshot. The current expansion has 95 requirements; its fresh checks are in [competitor verification](research/competitors/verification.md). Boxing and cheer-support additions remain preserved with unknown readiness inputs explicit. Research utilities and the reference board are distinct from product app code.
 
 No app capability, store acceptance or clinical personalization is claimed from documentation alone.
 

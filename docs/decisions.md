@@ -30,3 +30,8 @@
 | DEC-26 | 2026-10-04 | Evaluate free-to-try core with one-time paid local features | Proposed, not selected | Phase 1 business-model comparison; no price, purchase or account approval |
 
 Phase 0 was approved on 2026-10-04 by the user message: Great. continue throguh phases. Phase 1 research is authorized; Phase 1 exit approval remains pending. Later phases retain their own exit reviews. Personal data is not approved for public use.
+
+## Competitor research expansion — 2026-10-04
+
+- DEC-27 — Confirmed: expand Phase 1 to research competitors, interfaces, operations and performance evidence, and retain research at subsequent phase decisions. Source: latest direct user request. This is not Phase 2 approval.
+- DEC-28 — Proposed: adapt visual daily planning, capacity checks, fast logging, explainable weekly reviews and sustainable game progress into one original journey. Evidence and alternatives: research/competitors/README.md and experience-patterns.md. No new stack, price, account or publishing choice is approved.

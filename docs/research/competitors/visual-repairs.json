@@ -1,24 +1,24 @@
 [
   {
-    "id": "tiimo-clear",
-    "url": "https://www.tiimoapp.com/",
-    "captured_at": "2026-10-04T16:43:17.148Z",
-    "status": 200,
-    "screenshot": "screens/tiimo-clear.png",
-    "title": "Visual Planner for Every Neurotype | Tiimo"
-  },
-  {
     "id": "finch-store",
     "url": "https://apps.apple.com/us/app/finch-self-care-pet/id1528595748",
-    "captured_at": "2026-10-04T16:43:17.164Z",
+    "captured_at": "2026-10-04T16:53:52.360Z",
     "status": 200,
     "screenshot": "screens/finch-store.png",
     "title": "‎Finch: Self-Care Pet App - App Store"
   },
   {
+    "id": "tiimo-store",
+    "url": "https://apps.apple.com/us/app/tiimo-ai-plan-focus-to-do/id1480220328?platform=iphone",
+    "captured_at": "2026-10-04T16:53:52.347Z",
+    "status": 200,
+    "screenshot": "screens/tiimo-store.png",
+    "title": "‎Tiimo: To-Do List Planner App - App Store"
+  },
+  {
     "id": "ladder-clear",
     "url": "https://www.joinladder.com/",
-    "captured_at": "2026-10-04T16:43:17.158Z",
+    "captured_at": "2026-10-04T16:53:52.352Z",
     "status": 200,
     "screenshot": "screens/ladder-clear.png",
     "title": "Ladder | Your Daily Workout Plan"

@@ -6,7 +6,7 @@ Snapshot: 2026-10-04. Scope: every entry in this Codex session's available-skill
 - Distinct skill names: 100.
 - Duplicate named entries: 21.
 - Every listed SKILL.md path was checked and exists.
-- Status totals: Not applicable 20; Conditional 59; Planned 15; Duplicate 21; Active 6.
+- Status totals: Not applicable 20; Conditional 59; Planned 14; Duplicate 21; Active 7.
 
 “Active” means applied to this documentation task. “Planned” means expected later, subject to phase scope. “Conditional” means use only when its dependency actually arises. “Not applicable” gives a reason; it is not a missing capability. Duplicate entries are alternative installations of the same named capability; they are not claimed to be byte-identical.
 
@@ -103,7 +103,7 @@ Delegation skills are conditional execution choices, not current dispatch author
 | 068 | [pages:write-page](<C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/pages/0.1.19/skills/write-page/SKILL.md>) | Not applicable | — | Cloud Page management differs from building the app's own scheduler; local documents suffice. | Explicit Page/Space request | No Page or schedule changes | Present |
 | 069 | [pdf:pdf](<C:/Users/stoic/.codex/plugins/cache/openai-primary-runtime/pdf/26.915.20218/skills/pdf/SKILL.md>) | Conditional | 6,8 | Inspect PDF references or render selected report exports. | Approved PDF input/output scope | Verified extraction or rendered PDF | Present |
 | 070 | [pdf:pdf](<C:/Users/stoic/.agents/skills/110-pdf/SKILL.md>) | Duplicate | — | Duplicate entry; prefer runtime-backed PDF skill. | Canonical skill | No duplicate invocation | Present |
-| 071 | [playwright-cli](<C:/Users/stoic/.agents/skills/106-playwright-cli/SKILL.md>) | Planned | 3,4,7 | Headless browser interaction, end-to-end and visual checks. | Chosen web surface and verified local runner | Behavior and screenshot evidence | Present |
+| 071 | [playwright-cli](<C:/Users/stoic/.agents/skills/106-playwright-cli/SKILL.md>) | Active | 1, 3–7 | Native Playwright workflow for public competitor captures and later browser QA. | Public sources and bundled browser | Screenshots, capture metadata and research-board checks | Present |
 | 072 | [playwright-component-testing](<C:/Users/stoic/.agents/skills/107-playwright-component-testing/SKILL.md>) | Conditional | 3,4,7 | Test reusable UI components if supported by chosen stack. | Approved component architecture | Component interaction coverage | Present |
 | 073 | [playwright-trace](<C:/Users/stoic/.agents/skills/108-playwright-trace/SKILL.md>) | Conditional | 4,7 | Inspect actual failing browser traces. | Trace from a failing test | Failure diagnosis | Present |
 | 074 | [plugin-management:plugin-management](<C:/Users/stoic/.agents/skills/085-plugin-management/SKILL.md>) | Conditional | 2–7 | Inspect a concrete missing capability; installations need approval when consequential. | Identified capability gap | Capability assessment | Present |

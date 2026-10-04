@@ -1,0 +1,482 @@
+{
+  "review_date": "2026-10-04",
+  "patterns": [
+    {
+      "id": "UX01",
+      "step": "Store discovery and first impression",
+      "benchmarks": "Structured, Tiimo, Ladder",
+      "proposal": "Show Today, a workout and a weekly review in store media. Lead with one coordinated day.",
+      "verification": "Test whether five target users can explain the app's purpose from the first three screenshots.",
+      "requirement_ids": [
+        "B04",
+        "V02"
+      ],
+      "phase": "3, 6B",
+      "source_ids": [
+        "CR05",
+        "CR04",
+        "CR36"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX02",
+      "step": "First launch",
+      "benchmarks": "Finch; Structured web entry",
+      "proposal": "Give a useful local starter day before optional account setup; disclose local-only backup limits.",
+      "verification": "Reach a sample plan without health disclosure, payment or cloud account.",
+      "requirement_ids": [
+        "D01",
+        "T06",
+        "B06"
+      ],
+      "phase": "3, 4",
+      "source_ids": [
+        "CR16",
+        "CR50"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX03",
+      "step": "Context interview",
+      "benchmarks": "Tiimo; Fitbod",
+      "proposal": "Use roughly 20 branching areas in groups; preview how each answer changes the plan; allow skip/resume.",
+      "verification": "Edit available equipment or time and see only relevant suggestions change.",
+      "requirement_ids": [
+        "D01",
+        "D07",
+        "F01"
+      ],
+      "phase": "2, 4",
+      "source_ids": [
+        "CR04",
+        "CR33"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX04",
+      "step": "Health suitability and missing facts",
+      "benchmarks": "Own requirement; no competitor clinical clearance established",
+      "proposal": "Ask only necessary optional health questions; show missing units/constraints and withhold unsupported prescriptions.",
+      "verification": "Unknown units never create calorie, load or deadline calculations.",
+      "requirement_ids": [
+        "D04",
+        "N06",
+        "N08"
+      ],
+      "phase": "2, 5",
+      "source_ids": [],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX05",
+      "step": "Capture a goal or task",
+      "benchmarks": "Todoist; Structured",
+      "proposal": "One global capture control; confirm parsed date, duration and goal in editable chips.",
+      "verification": "Capture an ambiguous date and preserve the original text until confirmed.",
+      "requirement_ids": [
+        "S01",
+        "S02",
+        "S03"
+      ],
+      "phase": "3, 4",
+      "source_ids": [
+        "CR06",
+        "CR09"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX06",
+      "step": "Import a schedule or reference",
+      "benchmarks": "Cronometer recipe importer as a narrow analogy",
+      "proposal": "Stage extracted facts with source page, timezone and confidence; dedupe and preview calendar changes.",
+      "verification": "Import one academic event twice; create one event after explicit confirmation; undo restores state.",
+      "requirement_ids": [
+        "S11",
+        "V04",
+        "V05"
+      ],
+      "phase": "2, 6A",
+      "source_ids": [
+        "CR23"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX07",
+      "step": "Build a feasible week",
+      "benchmarks": "Motion; Sunsama; Runna",
+      "proposal": "Compare available time and recovery with required effort; protect sleep/family blocks; explain tradeoffs.",
+      "verification": "An overfull week produces scope/deadline choices and never hides an overlap.",
+      "requirement_ids": [
+        "S03",
+        "S04",
+        "S07",
+        "S08"
+      ],
+      "phase": "2, 4, 5",
+      "source_ids": [
+        "CR10",
+        "CR12",
+        "CR40"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX08",
+      "step": "Morning planning",
+      "benchmarks": "Sunsama; stoic.",
+      "proposal": "Offer a brief review, three meaningful priorities and a plan adjustment, plus a fast skip path.",
+      "verification": "Low-energy input proposes a smaller day without changing locked appointments.",
+      "requirement_ids": [
+        "S06",
+        "Q01"
+      ],
+      "phase": "3, 4, 6A",
+      "source_ids": [
+        "CR12",
+        "CR45"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX09",
+      "step": "Today and next action",
+      "benchmarks": "Structured; Tiimo; Ladder",
+      "proposal": "Present one current session, the time until the next fixed commitment, then a compact timeline.",
+      "verification": "Next action identified within five seconds; completed task reachable in at most two taps.",
+      "requirement_ids": [
+        "V02",
+        "V06",
+        "S05"
+      ],
+      "phase": "3, 4",
+      "source_ids": [
+        "CR06",
+        "CR48",
+        "CR36"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX10",
+      "step": "Learn or practice a skill",
+      "benchmarks": "Duolingo; Calisteniapp",
+      "proposal": "Show prerequisite → short practice → evidence/reflection → next session; resource details stay one tap away.",
+      "verification": "A watched tutorial alone cannot complete a practical competence milestone.",
+      "requirement_ids": [
+        "L01",
+        "L02",
+        "L03",
+        "R03"
+      ],
+      "phase": "3, 6A",
+      "source_ids": [
+        "CR19",
+        "CR41"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX11",
+      "step": "Start and log resistance training",
+      "benchmarks": "Hevy; Fitbod",
+      "proposal": "Prior reps/load beside current entry; timer, cues, substitutions and 'short on time' action in session.",
+      "verification": "No dumbbell recommendations with that equipment excluded; restart recovers completed sets.",
+      "requirement_ids": [
+        "F01",
+        "F05",
+        "F06"
+      ],
+      "phase": "3, 5",
+      "source_ids": [
+        "CR31",
+        "CR33",
+        "CR34"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX12",
+      "step": "Calisthenics progression",
+      "benchmarks": "Calisteniapp; Freeletics",
+      "proposal": "Group skills by prerequisites/ability; repeat or regress when feedback warrants; retain history.",
+      "verification": "A beginner profile sees feasible entry progressions and can report inability/discomfort.",
+      "requirement_ids": [
+        "F04",
+        "F05",
+        "F07"
+      ],
+      "phase": "5",
+      "source_ids": [
+        "CR37",
+        "CR41",
+        "CR42"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX13",
+      "step": "Boxing session",
+      "benchmarks": "FightCamp",
+      "proposal": "Provide shadowboxing/footwork rounds with rest and technique resources; bag mode checks equipment.",
+      "verification": "A home shadowboxing session works without sensors, bag or fabricated punch statistics.",
+      "requirement_ids": [
+        "F11",
+        "F04",
+        "F06"
+      ],
+      "phase": "5",
+      "source_ids": [
+        "CR43",
+        "CR44"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX14",
+      "step": "Cheer-support learning",
+      "benchmarks": "Own safety requirement; competitor skill-path analogy only",
+      "proposal": "Schedule coach-led basing/spotting learning and approved home preparation; record confirmed milestones.",
+      "verification": "An XP level or video completion cannot unlock an elevated lift plan.",
+      "requirement_ids": [
+        "L05",
+        "L01"
+      ],
+      "phase": "5, 6A",
+      "source_ids": [
+        "CR41"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX15",
+      "step": "Meal logging",
+      "benchmarks": "MyFitnessPal; Cal AI; Cronometer",
+      "proposal": "Recent meals and portions first; optional photo/voice creates an editable draft with provenance.",
+      "verification": "Change an ingredient/portion before saving and visibly recalculate estimates.",
+      "requirement_ids": [
+        "N10",
+        "N13"
+      ],
+      "phase": "3, 5",
+      "source_ids": [
+        "CR20",
+        "CR21",
+        "CR22",
+        "CR29"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX16",
+      "step": "OMAD and other diet comparison",
+      "benchmarks": "Zero; existing health evidence review",
+      "proposal": "Separate meal timing from food choices; retain optional window tracking; show evidence/suitability.",
+      "verification": "Longer fasting or eating less never awards more XP; users can change timing without penalty.",
+      "requirement_ids": [
+        "N01",
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "N14"
+      ],
+      "phase": "5",
+      "source_ids": [
+        "CR28"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX17",
+      "step": "Recipes, groceries and preparation",
+      "benchmarks": "MyFitnessPal; Cronometer",
+      "proposal": "Convert selected meals into editable ingredients and preparation tasks on the shared calendar.",
+      "verification": "Serving changes update grocery quantities; allergy substitutions require confirmation.",
+      "requirement_ids": [
+        "N12",
+        "S04"
+      ],
+      "phase": "5",
+      "source_ids": [
+        "CR20",
+        "CR23"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX18",
+      "step": "Reward and celebrate",
+      "benchmarks": "Habitica; Finch; Duolingo",
+      "proposal": "Use existing XP ledger and optional journey/cosmetics; show what action earned the award.",
+      "verification": "Repeated check/sync cannot duplicate XP; undo reverses only the corresponding award.",
+      "requirement_ids": [
+        "G01",
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G06"
+      ],
+      "phase": "3, 4",
+      "source_ids": [
+        "CR14",
+        "CR15",
+        "CR16",
+        "CR19"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX19",
+      "step": "Missed task, illness or low-energy day",
+      "benchmarks": "Finch; Sunsama",
+      "proposal": "Use a return screen with keep, shrink, reschedule or drop choices; protect recovery.",
+      "verification": "A missed day creates no shame/debt; no automatic overload tomorrow.",
+      "requirement_ids": [
+        "S06",
+        "S09",
+        "G06"
+      ],
+      "phase": "3, 4",
+      "source_ids": [
+        "CR17",
+        "CR12"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX20",
+      "step": "Body and performance progress",
+      "benchmarks": "MacroFactor; Hevy",
+      "proposal": "Show measured trends and skill/workout progress separately from XP; inspect assumptions and uncertainty.",
+      "verification": "No single weigh-in creates an exact arrival date; missing data lowers confidence.",
+      "requirement_ids": [
+        "R01",
+        "R02",
+        "F07",
+        "F10"
+      ],
+      "phase": "5",
+      "source_ids": [
+        "CR24",
+        "CR26",
+        "CR31"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX21",
+      "step": "Weekly review and replanning",
+      "benchmarks": "MacroFactor; Sunsama; Runna",
+      "proposal": "Review capacity, actual duration, performance and recovery together; preview proposed changes.",
+      "verification": "User can accept individual revisions while locked commitments remain fixed.",
+      "requirement_ids": [
+        "S06",
+        "S07",
+        "F07",
+        "R03"
+      ],
+      "phase": "4, 5",
+      "source_ids": [
+        "CR24",
+        "CR12",
+        "CR40"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX22",
+      "step": "Evening Stoic reflection",
+      "benchmarks": "stoic.",
+      "proposal": "Ask what was in the user's control and one adjustment for tomorrow; link verified quote or labeled original reflection.",
+      "verification": "Saved reflection persists; generated text can never acquire a historical attribution automatically.",
+      "requirement_ids": [
+        "Q01",
+        "Q02",
+        "Q03"
+      ],
+      "phase": "6A",
+      "source_ids": [
+        "CR45",
+        "CR46"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX23",
+      "step": "Reminders and alarms",
+      "benchmarks": "Structured; existing platform research",
+      "proposal": "Explain permission state, quiet hours, alarm versus reminder, and a test-delivery action.",
+      "verification": "Verify real devices closed/locked/offline/reboot; record missed-delivery limits.",
+      "requirement_ids": [
+        "T04",
+        "S05"
+      ],
+      "phase": "4, 7",
+      "source_ids": [
+        "CR06"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX24",
+      "step": "Privacy, offline and recovery",
+      "benchmarks": "Strava controls; own offline requirement",
+      "proposal": "Private defaults, local core, optional sync consent, per-item sharing and recoverable drafts.",
+      "verification": "Offline logging/restart/reconnect preserves data and XP exactly once.",
+      "requirement_ids": [
+        "T01",
+        "T02",
+        "T05",
+        "T06",
+        "T09"
+      ],
+      "phase": "2, 4, 7",
+      "source_ids": [
+        "CR39"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX25",
+      "step": "Upgrade, cancellation and export",
+      "benchmarks": "Structured; Lose It; MacroFactor",
+      "proposal": "Show actual charge/renewal, inclusions, restore and cancellation help; preserve historical records and export.",
+      "verification": "Cancel an approved test entitlement without loss of user data; restore/export round-trip verified.",
+      "requirement_ids": [
+        "B03",
+        "B05",
+        "T01"
+      ],
+      "phase": "6B, 7",
+      "source_ids": [
+        "CR07",
+        "CR25",
+        "CR27"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    },
+    {
+      "id": "UX26",
+      "step": "Feedback and product improvement",
+      "benchmarks": "Duolingo product experimentation; owner pilot",
+      "proposal": "Measure time-to-value, task success and voluntary useful return; collect optional feedback without health payloads.",
+      "verification": "A 14-day pilot reports failures and usefulness; no invented retention target or causal uplift.",
+      "requirement_ids": [
+        "B07",
+        "V06",
+        "T01"
+      ],
+      "phase": "3, 7, 8",
+      "source_ids": [
+        "CR19"
+      ],
+      "status": "Proposed for phase review; not implemented"
+    }
+  ]
+}

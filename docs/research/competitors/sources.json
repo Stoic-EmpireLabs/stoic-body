@@ -24,7 +24,7 @@
       "finding": "Historical US estimates include MyFitnessPal, Flo, Strava, Fitbit and Calm; AI-authored summary, not audited company revenue.",
       "access": "page",
       "checked_date": "2026-10-04",
-      "publication_date": null,
+      "publication_date": "2026-01",
       "limitation": "Third-party estimate, not audited sales.",
       "refresh": "Recheck dependent claims/prices before their design or release phase."
     },
@@ -76,7 +76,7 @@
       "finding": "Timeline, inbox, quick add and platform feature differences; updated September 2, 2026.",
       "access": "page",
       "checked_date": "2026-10-04",
-      "publication_date": null,
+      "publication_date": "2026-09-02",
       "limitation": "Public evidence; native app/account behavior not independently tested.",
       "refresh": "Recheck dependent claims/prices before their design or release phase."
     },
@@ -89,7 +89,7 @@
       "finding": "Monthly/yearly/lifetime options; some Android markets weekly. Exact local price not fixed here.",
       "access": "search",
       "checked_date": "2026-10-04",
-      "publication_date": null,
+      "publication_date": "2026-04-23",
       "limitation": "Public evidence; native app/account behavior not independently tested.",
       "refresh": "Recheck dependent claims/prices before their design or release phase."
     },
@@ -271,7 +271,7 @@
       "finding": "Barcode/photo/voice and expanded goals; help updated August 28, 2026.",
       "access": "search",
       "checked_date": "2026-10-04",
-      "publication_date": null,
+      "publication_date": "2026-08-28",
       "limitation": "Public evidence; native app/account behavior not independently tested.",
       "refresh": "Recheck dependent claims/prices before their design or release phase."
     },
@@ -336,7 +336,7 @@
       "finding": "Recommendations can adapt to actual behavior without treating missed targets as moral failure.",
       "access": "search",
       "checked_date": "2026-10-04",
-      "publication_date": null,
+      "publication_date": "2025-09-12",
       "limitation": "Public evidence; native app/account behavior not independently tested.",
       "refresh": "Recheck dependent claims/prices before their design or release phase."
     },
@@ -606,7 +606,7 @@
       "url": "https://apps.apple.com/us/app/finch-self-care-pet/id1528595748",
       "publisher": "Apple / Finch",
       "kind": "Store listing",
-      "finding": "4.9 stars and 757K ratings surfaced; listing rank 12 differed from chart snapshot rank 11.",
+      "finding": "Indexed listing: 4.9/757K ratings, rank 12. Rendered browser: 4.9/759K, rank 10. Separate free chart: rank 11. Keep observation contexts distinct.",
       "access": "page+visual",
       "checked_date": "2026-10-04",
       "publication_date": null,

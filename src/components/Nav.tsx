@@ -10,9 +10,12 @@ export default function Nav() {
   const links = [
     { href: "/", label: "Today Command" },
     { href: "/training", label: "Calisthenics & Boxing" },
+    { href: "/nutrition", label: "23:1 OMAD Nutrition" },
+    { href: "/progress", label: "170→155 Recomposition" },
+    { href: "/calendar", label: "Timeline & MVD" },
     { href: "/character", label: "Character Status" },
     { href: "/quests", label: "Quest Vault" },
-    { href: "/settings", label: "Settings & Founder" },
+    { href: "/settings", label: "Founder Sovereign" },
   ];
 
   return (

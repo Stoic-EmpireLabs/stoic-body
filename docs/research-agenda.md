@@ -47,3 +47,7 @@ Compare one-time purchase, subscription and free-plus-paid features against recu
 
 The inherited zero-paid-services constraint is still active. If commercial requirements need paid enrollment or infrastructure, present the concrete cost and alternative before any purchase or account creation.
 
+## Competitor and interface expansion
+
+Requested October 4, 2026: research relevant leading products, their public screens, onboarding, daily flows, feedback/rewards, commercial models and performance evidence. Results are in [competitor research](research/competitors/README.md). The [26-step map](research/competitors/experience-patterns.md) adds phase-specific research and acceptance checks. Native/account tests remain explicitly unperformed; public marketing claims are not clinical evidence or audited revenue.
+

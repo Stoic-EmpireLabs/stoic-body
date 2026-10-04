@@ -23,6 +23,7 @@ For later agentic workers: use executing-plans or a selected subagent-driven-dev
 - No purchases, accounts, public publication or irreversible actions without approval.
 - No unsupported health personalization, fabricated sources or generated historical attributions.
 - Core scheduling, logging and XP remain useful offline and without AI.
+- At each phase, refresh material competitor/technical/health evidence and map selected experience patterns from docs/research/competitors/experience-patterns.md to actual acceptance checks. Public competitor screens do not prove native execution behavior.
 - Typecheck and lint before claiming code complete; TDD for core logic.
 - A skill or connector listed as available is not proof of integration.
 

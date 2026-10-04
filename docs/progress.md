@@ -3,14 +3,14 @@
 Updated: 2026-10-04
 
 Current state: Phase 0 approved by the user; Phase 1 discovery/research packet ready for review, with open decisions recorded.
-Latest steering: prioritize ease of use and enjoyable return use; owner-first commercial product for three stores; iPhone/iPad and Windows PC first-release targets; Android timing pending. Exact replies are in discovery.md.
+Latest steering: research competitors, their interfaces, operations and top-performing commercial examples at every phase. The expanded packet compares 24 products, records 50 competitor references and maps 26 journey steps. Earlier product/device priorities remain in discovery.md.
 Additional intake: owner profile and 28 goals/routines captured under private/; height, diet intent, equipment and desired sleep window clarified; academic schedule will be supplied through a future in-app upload; other schedule/health details remain open. No personal schedule, diet prescription or workout prescription has been generated.
-Implementation status: no app code, scaffold, dependencies, database, accounts or deployment created.
+Workstream scope: this chat created planning/research documents, browser-capture utilities and an interactive reference board. During the research, Next.js source, dependencies and build/deployment configuration appeared in the shared folder. They were preserved and have not been reviewed or validated by this research work. The phase table tracks approvals in this chat, not claims about those separate files.
 
 | Phase | State | Required exit artifact | Approval |
 |---|---|---|---|
 | 0 — Planning and inventory | Approved | Phase 0 review packet | User: Great. continue throguh phases; 2026-10-04 |
-| 1 — Discovery and research | Ready for review; artifact checks passed | Phase 1 review packet, 37-source register, verification report and open decisions | Pending |
+| 1 — Discovery and research | Expanded research ready for review; see current verification report | Initial 37-source review plus 24-product/50-reference competitor packet, ten visual references and 26-step map | Pending |
 | 2 — Specification and architecture | Not started | Written spec, data model, platform choice, subsystem plans | Not requested |
 | 3 — Visual prototype | Not started | Approved representative screens and flow | Not requested |
 | 4 — Working core | Not started | Persistent onboarding/goals/schedule/XP/reminders | Not requested |
@@ -30,7 +30,7 @@ Implementation status: no app code, scaffold, dependencies, database, accounts o
 
 ## Next authorized actions
 
-Review/refine the Phase 1 packet and save any answers to open decisions. Phase 2 architecture begins after the Phase 1 checkpoint is approved; do not scaffold the app yet.
+Review/refine the expanded Phase 1 packet and save answers to open decisions. Phase 2 specification in this workflow begins after checkpoint approval. Reconcile the separately observed app work before applying the architecture plan to it; do not overwrite it based on the earlier planning-only snapshot.
 
 
 

@@ -1,0 +1,24 @@
+{
+  "checked_at": "2026-10-04T17:01:43.943Z",
+  "scope": "Project README, docs and private planning records only; third-party packages and separate app implementation excluded",
+  "requirements": 95,
+  "competitors": 24,
+  "competitor_sources": 50,
+  "journey_steps": 26,
+  "source_references_resolved": 112,
+  "json_records_parsed": 12,
+  "local_markdown_links_checked": 203,
+  "curated_visuals": 10,
+  "filters": {
+    "Planning": 2,
+    "Fitness": 3,
+    "Nutrition": 2,
+    "Game": 2,
+    "Reflection": 1,
+    "All": 10
+  },
+  "mobile_horizontal_overflow": false,
+  "browser_runtime_errors": [],
+  "failures": [],
+  "private_ignore_rule_present": true
+}

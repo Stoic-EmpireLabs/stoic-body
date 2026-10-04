@@ -92,3 +92,7 @@ No stack is selected. The likely responsibility boundaries are profile, goals/ca
 
 No clinical assessment, health prescription or body-fat inference has been performed.
 
+## Competitor-informed development — added October 4, 2026
+
+The owner requested research of competitor interfaces, operations and top commercial performers at every step. The [research expansion](research/competitors/README.md) compares 24 products, separates performance measures, and maps 26 journey steps to requirements. Adaptation choices remain proposals. At each later phase, refresh material sources and verify the chosen experience before claiming it works. Public screenshots and research scripts are review artifacts, not app implementation.
+

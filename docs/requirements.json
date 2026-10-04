@@ -920,6 +920,36 @@
       "verification_plan": "Advanced lifts cannot be auto-assigned from videos or physique; coached prerequisites, supervision and facility constraints are explicit; family time is preserved",
       "status": "Initial resource or workflow plan recorded; not implemented",
       "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+    },
+    {
+      "id": "P07",
+      "source": "Later user request: research every step",
+      "requirement": "Research material choices at each phase and retain sources, limitations, alternatives and verification before adopting them.",
+      "proposed_design": "Phase research gates and UX01-UX26 traceability",
+      "phase": "1–8",
+      "verification_plan": "Each phase links decisions to evidence and actual acceptance checks",
+      "status": "Research workflow proposed; future gates not executed",
+      "evidence": "research/competitors/experience-patterns.md"
+    },
+    {
+      "id": "B10",
+      "source": "Later user request: competitors and top sellers/performers",
+      "requirement": "Compare relevant competitors using actual market-performance signals, interfaces, operating flows and commercial models; distinguish revenue, downloads, users, ratings and awards.",
+      "proposed_design": "Dated competitor matrix and source register with metric scope and confidence",
+      "phase": "1, 6B, 8",
+      "verification_plan": "Audit country/platform/period/source, conflicting snapshots and unsupported rankings",
+      "status": "24-product public-evidence comparison recorded; native/account behavior not tested",
+      "evidence": "research/competitors/README.md; research/competitors/matrix.md; research/competitors/sources.json"
+    },
+    {
+      "id": "V07",
+      "source": "Later user request: competitor interfaces and ideas",
+      "requirement": "Study competitor screens and end-to-end interactions and adapt useful patterns into one coherent original Stoic Body experience.",
+      "proposed_design": "Visual reference board, 26-step journey map and explicit adaptation decisions",
+      "phase": "1–3, 7",
+      "verification_plan": "Compare prototypes against benchmark tasks and verify clarity, effort, accessibility and failure recovery",
+      "status": "10 public visual references and proposed adaptations; prototype pending approval",
+      "evidence": "research/competitors/interface-board.html; research/competitors/visual-audit.md; research/competitors/experience-patterns.md"
     }
   ]
 }

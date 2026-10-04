@@ -705,11 +705,11 @@
     {
       "name": "playwright-cli",
       "path": "C:/Users/stoic/.agents/skills/106-playwright-cli/SKILL.md",
-      "status": "Planned",
-      "phase": "3,4,7",
-      "contribution": "Headless browser interaction, end-to-end and visual checks.",
+      "status": "Active",
+      "phase": "1, 3–7",
+      "contribution": "Native Playwright workflow for public competitor interface captures; later browser QA where applicable",
       "depends": "Chosen web surface and verified local runner",
-      "output": "Behavior and screenshot evidence",
+      "output": "Public interface screenshots, capture metadata and research-board browser checks",
       "file_exists": true
     },
     {
