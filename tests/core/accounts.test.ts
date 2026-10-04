@@ -3,6 +3,17 @@ import test from 'node:test';
 import { CoreRepository } from '../../src/core/repository';
 import { AccountStore } from '../../src/core/accounts';
 const password = 'test passphrase with fifteen characters';
+
+test('an in-flight login cannot accept credentials invalidated during password hashing', async () => {
+  const repo = new CoreRepository(':memory:'), auth = new AccountStore(repo.database);
+  try {
+    await auth.register({username:'alice',displayName:'Alice',password});
+    const pending = auth.login({username:'alice',password});
+    // Model a password rotation committing while the asynchronous hash is running.
+    repo.database.prepare('UPDATE app_accounts SET password_hash=? WHERE username=?').run('0'.repeat(128),'alice');
+    await assert.rejects(pending, /Sign-in details/);
+  } finally { repo.close(); }
+});
 test('accounts use unique salted hashes and never claim an existing local owner', async () => {
   const repo = new CoreRepository(':memory:'); repo.createOwner('local-owner'); const auth = new AccountStore(repo.database);
   try {

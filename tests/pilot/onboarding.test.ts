@@ -20,6 +20,16 @@ async function signup(page:Page) {
   await page.getByRole('button',{name:'I saved my key — continue',exact:true}).click();
   await page.getByRole('heading',{name:/Welcome, Test client/}).waitFor(); return key!;
 }
+
+test('a restored signed-in page clears private screens after inactivity without needing a first click',async()=>fixture(async page=>{
+  await signup(page);
+  await page.clock.install();
+  await page.reload();
+  await page.getByRole('heading',{name:/Welcome, Test client/}).waitFor();
+  await page.clock.fastForward(30*60*1000+1000);
+  await page.getByRole('heading',{name:'A life, intentionally lived.',exact:true}).waitFor();
+  assert.equal(await page.locator('.pilot-shell').isVisible(),false);
+}));
 test('new client gets a host, resumable questionnaire and an explicit first-goal draft',async()=>fixture(async page=>{
   await page.getByRole('heading',{name:'A life, intentionally lived.',exact:true}).waitFor();
   await mkdir('docs/evidence/guided-entry',{recursive:true}); await page.screenshot({path:'docs/evidence/guided-entry/welcome-desktop.png',fullPage:true});

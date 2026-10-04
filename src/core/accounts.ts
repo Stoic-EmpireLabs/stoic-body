@@ -56,7 +56,8 @@ export class AccountStore {
     this.throttle('auth-global', 60); this.throttle(`login:${name}`, 5);
     const pass = typeof p.password === 'string' && p.password.length <= 128 ? p.password.normalize('NFC') : '';
     const row = this.row(name), candidate = await hash(pass, row?.salt || '0'.repeat(32));
-    if (!row || !equal(candidate, row.password_hash)) throw new AccountError(401, 'Sign-in details are incorrect.');
+    const current = this.row(name);
+    if (!row || !current || row.password_hash !== current.password_hash || row.salt !== current.salt || !equal(candidate, current.password_hash)) throw new AccountError(401, 'Sign-in details are incorrect.');
     this.db.prepare('DELETE FROM app_auth_limits WHERE key_hash=?').run(digest(`login:${name}`));
     return account(row);
   }

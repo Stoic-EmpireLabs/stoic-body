@@ -237,7 +237,7 @@ async function boot() {
   try {
     const result = await api('bootstrap'); token = result.token;
     if (!result.authenticated) { snapshot = null; pendingRequest = null; Access.show(); return; }
-    $('#access').hidden = true; document.querySelector('.pilot-shell').hidden = false;
+    $('#access').hidden = true; document.querySelector('.pilot-shell').hidden = false; resetIdle();
     if (['welcome','questions'].includes(guide.state.stage)) { currentView = 'setup'; Host.resetPanel(); }
     errorMessage(pendingRequest ? 'Reconnected. Your earlier save still needs a retry.' : ''); render();
   } catch (error) { if (!snapshot) Access.show(error.message); else errorMessage(error.message); }
