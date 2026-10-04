@@ -1,4 +1,5 @@
 import { DatabaseSync } from 'node:sqlite';
+import {migrateSchedules,createDayProposal,executeSchedule,assertSlot,readBatches,type ScheduleBatch,type DayInput} from './schedule-store';
 import { createHash } from 'node:crypto';
 import {object,keys,id,number,integer,text,canonical,instant,zone} from './validation';
 import { migratePlanning, executePlanning, readGoals, readTaskDetails, type CoreGoal } from './planning-store';
@@ -59,6 +60,7 @@ export interface Snapshot {
     ownerId: string;
     profileRevision: number;
     answers: Record<string, Answer>;
+    scheduleBatches: ScheduleBatch[];
     goals: CoreGoal[];
     tasks: CoreTask[];
     occurrences: CoreOccurrence[];
@@ -77,7 +79,7 @@ export class CoreRepository {
         const version = (db.prepare('PRAGMA user_version').get() as {
             user_version: number;
         }).user_version;
-        if (version > 2) {
+        if (version > 3) {
             db.close();
             throw new Error('Database schema requires a newer application.');
         }
@@ -102,6 +104,7 @@ export class CoreRepository {
             }
         }
         migratePlanning(db);
+        migrateSchedules(db);
     }
     close() { this.database.close(); }
     ownerCount() { return (this.database.prepare('SELECT COUNT(*) AS count FROM core_owners').get() as {
@@ -125,7 +128,7 @@ export class CoreRepository {
         id(c.entityId);
         integer(c.baseRevision, 0);
         object(c.payload);
-        if (typeof c.type !== 'string' || !['task.create', 'task.update', 'task.archive', 'goal.create', 'goal.update', 'goal.archive', 'occurrence.create', 'completion.set', 'profile.answer'].includes(c.type))
+        if (typeof c.type !== 'string' || !['task.create', 'task.update', 'task.archive', 'goal.create', 'goal.update', 'goal.archive', 'schedule.accept', 'schedule.undo', 'occurrence.move', 'occurrence.create', 'completion.set', 'profile.answer'].includes(c.type))
             throw new Error('Unsupported command.');
         const serialized = canonical(c);
         if (Buffer.byteLength(serialized, 'utf8') > 1_048_576) throw new Error('Command size exceeds 1 MiB.');
@@ -160,6 +163,8 @@ export class CoreRepository {
         const p = object(c.payload), db = this.database;
         const accepted = (revision: number): Receipt => ({ operationId: c.operationId, status: 'accepted', canonicalRevision: revision });
         const conflict = (revision: number): Receipt => ({ operationId: c.operationId, status: 'conflict', canonicalRevision: revision, safeReason: 'This record changed. Review the current version before applying your edit.' });
+        const schedule = executeSchedule(db, ownerId, c, () => this.readSnapshot(ownerId));
+        if (schedule) return schedule;
         const planning = executePlanning(db, ownerId, c);
         if (planning) return planning;
         if (c.type === 'occurrence.create') {
@@ -179,12 +184,13 @@ export class CoreRepository {
             const start = instant(p.startAt), timezone = zone(p.timezone);
             if (typeof p.locked !== 'boolean')
                 throw new Error('A lock choice is required.');
-            const end = new Date(Date.parse(start) + task.duration_minutes * 60000).toISOString();
+            const end = assertSlot(db, ownerId, taskId, start).endAt;
             db.prepare('INSERT INTO core_occurrences(owner_id,id,task_id,start_at,end_at,timezone,locked,fraction,revision) VALUES (?,?,?,?,?,?,?,0,1)').run(ownerId, c.entityId, taskId, start, end, timezone, Number(p.locked));
             return accepted(1);
         }
         if (c.type === 'completion.set') {
             keys(p, ['fraction']);
+            if (db.prepare('SELECT 1 FROM core_cancelled_occurrences WHERE owner_id=? AND occurrence_id=?').get(ownerId, c.entityId)) throw new Error('Session was cancelled.');
             const fraction = number(p.fraction, 0, 1);
             const row = db.prepare('SELECT o.fraction,o.revision,t.budget FROM core_occurrences o JOIN core_tasks t ON t.owner_id=o.owner_id AND t.id=o.task_id WHERE o.owner_id=? AND o.id=?').get(ownerId, c.entityId) as {
                 fraction: number;
@@ -247,6 +253,11 @@ export class CoreRepository {
         db.prepare('UPDATE core_owners SET answers_json=?,profile_revision=profile_revision+1 WHERE id=?').run(JSON.stringify(answers), ownerId);
         return accepted(owner.profile_revision + 1);
     }
+    proposeDay(ownerId: string, input: DayInput) {
+        const db = this.database; db.exec('BEGIN IMMEDIATE');
+        try { const result = createDayProposal(db, ownerId, this.readSnapshot(ownerId), input); db.exec('COMMIT'); return result; }
+        catch (error) { if (db.isTransaction) db.exec('ROLLBACK'); throw error; }
+    }
     snapshot(ownerId: string): Snapshot {
         this.database.exec('BEGIN');
         try {
@@ -262,9 +273,9 @@ export class CoreRepository {
         const owner = this.owner(ownerId), db = this.database;
         const tasks = db.prepare('SELECT id,title,kind,duration_minutes AS durationMinutes,prep_minutes AS prepMinutes,travel_minutes AS travelMinutes,buffer_minutes AS bufferMinutes,budget,revision FROM core_tasks WHERE owner_id=? ORDER BY id').all(ownerId) as unknown as CoreTask[];
         for (const task of tasks) Object.assign(task, readTaskDetails(db, ownerId, task.id));
-        const occurrences = db.prepare('SELECT id,task_id AS taskId,start_at AS startAt,end_at AS endAt,timezone,locked,fraction,revision FROM core_occurrences WHERE owner_id=? ORDER BY start_at,id').all(ownerId) as unknown as CoreOccurrence[];
+        const occurrences = db.prepare('SELECT id,task_id AS taskId,start_at AS startAt,end_at AS endAt,timezone,locked,fraction,revision FROM core_occurrences o WHERE owner_id=? AND NOT EXISTS (SELECT 1 FROM core_cancelled_occurrences c WHERE c.owner_id=o.owner_id AND c.occurrence_id=o.id) ORDER BY start_at,id').all(ownerId) as unknown as CoreOccurrence[];
         const xpEvents = db.prepare('SELECT operation_id AS operationId,occurrence_id AS occurrenceId,delta,revision FROM core_xp_events WHERE owner_id=? ORDER BY sequence').all(ownerId) as unknown as XpEvent[];
         const pending = db.prepare('SELECT command_json FROM core_outbox WHERE owner_id=? ORDER BY sequence').all(ownerId).map(row => JSON.parse(String(row.command_json)) as Command);
-        return { schemaVersion: 1, ownerId, profileRevision: owner.profile_revision, answers: JSON.parse(owner.answers_json), goals: readGoals(db, ownerId), tasks, occurrences, xpEvents, totalXp: xpEvents.reduce((total, e) => total + e.delta, 0), pending };
+        return { schemaVersion: 1, ownerId, profileRevision: owner.profile_revision, answers: JSON.parse(owner.answers_json), scheduleBatches: readBatches(db, ownerId), goals: readGoals(db, ownerId), tasks, occurrences, xpEvents, totalXp: xpEvents.reduce((total, e) => total + e.delta, 0), pending };
     }
 }
