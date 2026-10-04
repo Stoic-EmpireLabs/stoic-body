@@ -5,6 +5,7 @@ import {object,keys,id,number,integer,text,canonical,instant,zone} from './valid
 import { migratePlanning, executePlanning, readGoals, readTaskDetails, type CoreGoal } from './planning-store';
 import { earnedXp, type ActionKind } from './xp';
 import { migrateHealth, executeHealth, readHealth, type HealthRecord } from './health-store';
+import { buildRoutine } from './training';
 export interface Command {
     schemaVersion: 1;
     operationId: string;
@@ -131,7 +132,7 @@ export class CoreRepository {
         id(c.entityId);
         integer(c.baseRevision, 0);
         object(c.payload);
-        if (typeof c.type !== 'string' || !['health.save', 'health.archive', 'task.create', 'task.update', 'task.archive', 'goal.create', 'goal.update', 'goal.archive', 'schedule.accept', 'schedule.undo', 'occurrence.move', 'occurrence.lock', 'occurrence.create', 'completion.set', 'profile.answer'].includes(c.type))
+        if (typeof c.type !== 'string' || !['training.create', 'health.save', 'health.archive', 'task.create', 'task.update', 'task.archive', 'goal.create', 'goal.update', 'goal.archive', 'schedule.accept', 'schedule.undo', 'occurrence.move', 'occurrence.lock', 'occurrence.create', 'completion.set', 'profile.answer'].includes(c.type))
             throw new Error('Unsupported command.');
         const serialized = canonical(c);
         if (Buffer.byteLength(serialized, 'utf8') > 1_048_576) throw new Error('Command size exceeds 1 MiB.');
@@ -164,6 +165,13 @@ export class CoreRepository {
     }
     private execute(ownerId: string, c: Command): Receipt {
         const p = object(c.payload), db = this.database;
+        if (c.type === 'training.create') {
+            const routine = buildRoutine(p);
+            if (!routine.eligible) throw new Error(routine.reasons.join(' '));
+            const receipt = executePlanning(db, ownerId, { ...c, type: 'task.create', payload: { title: routine.title, kind: routine.kind, durationMinutes: routine.minutes, goalId: routine.goalId, bufferMinutes: 5 } })!;
+            if (receipt.status === 'accepted') db.prepare("INSERT INTO core_health VALUES (?,?,'routine',1,0,?)").run(ownerId, c.entityId, JSON.stringify(routine));
+            return receipt;
+        }
         const health = executeHealth(db, ownerId, c);
         if (health) return health;
         const accepted = (revision: number): Receipt => ({ operationId: c.operationId, status: 'accepted', canonicalRevision: revision });
