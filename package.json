@@ -8,7 +8,8 @@
     "start": "next start",
     "test": "node --import tsx --test tests/**/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "lint": "node tools/quality/node_modules/eslint/bin/eslint.js src/core tests/core scripts/verify-core.ts --max-warnings 0"
+    "lint": "node tools/quality/node_modules/eslint/bin/eslint.js src/core tests/core tests/pilot apps/local-pilot scripts/verify-core.ts --max-warnings 0",
+    "pilot": "node --import tsx apps/local-pilot/main.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",
