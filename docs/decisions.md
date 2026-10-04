@@ -76,3 +76,6 @@ Phase 0 was approved on 2026-10-04 by the user message: Great. continue throguh 
 
 - DEC-57 — Meal request adds three cooked-weight protein/rice/broccoli recipes and two lemon/chia drink templates. Per-ingredient estimates retain provenance; no daily calorie or OMAD prescription is inferred from incomplete screening. Review before food logging; preparation enters the shared task list before schedule approval. No extra dependency, database schema, external account or deployment.
 - DEC-58 — Preserve the existing local branch and ignored evidence workspace. Continue the authorized feature without an extra phase-approval question; no unrelated next phase starts.
+
+- DEC-59 — The user requests a first-download host experience: implement real local accounts, optional/resumable twenty-question setup, explicit first-goal suggestions and a replayable whole-app tour. No personal goals or health plans are silently created.
+- DEC-60 — GitHub distribution is explicitly authorized for another client to download and customize independently. Package only the local pilot and installed runtime, with no owner data; preserve main and the separate application. This does not waive the previously required automatic sync or authorize public hosting of SQLite.

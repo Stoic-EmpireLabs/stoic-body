@@ -121,3 +121,7 @@ Date: 2026-10-04. 101 requirements including the five learning additions below. 
 
 | N15 | User meal correction 2026-10-04 | Actual fish/turkey/chicken, rice, vegetables, portions and drinks | Health Meals catalog, per-ingredient calculator and existing log/Plan integration; Phase 5 correction | 5 core plus 7 browser tests; meal-templates-checkpoint.md. Full-day personalization and groceries remain open. |
 
+| ENTRY01 | User guided-entry request | Real login, new-client onboarding and resumable questionnaire | Local account/session boundary and Host setup; Phase 4 continuation | accounts/auth/onboarding tests; guided-entry-checkpoint.md. Cloud identity remains open. |
+| ENTRY02 | User whole-app host request | Explain each module, show next actions and provide replayable tooltips | Twelve-stop real-view tour, checklist and persistent help | Browser tour, keyboard Escape, resume/replay and mobile checks |
+| ENTRY03 | User spouse/GitHub request | Another client downloads a fresh copy and sets independent goals | Allowlisted Windows ZIP, fresh accounts and LOCALAPPDATA persistence | Real bundled launcher/account/restart smoke; final release receipt pending |
+
