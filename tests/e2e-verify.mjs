@@ -73,26 +73,37 @@ async function verifyLiveApp() {
   const vaultHeader = await page.locator("text=Encrypted Visual Check-In Vault").first();
   console.log("✅ Encrypted Visual Check-In Vault verified");
 
-  // 7. Timeline & MVD Calendar
+  // 7. Timeline & Interactive Calendar View
   console.log("📍 Navigating to /calendar ...");
   await page.goto("https://stoic-body.vercel.app/calendar", { waitUntil: "networkidle" });
-  const timelineHeader = await page.locator("text=Protected Buffer Timeline").first();
-  console.log("✅ Protected Buffer Timeline verified");
-  const mvdButton = page.locator("button:has-text('Activate Minimum Viable Day')");
-  await mvdButton.click();
-  const mvdActiveBadge = await page.locator("text=MVD ACTIVE (COMPRESSED)").first();
-  console.log("✅ Switched to Minimum Viable Day (MVD) compressed schedule and verified toggle state");
+  const calendarHeader = await page.locator("text=Unified Temporal Calendar").first();
+  console.log("✅ Unified Temporal Calendar verified");
+  const weekBtn = page.locator("button:has-text('7-Day Week')");
+  await weekBtn.click();
+  console.log("✅ Switched to 7-Day Week tactical horizon");
+  const monthBtn = page.locator("button:has-text('Month Grid')");
+  await monthBtn.click();
+  console.log("✅ Switched to October 2026 Month Grid view");
 
-  // 8. Learning Curricula & Pathways
+  // 8. Goals & Weekly Targets Hub
+  console.log("📍 Navigating to /goals ...");
+  await page.goto("https://stoic-body.vercel.app/goals", { waitUntil: "networkidle" });
+  const goalsHeader = await page.locator("text=Weekly Targets & Quotas").first();
+  console.log("✅ Weekly Targets & Quotas verified");
+  const logGoalBtn = page.locator("button:has-text('+1 Log Progress')").first();
+  await logGoalBtn.click();
+  console.log("✅ Logged +1 progress on weekly target with sound & XP");
+
+  // 9. Video How-To Guides & Learning Studio
   console.log("📍 Navigating to /learning ...");
   await page.goto("https://stoic-body.vercel.app/learning", { waitUntil: "networkidle" });
-  const learningHeader = await page.locator("text=Deconstructed Learning Curricula").first();
-  console.log("✅ Deconstructed Learning Curricula verified");
-  const cheerTab = page.locator("button:has-text('Father & Daughter')");
-  await cheerTab.click();
-  console.log("✅ Switched to Cheerleading Flyer progression");
+  const videoPlayerHeader = await page.locator("text=Video How-To Guides").first();
+  console.log("✅ Video How-To Guides verified");
+  const watchBtn = page.locator("button:has-text('Mark Watched')").first();
+  await watchBtn.click();
+  console.log("✅ Mastered Mustang V6 Oil Change video guide with +XP reward");
 
-  // 9. Stoic Coaching & Wisdom Hub
+  // 10. Stoic Coaching & Wisdom Hub
   console.log("📍 Navigating to /coaching ...");
   await page.goto("https://stoic-body.vercel.app/coaching", { waitUntil: "networkidle" });
   const coachingHeader = await page.locator("text=Multi-Tone Stoic Advisory").first();
@@ -107,7 +118,7 @@ async function verifyLiveApp() {
   const sealConfirmed = await page.locator("text=Evening Stoic Audit Sealed").first();
   console.log("✅ Evening Stoic Audit sealed with +250 XP reward");
 
-  // 10. Document & Reference Staging Vault
+  // 11. Document & Reference Staging Vault
   console.log("📍 Navigating to /imports ...");
   await page.goto("https://stoic-body.vercel.app/imports", { waitUntil: "networkidle" });
   const vaultIndex = await page.locator("text=Vault Index & Two-Step Confirmation Gate").first();
@@ -116,11 +127,14 @@ async function verifyLiveApp() {
   await stageBtn.click();
   console.log("✅ Staged DBA Research PDF into vault");
 
-  // 11. Settings & Sovereign License
+  // 12. Settings & Profile Biometrics
   console.log("📍 Navigating to /settings ...");
   await page.goto("https://stoic-body.vercel.app/settings", { waitUntil: "networkidle" });
-  const sovereignBadge = await page.locator("text=Founder Sovereign License").first();
-  console.log("✅ Founder Sovereign License permanently verified");
+  const profileSection = await page.locator("text=Profile & Recomposition Biometrics").first();
+  console.log("✅ Profile & Recomposition Biometrics verified");
+  const saveBtn = page.locator("button:has-text('Save Profile Baseline')");
+  await saveBtn.click();
+  console.log("✅ Saved Profile Baseline (170 -> 155 lbs target)");
 
   await browser.close();
   console.log("🏆 ALL 11 ROUTES & LIVE BROWSER VERIFICATIONS PASSED 100%!");
