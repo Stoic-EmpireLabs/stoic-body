@@ -15,3 +15,6 @@ data/*.sqlite-journal
 # Owner-only planning inputs
 /private/
 .env*.local
+
+.vercel
+.env*

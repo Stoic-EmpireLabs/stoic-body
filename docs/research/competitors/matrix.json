@@ -1,0 +1,446 @@
+{
+  "review_date": "2026-10-04",
+  "comparison_scope": "24 direct or adjacent benchmarks; public evidence depths differ; no claim of exhaustive market coverage.",
+  "competitors": [
+    {
+      "id": "structured",
+      "name": "Structured",
+      "category": "Planning",
+      "selection_reason": "Scale reported by vendor; close daily-planning fit",
+      "operation": "Capture untimed work in Inbox, place sessions on a timeline, complete and revisit the day.",
+      "interface_pattern": "Vertical time axis, compact day strip, colored task circles, persistent add control.",
+      "monetization": "Free + Pro; monthly/yearly/lifetime.",
+      "performance_basis": "15M+ downloads, 500K+ Pro users: vendor claims, date/definitions unspecified.",
+      "adopt": "A readable Today timeline with unscheduled capture.",
+      "change_or_omit": "Add capacity explanations, linked goals, recovery and undo; do not inherit feature-parity assumptions.",
+      "source_ids": [
+        "CR05",
+        "CR06",
+        "CR07",
+        "CR50"
+      ],
+      "depth": "Visual + documentation + signup boundary",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "tiimo",
+      "name": "Tiimo",
+      "category": "Planning",
+      "selection_reason": "Independent editorial recognition",
+      "operation": "Break projects into tasks, plan a visual day, use a focused timer.",
+      "interface_pattern": "Color/emoji task blocks, a day agenda, timer with subtasks, separate trophy view.",
+      "monetization": "Paid offer/price not verified in this audit.",
+      "performance_basis": "Apple iPhone App of the Year 2025; award, not sales rank.",
+      "adopt": "Progressive questions and one focused action view.",
+      "change_or_omit": "Keep accessibility and reduce decorative density; AI suggestions require review.",
+      "source_ids": [
+        "CR04",
+        "CR48"
+      ],
+      "depth": "Visual + documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "todoist",
+      "name": "Todoist",
+      "category": "Planning",
+      "selection_reason": "Task-capture and cross-device specialist",
+      "operation": "Quickly capture a task with date/attributes, organize projects and choose list/board/calendar views.",
+      "interface_pattern": "Compact task rows and quick-add entry.",
+      "monetization": "Free Beginner; Pro subscription.",
+      "performance_basis": "Not ranked as a sales leader in this audit.",
+      "adopt": "A global capture box with visible date/goal chips.",
+      "change_or_omit": "Preview ambiguous date parsing and distinguish due date from scheduled time.",
+      "source_ids": [
+        "CR08",
+        "CR09"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "motion",
+      "name": "Motion",
+      "category": "Planning",
+      "selection_reason": "Automatic scheduling specialist",
+      "operation": "Use task constraints to place work into available calendar time and revise the plan.",
+      "interface_pattern": "Calendar and task agenda; account UI not exercised.",
+      "monetization": "Subscription; exact billing/segment price unresolved.",
+      "performance_basis": "No comparable audited sales or active-user metric verified.",
+      "adopt": "Capacity-aware scheduling and an obvious next task.",
+      "change_or_omit": "Require a proposed change list before moving locked or user-controlled commitments.",
+      "source_ids": [
+        "CR10",
+        "CR11"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "sunsama",
+      "name": "Sunsama",
+      "category": "Planning",
+      "selection_reason": "Daily planning and workload specialist",
+      "operation": "Review yesterday, select tasks, check workload, arrange/timebox and begin.",
+      "interface_pattern": "Guided planning ritual with workload and shutdown-time feedback.",
+      "monetization": "$22/month or $204/year USD.",
+      "performance_basis": "Vendor business claims are not a measured market ranking.",
+      "adopt": "A short morning plan and achievable workday.",
+      "change_or_omit": "Offer a fast path for busy days; incorporate family, meals and recovery in capacity.",
+      "source_ids": [
+        "CR12",
+        "CR13"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "habitica",
+      "name": "Habitica",
+      "category": "Game",
+      "selection_reason": "Closest life-as-RPG benchmark",
+      "operation": "Complete habits/dailies/tasks to gain XP, gold and items; quests add accountability.",
+      "interface_pattern": "Separate task columns, avatar statistics, inventory and rewards.",
+      "monetization": "Game economy present; current paid price not verified.",
+      "performance_basis": "Specialist relevance; current revenue rank unverified.",
+      "adopt": "Campaigns, attributes, personal rewards and milestones.",
+      "change_or_omit": "Omit damage for missed habits and pressure on party members; keep rewards tied to sustainable behavior.",
+      "source_ids": [
+        "CR14",
+        "CR15"
+      ],
+      "depth": "Visual + documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "finch",
+      "name": "Finch",
+      "category": "Game",
+      "selection_reason": "Chart presence and large store-rating sample",
+      "operation": "Select small goals, earn energy through care, send pet on an adventure and return to its story.",
+      "interface_pattern": "Warm companion theme and a small-action loop; native tap sequence not tested.",
+      "monetization": "Free core; optional Finch Plus.",
+      "performance_basis": "US free chart 11; separate listing 12, 4.9/757K ratings at retrieval.",
+      "adopt": "Supportive return loop, customizable goals, celebration of small effort.",
+      "change_or_omit": "Translate emotional progress into an optional Stoic journey; no compulsory pet or guilt prompts.",
+      "source_ids": [
+        "CR01",
+        "CR16",
+        "CR17",
+        "CR47"
+      ],
+      "depth": "Visual + documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "fabulous",
+      "name": "Fabulous",
+      "category": "Game",
+      "selection_reason": "Routine and coaching specialist",
+      "operation": "Start with a desired life change; follow routines and use coaching resources.",
+      "interface_pattern": "Motivation-first landing questionnaire and themed coaching content.",
+      "monetization": "Current exact offer not verified.",
+      "performance_basis": "Specialist relevance; not verified as a top seller.",
+      "adopt": "Small routines and practical coaching prompts.",
+      "change_or_omit": "Avoid long setup before the first useful day; every prompt should lead to a concrete action.",
+      "source_ids": [
+        "CR18"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "duolingo",
+      "name": "Duolingo",
+      "category": "Learning",
+      "selection_reason": "Company-reported paid and active-user scale",
+      "operation": "Repeat small learning sessions; streaks/freeze mechanics encourage return.",
+      "interface_pattern": "A prominent continuity/progress mechanic; current native lesson screens not inspected.",
+      "monetization": "Free and paid subscriber business; local current price not verified.",
+      "performance_basis": "Q4 2025: 52.7M DAU, 133.1M MAU, 12.2M paid subscribers.",
+      "adopt": "Short learning quests, progress visibility and grace days.",
+      "change_or_omit": "Practice evidence determines skill mastery; XP and streaks do not certify physical readiness.",
+      "source_ids": [
+        "CR03",
+        "CR19"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "myfitnesspal",
+      "name": "MyFitnessPal",
+      "category": "Nutrition",
+      "selection_reason": "Chart and historical revenue-estimate evidence",
+      "operation": "Log food through several entry modes; inspect targets; paid meal plans produce shopping support.",
+      "interface_pattern": "Food diary plus summary and meal-planning flows.",
+      "monetization": "Premium $79.99/year; Plus $99.99/year or $24.99/month USD.",
+      "performance_basis": "US free chart 10; included in Sensor Tower US Q4 2025 revenue leaders.",
+      "adopt": "Saved meals, editable fast capture, recipes and groceries.",
+      "change_or_omit": "Make source/portion corrections obvious; explain paid boundaries before users invest effort.",
+      "source_ids": [
+        "CR01",
+        "CR02",
+        "CR20",
+        "CR21"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "cronometer",
+      "name": "Cronometer",
+      "category": "Nutrition",
+      "selection_reason": "Chart presence and detailed nutrient specialty",
+      "operation": "Log food and inspect energy/macros/micronutrients; Gold adds richer charts and import.",
+      "interface_pattern": "Summary bars/rings with deeper nutrient detail; prominent diary add action.",
+      "monetization": "Free Basic; Gold displayed $10.99 USD/month.",
+      "performance_basis": "US free chart 20; no audited paying-user count verified.",
+      "adopt": "Nutrient source labels and detail on demand.",
+      "change_or_omit": "Use a simple daily summary first; do not equate missing nutrient data with zero.",
+      "source_ids": [
+        "CR01",
+        "CR22",
+        "CR23"
+      ],
+      "depth": "Visual + documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "macrofactor",
+      "name": "MacroFactor",
+      "category": "Nutrition",
+      "selection_reason": "Adaptive planning and bundled workout competitor",
+      "operation": "Log intake and weight; estimated expenditure informs periodic target updates.",
+      "interface_pattern": "Strategy/check-in screen, trend view and explanations of program changes.",
+      "monetization": "Single app $71.99/year or $11.99/month; qualifying bundle $89.99/year USD.",
+      "performance_basis": "Vendor product page says 500K users; activity/payment definitions unknown.",
+      "adopt": "Weekly review, trend-based estimates and explanations.",
+      "change_or_omit": "Require sufficient reliable data; use independently specified formulas and show uncertainty.",
+      "source_ids": [
+        "CR24",
+        "CR25",
+        "CR26",
+        "CR49"
+      ],
+      "depth": "Visual + documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "loseit",
+      "name": "Lose It!",
+      "category": "Nutrition",
+      "selection_reason": "Nutrition incumbent; upgrade-flow comparison",
+      "operation": "Food tracking continues through a free-to-Premium upgrade with prior account history retained.",
+      "interface_pattern": "Exact native screens uninspected; documentation establishes upgrade continuity.",
+      "monetization": "Variable promotional pricing; current universal price cannot be stated.",
+      "performance_basis": "Not assigned a revenue rank here.",
+      "adopt": "Preserve history and favorites across paid/free transitions.",
+      "change_or_omit": "Offer transparent, stable terms; avoid deriving causal effectiveness from subscriber comparisons.",
+      "source_ids": [
+        "CR27"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "zero",
+      "name": "Zero",
+      "category": "Nutrition",
+      "selection_reason": "Meal-timing specialist relevant to OMAD preference",
+      "operation": "Start/edit an eating-window timer and review food/protein and timing history.",
+      "interface_pattern": "Large fasting timer and related daily nutrition summaries.",
+      "monetization": "Try-free/download offer; current price not verified.",
+      "performance_basis": "Vendor number-one claim not treated as ranking evidence.",
+      "adopt": "Optional timing controls and editable timestamps.",
+      "change_or_omit": "Exclude fasting-duration XP and unsupported physiological countdowns.",
+      "source_ids": [
+        "CR28"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "calai",
+      "name": "Cal AI",
+      "category": "Nutrition",
+      "selection_reason": "Current chart and Google Play download evidence",
+      "operation": "Capture a photo, barcode or description and review nutrition output.",
+      "interface_pattern": "Capture-first food entry.",
+      "monetization": "In-app purchases; current exact offer not verified.",
+      "performance_basis": "US free chart 8; Play surfaced 1M+ installs, 4.6/272K reviews.",
+      "adopt": "Fast photo/voice-assisted draft entry and recent meals.",
+      "change_or_omit": "Require portion/ingredient confirmation and estimate labels; no claims of exact image nutrients.",
+      "source_ids": [
+        "CR01",
+        "CR29",
+        "CR30"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "hevy",
+      "name": "Hevy",
+      "category": "Fitness",
+      "selection_reason": "Workout-logging specialist",
+      "operation": "Start a routine, compare previous sets, enter reps/load, complete sets, rest and save.",
+      "interface_pattern": "Set table with previous/current values, checkmarks and an adjacent timer.",
+      "monetization": "Free + Pro; four routine limit documented for free tier.",
+      "performance_basis": "No independently verified sales rank.",
+      "adopt": "Low-friction set logging and previous-performance context.",
+      "change_or_omit": "Keep a live workout recoverable offline; social sharing optional and private by default.",
+      "source_ids": [
+        "CR31",
+        "CR32"
+      ],
+      "depth": "Visual + documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "fitbod",
+      "name": "Fitbod",
+      "category": "Fitness",
+      "selection_reason": "Adaptive workout and equipment specialist",
+      "operation": "Select goal/experience/equipment/split; generated sessions adapt to preferences and logged training.",
+      "interface_pattern": "Editable workout recommendations and session-specific time/equipment controls.",
+      "monetization": "$15.99/month or $95.99/year USD; variation disclosed.",
+      "performance_basis": "Not ranked as a sales leader here.",
+      "adopt": "Permanent gym profiles plus temporary 'today' overrides.",
+      "change_or_omit": "Make plan changes explainable; perceived recovery is an estimate, not a diagnosis.",
+      "source_ids": [
+        "CR33",
+        "CR34",
+        "CR35"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "ladder",
+      "name": "Ladder",
+      "category": "Fitness",
+      "selection_reason": "Current chart leader within workout subset",
+      "operation": "Choose coach/team; follow weekly sessions with demonstrations/audio, log progress and nutrition.",
+      "interface_pattern": "Daily workout card, weekly day strip and in-session coaching.",
+      "monetization": "Subscription offering; current exact price not verified.",
+      "performance_basis": "US free chart 7; no audited revenue claimed.",
+      "adopt": "A clear recommended session and optional cues during exercise.",
+      "change_or_omit": "Build low-cost written/video resource mode first; proprietary audio content needs its own budget.",
+      "source_ids": [
+        "CR01",
+        "CR36"
+      ],
+      "depth": "Visual + documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "freeletics",
+      "name": "Freeletics",
+      "category": "Fitness",
+      "selection_reason": "Home/bodyweight program specialist",
+      "operation": "Choose a goal-oriented Journey with ability, training frequency and equipment inputs.",
+      "interface_pattern": "Program/Journey organization; native interface not inspected.",
+      "monetization": "Coach program offer; current price not verified.",
+      "performance_basis": "Specialist relevance, no revenue claim.",
+      "adopt": "Coherent multiweek home-training progression.",
+      "change_or_omit": "Offer light and recovery alternatives; do not combine every training style into one week.",
+      "source_ids": [
+        "CR37"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "strava",
+      "name": "Strava",
+      "category": "Fitness",
+      "selection_reason": "Free-chart and historical revenue evidence",
+      "operation": "Record activities, inspect trends, set goals and optionally join challenges/social sharing.",
+      "interface_pattern": "Activity-centered history and progress; native interface not inspected.",
+      "monetization": "Free and subscription feature tiers.",
+      "performance_basis": "US free chart 1; included in historical US revenue-estimate leaders.",
+      "adopt": "Personal activity milestones and optional accountability.",
+      "change_or_omit": "Protect location and family data; avoid public body-composition competition.",
+      "source_ids": [
+        "CR01",
+        "CR02",
+        "CR38",
+        "CR39"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "runna",
+      "name": "Runna",
+      "category": "Fitness",
+      "selection_reason": "Coordinated training specialist",
+      "operation": "Configure a running plan and add strength by ability, duration, days and equipment.",
+      "interface_pattern": "Plan → Manage Plan → Strength setup, documented in help.",
+      "monetization": "Current local subscription price not verified.",
+      "performance_basis": "No current US sales rank assigned; historical UK estimates exist but are not combined with US charts.",
+      "adopt": "One schedule for complementary training modes.",
+      "change_or_omit": "Coordinate boxing, lifting, treadmill and calisthenics through one workload budget.",
+      "source_ids": [
+        "CR40"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "calisteniapp",
+      "name": "Calisteniapp",
+      "category": "Fitness",
+      "selection_reason": "Direct calisthenics-learning relevance",
+      "operation": "Select a level/skill or program, complete sessions and provide feedback for progression.",
+      "interface_pattern": "Skill cards with clear ability labels and separate program types.",
+      "monetization": "Free individual sessions/creator; Pro guided content.",
+      "performance_basis": "Specialist relevance; top-seller status unverified.",
+      "adopt": "Prerequisite-based skill paths and clear starting levels.",
+      "change_or_omit": "Coach checks for risky physical skills; a badge cannot establish cheer-lift competence.",
+      "source_ids": [
+        "CR41",
+        "CR42"
+      ],
+      "depth": "Visual + documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "fightcamp",
+      "name": "FightCamp",
+      "category": "Fitness",
+      "selection_reason": "Direct boxing-learning relevance",
+      "operation": "Follow round-based coached sessions or track practice with supported hardware.",
+      "interface_pattern": "Rounds, session stats and guided content; native interface uninspected.",
+      "monetization": "Hardware-linked offers; public pages show conflicting $39/$39.99 and separate WORK tier.",
+      "performance_basis": "Vendor 20K+ member claim; no comparable audited rank.",
+      "adopt": "Round/rest timer, technique resources and optional session feedback.",
+      "change_or_omit": "No tracker purchase required for Stoic Body shadowboxing; no invented punch-speed or force data.",
+      "source_ids": [
+        "CR43",
+        "CR44"
+      ],
+      "depth": "Documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    },
+    {
+      "id": "stoic",
+      "name": "stoic.",
+      "category": "Reflection",
+      "selection_reason": "Direct reflection and positioning competitor",
+      "operation": "Choose daily check-in or morning/evening reflection, write and tag entries, review history.",
+      "interface_pattern": "Calm typography and separate morning/evening cards.",
+      "monetization": "Current offer/price not verified in this audit.",
+      "performance_basis": "Specialist relevance; top-seller status unverified.",
+      "adopt": "Brief contextual reflection and a useful daily action.",
+      "change_or_omit": "Retain quote provenance and original branding; avoid generic quotes unrelated to the schedule.",
+      "source_ids": [
+        "CR45",
+        "CR46"
+      ],
+      "depth": "Visual + documentation",
+      "decision": "Proposed inspiration; not selected or implemented"
+    }
+  ]
+}

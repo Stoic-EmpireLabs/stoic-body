@@ -13,7 +13,8 @@ export function getDatabase(targetPath?: string): DatabaseSync {
 
   if (globalDb) return globalDb;
 
-  const dbDir = path.join(process.cwd(), "data");
+  const isVercel = !!process.env.VERCEL;
+  const dbDir = isVercel ? "/tmp" : path.join(process.cwd(), "data");
   if (!fs.existsSync(dbDir)) {
     fs.mkdirSync(dbDir, { recursive: true });
   }
