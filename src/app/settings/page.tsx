@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useStoic, UserProfile } from "@/context/StoicContext";
+import AgentKeysHub from "@/components/AgentKeysHub";
 
 export default function SettingsPage() {
   const {
@@ -71,6 +72,9 @@ export default function SettingsPage() {
           <span>Founder Sovereign Active</span>
         </div>
       </section>
+
+      {/* 2026 AI AGENTS & SOVEREIGN API KEYS HUB */}
+      <AgentKeysHub />
 
       {/* PROFILE & BIOMETRICS SETTINGS */}
       <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl space-y-4">

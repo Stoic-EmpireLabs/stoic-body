@@ -9,6 +9,7 @@ import {
   calibrateClientProfile,
   QuestionnaireAnswers,
 } from "@/lib/onboarding";
+import { generateMultiWeekSchedule } from "@/lib/scheduling";
 
 export interface Transaction {
   id: string;
@@ -407,18 +408,46 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
       if (savedCe) {
         try {
           const parsed = JSON.parse(savedCe);
-          if (Array.isArray(parsed)) {
-            const existingCeIds = new Set(parsed.map((e: any) => e.id));
-            const aiEvents = [
-              { id: "ce-ai-1", date: "2026-10-04", title: "AI Spectrum Study: Lesson 1 & 2 (AI Umbrella & Machine Learning)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
-              { id: "ce-ai-2", date: "2026-10-05", title: "AI Spectrum Study: Lesson 3 & 4 (Deep Learning & Generative AI)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
-              { id: "ce-ai-3", date: "2026-10-06", title: "AI Spectrum Study: Lesson 5 (Large Language Models & Prompting)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
-              { id: "ce-ai-4", date: "2026-10-07", title: "AI Spectrum Study: Lesson 6 (Retrieval-Augmented Generation & Vectors)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
-              { id: "ce-ai-5", date: "2026-10-08", title: "AI Spectrum Study: Lesson 7 (Agentic AI & Autonomous Swarms)", time: "11:30", durationMinutes: 45, tier: 2, completed: false },
-            ].filter((e) => !existingCeIds.has(e.id));
-            setCalendarEvents([...parsed, ...aiEvents]);
+          if (Array.isArray(parsed) && parsed.length >= 20) {
+            setCalendarEvents(parsed);
+          } else {
+            const multiWeekEvents = generateMultiWeekSchedule("2026-10-04", 10, {
+              startWeight: 170,
+              targetWeight: 155,
+              trainingFocus: "Calisthenics & Boxing",
+              techTrack: "AI Spectrum",
+              proteinPreference: "Fish",
+            }).map((mwe) => ({
+              id: mwe.id,
+              date: mwe.date,
+              title: `${mwe.title} [${mwe.scientificCitation}]`,
+              time: mwe.time,
+              durationMinutes: mwe.durationMinutes,
+              tier: mwe.tier,
+              completed: mwe.completed || false,
+            }));
+            setCalendarEvents(multiWeekEvents);
+            localStorage.setItem("stoic_calendar_events", JSON.stringify(multiWeekEvents));
           }
         } catch (e) {}
+      } else {
+        const multiWeekEvents = generateMultiWeekSchedule("2026-10-04", 10, {
+          startWeight: 170,
+          targetWeight: 155,
+          trainingFocus: "Calisthenics & Boxing",
+          techTrack: "AI Spectrum",
+          proteinPreference: "Fish",
+        }).map((mwe) => ({
+          id: mwe.id,
+          date: mwe.date,
+          title: `${mwe.title} [${mwe.scientificCitation}]`,
+          time: mwe.time,
+          durationMinutes: mwe.durationMinutes,
+          tier: mwe.tier,
+          completed: mwe.completed || false,
+        }));
+        setCalendarEvents(multiWeekEvents);
+        localStorage.setItem("stoic_calendar_events", JSON.stringify(multiWeekEvents));
       }
 
       const savedProf = localStorage.getItem("stoic_user_profile");
@@ -797,7 +826,7 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
   };
 
   const saveNewClientProfile = (answers: QuestionnaireAnswers): ClientProfile => {
-    const { profile, initialTasks, initialGoals } = calibrateClientProfile(answers);
+    const { profile, initialTasks, initialGoals, multiWeekSchedule } = calibrateClientProfile(answers);
     setActiveProfile(profile);
     const updatedProfiles = [...allProfiles.filter((p) => p.id !== profile.id), profile];
     setAllProfiles(updatedProfiles);
@@ -815,12 +844,24 @@ export function StoicProvider({ children }: { children: React.ReactNode }) {
     setDailyTasks(initialTasks);
     setWeeklyGoals((prev) => [...initialGoals, ...prev]);
 
+    const scheduledEvents: CalendarEvent[] = (multiWeekSchedule || []).map((mwe) => ({
+      id: mwe.id,
+      date: mwe.date,
+      title: `${mwe.title} [${mwe.scientificCitation}]`,
+      time: mwe.time,
+      durationMinutes: mwe.durationMinutes,
+      tier: mwe.tier,
+      completed: mwe.completed || false,
+    }));
+    setCalendarEvents(scheduledEvents);
+
     if (typeof window !== "undefined") {
       localStorage.setItem("stoic_active_profile", JSON.stringify(profile));
       localStorage.setItem("stoic_all_profiles", JSON.stringify(updatedProfiles));
       localStorage.setItem("stoic_total_xp", String(profile.totalXp));
       localStorage.setItem("stoic_daily_tasks", JSON.stringify(initialTasks));
       localStorage.setItem("stoic_weekly_goals", JSON.stringify([...initialGoals, ...weeklyGoals]));
+      localStorage.setItem("stoic_calendar_events", JSON.stringify(scheduledEvents));
       localStorage.setItem(
         "stoic_user_profile",
         JSON.stringify({

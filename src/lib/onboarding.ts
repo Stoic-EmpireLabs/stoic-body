@@ -1,7 +1,9 @@
 /**
  * Stoic Sovereign — Host Onboarding & Guided Walkthrough Engine
- * Provides client intake calibration, profile management, and interactive app tour configuration.
+ * Provides client intake calibration, multi-week campaign scheduling, and interactive tab-by-tab tour.
  */
+
+import { generateMultiWeekSchedule, MultiWeekCampaignEvent } from "@/lib/scheduling";
 
 export interface QuestionnaireAnswers {
   callsign: string;
@@ -9,6 +11,8 @@ export interface QuestionnaireAnswers {
   height: string;
   currentWeight: number;
   targetWeight: number;
+  targetWeeks: number; // e.g. 4, 8, 10, 12, 16 weeks
+  targetDate?: string;
   primaryMission: string;
   fastingProtocol: "23:1 OMAD" | "16:8 Lean Gains" | "20:4 Warrior Diet" | "3 Clean Meals";
   proteinPreference: "Fish" | "Turkey" | "Chicken";
@@ -28,6 +32,10 @@ export interface ClientProfile {
   height: string;
   currentWeight: number;
   targetWeight: number;
+  targetWeeks: number;
+  targetDate: string;
+  targetWeeklyLossLbs: number;
+  dailyCalorieDeficit: number;
   dailyProtein: number;
   dailyCalories: number;
   fastingProtocol: string;
@@ -47,6 +55,7 @@ export interface TourStep {
   stepNumber: number;
   title: string;
   subtitle: string;
+  tabLabel: string;
   targetSelector: string;
   route: string;
   hostDialogue: string;
@@ -54,7 +63,7 @@ export interface TourStep {
 }
 
 /**
- * Default Founder Profile
+ * Default Founder Profile (170 -> 155 lbs Recomp, 10 Weeks Target Date: Dec 15, 2026)
  */
 export const FOUNDER_PROFILE: ClientProfile = {
   id: "founder",
@@ -65,6 +74,10 @@ export const FOUNDER_PROFILE: ClientProfile = {
   height: "5'10\"",
   currentWeight: 170.0,
   targetWeight: 155.0,
+  targetWeeks: 10,
+  targetDate: "2026-12-15",
+  targetWeeklyLossLbs: 1.5,
+  dailyCalorieDeficit: 750,
   dailyProtein: 140,
   dailyCalories: 1800,
   fastingProtocol: "23:1 OMAD",
@@ -80,73 +93,104 @@ export const FOUNDER_PROFILE: ClientProfile = {
 };
 
 /**
- * 6-Step App Walkthrough Configuration
+ * 8-Step Interactive Tab-by-Tab Walkthrough Configuration
+ * Directly highlights each real navigation tab and demonstrates its superpowers.
  */
 export const APP_TOUR_STEPS: TourStep[] = [
   {
-    id: "tour-header",
+    id: "tour-tab-today",
     stepNumber: 1,
-    title: "1. The Sovereign Header & Status Command",
-    subtitle: "Your level, streak shield, and mental clarity toggle",
-    targetSelector: "#tour-target-header",
+    title: "1. Today Command Deck & Live Goal Countdown",
+    subtitle: "Real-time fasting clock, live target countdown & daily anchors",
+    tabLabel: "Today",
+    targetSelector: "#tour-tab-today",
     route: "/",
     hostDialogue:
-      "Welcome to your sovereign command center. Here at the top, you monitor your current Prestige Level, active Streak Shield (protecting you from accidental streak breaks), and the Calm Mode toggle for deep, distraction-free execution.",
-    actionHint: "Notice your Level badge and Streak Shield at the top of the screen.",
+      "This is your daily command deck. At the very top sits your live real-time countdown to your target goal date. Below that is the circular metabolic ring tracking your Glycogen Depletion, Ketosis, and Autophagy phases, accompanied by your gamified daily anchors with audio anvil chimes.",
+    actionHint: "Notice the ticking goal countdown and circular fasting ring.",
   },
   {
-    id: "tour-fasting",
+    id: "tour-tab-calendar",
     stepNumber: 2,
-    title: "2. Fasting & Autophagy Countdown",
-    subtitle: "Real-time metabolic phase tracker & hydration logger",
-    targetSelector: "#tour-target-fasting",
-    route: "/",
-    hostDialogue:
-      "This circular ring tracks your metabolic state in real time: Glycogen Depletion (0-12h), Ketosis & Lipolysis (12-16h), and Deep Autophagy (16-23h). Log your hydration and mineral electrolytes with a single tap to crush midday fatigue.",
-    actionHint: "Your 23:1 fasting window opens at 05:30 PM for your 1-hour feast.",
-  },
-  {
-    id: "tour-anchors",
-    stepNumber: 3,
-    title: "3. Daily Sovereign Anchors & Live XP",
-    subtitle: "Turn discipline into a tangible role-playing progression",
-    targetSelector: "#tour-target-anchors",
-    route: "/",
-    hostDialogue:
-      "Your day is governed by high-leverage Sovereign Anchors across Strength, Intellect, and Recovery. Check them off as you complete them to earn XP, level up your character, and hear the victorious strike of the anvil chime.",
-    actionHint: "Tap any anchor checkbox to test XP gain and audio feedback.",
-  },
-  {
-    id: "tour-nutrition",
-    stepNumber: 4,
-    title: "4. Nutrition Studio & Exact Meal Blueprints",
-    subtitle: "Fish, Turkey, or Chicken with exact gram & cup scale portions",
-    targetSelector: "#tour-target-nutrition-link",
-    route: "/nutrition",
-    hostDialogue:
-      "Never guess what or how much to eat again. The Nutrition Studio gives you 3 empirical whole-food formulas (Wild Fish, Lean Turkey, or Chicken Breast) paired with jasmine rice, greens, and your 24oz Lemon Chia Seed Hydration Elixir. Hit 'Log Entire Feast' in 1 click!",
-    actionHint: "Visit /nutrition to view exact weights and cooking steps.",
-  },
-  {
-    id: "tour-learning",
-    stepNumber: 5,
-    title: "5. Interactive AI & Coding Learning Studio",
-    subtitle: "Brilliant-style interactive quizzes, sandboxes & top GitHub repos",
-    targetSelector: "#tour-target-learning-link",
-    route: "/learning",
-    hostDialogue:
-      "Master the highest-leverage skill of this era: AI, Machine Learning, LLMs, RAG, and Agentic Swarms. Practice with hands-on code sandboxes and explore pre-configured top GitHub open-source repositories ready to clone.",
-    actionHint: "Visit /learning to test code execution and earn daily knowledge XP.",
-  },
-  {
-    id: "tour-calendar",
-    stepNumber: 6,
-    title: "6. Boxing Arena, Calendar & Time Dominance",
-    subtitle: "24-hour visual time blocking and round interval timers",
-    targetSelector: "#tour-target-calendar-link",
+    title: "2. 24-Hour Multi-Week Periodized Calendar",
+    subtitle: "Full 8-12 week scheduled training, fasting & coding campaign",
+    tabLabel: "Calendar",
+    targetSelector: "#tour-tab-calendar",
     route: "/calendar",
     hostDialogue:
-      "Master your time with 24-hour visual blocking for calisthenics, consulting, and doctoral research. In the Training tab, launch the interactive boxing timer with real ring bells. You are now equipped. Go conquer your day.",
+      "Your intake doesn't just log one week — it schedules out an entire 8 to 12-week periodized campaign. Here you view your 24-hour visual time blocks, scheduled calisthenics sessions, boxing interval rounds, and tech mastery blocks backed by peer-reviewed sports science citations.",
+    actionHint: "Click through days and weeks to inspect your periodized campaign.",
+  },
+  {
+    id: "tour-tab-goals",
+    stepNumber: 3,
+    title: "3. Strategic Goals & Milestone Progression Hub",
+    subtitle: "Phase 1, 2, and 3 weight checkpoints & live countdown ticker",
+    tabLabel: "Goals & Weekly",
+    targetSelector: "#tour-tab-goals",
+    route: "/goals",
+    hostDialogue:
+      "A goal without an exact deadline is merely a wish. In the Goals Hub, track your progress through Phase 1 (Glycogen Depletion to 165 lbs), Phase 2 (Ketosis to 160 lbs), and Phase 3 (The 155-lb Shred with visible abs), with live weekly achievement increments.",
+    actionHint: "Review your milestone target dates and weekly point bounties.",
+  },
+  {
+    id: "tour-tab-training",
+    stepNumber: 4,
+    title: "4. Boxing & Calisthenics Arena",
+    subtitle: "Dumbbell-free hypertrophy, video guides & round timer with real bells",
+    tabLabel: "Boxing & Calisthenics",
+    targetSelector: "#tour-tab-training",
+    route: "/training",
+    hostDialogue:
+      "Forge elite combat conditioning without gym machines. This tab provides step-by-step calisthenics progressions (strict pull-ups, ring dips, core burnouts) and an interactive 3-minute boxing round interval timer complete with authentic ring bells.",
+    actionHint: "Launch the round timer to hear the combat bell and start interval work.",
+  },
+  {
+    id: "tour-tab-nutrition",
+    stepNumber: 5,
+    title: "5. 23:1 OMAD Nutrition Studio & Exact Portions",
+    subtitle: "Wild Fish, Lean Turkey & Chicken formulas + Lemon Chia Water",
+    tabLabel: "23:1 OMAD",
+    targetSelector: "#tour-tab-nutrition",
+    route: "/nutrition",
+    hostDialogue:
+      "Zero guesswork. The Nutrition Studio gives you 3 empirical whole-food formulas (Wild Fish, Lean Turkey, or Chicken Breast) with exact gram and cup scale weights, paired with jasmine rice, greens, and your 24oz Lemon Chia Seed Hydration Elixir. Hit 'Log Entire Feast' in 1 click!",
+    actionHint: "Toggle between Fish, Turkey, and Chicken scale formulas.",
+  },
+  {
+    id: "tour-tab-progress",
+    stepNumber: 6,
+    title: "6. 170→155 Recomp Data Analytics & Body Fat Scanner",
+    subtitle: "7-day rolling moving average & US Navy body composition formulas",
+    tabLabel: "170→155 Recomp",
+    targetSelector: "#tour-tab-progress",
+    route: "/progress",
+    hostDialogue:
+      "Water weight fluctuates daily — discipline does not. This module filters day-to-day noise using a 7-day rolling moving average, computes your body fat percentage using the US Navy tape method, and models your exact fat loss velocity.",
+    actionHint: "Enter your morning weigh-in to update the rolling trendline.",
+  },
+  {
+    id: "tour-tab-learning",
+    stepNumber: 7,
+    title: "7. Interactive AI Spectrum & Coding Studio",
+    subtitle: "Brilliant-style interactive quizzes, sandboxes & curated GitHub catalog",
+    tabLabel: "How-To Videos",
+    targetSelector: "#tour-tab-learning",
+    route: "/learning",
+    hostDialogue:
+      "Master the highest-leverage intellectual domain of our era: AI, Machine Learning, LLMs, RAG, and Autonomous Agent Swarms. Test real code in browser sandboxes, complete interactive quizzes with instant feedback, and explore pre-configured top GitHub open-source repositories.",
+    actionHint: "Try the active sandbox and run Python/TypeScript code right in your browser.",
+  },
+  {
+    id: "tour-tab-settings",
+    stepNumber: 8,
+    title: "8. AI Agents & Sovereign API Keys Studio",
+    subtitle: "Connect Gemini, Claude, OpenAI & Ollama with live latency benchmarks",
+    tabLabel: "⚙️ Settings",
+    targetSelector: "#tour-tab-settings",
+    route: "/settings",
+    hostDialogue:
+      "This is a 2026 Sovereign OS. In Settings, manage your private API keys for Google Gemini 2.5, Anthropic Claude 3.7, and local Ollama/Ultron models. Test real-time ping latency, adjust reasoning depth, and inspect autonomous background subagent workers.",
     actionHint: "Click 'Complete Tour' to claim your +250 XP bonus!",
   },
 ];
@@ -157,16 +201,32 @@ export const APP_TOUR_STEPS: TourStep[] = [
 export function calibrateClientProfile(
   answers: QuestionnaireAnswers,
   profileId?: string
-): { profile: ClientProfile; initialTasks: any[]; initialGoals: any[] } {
+): {
+  profile: ClientProfile;
+  initialTasks: any[];
+  initialGoals: any[];
+  multiWeekSchedule: MultiWeekCampaignEvent[];
+} {
+  const targetWeeks = answers.targetWeeks || 12;
+  const targetLossTotal = answers.currentWeight - answers.targetWeight;
+  const targetWeeklyLossLbs =
+    targetWeeks > 0 ? Math.round((targetLossTotal / targetWeeks) * 10) / 10 : 1.5;
+  const dailyCalorieDeficit = Math.round((targetWeeklyLossLbs * 3500) / 7);
+
+  // Target Date calculation
+  const now = new Date();
+  const targetDateObj = new Date(now.getTime() + targetWeeks * 7 * 86400000);
+  const targetDateStr = answers.targetDate || targetDateObj.toISOString().split("T")[0];
+
   // Protein calculation: ~0.85g to 1.0g per lb of bodyweight or target weight
   const proteinTarget = Math.round(
     Math.min(answers.targetWeight, answers.currentWeight) * 0.95
   );
 
-  // Calorie calculation: Deficit formula for fat loss
-  // BMR estimate ~ 10 * weight in kg + 6.25 * height - 5 * age
-  // Standardized sovereign deficit: ~1,750 - 1,900 kcal
-  const calorieTarget = answers.currentWeight > answers.targetWeight ? 1800 : 2100;
+  const calorieTarget =
+    answers.currentWeight > answers.targetWeight
+      ? Math.max(1600, 2400 - dailyCalorieDeficit)
+      : 2100;
 
   const profile: ClientProfile = {
     id: profileId || `client-${Date.now()}`,
@@ -177,6 +237,10 @@ export function calibrateClientProfile(
     height: answers.height || "5'10\"",
     currentWeight: answers.currentWeight || 170,
     targetWeight: answers.targetWeight || 155,
+    targetWeeks,
+    targetDate: targetDateStr,
+    targetWeeklyLossLbs,
+    dailyCalorieDeficit,
     dailyProtein: proteinTarget || 140,
     dailyCalories: calorieTarget || 1800,
     fastingProtocol: answers.fastingProtocol || "23:1 OMAD",
@@ -190,6 +254,19 @@ export function calibrateClientProfile(
     onboardingCompleted: true,
     tourCompleted: false,
   };
+
+  // Generate full multi-week scheduled campaign
+  const multiWeekSchedule = generateMultiWeekSchedule(
+    profile.createdDate,
+    targetWeeks,
+    {
+      startWeight: profile.currentWeight,
+      targetWeight: profile.targetWeight,
+      trainingFocus: profile.trainingFocus,
+      techTrack: profile.techTrack,
+      proteinPreference: profile.proteinPreference,
+    }
+  );
 
   // Seed tailored daily tasks based on answers
   const initialTasks = [
@@ -263,7 +340,7 @@ export function calibrateClientProfile(
     },
   ];
 
-  return { profile, initialTasks, initialGoals };
+  return { profile, initialTasks, initialGoals, multiWeekSchedule };
 }
 
 /**

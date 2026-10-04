@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useStoic } from "@/context/StoicContext";
 import { calculateTaskPoints, DifficultyTier } from "@/lib/gamification";
+import GoalCountdownHero from "@/components/GoalCountdownHero";
 
 interface AnchorItem {
   id: string;
@@ -163,8 +164,11 @@ export default function TodayCommandCenter() {
   return (
     <div className="space-y-6">
 
+      {/* 2026 SOVEREIGN RECOMP LIVE GOAL COUNTDOWN & ROADMAP */}
+      <GoalCountdownHero />
+
       {/* MORNING ANCHOR (05:30 AM) */}
-      <section id="tour-target-anchors" className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl relative overflow-hidden">
+      <section id="tour-target-anchors" className="bg-gradient-to-b from-zinc-950/80 via-black/90 to-zinc-950/80 backdrop-blur-2xl border border-white/10 ring-1 ring-amber-500/20 rounded-2xl p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.8)] relative overflow-hidden transition-all hover:border-amber-500/40">
         <div className="absolute -right-12 -top-12 w-36 h-36 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -251,8 +255,9 @@ export default function TodayCommandCenter() {
         </div>
       </section>
 
-      {/* 23:1 OMAD FASTING PROTOCOL (Zero + MacroFactor Inspired) */}
-      <section id="tour-target-fasting" className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+      {/* 23:1 OMAD FASTING PROTOCOL (2026 Liquid Obsidian Glassmorphism) */}
+      <section id="tour-target-fasting" className="bg-gradient-to-b from-zinc-950/80 via-black/90 to-zinc-950/80 backdrop-blur-2xl border border-white/10 ring-1 ring-amber-500/20 rounded-2xl p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.8)] relative overflow-hidden transition-all hover:border-amber-500/40 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="absolute -left-12 -bottom-12 w-36 h-36 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
         <div className="flex items-center gap-4">
           <div className="relative w-20 h-20 flex items-center justify-center">
             <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
@@ -281,7 +286,7 @@ export default function TodayCommandCenter() {
           <div>
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
               <span>23:1 OMAD Fasting Protocol</span>
-              <span className="text-[10px] bg-red-950/70 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30 font-mono">
+              <span className="text-[10px] bg-red-950/70 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30 font-mono font-bold">
                 Stage: Autophagy &amp; Fat Oxidation
               </span>
             </h3>
@@ -322,8 +327,9 @@ export default function TodayCommandCenter() {
         </div>
       </section>
 
-      {/* CHRONOLOGICAL TIMELINE (Structured Inspired with Buffers) */}
-      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl">
+      {/* CHRONOLOGICAL TIMELINE (2026 Liquid Obsidian Glassmorphism) */}
+      <section className="bg-gradient-to-b from-zinc-950/80 via-black/90 to-zinc-950/80 backdrop-blur-2xl border border-white/10 ring-1 ring-amber-500/20 rounded-2xl p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.8)] relative overflow-hidden transition-all hover:border-amber-500/40">
+        <div className="absolute -right-12 -bottom-12 w-36 h-36 bg-red-600/10 rounded-full blur-2xl pointer-events-none" />
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-bold uppercase tracking-wider text-white">
             Chronological Campaign Timeline

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useStoic, WeeklyGoal, LifeGoal } from "@/context/StoicContext";
+import GoalCountdownHero from "@/components/GoalCountdownHero";
 
 export default function GoalsPage() {
   const {
@@ -106,23 +107,26 @@ export default function GoalsPage() {
   return (
     <div className="space-y-6">
 
-      {/* HEADER SECTION (Black with Gold & Red Accent) */}
-      <section className="bg-[#0B0B0F] border border-red-950/80 rounded-xl p-5 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* 2026 LIVE GOAL COUNTDOWN & ROADMAP */}
+      <GoalCountdownHero />
+
+      {/* HEADER SECTION (2026 Liquid Obsidian Glassmorphism) */}
+      <section className="bg-gradient-to-b from-zinc-950/80 via-black/90 to-zinc-950/80 backdrop-blur-2xl border border-white/10 ring-1 ring-amber-500/20 rounded-2xl p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.8)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
             <span>Goals &amp; Weekly Targets Hub</span>
-            <span className="text-[10px] bg-red-950/70 text-red-300 px-2 py-0.5 rounded border border-red-600/40 font-bold">
-              Weekly Quotas &bull; Strategic Life Milestones
+            <span className="text-[10px] bg-red-950/70 text-red-300 px-2 py-0.5 rounded border border-red-600/40 font-bold font-mono">
+              Weekly Quotas &bull; Strategic Milestones
             </span>
           </h2>
-          <p className="text-xs text-slate-200 mt-0.5">
-            Differentiated color coding by discipline with crisp white telemetry and gold XP rewards.
+          <p className="text-xs text-slate-300 mt-1 font-mono">
+            Calibrated multi-week progress tracking with precision deficit and sovereign execution milestones.
           </p>
         </div>
 
         <button
           onClick={() => setShowAddModal(true)}
-          className="px-4 py-2 rounded bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-amber-950/40 flex items-center gap-2"
+          className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-xs uppercase font-mono tracking-wider transition shadow-lg shadow-amber-950/50 flex items-center gap-2 shrink-0"
         >
           <span>+</span> Add New Goal
         </button>

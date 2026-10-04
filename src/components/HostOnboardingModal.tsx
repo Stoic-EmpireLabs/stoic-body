@@ -26,6 +26,8 @@ export default function HostOnboardingModal() {
     height: "5'10\"",
     currentWeight: 170,
     targetWeight: 155,
+    targetWeeks: 10,
+    targetDate: "2026-12-15",
     primaryMission: "Sovereign physical recomposition and elite AI mastery",
     fastingProtocol: "23:1 OMAD",
     proteinPreference: "Chicken",
@@ -224,103 +226,251 @@ export default function HostOnboardingModal() {
             </div>
           )}
 
-          {/* STEP 2: BIOMETRICS & TARGET */}
-          {step === 2 && (
-            <div className="space-y-4">
-              <h3 className="text-sm font-bold text-amber-400 uppercase tracking-wider font-mono">
-                2. Biometrics & Recomposition Target
-              </h3>
+          {/* STEP 2: BIOMETRICS, TIMELINE & DEFICIT CALIBRATION */}
+          {step === 2 && (() => {
+            const targetLoss = Math.max(0, formData.currentWeight - formData.targetWeight);
+            const weeks = Math.max(1, formData.targetWeeks || 10);
+            const weeklyVelocity = (targetLoss / weeks).toFixed(1);
+            const dailyDeficit = Math.round((Number(weeklyVelocity) * 3500) / 7);
+            const targetDateStr = formData.targetDate || "2026-12-15";
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-[#12121C] border border-zinc-800 p-4 rounded-xl">
-                  <label className="block text-xs text-zinc-400 mb-1 font-mono uppercase">
-                    Current Scale Weight
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      value={formData.currentWeight}
-                      onChange={(e) =>
-                        setFormData({ ...formData, currentWeight: Number(e.target.value) })
-                      }
-                      className="w-24 bg-[#181824] border border-zinc-700 rounded-lg px-3 py-2 text-xl font-bold text-white outline-none"
-                    />
-                    <span className="text-sm font-mono text-zinc-400">lbs</span>
+            const setPresetDuration = (w: number) => {
+              const d = new Date();
+              d.setDate(d.getDate() + w * 7);
+              setFormData({
+                ...formData,
+                targetWeeks: w,
+                targetDate: d.toISOString().split("T")[0],
+              });
+            };
+
+            return (
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-amber-400 uppercase tracking-wider font-mono">
+                  2. Biometrics, Target Timeline &amp; Deficit Velocity
+                </h3>
+
+                {/* Weights Grid */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-[#12121C] border border-zinc-800 p-4 rounded-xl">
+                    <label className="block text-xs text-zinc-400 mb-1 font-mono uppercase">
+                      Current Scale Weight
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        value={formData.currentWeight}
+                        onChange={(e) =>
+                          setFormData({ ...formData, currentWeight: Number(e.target.value) })
+                        }
+                        className="w-24 bg-[#181824] border border-zinc-700 rounded-lg px-3 py-2 text-xl font-bold text-white outline-none"
+                      />
+                      <span className="text-sm font-mono text-zinc-400">lbs</span>
+                    </div>
+                    <p className="text-[11px] text-zinc-500 mt-2">
+                      Founder baseline: 170.0 lbs
+                    </p>
                   </div>
-                  <p className="text-[11px] text-zinc-500 mt-2">
-                    Founder starting baseline: 170.0 lbs
-                  </p>
+
+                  <div className="bg-[#12121C] border border-amber-500/30 p-4 rounded-xl">
+                    <label className="block text-xs text-amber-400 mb-1 font-mono uppercase">
+                      Target Recomp Weight
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        value={formData.targetWeight}
+                        onChange={(e) =>
+                          setFormData({ ...formData, targetWeight: Number(e.target.value) })
+                        }
+                        className="w-24 bg-[#181824] border border-amber-500/50 rounded-lg px-3 py-2 text-xl font-bold text-amber-400 outline-none"
+                      />
+                      <span className="text-sm font-mono text-amber-300">lbs</span>
+                    </div>
+                    <p className="text-[11px] text-amber-400/80 mt-2">
+                      Target: 155.0 lbs (Visible Abs)
+                    </p>
+                  </div>
                 </div>
 
-                <div className="bg-[#12121C] border border-amber-500/30 p-4 rounded-xl">
-                  <label className="block text-xs text-amber-400 mb-1 font-mono uppercase">
-                    Target Recomp Weight
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      value={formData.targetWeight}
-                      onChange={(e) =>
-                        setFormData({ ...formData, targetWeight: Number(e.target.value) })
-                      }
-                      className="w-24 bg-[#181824] border border-amber-500/50 rounded-lg px-3 py-2 text-xl font-bold text-amber-400 outline-none"
-                    />
-                    <span className="text-sm font-mono text-amber-300">lbs</span>
+                {/* Target Timeline / Duration Selector */}
+                <div className="bg-[#12121C] border border-zinc-800/80 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-xs text-zinc-300 font-mono uppercase font-bold">
+                      Target Campaign Duration &amp; Deadline
+                    </label>
+                    <span className="text-xs font-mono text-amber-400 font-bold">
+                      {formData.targetWeeks || 10} Weeks &bull; Target: {targetDateStr}
+                    </span>
                   </div>
-                  <p className="text-[11px] text-amber-400/80 mt-2">
-                    Target: 155.0 lbs (Visible Abs)
-                  </p>
+
+                  <div className="grid grid-cols-5 gap-1.5 mb-3">
+                    {[
+                      { w: 4, label: "4 Wks", desc: "Sprint" },
+                      { w: 8, label: "8 Wks", desc: "Rapid" },
+                      { w: 10, label: "10 Wks", desc: "Founder" },
+                      { w: 12, label: "12 Wks", desc: "Optimal" },
+                      { w: 16, label: "16 Wks", desc: "Steady" },
+                    ].map((item) => (
+                      <button
+                        key={item.w}
+                        type="button"
+                        onClick={() => setPresetDuration(item.w)}
+                        className={`p-2 rounded-lg border text-center transition ${
+                          formData.targetWeeks === item.w
+                            ? "bg-amber-500/20 border-amber-500 text-amber-300 font-bold"
+                            : "bg-[#181824] border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700"
+                        }`}
+                      >
+                        <div className="text-xs font-mono">{item.label}</div>
+                        <div className="text-[9px] text-zinc-500">{item.desc}</div>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <label className="block text-[11px] text-zinc-400 font-mono mb-1">
+                        Custom Duration (Weeks)
+                      </label>
+                      <input
+                        type="number"
+                        min="2"
+                        max="52"
+                        value={formData.targetWeeks || 10}
+                        onChange={(e) => {
+                          const w = Math.max(1, Number(e.target.value));
+                          const d = new Date();
+                          d.setDate(d.getDate() + w * 7);
+                          setFormData({
+                            ...formData,
+                            targetWeeks: w,
+                            targetDate: d.toISOString().split("T")[0],
+                          });
+                        }}
+                        className="w-full bg-[#181824] border border-zinc-700 rounded-lg px-3 py-1.5 text-white font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-zinc-400 font-mono mb-1">
+                        Target Goal Deadline Date
+                      </label>
+                      <input
+                        type="date"
+                        value={targetDateStr}
+                        onChange={(e) => {
+                          const newDate = e.target.value;
+                          const diffMs = new Date(newDate).getTime() - new Date().getTime();
+                          const computedWeeks = Math.max(1, Math.round(diffMs / (7 * 86400000)));
+                          setFormData({
+                            ...formData,
+                            targetDate: newDate,
+                            targetWeeks: computedWeeks,
+                          });
+                        }}
+                        className="w-full bg-[#181824] border border-zinc-700 rounded-lg px-3 py-1.5 text-amber-400 font-mono"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Real-Time Telemetry & Deficit Velocity Display */}
+                <div className="bg-gradient-to-r from-zinc-950 via-zinc-900 to-amber-950/40 border border-amber-500/30 rounded-xl p-3.5 space-y-2">
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="text-zinc-400">Total Fat Loss Target:</span>
+                    <strong className="text-white font-bold">{targetLoss} lbs</strong>
+                  </div>
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="text-zinc-400">Weekly Fat Loss Velocity:</span>
+                    <strong className="text-amber-400 font-bold">-{weeklyVelocity} lbs / week</strong>
+                  </div>
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="text-zinc-400">Required Daily Energy Deficit:</span>
+                    <strong className="text-red-400 font-bold">-{dailyDeficit} kcal / day</strong>
+                  </div>
+                  <div className="pt-1.5 border-t border-white/5 flex items-center justify-between text-[11px] font-mono">
+                    <span className="text-emerald-400 font-medium">
+                      ✓ Feasibility: {Number(weeklyVelocity) <= 2.0 ? "Optimal & Muscle-Preserving (Morton 2018)" : "Aggressive Shred Protocol"}
+                    </span>
+                    <span className="text-zinc-500">
+                      Schedules {weeks * 7} Days &bull; ~{weeks * 21} Events
+                    </span>
+                  </div>
+                </div>
+
+                {/* Quick Archetype Preset Buttons */}
+                <div className="pt-1">
+                  <span className="text-xs text-zinc-400 font-mono block mb-2">
+                    Quick Recomp Archetypes:
+                  </span>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          currentWeight: 170,
+                          targetWeight: 155,
+                          targetWeeks: 10,
+                          targetDate: "2026-12-15",
+                        })
+                      }
+                      className={`p-2.5 rounded-lg border text-left transition ${
+                        formData.currentWeight === 170 && formData.targetWeight === 155 && formData.targetWeeks === 10
+                          ? "bg-amber-500/10 border-amber-500 text-amber-300"
+                          : "bg-[#14141E] border-zinc-800 text-zinc-300 hover:border-zinc-700"
+                      }`}
+                    >
+                      <div className="font-bold">170 &rarr; 155 lbs &bull; 10 Wks</div>
+                      <div className="text-[10px] text-zinc-400 mt-0.5">Founder Protocol (Dec 15)</div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          currentWeight: 185,
+                          targetWeight: 165,
+                          targetWeeks: 12,
+                          targetDate: "2026-12-28",
+                        })
+                      }
+                      className={`p-2.5 rounded-lg border text-left transition ${
+                        formData.currentWeight === 185 && formData.targetWeight === 165
+                          ? "bg-amber-500/10 border-amber-500 text-amber-300"
+                          : "bg-[#14141E] border-zinc-800 text-zinc-300 hover:border-zinc-700"
+                      }`}
+                    >
+                      <div className="font-bold">185 &rarr; 165 lbs &bull; 12 Wks</div>
+                      <div className="text-[10px] text-zinc-400 mt-0.5">Heavy Recomp</div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          currentWeight: 160,
+                          targetWeight: 150,
+                          targetWeeks: 8,
+                          targetDate: "2026-11-30",
+                        })
+                      }
+                      className={`p-2.5 rounded-lg border text-left transition ${
+                        formData.currentWeight === 160 && formData.targetWeight === 150
+                          ? "bg-amber-500/10 border-amber-500 text-amber-300"
+                          : "bg-[#14141E] border-zinc-800 text-zinc-300 hover:border-zinc-700"
+                      }`}
+                    >
+                      <div className="font-bold">160 &rarr; 150 lbs &bull; 8 Wks</div>
+                      <div className="text-[10px] text-zinc-400 mt-0.5">Competition Shred</div>
+                    </button>
+                  </div>
                 </div>
               </div>
-
-              {/* Quick Preset Buttons */}
-              <div className="pt-2">
-                <span className="text-xs text-zinc-400 font-mono block mb-2">
-                  Select Recomp Archetype Preset:
-                </span>
-                <div className="grid grid-cols-3 gap-2 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, currentWeight: 170, targetWeight: 155 })}
-                    className={`p-2.5 rounded-lg border text-left transition ${
-                      formData.currentWeight === 170 && formData.targetWeight === 155
-                        ? "bg-amber-500/10 border-amber-500 text-amber-300"
-                        : "bg-[#14141E] border-zinc-800 text-zinc-300 hover:border-zinc-700"
-                    }`}
-                  >
-                    <div className="font-bold">170 &rarr; 155 lbs</div>
-                    <div className="text-[10px] text-zinc-400 mt-0.5">Visible Abs & Lean Cut</div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, currentWeight: 185, targetWeight: 165 })}
-                    className={`p-2.5 rounded-lg border text-left transition ${
-                      formData.currentWeight === 185 && formData.targetWeight === 165
-                        ? "bg-amber-500/10 border-amber-500 text-amber-300"
-                        : "bg-[#14141E] border-zinc-800 text-zinc-300 hover:border-zinc-700"
-                    }`}
-                  >
-                    <div className="font-bold">185 &rarr; 165 lbs</div>
-                    <div className="text-[10px] text-zinc-400 mt-0.5">Heavy Recomp</div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, currentWeight: 160, targetWeight: 150 })}
-                    className={`p-2.5 rounded-lg border text-left transition ${
-                      formData.currentWeight === 160 && formData.targetWeight === 150
-                        ? "bg-amber-500/10 border-amber-500 text-amber-300"
-                        : "bg-[#14141E] border-zinc-800 text-zinc-300 hover:border-zinc-700"
-                    }`}
-                  >
-                    <div className="font-bold">160 &rarr; 150 lbs</div>
-                    <div className="text-[10px] text-zinc-400 mt-0.5">Competition Shred</div>
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* STEP 3: NUTRITION & FASTING */}
           {step === 3 && (

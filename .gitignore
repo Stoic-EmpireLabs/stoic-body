@@ -19,3 +19,5 @@ data/*.sqlite-journal
 .vercel
 .env*
 *.png
+test-results/
+verification-screenshots/
