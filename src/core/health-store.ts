@@ -18,7 +18,7 @@ export function healthDate(v: unknown): string {
 function note(v: unknown, max = 2000) { if (v === undefined || v === '') return ''; return text(v, max); }
 function optional(v: unknown, max: number) { return v === undefined || v === null ? null : number(v, 0, max); }
 function choice(v: unknown, values: string[]) { if (typeof v !== 'string' || !values.includes(v)) throw new Error(`Choose one of: ${values.join(', ')}.`); return v; }
-function normalize(db: DatabaseSync, owner: string, kind: string, input: unknown) {
+export function normalizeHealth(db: DatabaseSync, owner: string, kind: string, input: unknown, includeArchived = false) {
   const p = object(input), data: Record<string, unknown> = { date: healthDate(p.date), notes: note(p.notes) };
   if (kind === 'food') {
     keys(p, ['date', 'title', 'portion', 'source', 'calories', 'protein', 'carbs', 'fat', 'fiber', 'notes']);
@@ -35,7 +35,7 @@ function normalize(db: DatabaseSync, owner: string, kind: string, input: unknown
     Object.assign(data, { hunger: optional(p.hunger, 10), energy: optional(p.energy, 10), sleepHours: optional(p.sleepHours, 24), digestion: note(p.digestion, 500), eatingWindow: note(p.eatingWindow, 100) });
   } else if (kind === 'workout') {
     keys(p, ['date', 'routineId', 'exercise', 'sets', 'duration', 'effort', 'pain', 'notes']);
-    const routineId = id(p.routineId), routine = db.prepare("SELECT data_json FROM core_health WHERE owner_id=? AND id=? AND kind='routine' AND archived=0").get(owner, routineId);
+    const routineId = id(p.routineId), routine = db.prepare("SELECT data_json FROM core_health WHERE owner_id=? AND id=? AND kind='routine' AND (archived=0 OR ?=1)").get(owner, routineId,Number(includeArchived));
     if (!routine) throw new Error('Choose a saved routine.');
     const exercise = text(p.exercise), exercises = JSON.parse(String(routine.data_json)).exercises as { name: string }[];
     if (!exercises.some(e => e.name === exercise)) throw new Error('Choose an exercise in this routine.');
@@ -56,7 +56,7 @@ export function executeHealth(db: DatabaseSync, owner: string, c: Command): Rece
   } else {
     keys(p, ['kind', 'data']); const kind = text(p.kind, 30);
     if (row && row.kind !== kind) throw new Error('An entry cannot change its type.');
-    const data = normalize(db, owner, kind, p.data);
+    const data = normalizeHealth(db, owner, kind, p.data);
     db.prepare('INSERT INTO core_health VALUES (?,?,?,?,0,?) ON CONFLICT(owner_id,id) DO UPDATE SET data_json=excluded.data_json,revision=excluded.revision').run(owner, c.entityId, kind, revision + 1, JSON.stringify(data));
   }
   return { operationId: c.operationId, status: 'accepted', canonicalRevision: revision + 1 };
