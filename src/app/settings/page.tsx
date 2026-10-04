@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useStoic, UserProfile } from "@/context/StoicContext";
 import AgentKeysHub from "@/components/AgentKeysHub";
+import CommercialLicenseModal from "@/components/CommercialLicenseModal";
 
 export default function SettingsPage() {
   const {
@@ -22,6 +23,7 @@ export default function SettingsPage() {
   const [profileSaved, setProfileSaved] = useState<boolean>(false);
   const [exported, setExported] = useState<boolean>(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(true);
+  const [isLicenseModalOpen, setIsLicenseModalOpen] = useState<boolean>(false);
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,8 +55,8 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
 
-      {/* HEADER SECTION */}
-      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* HEADER SECTION (2026 Liquid Obsidian Glassmorphism) */}
+      <section className="bg-gradient-to-b from-zinc-950/80 via-black/90 to-zinc-950/80 backdrop-blur-2xl border border-white/10 ring-1 ring-amber-500/20 rounded-2xl p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.8)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
             <span>System Settings &amp; Founder Account</span>
@@ -62,16 +64,31 @@ export default function SettingsPage() {
               Sovereign Workstation Unlocked
             </span>
           </h2>
-          <p className="text-xs text-slate-300 mt-0.5">
+          <p className="text-xs text-slate-300 mt-1 font-mono">
             Configure biometrics, 170&rarr;155 target weights, sound chimes, notification schedule, and commercial store packaging.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-mono font-bold text-amber-400 bg-red-950/60 px-3 py-1.5 rounded-lg border border-amber-500/40">
-          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-          <span>Founder Sovereign Active</span>
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <button
+            type="button"
+            onClick={() => setIsLicenseModalOpen(true)}
+            className="px-3.5 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-mono font-bold transition flex items-center gap-1.5 shadow-sm"
+          >
+            <span>🛡️</span> Manage Commercial License
+          </button>
+          <div className="flex items-center gap-2 text-xs font-mono font-bold text-amber-400 bg-red-950/60 px-3 py-1.5 rounded-xl border border-amber-500/40">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+            <span>Founder Sovereign Active</span>
+          </div>
         </div>
       </section>
+
+      {/* COMMERCIAL LICENSING & IN-APP PURCHASE MODAL */}
+      <CommercialLicenseModal
+        isOpen={isLicenseModalOpen}
+        onClose={() => setIsLicenseModalOpen(false)}
+      />
 
       {/* 2026 AI AGENTS & SOVEREIGN API KEYS HUB */}
       <AgentKeysHub />

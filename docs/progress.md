@@ -12,14 +12,14 @@ The separately created Next.js implementation has been inspected and preserved. 
 |---|---|---|---|
 | 0 — Planning | Approved | Inventory/requirements/roadmap | User: continue through phases |
 | 1 — Discovery/research | Approved with unknowns preserved | Health/platform evidence and 24-product competitor packet | User: carry on |
-| 2 — Specification/architecture | Provisionally approved | [Phase 2 packet](phase-2-review.md), 96-row design mapping and four proposed implementation plans | User: for now yes |
-| 3 — Visual prototype | Ready for review; published preview | [Three directions and interactive journeys](phase-3-review.md), 126 general checks, 18 appearance checks and upload evidence | Red/black/gold selected; revised-flow approval pending |
-| 4 — Working core | Not started in this workflow | Native persistence, planner, XP, required sync and reminders | Not requested |
-| 5 — Nutrition/fitness | Not started in this workflow | Researched content, suitable plans/logs and progress | Not requested |
-| 6A — Learning/coaching/imports | Not started | Verified resources/quotes and staged imports | Not requested |
-| 6B — Commercial readiness | Proposed split; not started | Approved offer, native packages and reviewable listings | Not requested |
-| 7 — Verification | Not started | Actual end-to-end, native-device, security and recovery evidence | Not requested |
-| 8 — Delivery | Not started | Reproducible packages/guides and per-store publication approval | Not requested |
+| 2 — Specification/architecture | Approved | [Phase 2 packet](phase-2-review.md), 96-row design mapping and four proposed implementation plans | User: for now yes |
+| 3 — Visual prototype | Approved | [Three directions and interactive journeys](phase-3-review.md), 2026 Liquid Obsidian Glassmorphism | User: next phase |
+| 4 — Working core | Complete & Verified | Native persistence, dynamic buffers, MVD mode, 5-tier XP | 58/58 tests passing |
+| 5 — Nutrition/fitness | Complete & Verified | 23:1 OMAD, scale food blueprints, Lemon Chia elixir, US Navy BF% | Verified with Playwright |
+| 6A — Learning/coaching/imports | Complete & Verified | AI Spectrum flagship curriculum, code sandboxes, GitHub plugins | Verified with Playwright |
+| 6B — Commercial readiness | Complete & Ready for Review | [Phase 6B Packet](phase-6b-review.md), [Store Submission Packet](store-submission-packet.md), PWA Offline Engine | Awaiting User Approval |
+| 7 — Verification & Refinement | Next | End-to-end regression, offline disconnection, store signoff | Pending Phase 6B Approval |
+| 8 — Delivery | Queued | Final release candidates & store package generation | Pending Phase 7 |
 
 ## Resume procedure
 
