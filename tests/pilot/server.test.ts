@@ -41,6 +41,8 @@ test('local service rejects cross-origin, forged hosts, missing tokens and unkno
     assert.equal((await fetch(`${pilot.url}/.env`)).status, 404);
     const init = await fetch(`${pilot.url}/api/bootstrap`), data = await init.json();
     const headers = { Origin: pilot.url, Cookie: init.headers.get('set-cookie')!.split(';')[0], 'X-Stoic-Token': data.token, 'Content-Type': 'application/json' };
+    assert.equal((await fetch(`${pilot.url}/api/snapshot`, { headers: { ...headers, 'X-Stoic-Token': 'é'.repeat(64) } })).status, 403);
+    assert.equal((await fetch(`${pilot.url}/api/snapshot`, { headers: { ...headers, Cookie: `stoic_local=${'é'.repeat(64)}` } })).status, 403);
     assert.equal((await fetch(`${pilot.url}/api/command`, { method: 'POST', headers, body: 'x'.repeat(1_048_577) })).status, 413);
     const invalid = await fetch(`${pilot.url}/api/command`, { method: 'POST', headers, body: '{' });
     assert.equal(invalid.status, 400); assert.equal((await invalid.json()).error, 'The request could not be read.');

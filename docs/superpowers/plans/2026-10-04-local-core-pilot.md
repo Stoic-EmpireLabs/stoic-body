@@ -33,10 +33,10 @@ Files: src/core/repository.ts, src/core/validation.ts, src/core/planning-store.t
 
 Interfaces: version-2 additive schema, CoreGoal and goal/task metadata in Snapshot. Commands goal.create/update/archive and task.update/archive; task.create gains optional goalId/priority/dependencies. All use existing command receipts, revision checks and outbox transaction. Archive preserves existing history. Planned durations cannot change silently.
 
-- [ ] Write tests for goal/task create-edit-archive, owner-scoped references, dependency cycles, stale edits and reopen/migration; run RED.
-- [ ] Implement additive migration and commands, preserving existing balances and ledger.
-- [ ] Add pinned ESLint in tools/quality (isolated dependency directory); root lint checks owned core/pilot code and tests.
-- [ ] Run targeted tests, root tests, typecheck and lint; commit the verified foundation and goal/task slice.
+- [x] Write tests for goal/task create-edit-archive, owner-scoped references, dependency cycles, stale edits and reopen/migration; run RED.
+- [x] Implement additive migration and commands, preserving existing balances and ledger.
+- [x] Add pinned ESLint in tools/quality (isolated dependency directory); root lint checks owned core/pilot code and tests.
+- [x] Run targeted tests, root tests, typecheck and lint; commit the verified foundation and goal/task slice.
 
 ## Task 2: Review, accept and undo schedules
 
@@ -44,9 +44,9 @@ Files: src/core/planning-store.ts, src/core/repository.ts, tests/core/planning-s
 
 Interfaces: repository.proposeDay(ownerId, {date, timezone, startTime, endTime}) returns {proposalId, proposal, warnings}; command schedule.accept persists the stored proposal after verifying a canonical planning-state hash, assigning stable occurrence IDs. command schedule.undo checks every accepted occurrence revision/fraction before removing the proposal's uncompleted sessions; preserve a durable undo history. Manual occurrence creation/move shares overlap checks including prep/travel/buffer. Timezone gaps/folds are explained in preview. Single-occurrence moves require current revision; locked/completed sessions cannot silently move.
 
-- [ ] RED tests: preview no mutation; stale/duplicate/partial acceptance; occupied overlap; durable undo conflict; a late write failure rolls back every selected session.
-- [ ] Implement proposal storage, transactional acceptance/undo and manual movement validation.
-- [ ] Run targeted and complete tests, typecheck and lint; commit.
+- [x] RED tests: preview no mutation; stale/duplicate/partial acceptance; occupied overlap; durable undo conflict; a late write failure rolls back every selected session.
+- [x] Implement proposal storage, transactional acceptance/undo and manual movement validation.
+- [x] Run targeted and complete tests, typecheck and lint; commit.
 
 ## Task 3: Local application service
 
@@ -54,9 +54,9 @@ Files: apps/local-pilot/server.ts, apps/local-pilot/main.ts, tests/pilot/server.
 
 Interfaces: startPilot({databasePath, port}) returns {url, close}. Bind only 127.0.0.1. HTTP static asset allowlist and JSON endpoints for bootstrap, snapshot, commands and day proposals. Per-run random HttpOnly SameSite=Strict session plus request token, strict Host/Origin checks, size limits and safe public errors. No external API endpoints, CORS, credentials, AI or remote data transfer. Local owner is derived by service, never request payload.
 
-- [ ] RED HTTP tests: empty boot, save/restart, hostile origin/host, absent token, unsupported paths, invalid command and bounded request body.
-- [ ] Implement service/launcher, local data directory and graceful shutdown; document backup boundary.
-- [ ] Run targeted and complete tests, typecheck and lint; commit.
+- [x] RED HTTP tests: empty boot, save/restart, hostile origin/host, absent token, unsupported paths, invalid command and bounded request body.
+- [x] Implement service/launcher, local data directory and graceful shutdown; document backup boundary.
+- [x] Run targeted and complete tests, typecheck and lint; commit.
 
 ## Task 4: Interactive browser pilot and evidence
 
@@ -64,8 +64,8 @@ Files: apps/local-pilot/public/{index.html,app.js,styles.css}, scripts/test-loca
 
 UI: Today, Goals, Plan, Profile, Settings. Goal/task forms, real partial/full/undo controls, compact progress, explicit schedule preview/accept/undo, task edit/archive, a 20-question resumable profile, existing theme controller. Local-only status is clear. No invented health forecasts, quotes or sync badges.
 
-- [ ] Write and run browser journey RED: empty profile, create goal/tasks, preview/accept, partial/full/undo, reload, edit, keyboard/narrow screen, safe rendering and service-offline error.
-- [ ] Implement UI consistent with accepted visual direction and labelled fields/errors; use textContent for user data.
-- [ ] Run browser journey, full tests, typecheck and lint; visually inspect desktop/mobile screenshots.
-- [ ] Request one fresh read-only review of the complete new slice; fix material findings with RED→GREEN tests.
-- [ ] Commit, open local pilot, save evidence and update the phase tracker. Report the working slice and remaining full Phase 4 acceptance explicitly.
+- [x] Write and run browser journey RED: empty profile, create goal/tasks, preview/accept, partial/full/undo, reload, edit, keyboard/narrow screen, safe rendering and service-offline error.
+- [x] Implement UI consistent with accepted visual direction and labelled fields/errors; use textContent for user data.
+- [x] Run browser journey, full tests, typecheck and lint; visually inspect desktop/mobile screenshots.
+- [x] Request one fresh read-only review of the complete new slice; fix material findings with RED→GREEN tests.
+- [x] Commit, open local pilot, save evidence and update the phase tracker. Report the working slice and remaining full Phase 4 acceptance explicitly.

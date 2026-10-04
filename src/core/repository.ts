@@ -128,7 +128,7 @@ export class CoreRepository {
         id(c.entityId);
         integer(c.baseRevision, 0);
         object(c.payload);
-        if (typeof c.type !== 'string' || !['task.create', 'task.update', 'task.archive', 'goal.create', 'goal.update', 'goal.archive', 'schedule.accept', 'schedule.undo', 'occurrence.move', 'occurrence.create', 'completion.set', 'profile.answer'].includes(c.type))
+        if (typeof c.type !== 'string' || !['task.create', 'task.update', 'task.archive', 'goal.create', 'goal.update', 'goal.archive', 'schedule.accept', 'schedule.undo', 'occurrence.move', 'occurrence.lock', 'occurrence.create', 'completion.set', 'profile.answer'].includes(c.type))
             throw new Error('Unsupported command.');
         const serialized = canonical(c);
         if (Buffer.byteLength(serialized, 'utf8') > 1_048_576) throw new Error('Command size exceeds 1 MiB.');

@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-04T20:48:56.551Z",
+  "checks": [
+    "empty account starts with zero XP",
+    "user markup renders as text",
+    "half completion grants 12 XP",
+    "completion survives browser reload",
+    "correction reverses exactly the award",
+    "onboarding answers survive reload",
+    "theme setting applies",
+    "theme setting survives reload",
+    "mobile layout has no horizontal overflow",
+    "failed request does not display an earned award",
+    "retry recovers the same operation",
+    "protected session has no move action",
+    "session move is previewed and saved",
+    "task title edits persist",
+    "task archive and restore preserve the record",
+    "saved availability changes planning inputs",
+    "an untouched accepted schedule can be undone",
+    "keyboard can reach an interactive control",
+    "no browser runtime errors"
+  ],
+  "errors": []
+}

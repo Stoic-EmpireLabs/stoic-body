@@ -50,3 +50,22 @@ Native iPhone/iPad/Windows acceptance and complete Phase 4 remain outstanding.
 - Review set-aside rulings: offline client convergence/authenticated sync remain C05; auth/session revocation/deletion remain C05/C06; native encryption/builds/backup remain C01/C06/C07; recurrence expansion/series edits/imported DTSTART and proposal acceptance/undo remain C04; milestone/split persistence remain C03; notifications and hosting/client selection remain C07/preflight. These are explicit incomplete scope, not silently waived requirements. Cost if wrong: additional integration/rework before release; no public route currently uses this foundation.
 - Post-fix verification: `npm test` 60/60 passed (36 new core checks plus 24 legacy checks); `npm run typecheck` passed. No lint command exists. Whole-phase acceptance remains open; no task-done completion line or release claim emitted.
 - No reviewer finding remains deferred in the implemented checkpoint. This does not replace the final whole-branch review when the complete Phase 4 implementation is ready.
+
+## Continued Phase 4: local working pilot
+
+- User: “continue”. Ruling: proceed with the reversible local browser/Node pilot using installed tools and SQLite — produces reviewable functionality under the existing zero-paid/no-external-DB constraint — cost if the native path is chosen: UI adapter/port work. This does not select a final web-only stack or waive launch sync.
+- The four-task local-core-pilot plan is an execution addendum within authorized Phase 4. Preflight: repository → schedule acceptance uses one transaction and a planning-state hash; service → UI derives the local owner internally, exposes no remote service, and uses current-revision commands; appearance → pilot reuses accepted assets without copying personal data.
+- Task 1 complete: additive schema/goal-task editing and scoped real ESLint. Task 2 complete: schedule preview/accept/undo and manual slot validation. Task 3 complete: loopback service, session/origin checks, restart persistence. Per-task commits and test receipts are in the plan's .superpowers ledger.
+- Task 4 in progress: browser flow passed 19 assertions before review; manual protection/move was added to make accepted constraints controllable in the UI. Ruling: cancellation is retained in a separate table, not destructive row deletion — keeps replay/history inspectable — cost: additional history storage.
+- Test ruling: Node fetch normalizes Host, so the forged-Host probe uses node:http to send the actual hostile header. The server origin rule was not weakened.
+- Tooling: pinned isolated ESLint 10.12.0 and typescript-eslint 8.71.0 under tools/quality; install scripts disabled. This avoids modifying the primary checkout's shared dependency junction. Root lint covers the new work; no blanket legacy-lint claim.
+
+## Local pilot review and recovery fixes
+
+- Fresh read-only review covered the entire shared-core/local-pilot slice, including uncommitted browser files; 47 core/HTTP cases independently passed. No implementation was delegated.
+- Important findings: rejected edits lost their identity; terminal retry failures retained a blocking request and reconnect hid recovery. Six browser regressions reproduced those bugs, related movement state loss and invalid timezone rendering; all now pass.
+- Ruling: the reviewer's Minor timezone defect is Important because malformed input broke Today with existing sessions. Adopt a timezone only after validated success. Cost: one explicit state transition; no new platform dependency.
+- Ruling: review exclusions (native clients, remote identity/sync, encryption, recurrence, backup/restore, alarms, deployment) remain incomplete C01–C07 obligations, not waived scope. Local session tokens do not establish customer identity. The 77-test pass is not whole-phase acceptance.
+- Additional concrete concern: equal character-length but unequal byte-length session input caused a false storage error. Reproduced as 503 versus required 403; byte-length validation fixes both invalid cookie and token cases.
+- Final code checks: npm test 77/77; npm run typecheck exit 0; npm run lint exit 0; npm run test:pilot 19/19. Screenshots and durable review outcomes: docs/evidence/phase-4/local-pilot/.
+- Task 4 implementation and scoped verification complete. Local-pilot addendum can close after commit/open; the larger Phase 4 plan remains open. No public upload, new account, service purchase or personal seed data.

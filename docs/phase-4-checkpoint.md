@@ -1,5 +1,7 @@
 # Phase 4 — working-core foundation checkpoint
 
+Historical foundation checkpoint. The later [working local pilot](phase-4-local-pilot.md) supersedes its UI/tooling status and test counts; full Phase 4 remains incomplete.
+
 2026-10-04. **In progress; this is not Phase 4 completion or a release.** The user approved moving on from the theme/color prototype with “Great.Next phase”. The approved red/black/gold design and appearance controls remain the visual reference.
 
 ## What runs now

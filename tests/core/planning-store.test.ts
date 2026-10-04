@@ -107,3 +107,15 @@ test('late failure during proposal acceptance rolls back the entire batch and ca
     assert.equal(r.snapshot('alice').occurrences.length, 2);
   } finally { r.close(); }
 });
+
+test('locking and unlocking sessions is revisioned and does not change completion or XP', () => {
+  const r = setup(); try {
+    task(r); r.apply('alice', cmd('occurrence.create', 's', { taskId: 'practice', startAt: '2026-10-05T13:00:00.000Z', timezone: 'America/Denver', locked: false }));
+    r.apply('alice', cmd('occurrence.lock', 's', { locked: true }, 1));
+    assert.equal(r.snapshot('alice').occurrences[0].locked, 1);
+    assert.equal(r.apply('alice', cmd('occurrence.lock', 's', { locked: false }, 1)).status, 'conflict');
+    r.apply('alice', cmd('occurrence.lock', 's', { locked: false }, 2));
+    assert.equal(r.snapshot('alice').occurrences[0].locked, 0);
+    assert.equal(r.snapshot('alice').totalXp, 0);
+  } finally { r.close(); }
+});

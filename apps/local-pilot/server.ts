@@ -4,6 +4,8 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { CoreRepository, type Command } from '../../src/core/repository';
 import type { DayInput } from '../../src/core/schedule-store';
+import { resolveWallTime } from '../../src/core/time';
+import { object, keys, text, zone } from '../../src/core/validation';
 
 export interface PilotOptions { databasePath: string; port: number }
 export interface PilotServer { url: string; close: () => Promise<void> }
@@ -17,7 +19,8 @@ const assets: Record<string, [string, string]> = {
 };
 function secretEquals(actual: string | undefined, expected: string) {
   if (!actual || actual.length !== expected.length) return false;
-  return timingSafeEqual(Buffer.from(actual), Buffer.from(expected));
+  const actualBytes = Buffer.from(actual), expectedBytes = Buffer.from(expected);
+  return actualBytes.length === expectedBytes.length && timingSafeEqual(actualBytes, expectedBytes);
 }
 function json(response: ServerResponse, status: number, data: unknown) {
   response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' }); response.end(JSON.stringify(data));
@@ -67,6 +70,10 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
           json(response, receipt.status === 'conflict' ? 409 : 200, { receipt, snapshot: repository.snapshot(owner), ...(receipt.safeReason ? { error: receipt.safeReason } : {}) }); return;
         }
         if (path === '/api/propose') { json(response, 200, repository.proposeDay(owner, data as DayInput)); return; }
+        if (path === '/api/time') {
+          const value = object(data); keys(value, ['local', 'timezone']);
+          json(response, 200, resolveWallTime(text(value.local, 16), zone(value.timezone), { source: 'user' })); return;
+        }
         throw new HttpError(404, 'This action is unavailable.');
       }
       if (request.method !== 'GET' || !Object.hasOwn(assets, path)) throw new HttpError(404, 'Page not found.');

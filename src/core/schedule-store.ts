@@ -82,15 +82,20 @@ export function assertSlot(db: DatabaseSync, owner: string, taskId: string, rawS
   return { startAt, endAt: new Date(end).toISOString() };
 }
 export function executeSchedule(db: DatabaseSync, owner: string, c: Command, snapshot: () => Snapshot): Receipt | undefined {
-  if (!['schedule.accept', 'schedule.undo', 'occurrence.move'].includes(c.type)) return;
+  if (!['schedule.accept', 'schedule.undo', 'occurrence.move', 'occurrence.lock'].includes(c.type)) return;
   const p = object(c.payload);
   const result = (status: Receipt['status'], revision: number): Receipt => ({ operationId: c.operationId, status, canonicalRevision: revision,
     ...(status === 'conflict' ? { safeReason: 'The calendar changed. Generate a fresh preview or review the updated session.' } : {}) });
-  if (c.type === 'occurrence.move') {
-    keys(p, ['startAt', 'timezone']);
+  if (c.type === 'occurrence.move' || c.type === 'occurrence.lock') {
+    keys(p, c.type === 'occurrence.move' ? ['startAt', 'timezone'] : ['locked']);
     const occurrence = snapshot().occurrences.find(o => o.id === c.entityId);
     if (!occurrence) throw new Error('Session not found.');
     if (occurrence.revision !== c.baseRevision) return result('conflict', occurrence.revision);
+    if (c.type === 'occurrence.lock') {
+      if (typeof p.locked !== 'boolean') throw new Error('Choose whether this session is protected.');
+      db.prepare('UPDATE core_occurrences SET locked=?,revision=revision+1 WHERE owner_id=? AND id=?').run(Number(p.locked), owner, c.entityId);
+      return result('accepted', occurrence.revision + 1);
+    }
     if (occurrence.locked || occurrence.fraction > 0) throw new Error('Locked or started sessions cannot be moved.');
     const time = assertSlot(db, owner, occurrence.taskId, p.startAt, occurrence.id);
     db.prepare('UPDATE core_occurrences SET start_at=?,end_at=?,timezone=?,revision=revision+1 WHERE owner_id=? AND id=?').run(time.startAt, time.endAt, zone(p.timezone), owner, c.entityId);
