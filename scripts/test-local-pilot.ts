@@ -4,6 +4,7 @@ import { mkdtempSync, rmSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve, dirname, basename } from 'node:path';
 import { startPilot } from '../apps/local-pilot/server';
+import { authenticatePage } from '../tests/pilot/helpers';
 
 async function run() {
   const dir = mkdtempSync(join(tmpdir(), 'stoic-browser-'));
@@ -16,7 +17,7 @@ async function run() {
   const evidence = resolve('docs/evidence/phase-4/local-pilot'); mkdirSync(evidence, { recursive: true });
   page.setDefaultTimeout(5000);
   try {
-    await page.goto(pilot.url); await page.getByText('Nothing scheduled yet.', { exact: true }).waitFor();
+    await authenticatePage(page,pilot.url); await page.goto(pilot.url); await page.getByText('Nothing scheduled yet.', { exact: true }).waitFor();
     check('empty account starts with zero XP', await page.locator('#total-xp').textContent() === '0 XP');
     await page.getByRole('button', { name: 'Goals', exact: true }).click();
     await page.getByLabel('Goal title', { exact: true }).fill('Learn <img src=x onerror=alert(1)>');

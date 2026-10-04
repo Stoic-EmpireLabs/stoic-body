@@ -4,6 +4,7 @@ import { mkdirSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, join, dirname, basename } from 'node:path';
 import { startPilot } from '../apps/local-pilot/server';
+import { authenticatePage } from '../tests/pilot/helpers';
 async function run() {
   const dir = mkdtempSync(join(tmpdir(), 'stoic-learning-')), databasePath = join(dir, 'learning.sqlite');
   let pilot = await startPilot({ databasePath, port: 0 });
@@ -13,7 +14,7 @@ async function run() {
   const check = (name: string, value = true) => { assert.ok(value, name); checks.push(name); };
   const evidence = resolve('docs/evidence/phase-6-learning'); mkdirSync(evidence, { recursive: true });
   try {
-    await page.goto(`${pilot.url}/?view=learn`); await page.getByRole('heading', { name: 'Build what you learn.' }).waitFor();
+    await authenticatePage(page,pilot.url); await page.goto(`${pilot.url}/?view=learn`); await page.getByRole('heading', { name: 'Build what you learn.' }).waitFor();
     await page.getByRole('button', { name: 'Explore Antigravity & AI-assisted building', exact: true }).click();
     check('real external guide with isolated new tab', await page.getByRole('link', { name: 'Open full learning resource' }).getAttribute('href') === 'https://codelabs.developers.google.com/getting-started-google-antigravity');
     check('Ultra cost boundary visible', (await page.locator('#main').innerText()).includes('Google AI Ultra has usage limits'));
@@ -35,7 +36,7 @@ async function run() {
     await page.screenshot({ path: join(evidence, 'learn-mobile.png'), fullPage: true });
     await browser.close(); await pilot.close(); pilot = await startPilot({ databasePath, port: 0 });
     browser = await chromium.launch({ headless: true }); page = await browser.newPage(); page.setDefaultTimeout(5000); page.on('pageerror', e => errors.push(e.message));
-    await page.goto(`${pilot.url}/?view=learn`); await page.getByRole('button', { name: 'Continue Antigravity & AI-assisted building', exact: true }).click();
+    await authenticatePage(page,pilot.url); await page.goto(`${pilot.url}/?view=learn`); await page.getByRole('button', { name: 'Continue Antigravity & AI-assisted building', exact: true }).click();
     assert.equal(await page.getByLabel('Practice notes').inputValue(), 'Synthetic build brief, three acceptance checks.'); await page.getByText('15 practice XP', { exact: true }).waitFor();
     check('notes, linked task and XP survive a real server restart');
     await page.getByRole('button', { name: 'Back to learning library', exact: true }).click();

@@ -4,6 +4,7 @@ import { mkdirSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, join, dirname, basename } from 'node:path';
 import { startPilot } from '../apps/local-pilot/server';
+import { authenticatePage } from '../tests/pilot/helpers';
 async function run() {
   const dir = mkdtempSync(join(tmpdir(), 'stoic-health-'));
   const pilot = await startPilot({ databasePath: join(dir, 'health.sqlite'), port: 0 });
@@ -14,7 +15,7 @@ async function run() {
   const saved = async (button: string) => { await page.getByRole('button', { name: button, exact: true }).click(); await page.getByText('Health entry saved.', { exact: true }).waitFor(); };
   const evidence = resolve('docs/evidence/phase-5'); mkdirSync(evidence, { recursive: true }); page.setDefaultTimeout(5000);
   try {
-    await page.goto(pilot.url); await page.getByRole('button', { name: 'Health', exact: true }).click();
+    await authenticatePage(page,pilot.url); await page.goto(pilot.url); await page.getByRole('button', { name: 'Health', exact: true }).click();
     await page.getByLabel('Health date').fill('2026-10-05');
     await page.getByLabel('Food name', { exact: true }).fill('Synthetic lunch'); await page.getByLabel('Portion', { exact: true }).fill('1 plate');
     await saved('Save food'); await page.getByText('Calories: unknown', { exact: true }).waitFor(); check('unknown calories are not shown as zero intake');

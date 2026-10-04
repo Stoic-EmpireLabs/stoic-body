@@ -3,11 +3,12 @@ import test from 'node:test';
 import { chromium, type Page } from 'playwright';
 import { startPilot } from '../../apps/local-pilot/server';
 import type { Snapshot, Command } from '../../src/core/repository';
+import { authenticatePage } from './helpers';
 async function fixture(run: (page: Page, state: () => Promise<Snapshot>, command: (type: string, entityId: string, payload: unknown) => Promise<void>) => Promise<void>) {
   const pilot = await startPilot({ databasePath: ':memory:', port: 0 }), browser = await chromium.launch({ headless: true });
   const page = await browser.newPage(); page.setDefaultTimeout(3000);
   try {
-    await page.goto(pilot.url); await page.getByText('Nothing scheduled yet.', { exact: true }).waitFor();
+    await authenticatePage(page,pilot.url); await page.goto(pilot.url); await page.getByText('Nothing scheduled yet.', { exact: true }).waitFor();
     const bootstrap = await (await page.request.get(`${pilot.url}/api/bootstrap`)).json(), headers = { 'X-Stoic-Token': bootstrap.token, Origin: pilot.url };
     const state = async (): Promise<Snapshot> => (await (await page.request.get(`${pilot.url}/api/snapshot`, { headers })).json()).snapshot;
     const command = async (type: string, entityId: string, payload: unknown) => {

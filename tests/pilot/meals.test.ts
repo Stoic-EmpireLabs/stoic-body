@@ -4,11 +4,12 @@ import { mkdir } from 'node:fs/promises';
 import { chromium, type Page } from 'playwright';
 import { startPilot } from '../../apps/local-pilot/server';
 import type { Snapshot } from '../../src/core/repository';
+import { authenticatePage } from './helpers';
 async function fixture(run: (page: Page, state: () => Promise<Snapshot>, headers: Record<string, string>) => Promise<void>) {
   const pilot = await startPilot({ databasePath: ':memory:', port: 0 }), browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1365, height: 950 } }); page.setDefaultTimeout(4000);
   try {
-    await page.goto(pilot.url + '/?view=health');
+    await authenticatePage(page,pilot.url); await page.goto(pilot.url + '/?view=health');
     const boot = await (await page.request.get(`${pilot.url}/api/bootstrap`)).json(), headers = { 'X-Stoic-Token': boot.token, Origin: pilot.url };
     const state = async (): Promise<Snapshot> => (await (await page.request.get(`${pilot.url}/api/snapshot`, { headers })).json()).snapshot;
     await run(page, state, headers);

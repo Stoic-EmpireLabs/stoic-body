@@ -3,6 +3,7 @@ import test from 'node:test';
 import { chromium, type Page } from 'playwright';
 import { startPilot } from '../../apps/local-pilot/server';
 import type { Snapshot, Command } from '../../src/core/repository';
+import { authenticatePage } from './helpers';
 
 async function fixture(run: (page: Page, state: () => Promise<Snapshot>, command: (type: Command['type'], entityId: string, payload: Command['payload'], baseRevision?: number) => Promise<void>) => Promise<void>) {
   const pilot = await startPilot({ databasePath: ':memory:', port: 0 });
@@ -10,7 +11,7 @@ async function fixture(run: (page: Page, state: () => Promise<Snapshot>, command
   const page = await browser.newPage({ timezoneId: 'America/Denver' });
   page.setDefaultTimeout(4000);
   try {
-    await page.goto(pilot.url);
+    await authenticatePage(page,pilot.url); await page.goto(pilot.url);
     await page.getByText('Nothing scheduled yet.', { exact: true }).waitFor();
     const bootstrap = await (await page.request.get(`${pilot.url}/api/bootstrap`)).json();
     const headers = { 'X-Stoic-Token': bootstrap.token, Origin: pilot.url };

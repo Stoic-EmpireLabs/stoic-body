@@ -1,5 +1,5 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
-import { randomBytes, timingSafeEqual } from 'node:crypto';
+import { timingSafeEqual } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { CoreRepository, type Command } from '../../src/core/repository';
@@ -11,6 +11,7 @@ import { summarizeHealth } from '../../src/core/health-metrics';
 import { buildRoutine, trainingStyles, progressionAdvice } from '../../src/core/training';
 import { courses } from '../../src/core/learning-content';
 import { mealCatalog, previewMeal } from '../../src/core/meals';
+import { AccountStore, AccountError, type Account } from '../../src/core/accounts';
 
 export interface PilotOptions { databasePath: string; port: number }
 export interface PilotServer { url: string; close: () => Promise<void> }
@@ -47,9 +48,7 @@ async function body(request: IncomingMessage) {
 export async function startPilot(options: PilotOptions): Promise<PilotServer> {
   if (!Number.isInteger(options.port) || options.port < 0 || options.port > 65535) throw new Error('Invalid port.');
   const repository = new CoreRepository(options.databasePath);
-  const owner = 'local-owner';
-  if (!repository.database.prepare('SELECT 1 FROM core_owners WHERE id=?').get(owner)) repository.createOwner(owner);
-  const session = randomBytes(32).toString('hex'), token = randomBytes(32).toString('hex');
+  const accounts = new AccountStore(repository.database);
   let origin = '';
   const server = createServer((request, response) => {
     response.setHeader('Cache-Control', 'no-store');
@@ -61,19 +60,33 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
       if (request.headers.host !== new URL(origin).host || (request.headers.origin && request.headers.origin !== origin)
         || request.headers['sec-fetch-site'] === 'cross-site') throw new HttpError(403, 'Open this app directly on this computer.');
       const path = new URL(request.url ?? '/', origin).pathname;
+      const cookie = request.headers.cookie?.split(';').map(v => v.trim()).find(v => v.startsWith('stoic_local='))?.slice('stoic_local='.length);
+      const session = accounts.authenticate(cookie);
+      const signedIn = (account: Account, token: string) => ({ authenticated: true, account, token, snapshot: repository.snapshot(account.id), guide: accounts.readGuide(account.id), mode: 'local' });
       if (path === '/api/bootstrap' && request.method === 'GET') {
-        response.setHeader('Set-Cookie', `stoic_local=${session}; HttpOnly; SameSite=Strict; Path=/`);
-        json(response, 200, { token, snapshot: repository.snapshot(owner), mode: 'local' }); return;
+        json(response, 200, session ? signedIn(session.account, session.csrf) : { authenticated: false, mode: 'local' }); return;
+      }
+      if (['/api/auth/register','/api/auth/login','/api/auth/recover'].includes(path)) {
+        if (request.method !== 'POST' || request.headers.origin !== origin) throw new HttpError(403,'Account requests must come from this app.');
+        const data = await body(request);
+        const result = path.endsWith('/register') ? await accounts.register(data) : path.endsWith('/recover') ? await accounts.recover(data) : {account:await accounts.login(data)};
+        if(cookie) accounts.logout(cookie);
+        const fresh = accounts.createSession(result.account.id);
+        response.setHeader('Set-Cookie',`stoic_local=${fresh.key}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200`);
+        json(response,200,{...signedIn(result.account,fresh.csrf),...('recoveryKey' in result ? {recoveryKey:result.recoveryKey} : {})}); return;
       }
       if (path.startsWith('/api/')) {
-        const cookie = request.headers.cookie?.split(';').map(v => v.trim()).find(v => v.startsWith('stoic_local='))?.slice('stoic_local='.length);
         const supplied = request.headers['x-stoic-token'];
-        if (!secretEquals(cookie, session) || typeof supplied !== 'string' || !secretEquals(supplied, token)) throw new HttpError(403, 'Your local session expired. Reload the app.');
+        if (!session) throw new HttpError(401, 'Sign in to open your private workspace.');
+        if (typeof supplied !== 'string' || !secretEquals(supplied, session.csrf)) throw new HttpError(403, 'Your local session changed. Reconnect the app.');
+        const owner = session.account.id;
         if (path === '/api/snapshot' && request.method === 'GET') { json(response, 200, { snapshot: repository.snapshot(owner) }); return; }
         if (path === '/api/health-content' && request.method === 'GET') { json(response, 200, { diets, trainingStyles, meals: mealCatalog }); return; }
         if (path === '/api/learning-content' && request.method === 'GET') { json(response, 200, { courses }); return; }
         if (request.method !== 'POST' || request.headers.origin !== origin) throw new HttpError(403, 'Save requests must come from this app.');
         const data = await body(request);
+        if (path === '/api/auth/logout') { keys(object(data),[]); accounts.logout(cookie!); response.setHeader('Set-Cookie','stoic_local=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0'); json(response,200,{authenticated:false}); return; }
+        if (path === '/api/guide') { json(response,200,{guide:accounts.saveGuide(owner,data)}); return; }
         if (path === '/api/meal-preview') { json(response, 200, previewMeal(data)); return; }
         if (path === '/api/training-preview') { json(response, 200, buildRoutine(data)); return; }
         if (path === '/api/health-summary') {
@@ -98,7 +111,7 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
       response.writeHead(200, { 'Content-Type': `${type}; charset=utf-8` }); response.end(bytes);
     })().catch(error => {
       if (response.writableEnded || response.destroyed) return;
-      if (error instanceof HttpError) { json(response, error.status, { error: error.message }); return; }
+      if (error instanceof HttpError || error instanceof AccountError) { json(response, error.status, { error: error.message }); return; }
       if (error && typeof error === 'object' && 'code' in error) {
         json(response, 503, { error: 'Local storage is unavailable. Your previous saved data is retained. Retry after checking free disk space.' }); return;
       }
