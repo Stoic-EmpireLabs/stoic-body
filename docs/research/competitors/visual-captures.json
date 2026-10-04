@@ -1,0 +1,621 @@
+[
+  {
+    "id": "hevy",
+    "requested_url": "https://www.hevyapp.com/features/",
+    "captured_at": "2026-10-04T16:38:09.092Z",
+    "surface": "Public marketing page; not authenticated native app",
+    "http_status": 200,
+    "final_url": "https://www.hevyapp.com/features/",
+    "title": "Hevy App Feature List - #1 Workout Tracker & Gym Log App",
+    "visible_text_sample": "Home\nProduct\nArticles\nHevy Coach\nAbout Us\nCareers\n\nLog in\n\nSign Up\nFeatures\n\nHevy offers a wide range of features while retaining its core simplicity and focusing on three pillars: workout logging, progress tracking, and socializing. Browse through the list of features below and see how they can help you stay motivated and reach your fitness goals.\n\nAs Hevy grows, we’ll continue to expand this page, so check back from time to time to stay up to date.\n\nHevy App Features by Category\nProgress Tracking\nTrack Progress (Feature List)\nGym Performance Tracking\nMonthly Report\nMuscle Group Workout Chart\nSets Per Muscle Group Per Week\nMuscle Distribution (Chart)\nBody Measurements\nProgress Photos\nTrack Exercise Performance\nWorkout Consistency & Streak\nBest Way to Track Workouts\nYear in Review\nWorkout Logging\nLog & Track Workouts (Feature List)\nStart Empty Workout\nCustom Exercise Notes\nAutomatic Rest",
+    "images": [
+      {
+        "alt": "Hevy app shown on two phone screen and an Apple Watch",
+        "x": 788,
+        "y": 132,
+        "width": 492,
+        "height": 474
+      },
+      {
+        "alt": "Hevy app on two smartphone screens",
+        "x": 306,
+        "y": 2210,
+        "width": 243,
+        "height": 243
+      },
+      {
+        "alt": "app store button to download the Hevy app",
+        "x": 268,
+        "y": 2483,
+        "width": 150,
+        "height": 150
+      },
+      {
+        "alt": "google play button to download Hevy app",
+        "x": 438,
+        "y": 2483,
+        "width": 150,
+        "height": 150
+      },
+      {
+        "alt": "An overview of the Hevy Coach online fitness training platform's dashboard",
+        "x": 762,
+        "y": 2210,
+        "width": 451,
+        "height": 451
+      },
+      {
+        "alt": "hevy coach capterra rating",
+        "x": 838,
+        "y": 2681,
+        "width": 300,
+        "height": 300
+      }
+    ],
+    "screenshot": "screens/hevy.png"
+  },
+  {
+    "id": "finch",
+    "requested_url": "https://finchcare.com/about-finch",
+    "captured_at": "2026-10-04T16:38:09.085Z",
+    "surface": "Public marketing page; not authenticated native app",
+    "http_status": 200,
+    "final_url": "https://finchcare.com/about-finch",
+    "title": "Finch: Free Self-Care Pet App, Features & Finch Plus",
+    "visible_text_sample": "Skip to content\nGet Finch\n↗\n\nGET TO KNOW FINCH\n\nA self-care app.\nA little friend for you.\n\nFinch is a free self-care pet app that helps you take small steps for yourself, with a little bird cheering you on.\n\nBuild daily habits, reflect, and find moments of calm. As you care for yourself, your own virtual pet grows right alongside you.\n\nFor iOS & Android · Core self-care is free · Optional Finch Plus\n\nsmall steps count.\n\nHow it works\nSelf-care tools\nFree & Plus\nOur story\nCommon questions\n\nYOU GROW TOGETHER\n\nHow does Finch work?\n\nYour bird (or “birb,” as we call them) makes everyday care a shared adventure.\n\n1\nMeet your little friend\n\nStart with your own birb and a few simple goals. There’s room to make the experience your own.\n\n2\nDo something for you\n\nCheck off a goal or try a self-care activity. Earn energy to send your birb on an adventure.\n\n3\nShare the adventure\n\nAfter an adventure, yo",
+    "images": [
+      {
+        "alt": "A Finch bird watering a heart-shaped flower",
+        "x": 791,
+        "y": 188,
+        "width": 481,
+        "height": 417
+      },
+      {
+        "alt": "A Finch bird gently hugging an egg",
+        "x": 236,
+        "y": 1040,
+        "width": 190,
+        "height": 190
+      },
+      {
+        "alt": "A Finch bird enjoying a little sunshine",
+        "x": 625,
+        "y": 1040,
+        "width": 190,
+        "height": 190
+      },
+      {
+        "alt": "A Finch bird jumping with joy",
+        "x": 1014,
+        "y": 1040,
+        "width": 190,
+        "height": 190
+      },
+      {
+        "alt": "A Finch bird checking a little list",
+        "x": 320,
+        "y": 1750,
+        "width": 220,
+        "height": 200
+      },
+      {
+        "alt": "A Finch bird resting on a beanbag with a book",
+        "x": 900,
+        "y": 1750,
+        "width": 220,
+        "height": 200
+      },
+      {
+        "alt": "A Finch bird balancing calmly above the water",
+        "x": 320,
+        "y": 2199,
+        "width": 220,
+        "height": 200
+      },
+      {
+        "alt": "Two Finch birds smiling together",
+        "x": 900,
+        "y": 2199,
+        "width": 220,
+        "height": 200
+      }
+    ],
+    "screenshot": "screens/finch.png"
+  },
+  {
+    "id": "structured",
+    "requested_url": "https://structured.app/",
+    "captured_at": "2026-10-04T16:38:09.083Z",
+    "surface": "Public marketing page; not authenticated native app",
+    "http_status": 200,
+    "final_url": "https://structured.app/",
+    "title": "Structured — Daily Planner",
+    "visible_text_sample": "Structured\nfeatures\nreviews\nteam\nsupport\nblog\nresearch\nStructured Web\nStart planning for free!\nyour all in one\nhabit tracker\n\nStructured combines all your tasks and to-dos into a single visual timeline.\n\nStart planning for free!\nthe day planner app\nthat everyone is using\n\n600K+\n\ntasks daily\n\n15M+\n\ndownloads\n\n500K+\n\npro users\n\n30+\n\nlanguages\n\n400K+\n\n5-star reviews\n\n600K+\n\ntasks daily\n\n15M+\n\ndownloads\n\n500K+\n\npro users\n\n30+\n\nlanguages\n\n400K+\n\n5-star reviews\n\n600K+\n\ntasks daily\n\n15M+\n\ndownloads\n\n500K+\n\npro users\n\n30+\n\nlanguages\n\n400K+\n\n5-star reviews\n\n600K+\n\ntasks daily\n\n15M+\n\ndownloads\n\n500K+\n\npro users\n\n30+\n\nlanguages\n\n400K+\n\n5-star reviews\n\nI'm convinced\none planner, one timeline,\n99 appointments\nsplit your day into tasks and visualize them in a timeline.\ncreate tasks in seconds\nor import your existing calendar\nstay on top\nwith weekly and\nmonthly view\nstart planning on\nyour phone\nfinish ",
+    "images": [
+      {
+        "alt": "Structured app planning preview",
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      },
+      {
+        "alt": "",
+        "x": -426,
+        "y": 2079,
+        "width": 731,
+        "height": 925
+      },
+      {
+        "alt": "",
+        "x": 1355,
+        "y": 2328,
+        "width": 585,
+        "height": 792
+      },
+      {
+        "alt": "Structured app timeline",
+        "x": 636,
+        "y": 2061,
+        "width": 427,
+        "height": 1896
+      },
+      {
+        "alt": "tasks daily",
+        "x": 40,
+        "y": 2895,
+        "width": 210,
+        "height": 210
+      },
+      {
+        "alt": "downloads",
+        "x": 330,
+        "y": 2895,
+        "width": 210,
+        "height": 210
+      },
+      {
+        "alt": "pro users",
+        "x": 620,
+        "y": 2895,
+        "width": 210,
+        "height": 210
+      },
+      {
+        "alt": "languages",
+        "x": 910,
+        "y": 2895,
+        "width": 210,
+        "height": 210
+      }
+    ],
+    "screenshot": "screens/structured.png"
+  },
+  {
+    "id": "tiimo",
+    "requested_url": "https://www.tiimoapp.com/",
+    "captured_at": "2026-10-04T16:38:42.543Z",
+    "surface": "Public marketing page; not authenticated native app",
+    "http_status": 200,
+    "final_url": "https://www.tiimoapp.com/",
+    "title": "Visual Planner for Every Neurotype | Tiimo",
+    "visible_text_sample": "FAQ\nNewsroom\nAbout us\n\nFeatures\nResources\nTimers\nLog in\nTry Tiimo for free\nA visual AI planner built for real life.\nAvailable on iOS, iPadOS, watchOS, Android & Web\nAward-winning planning\nExecutive functioning’s favorite toolkit\nStay focused, not frozen\n\nWatch time pass with a countdown that keeps you anchored. Whether you need help starting, switching tasks, or staying in the zone, the timer keeps you moving.\n\n\nLearn more\nStructure you can see\n\nTurn your schedule into a visual timeline you can actually follow. Organize your tasks, see what is coming up, and stay on track without second guessing.\n\n\nLearn more\nMake it yours\n\nChoose colors, icons, and layouts that reflect how you work best. Personalizing your planner builds motivation and makes it easier to keep coming back.\n\n\nLearn more\nYour schedule, one tap away\n\nSee what is next without opening the app. Tiimo’s widgets keep your day vi",
+    "images": [
+      {
+        "alt": "Tiimo app interface displaying Todo list called Japan Trip with subtasks like Sunglasses, City Map, etc; a Schedule for Wednesday with tasks like Pay my bills, etc; A focus timer for a task called Do Laundry; AI Co-planner screen; and the Trophies page.",
+        "x": 178,
+        "y": 492,
+        "width": 1085,
+        "height": 574
+      },
+      {
+        "alt": "Tiimo focus timer screen showing a laundry task countdown with progress ring, checklist steps like separating colors and starting wash cycle, designed to keep users focused and moving through routines.",
+        "x": 158,
+        "y": 1676,
+        "width": 353,
+        "height": 500
+      },
+      {
+        "alt": "Tiimo daily planner app showing a structured schedule with tasks like paying bills, morning routine with shower and breakfast, biking to work, and lunch, helping users organize their day with clear routines.",
+        "x": 542,
+        "y": 1676,
+        "width": 353,
+        "height": 500
+      },
+      {
+        "alt": "Tiimo planner customization screen on light background showing a grid of activity icons such as yoga, cooking, laundry, biking, bathing, reading, cleaning, exercising, and sleep, used to personalize tasks and routines.",
+        "x": 926,
+        "y": 1676,
+        "width": 353,
+        "height": 500
+      },
+      {
+        "alt": "Tiimo iOS home screen widgets showing to-do list with tasks like call mom, yoga, and refill meds, plus a laundry timer and focus countdown, designed to keep daily schedule visible and accessible with one tap.",
+        "x": 1310,
+        "y": 1676,
+        "width": 353,
+        "height": 500
+      },
+      {
+        "alt": "",
+        "x": 735,
+        "y": 2713,
+        "width": 547,
+        "height": 547
+      },
+      {
+        "alt": "",
+        "x": 785,
+        "y": 3401,
+        "width": 498,
+        "height": 498
+      },
+      {
+        "alt": "",
+        "x": 785,
+        "y": 3401,
+        "width": 498,
+        "height": 498
+      }
+    ],
+    "screenshot": "screens/tiimo.png"
+  },
+  {
+    "id": "ladder",
+    "requested_url": "https://www.joinladder.com/",
+    "captured_at": "2026-10-04T16:38:42.556Z",
+    "surface": "Public marketing page; not authenticated native app",
+    "http_status": 200,
+    "final_url": "https://www.joinladder.com/",
+    "title": "Ladder | Your Daily Workout Plan",
+    "visible_text_sample": "View the Hilary Duff Campaign → HERE\nFREE WORKOUT OF THE DAY\nSHOP\nCAREERS\nFIND YOUR PLAN\nHILARY DUFF\nTRAINS ON LADDER\nFIND YOUR PLAN\n\nNo Credit Card To Start • Cancel anytime\n\nFEATURED ON\nFOR BUSY PEOPLE WHO PRIORITIZE FITNESS\nResults In Less Time\n\nMake the most of your workouts and spend no time planning.\n\nNew Workouts Weekly\n\n5+ new workouts each week and a variety of training plans to choose from.\n\nAlways With You\n\nStay consistent with challenging workouts that can be done from anywhere.\n\nReal Coaching\n\nHave confidence in your workouts and form, get answers to all your questions.\n\nM\nT\nW\nT\nF\nS\nS\nKNOW EXACTLY WHAT WORKOUT TO DO, EVERY DAY\n\nA workout plan for every day, created by an expert coach and new each week.\n\nFIND YOUR PLAN\nSAVE TIME & TRAIN\nON YOUR SCHEDULE\n\nWorkouts that are easy-to-follow, fit into your schedule, and can be done from anywhere.\n\nEXPERIENCE AN APP BUILT FOR\nSTREN",
+    "images": [
+      {
+        "alt": "",
+        "x": 0,
+        "y": 97,
+        "width": 1440,
+        "height": 948
+      },
+      {
+        "alt": "ladder logo",
+        "x": 268,
+        "y": 1045,
+        "width": 905,
+        "height": 171
+      },
+      {
+        "alt": "featured logos",
+        "x": 360,
+        "y": 1212,
+        "width": 720,
+        "height": 116
+      },
+      {
+        "alt": "Ladder app showing daily workout",
+        "x": 901,
+        "y": 2321,
+        "width": 310,
+        "height": 594
+      },
+      {
+        "alt": "",
+        "x": 901,
+        "y": 2321,
+        "width": 310,
+        "height": 594
+      },
+      {
+        "alt": "Watch",
+        "x": 42,
+        "y": 3225,
+        "width": 707,
+        "height": 763
+      },
+      {
+        "alt": "left airpod",
+        "x": 413,
+        "y": 4357,
+        "width": 192,
+        "height": 192
+      },
+      {
+        "alt": "right airpod",
+        "x": 851,
+        "y": 4445,
+        "width": 192,
+        "height": 192
+      }
+    ],
+    "screenshot": "screens/ladder.png"
+  },
+  {
+    "id": "macrofactor",
+    "requested_url": "https://macrofactor.com/macrofactor/",
+    "captured_at": "2026-10-04T16:38:42.534Z",
+    "surface": "Public marketing page; not authenticated native app",
+    "http_status": 200,
+    "final_url": "https://macrofactor.com/macrofactor/",
+    "title": "MacroFactor app – Smart Macro Tracker & Diet Coach",
+    "visible_text_sample": "Manage cookie consent\nTo provide the best experiences, we use technologies like cookies to store and/or access device information. Consenting to these technologies will allow us to process data such as browsing behavior or unique IDs on this site. Not consenting or withdrawing consent, may adversely affect certain features and functions.\nAccept\nDeny\nView preferences\nSkip to content\nNutrition\nWorkouts\nArticles\nTools\nRoadmap\n\nLoved by 500,000 users with ★ 4.8 rating\n\nMacro plan based on your metabolism\n\n★★★★★\n\n“MacroFactor adjusts to YOUR metabolism. The app will guarantee that you reach your goal as long as you follow the plan.”\n\nJEFF NIPPARD\n\n★★★★★\n\n“I never felt stuck or like I had to guess. No matter where I was or what I was eating, MacroFactor had a way to track it that fit real life.”\n\nkendell graham\n\nYour metabolism isn't static. Your diet shouldn't be either.\nNo more guessing\n\nMac",
+    "images": [
+      {
+        "alt": "",
+        "x": 492,
+        "y": 432,
+        "width": 448,
+        "height": 684
+      },
+      {
+        "alt": "Screenshot",
+        "x": 220,
+        "y": 1412,
+        "width": 268,
+        "height": 234
+      },
+      {
+        "alt": "IMG BEFE",
+        "x": 553,
+        "y": 1412,
+        "width": 280,
+        "height": 234
+      },
+      {
+        "alt": "IMG FCFBD",
+        "x": 903,
+        "y": 1412,
+        "width": 298,
+        "height": 234
+      },
+      {
+        "alt": "",
+        "x": 220,
+        "y": 2490,
+        "width": 360,
+        "height": 713
+      },
+      {
+        "alt": "Before&After Photo Light",
+        "x": 220,
+        "y": 3576,
+        "width": 300,
+        "height": 375
+      },
+      {
+        "alt": "Before&After Photo Light",
+        "x": 220,
+        "y": 4037,
+        "width": 300,
+        "height": 375
+      },
+      {
+        "alt": "Kendell Before&After Photo Light",
+        "x": 220,
+        "y": 4498,
+        "width": 300,
+        "height": 375
+      }
+    ],
+    "screenshot": "screens/macrofactor.png"
+  },
+  {
+    "id": "habitica",
+    "requested_url": "https://habitica.com/static/features",
+    "captured_at": "2026-10-04T16:39:13.856Z",
+    "surface": "Public marketing page; not authenticated native app",
+    "http_status": 200,
+    "final_url": "https://habitica.com/static/features",
+    "title": "Habitica - Gamify Your Life",
+    "visible_text_sample": "",
+    "images": [],
+    "screenshot": "screens/habitica.png"
+  },
+  {
+    "id": "calisteniapp",
+    "requested_url": "https://calisteniapp.com/workouts/smart",
+    "captured_at": "2026-10-04T16:39:13.843Z",
+    "surface": "Public marketing page; not authenticated native app",
+    "http_status": 200,
+    "final_url": "https://calisteniapp.com/workouts/smart",
+    "title": "Smart Progressions for Calisthenics Goals | Calisteniapp",
+    "visible_text_sample": "WORKOUTS\nBLOG\nMORE\nWORKOUTS\nStrength\nHypertrophy\nWeighted\nStatics & power moves\nRings\nEndurance\nTOOLS\nMUSCLE-UP\nSTAY UPDATED\nCHANGELOG\nSUPPORT\nHELP AND SUPPORT\nPRIVACY POLICY\nTERMS OF USE\nBLOG\nGET IT ON\nGOOGLE PLAY\nDOWNLOAD ON THE\nAPP STORE\nGET STARTED\nEVO ROUTINES\n\nAccess +23 EVO routines following an adaptive training methodology to take your workouts to the next level.\n\nBEGINNER\nINTERMEDIATE\nADVANCED\nBEGINNER\nHANDSTAND\nINTERMEDIATE\nPLANCHE\nBEGINNER\nSHOULDERS AND TRICEPS MUSCLE BUILDING\nBEGINNER\nLEGS MUSCLE BUILDING\nBEGINNER\nBACK AND BICEPS MUSCLE BUILDING\nBEGINNER\nCARDIO\nBEGINNER\nCHEST AND TRICEPS MUSCLE BUILDING\nINTERMEDIATE\nFRONT LEVER\nBEGINNER\nCORE AT HOME\nINTERMEDIATE\nCORE AT THE PARK\nBEGINNER\nYOUR FIRST MUSCLE UP\nINTERMEDIATE\nV-SIT + IMPOSSIBLE DIP\nINTERMEDIATE\nBACK LEVER\nADVANCED\nHEFESTO\nINTERMEDIATE\nONE ARM PULL-UP\nINTERMEDIATE\nFLAG\nBEGINNER\nPOSTURE IMPROVEMENT\nINTERMEDIATE\nRIN",
+    "images": [
+      {
+        "alt": "Handstand",
+        "x": 82,
+        "y": 451,
+        "width": 420,
+        "height": 420
+      },
+      {
+        "alt": "Planche",
+        "x": 510,
+        "y": 451,
+        "width": 420,
+        "height": 420
+      },
+      {
+        "alt": "Shoulders and triceps muscle building",
+        "x": 938,
+        "y": 451,
+        "width": 420,
+        "height": 420
+      },
+      {
+        "alt": "Legs muscle building",
+        "x": 82,
+        "y": 879,
+        "width": 420,
+        "height": 420
+      },
+      {
+        "alt": "Back and biceps muscle building",
+        "x": 510,
+        "y": 879,
+        "width": 420,
+        "height": 420
+      },
+      {
+        "alt": "Cardio",
+        "x": 938,
+        "y": 879,
+        "width": 420,
+        "height": 420
+      },
+      {
+        "alt": "Chest and triceps muscle building",
+        "x": 82,
+        "y": 1307,
+        "width": 420,
+        "height": 420
+      },
+      {
+        "alt": "Front Lever",
+        "x": 510,
+        "y": 1307,
+        "width": 420,
+        "height": 420
+      }
+    ],
+    "screenshot": "screens/calisteniapp.png"
+  },
+  {
+    "id": "cronometer",
+    "requested_url": "https://cronometer.com/features/",
+    "captured_at": "2026-10-04T16:39:13.832Z",
+    "surface": "Public marketing page; not authenticated native app",
+    "http_status": 200,
+    "final_url": "https://cronometer.com/features/",
+    "title": "Advanced Features for Accurate Nutrition & Calorie Tracking | Cronometer",
+    "visible_text_sample": "This website uses cookies\nWe use cookies to personalise content and ads, to provide social media features and to analyse our traffic. We also share information about your use of our site with our social media, advertising and analytics partners who may combine it with other information that you’ve provided to them or that they’ve collected from your use of their services.\nShow details\nOK\nDo not sell or share my personal information\nSolutions\nFeatures\nLearn\nLog In\nSign Up\n\nNUTRITION TRACKING & BEYOND\n\nLoaded with features to support your unique health journey\n\nWith Cronometer, you get a best-in-class nutrition tracking app that’s accurate, reliable, and purpose-built to fast-track you toward better health.\n\nSign Up For Free\nTRACK FOOD\nA powerfully accurate nutrition tracker\n\nScan a barcode or enter food to easily track your calories and up to 84 other nutrients with data you can trust.\n\nL",
+    "images": [
+      {
+        "alt": "A woman in a kitchen holding a cell phone.",
+        "x": 860,
+        "y": 152,
+        "width": 536,
+        "height": 521
+      },
+      {
+        "alt": "",
+        "x": 881,
+        "y": 954,
+        "width": 450,
+        "height": 450
+      },
+      {
+        "alt": "A man wearing a Garmin watch and shorts.",
+        "x": 109,
+        "y": 1598,
+        "width": 450,
+        "height": 509
+      },
+      {
+        "alt": "",
+        "x": 930,
+        "y": 2301,
+        "width": 401,
+        "height": 504
+      },
+      {
+        "alt": "",
+        "x": 736,
+        "y": 3079,
+        "width": 660,
+        "height": 990
+      },
+      {
+        "alt": "A woman in a yellow tank top sitting at a table with a laptop.",
+        "x": 45,
+        "y": 4467,
+        "width": 427,
+        "height": 256
+      },
+      {
+        "alt": "A white bowl filled with a salad of tomatoes, onions, and limes.",
+        "x": 506,
+        "y": 4467,
+        "width": 427,
+        "height": 256
+      },
+      {
+        "alt": "A woman sitting on the floor holding a cell phone.",
+        "x": 968,
+        "y": 4467,
+        "width": 427,
+        "height": 256
+      }
+    ],
+    "screenshot": "screens/cronometer.png"
+  },
+  {
+    "id": "stoic",
+    "requested_url": "https://www.getstoic.com/features",
+    "captured_at": "2026-10-04T16:39:44.618Z",
+    "surface": "Public marketing page; not authenticated native app",
+    "http_status": 200,
+    "final_url": "https://www.getstoic.com/features",
+    "title": "Stoic App Features | Journaling, Mood Tracking & Daily Reflection Tools",
+    "visible_text_sample": "Features\nBlog\nDaily Journaling\nfeatures.\n\nMore than a journaling app, stoic is your go-to resource for exploring stoicism and philosophy, mental well-being, happiness, productivity, relationships, and practical tips for living a fulfilled life.\n\nJournaling Inspiration and Guidance\nDaily Reflections\n\nBegin and end your day with easily customizable reflections to keep your self-care practice intentional and fulfilling.\n\nDaily Prompts\n\nNot sure what to journal about? Daily prompts are here to inspire you. Keep an eye out for a new prompt each day, and a new theme every week.\n\nGuided Journals\n\nExplore a collection of thematic guided journals on topics that matter most. Revisit and explore them anytime.\n\nHelpful Tools for Building Your Habit\nProgress Tracking\n\nMonitor your mood and mark the factors that influence it. Soon, you'll discover patterns and get insights to help you feel your best.\n",
+    "images": [
+      {
+        "alt": "Blurbs saying morning preparation and evening reflection",
+        "x": 152,
+        "y": 662,
+        "width": 371,
+        "height": 480
+      },
+      {
+        "alt": "A leaf and a question about letting go",
+        "x": 535,
+        "y": 662,
+        "width": 371,
+        "height": 480
+      },
+      {
+        "alt": "Image showing journaling tags: sleep, to feel better, productivity, self-discovery, relationships, managing stress.",
+        "x": 917,
+        "y": 662,
+        "width": 371,
+        "height": 480
+      },
+      {
+        "alt": "A notebook and a text saying Today I slept well.",
+        "x": 152,
+        "y": 1591,
+        "width": 371,
+        "height": 480
+      },
+      {
+        "alt": "Badges unlocked",
+        "x": 535,
+        "y": 1591,
+        "width": 371,
+        "height": 480
+      },
+      {
+        "alt": "A journal notification",
+        "x": 917,
+        "y": 1591,
+        "width": 371,
+        "height": 480
+      },
+      {
+        "alt": "Check in entry",
+        "x": 152,
+        "y": 2520,
+        "width": 371,
+        "height": 480
+      },
+      {
+        "alt": "Connection between mood and productivity",
+        "x": 535,
+        "y": 2520,
+        "width": 371,
+        "height": 480
+      }
+    ],
+    "screenshot": "screens/stoic.png"
+  }
+]

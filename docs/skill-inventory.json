@@ -1,0 +1,1216 @@
+{
+  "snapshot_date": "2026-10-04",
+  "scope": "Session available-skills catalog",
+  "entries": [
+    {
+      "name": "artifact-template-stoic-consulting-hermes-skills",
+      "path": "C:/Users/stoic/.codex/skills/artifact-template-stoic-consulting-hermes-skills/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "A different artifact's retained visual template; Stoic Body needs its own approved identity.",
+      "depends": "Explicit reuse request",
+      "output": "No invocation planned",
+      "file_exists": true
+    },
+    {
+      "name": "artifact-template-stoic-consulting-skill-catalog",
+      "path": "C:/Users/stoic/.codex/skills/artifact-template-stoic-consulting-skill-catalog/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "A different artifact's retained visual template; Stoic Body needs its own approved identity.",
+      "depends": "Explicit reuse request",
+      "output": "No invocation planned",
+      "file_exists": true
+    },
+    {
+      "name": "artifact-template-ultron-prompt-page",
+      "path": "C:/Users/stoic/.codex/skills/artifact-template-ultron-prompt-page/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "A different artifact's retained visual template; Stoic Body needs its own approved identity.",
+      "depends": "Explicit reuse request",
+      "output": "No invocation planned",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:assess-patch-risk",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/assess-patch-risk/SKILL.md",
+      "status": "Conditional",
+      "phase": "7",
+      "contribution": "Assess an immutable security patch and regression risk.",
+      "depends": "A concrete security patch",
+      "output": "Patch risk assessment",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:attack-path-analysis",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/attack-path-analysis/SKILL.md",
+      "status": "Conditional",
+      "phase": "7",
+      "contribution": "Trace attack paths within an active audit.",
+      "depends": "Security scan analysis phase",
+      "output": "Attack path evidence",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:deep-security-scan",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/deep-security-scan/SKILL.md",
+      "status": "Conditional",
+      "phase": "7",
+      "contribution": "Deeper multi-pass audit if standard coverage warrants it.",
+      "depends": "Explicit deep-scan scope approval",
+      "output": "Deep audit and coverage report",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:define-security-policy",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/define-security-policy/SKILL.md",
+      "status": "Planned",
+      "phase": "2",
+      "contribution": "Define handling and disclosure rules for private health data.",
+      "depends": "Approved data flows",
+      "output": "SECURITY.md proposal",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:finding-discovery",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/finding-discovery/SKILL.md",
+      "status": "Conditional",
+      "phase": "7",
+      "contribution": "Find vulnerabilities as part of the chosen audit.",
+      "depends": "Active scan discovery phase",
+      "output": "Finding candidates",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:fix-finding",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/fix-finding/SKILL.md",
+      "status": "Conditional",
+      "phase": "7",
+      "contribution": "Fix a validated issue within approved phase scope.",
+      "depends": "Validated issue and authorized fix",
+      "output": "Patch and regression evidence",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:propose-security-hardening",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/propose-security-hardening/SKILL.md",
+      "status": "Conditional",
+      "phase": "7",
+      "contribution": "Propose structural improvements from evidence.",
+      "depends": "Validated findings",
+      "output": "Prioritized hardening proposal",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:security-diff-scan",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/security-diff-scan/SKILL.md",
+      "status": "Planned",
+      "phase": "7",
+      "contribution": "Review security-sensitive changes.",
+      "depends": "Reviewable implementation diff",
+      "output": "Diff findings and coverage",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:security-scan",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/security-scan/SKILL.md",
+      "status": "Planned",
+      "phase": "7",
+      "contribution": "Audit the built application and document coverage.",
+      "depends": "Runnable app and defined scope",
+      "output": "Source-backed security report",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:threat-model",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/threat-model/SKILL.md",
+      "status": "Planned",
+      "phase": "2",
+      "contribution": "Model photos, imports, schedules, local access and optional AI boundaries.",
+      "depends": "Approved user journeys",
+      "output": "Threat model",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:track-findings",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/track-findings/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "External issue publishing is outside current scope; track locally.",
+      "depends": "Explicit external tracking request",
+      "output": "No outbound action",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:triage-finding",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/triage-finding/SKILL.md",
+      "status": "Conditional",
+      "phase": "7",
+      "contribution": "Evaluate imported or existing vulnerability claims.",
+      "depends": "An existing finding",
+      "output": "Triage disposition",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:validation",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/validation/SKILL.md",
+      "status": "Conditional",
+      "phase": "7",
+      "contribution": "Verify candidates in an active scan.",
+      "depends": "Candidate and safe reproduction",
+      "output": "Validation evidence",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:verify-fix",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/verify-fix/SKILL.md",
+      "status": "Conditional",
+      "phase": "7",
+      "contribution": "Check a reported remediation.",
+      "depends": "Specific fix-verification request",
+      "output": "Retest result",
+      "file_exists": true
+    },
+    {
+      "name": "codex-security:vulnerability-writeup",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/codex-security/0.1.31/skills/vulnerability-writeup/SKILL.md",
+      "status": "Conditional",
+      "phase": "7",
+      "contribution": "Document confirmed issues reproducibly.",
+      "depends": "Validated vulnerability",
+      "output": "Local vulnerability report",
+      "file_exists": true
+    },
+    {
+      "name": "computer-use:computer-use",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-bundled/computer-use/26.930.31428/skills/computer-use/SKILL.md",
+      "status": "Conditional",
+      "phase": "3,7",
+      "contribution": "Browser interaction if supported; native app control is disabled in this session.",
+      "depends": "Need beyond preferred headless Playwright",
+      "output": "Observed browser evidence",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:analyze-data-quality",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/analyze-data-quality/SKILL.md",
+      "status": "Planned",
+      "phase": "5,7",
+      "contribution": "Check measurement provenance, missingness, units and imports.",
+      "depends": "Representative approved or synthetic data",
+      "output": "Data-quality findings",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:build-dashboard",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/build-dashboard/SKILL.md",
+      "status": "Conditional",
+      "phase": "3,5",
+      "contribution": "Analytical progress views if its workflow fits the approved app.",
+      "depends": "Approved metrics and prototype",
+      "output": "Source-backed progress view",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:build-report",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/build-report/SKILL.md",
+      "status": "Conditional",
+      "phase": "8",
+      "contribution": "Polished analytical report only if an export is selected.",
+      "depends": "Approved report-export scope",
+      "output": "Progress report artifact",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:create-data-context",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/create-data-context/SKILL.md",
+      "status": "Conditional",
+      "phase": "2,5",
+      "contribution": "Reusable context for calculations and sources.",
+      "depends": "Defined metrics and source schema",
+      "output": "Metric/source context",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:design-kpis",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/design-kpis/SKILL.md",
+      "status": "Planned",
+      "phase": "2",
+      "contribution": "Define adherence, progress and outcomes separately.",
+      "depends": "Approved success criteria",
+      "output": "Metric dictionary",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:gather-business-context",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/gather-business-context/SKILL.md",
+      "status": "Conditional",
+      "phase": "1",
+      "contribution": "Evaluated in Phase 1; owner-supplied context suffices for conceptual planning. Use metric-backed business analysis when pilot/customer data exists.",
+      "depends": "A concrete business-data question and relevant evidence",
+      "output": "Evidence-backed analysis when applicable",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:index",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/index/SKILL.md",
+      "status": "Conditional",
+      "phase": "5",
+      "contribution": "Route a concrete quantitative analysis task.",
+      "depends": "Analysis question",
+      "output": "Focused analytics workflow",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:jupyter-notebooks",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/jupyter-notebooks/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "No notebook deliverable requested.",
+      "depends": "Explicit notebook or reproducible analysis need",
+      "output": "No notebook planned",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:kpi-reporting",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/kpi-reporting/SKILL.md",
+      "status": "Conditional",
+      "phase": "6B,Later",
+      "contribution": "Prepare consented pilot/launch reporting when meaningful data exists.",
+      "depends": "Agreed commercial metrics and consented data",
+      "output": "Launch/pilot metrics report",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:market-sizing",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/market-sizing/SKILL.md",
+      "status": "Conditional",
+      "phase": "1",
+      "contribution": "Estimate a market only if launch positioning requires it; avoid invented demand.",
+      "depends": "Defined customer segment and research scope",
+      "output": "Source-backed opportunity estimate",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:metric-diagnostics",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/metric-diagnostics/SKILL.md",
+      "status": "Conditional",
+      "phase": "5,7",
+      "contribution": "Investigate unexpected progress calculations.",
+      "depends": "Observed metric discrepancy",
+      "output": "Root-cause analysis",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:product-business-analysis",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/product-business-analysis/SKILL.md",
+      "status": "Conditional",
+      "phase": "1,2,Later",
+      "contribution": "Evaluated in Phase 1; owner-supplied context suffices for conceptual planning. Use metric-backed business analysis when pilot/customer data exists.",
+      "depends": "A concrete business-data question and relevant evidence",
+      "output": "Evidence-backed analysis when applicable",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:publish-artifact-to-sites",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/publish-artifact-to-sites/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "Publishing is not authorized in Phase 0.",
+      "depends": "Approved publishable artifact and permission",
+      "output": "No publication planned",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:validate-data",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/validate-data/SKILL.md",
+      "status": "Planned",
+      "phase": "5,7",
+      "contribution": "Validate calculations, conclusions and uncertainty.",
+      "depends": "Defined formulas and fixtures",
+      "output": "Calculation validation",
+      "file_exists": true
+    },
+    {
+      "name": "data-analytics:visualize-data",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/data-analytics/1.0.11/skills/visualize-data/SKILL.md",
+      "status": "Planned",
+      "phase": "3,5",
+      "contribution": "Readable trends and uncertainty displays.",
+      "depends": "Approved metrics",
+      "output": "Charts and visual QA",
+      "file_exists": true
+    },
+    {
+      "name": "documents:documents",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-primary-runtime/documents/26.915.20218/skills/documents/SKILL.md",
+      "status": "Conditional",
+      "phase": "6,8",
+      "contribution": "Word-format references or report exports if selected.",
+      "depends": "Approved DOCX scope",
+      "output": "Validated document artifact",
+      "file_exists": true
+    },
+    {
+      "name": "documents:documents",
+      "path": "C:/Users/stoic/.agents/skills/109-documents/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate catalog entry; prefer runtime-backed documents skill above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:accessible-response",
+      "path": "C:/Users/stoic/.agents/skills/039-accessible-response/SKILL.md",
+      "status": "Planned",
+      "phase": "0–8",
+      "contribution": "Keep interviews and review materials readable.",
+      "depends": "User brief",
+      "output": "Clear questions and decisions",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:accessible-superpowers",
+      "path": "C:/Users/stoic/.agents/skills/040-accessible-superpowers/SKILL.md",
+      "status": "Conditional",
+      "phase": "0–8",
+      "contribution": "Adapt lengthy workflow communication if needed.",
+      "depends": "Superpowers process",
+      "output": "Readable review checkpoints",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:code-explainer",
+      "path": "C:/Users/stoic/.agents/skills/041-code-explainer/SKILL.md",
+      "status": "Conditional",
+      "phase": "2–8",
+      "contribution": "Explain code or architecture on request.",
+      "depends": "Actual code or approved architecture",
+      "output": "Layered explanation",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:context-reentry",
+      "path": "C:/Users/stoic/.agents/skills/042-context-reentry/SKILL.md",
+      "status": "Conditional",
+      "phase": "0–8",
+      "contribution": "Resume accurately after interruption.",
+      "depends": "Persistent project state",
+      "output": "Reentry summary",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:decision-comparator",
+      "path": "C:/Users/stoic/.agents/skills/043-decision-comparator/SKILL.md",
+      "status": "Active",
+      "phase": "1,2",
+      "contribution": "Compare platform, alarm and storage choices consistently.",
+      "depends": "Device and privacy answers",
+      "output": "Decision comparison",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:diff-reader",
+      "path": "C:/Users/stoic/.agents/skills/044-diff-reader/SKILL.md",
+      "status": "Conditional",
+      "phase": "4–8",
+      "contribution": "Explain reviewable implementation changes.",
+      "depends": "A diff",
+      "output": "Accessible change review",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:documentation-navigator",
+      "path": "C:/Users/stoic/.agents/skills/045-documentation-navigator/SKILL.md",
+      "status": "Conditional",
+      "phase": "1,2",
+      "contribution": "Navigate lengthy official documentation.",
+      "depends": "Specific platform question",
+      "output": "Relevant documentation pointers",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:error-decoder",
+      "path": "C:/Users/stoic/.agents/skills/046-error-decoder/SKILL.md",
+      "status": "Conditional",
+      "phase": "4–7",
+      "contribution": "Explain actual build and runtime failures.",
+      "depends": "Observed error",
+      "output": "Plain-language diagnosis",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:identifier-safety",
+      "path": "C:/Users/stoic/.agents/skills/047-identifier-safety/SKILL.md",
+      "status": "Conditional",
+      "phase": "0–8",
+      "contribution": "Preserve exact technical names during editing.",
+      "depends": "Technical identifiers",
+      "output": "Correct names and commands",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:instruction-decoder",
+      "path": "C:/Users/stoic/.agents/skills/048-instruction-decoder/SKILL.md",
+      "status": "Conditional",
+      "phase": "0,1",
+      "contribution": "Clarify a dense requirement when ambiguity matters.",
+      "depends": "Unclear instruction",
+      "output": "Resolved requirement",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:number-and-date-clarifier",
+      "path": "C:/Users/stoic/.agents/skills/049-number-and-date-clarifier/SKILL.md",
+      "status": "Active",
+      "phase": "0,1,2,7",
+      "contribution": "Clarify units, deadlines, timezone and recurrence.",
+      "depends": "Schedule or metric inputs",
+      "output": "Unambiguous data definitions",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:prompt-clarifier",
+      "path": "C:/Users/stoic/.agents/skills/050-prompt-clarifier/SKILL.md",
+      "status": "Conditional",
+      "phase": "0,1",
+      "contribution": "Resolve material product ambiguities.",
+      "depends": "Unresolved requirement",
+      "output": "Recorded decision",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:spelling-and-writing-support",
+      "path": "C:/Users/stoic/.agents/skills/051-spelling-and-writing-support/SKILL.md",
+      "status": "Conditional",
+      "phase": "3,6",
+      "contribution": "Polish app copy while preserving meaning.",
+      "depends": "Approved content",
+      "output": "Edited copy",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:task-sequencer",
+      "path": "C:/Users/stoic/.agents/skills/052-task-sequencer/SKILL.md",
+      "status": "Active",
+      "phase": "0,2",
+      "contribution": "Order phase dependencies and manageable tasks.",
+      "depends": "Brief and later spec",
+      "output": "Sequenced plan",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:terminal-output-reader",
+      "path": "C:/Users/stoic/.agents/skills/053-terminal-output-reader/SKILL.md",
+      "status": "Conditional",
+      "phase": "4–7",
+      "contribution": "Summarize test failures without hiding evidence.",
+      "depends": "Actual command output",
+      "output": "Readable verification summary",
+      "file_exists": true
+    },
+    {
+      "name": "dyslex-ai:typo-tolerant-intent",
+      "path": "C:/Users/stoic/.agents/skills/054-typo-tolerant-intent/SKILL.md",
+      "status": "Conditional",
+      "phase": "0,1",
+      "contribution": "Clarify ambiguous original wording without changing scope.",
+      "depends": "Ambiguous source wording",
+      "output": "Confirmed interpretation",
+      "file_exists": true
+    },
+    {
+      "name": "google-drive:google-docs",
+      "path": "C:/Users/stoic/.agents/skills/055-google-docs/SKILL.md",
+      "status": "Conditional",
+      "phase": "6,8",
+      "contribution": "Only if a specific Google file or export integration is requested.",
+      "depends": "Explicit connector scope and accessible resource",
+      "output": "Verified import/export; no automatic cloud writes",
+      "file_exists": true
+    },
+    {
+      "name": "google-drive:google-drive",
+      "path": "C:/Users/stoic/.agents/skills/056-google-drive/SKILL.md",
+      "status": "Conditional",
+      "phase": "6,8",
+      "contribution": "Only if a specific Google file or export integration is requested.",
+      "depends": "Explicit connector scope and accessible resource",
+      "output": "Verified import/export; no automatic cloud writes",
+      "file_exists": true
+    },
+    {
+      "name": "google-drive:google-drive-comments",
+      "path": "C:/Users/stoic/.agents/skills/057-google-drive-comments/SKILL.md",
+      "status": "Conditional",
+      "phase": "6,8",
+      "contribution": "External commenting is not part of current deliverable.",
+      "depends": "Explicit connector scope and accessible resource",
+      "output": "Verified import/export; no automatic cloud writes",
+      "file_exists": true
+    },
+    {
+      "name": "google-drive:google-sheets",
+      "path": "C:/Users/stoic/.agents/skills/058-google-sheets/SKILL.md",
+      "status": "Conditional",
+      "phase": "6,8",
+      "contribution": "Only if a specific Google file or export integration is requested.",
+      "depends": "Explicit connector scope and accessible resource",
+      "output": "Verified import/export; no automatic cloud writes",
+      "file_exists": true
+    },
+    {
+      "name": "google-drive:google-slides",
+      "path": "C:/Users/stoic/.agents/skills/059-google-slides/SKILL.md",
+      "status": "Conditional",
+      "phase": "6,8",
+      "contribution": "Only if a specific Google file or export integration is requested.",
+      "depends": "Explicit connector scope and accessible resource",
+      "output": "Verified import/export; no automatic cloud writes",
+      "file_exists": true
+    },
+    {
+      "name": "imagegen",
+      "path": "C:/Users/stoic/.agents/skills/001-imagegen/SKILL.md",
+      "status": "Conditional",
+      "phase": "3,6",
+      "contribution": "Create approved brand or illustration assets.",
+      "depends": "Chosen visual direction and generation availability",
+      "output": "Original visual assets",
+      "file_exists": true
+    },
+    {
+      "name": "lunar-frontier-workflow",
+      "path": "C:/Users/stoic/.codex/skills/lunar-frontier-workflow/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "Roblox project workflow unrelated to this app.",
+      "depends": "Lunar Frontier task",
+      "output": "No invocation planned",
+      "file_exists": true
+    },
+    {
+      "name": "openai-developers:agents",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/openai-developers/1.3.6/skills/agents/SKILL.md",
+      "status": "Conditional",
+      "phase": "2,4–7",
+      "contribution": "Implement an OpenAI agent only if an approved provider choice requires one.",
+      "depends": "Approved provider need; no paid fallback by default",
+      "output": "Provider-specific result only if selected",
+      "file_exists": true
+    },
+    {
+      "name": "openai-developers:devday-guide",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/openai-developers/1.3.6/skills/devday-guide/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "Event attendance guide unrelated to this app.",
+      "depends": "Approved provider need; no paid fallback by default",
+      "output": "Provider-specific result only if selected",
+      "file_exists": true
+    },
+    {
+      "name": "openai-developers:openai-api-troubleshooting",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/openai-developers/1.3.6/skills/openai-api-troubleshooting/SKILL.md",
+      "status": "Conditional",
+      "phase": "2,4–7",
+      "contribution": "Investigate an actual approved OpenAI request failure.",
+      "depends": "Approved provider need; no paid fallback by default",
+      "output": "Provider-specific result only if selected",
+      "file_exists": true
+    },
+    {
+      "name": "openai-developers:openai-platform-api-key",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/openai-developers/1.3.6/skills/openai-platform-api-key/SKILL.md",
+      "status": "Conditional",
+      "phase": "2,4–7",
+      "contribution": "Configure credentials only after explicit provider and cost approval.",
+      "depends": "Approved provider need; no paid fallback by default",
+      "output": "Provider-specific result only if selected",
+      "file_exists": true
+    },
+    {
+      "name": "openai-docs",
+      "path": "C:/Users/stoic/.agents/skills/002-openai-docs/SKILL.md",
+      "status": "Conditional",
+      "phase": "2",
+      "contribution": "Official documentation for an approved OpenAI integration.",
+      "depends": "Provider selection",
+      "output": "Verified implementation constraints",
+      "file_exists": true
+    },
+    {
+      "name": "pages:maintain-space",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/pages/0.1.19/skills/maintain-space/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "Cloud Page management differs from building the app's own scheduler; local documents suffice.",
+      "depends": "Explicit Page/Space request",
+      "output": "No Page or schedule changes",
+      "file_exists": true
+    },
+    {
+      "name": "pages:manage-schedules",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/pages/0.1.19/skills/manage-schedules/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "Cloud Page management differs from building the app's own scheduler; local documents suffice.",
+      "depends": "Explicit Page/Space request",
+      "output": "No Page or schedule changes",
+      "file_exists": true
+    },
+    {
+      "name": "pages:organize-space",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/pages/0.1.19/skills/organize-space/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "Cloud Page management differs from building the app's own scheduler; local documents suffice.",
+      "depends": "Explicit Page/Space request",
+      "output": "No Page or schedule changes",
+      "file_exists": true
+    },
+    {
+      "name": "pages:write-page",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/pages/0.1.19/skills/write-page/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "Cloud Page management differs from building the app's own scheduler; local documents suffice.",
+      "depends": "Explicit Page/Space request",
+      "output": "No Page or schedule changes",
+      "file_exists": true
+    },
+    {
+      "name": "pdf:pdf",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-primary-runtime/pdf/26.915.20218/skills/pdf/SKILL.md",
+      "status": "Conditional",
+      "phase": "6,8",
+      "contribution": "Inspect PDF references or render selected report exports.",
+      "depends": "Approved PDF input/output scope",
+      "output": "Verified extraction or rendered PDF",
+      "file_exists": true
+    },
+    {
+      "name": "pdf:pdf",
+      "path": "C:/Users/stoic/.agents/skills/110-pdf/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; prefer runtime-backed PDF skill.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "playwright-cli",
+      "path": "C:/Users/stoic/.agents/skills/106-playwright-cli/SKILL.md",
+      "status": "Planned",
+      "phase": "3,4,7",
+      "contribution": "Headless browser interaction, end-to-end and visual checks.",
+      "depends": "Chosen web surface and verified local runner",
+      "output": "Behavior and screenshot evidence",
+      "file_exists": true
+    },
+    {
+      "name": "playwright-component-testing",
+      "path": "C:/Users/stoic/.agents/skills/107-playwright-component-testing/SKILL.md",
+      "status": "Conditional",
+      "phase": "3,4,7",
+      "contribution": "Test reusable UI components if supported by chosen stack.",
+      "depends": "Approved component architecture",
+      "output": "Component interaction coverage",
+      "file_exists": true
+    },
+    {
+      "name": "playwright-trace",
+      "path": "C:/Users/stoic/.agents/skills/108-playwright-trace/SKILL.md",
+      "status": "Conditional",
+      "phase": "4,7",
+      "contribution": "Inspect actual failing browser traces.",
+      "depends": "Trace from a failing test",
+      "output": "Failure diagnosis",
+      "file_exists": true
+    },
+    {
+      "name": "plugin-management:plugin-management",
+      "path": "C:/Users/stoic/.agents/skills/085-plugin-management/SKILL.md",
+      "status": "Conditional",
+      "phase": "2–7",
+      "contribution": "Inspect a concrete missing capability; installations need approval when consequential.",
+      "depends": "Identified capability gap",
+      "output": "Capability assessment",
+      "file_exists": true
+    },
+    {
+      "name": "presentations:Presentations",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-primary-runtime/presentations/26.915.20218/skills/presentations/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "No slide deck requested.",
+      "depends": "Explicit deck request",
+      "output": "No invocation planned",
+      "file_exists": true
+    },
+    {
+      "name": "presentations:Presentations",
+      "path": "C:/Users/stoic/.agents/skills/111-presentations/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate runtime presentation entry; neither needed now.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "sites:sites",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/sites/1.0.0-a/skills/sites/SKILL.md",
+      "status": "Conditional",
+      "phase": "2–8",
+      "contribution": "Only if approved website workflow fits; no automatic publishing.",
+      "depends": "Platform decision and deployment approval",
+      "output": "Website artifacts if selected",
+      "file_exists": true
+    },
+    {
+      "name": "skill-creator",
+      "path": "C:/Users/stoic/.agents/skills/005-skill-creator/SKILL.md",
+      "status": "Conditional",
+      "phase": "Later",
+      "contribution": "Create a reusable skill only if a repeated workflow justifies it.",
+      "depends": "Explicit reusable-skill scope",
+      "output": "Validated skill",
+      "file_exists": true
+    },
+    {
+      "name": "skill-installer",
+      "path": "C:/Users/stoic/.agents/skills/006-skill-installer/SKILL.md",
+      "status": "Conditional",
+      "phase": "Later",
+      "contribution": "Install only a needed skill after a specific capability gap is identified.",
+      "depends": "Authorized installation",
+      "output": "Verified installed skill",
+      "file_exists": true
+    },
+    {
+      "name": "spreadsheets:Spreadsheets",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-primary-runtime/spreadsheets/26.915.20218/skills/spreadsheets/SKILL.md",
+      "status": "Conditional",
+      "phase": "6,8",
+      "contribution": "Spreadsheet references or exports if selected.",
+      "depends": "Approved spreadsheet scope",
+      "output": "Validated workbook",
+      "file_exists": true
+    },
+    {
+      "name": "spreadsheets:Spreadsheets",
+      "path": "C:/Users/stoic/.agents/skills/113-spreadsheets/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate; prefer runtime spreadsheet skill.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "spreadsheets:excel-live-control",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-primary-runtime/spreadsheets/26.915.20218/skills/excel-live-control/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "No active Excel workbook task.",
+      "depends": "Explicit live-workbook request",
+      "output": "No invocation planned",
+      "file_exists": true
+    },
+    {
+      "name": "spreadsheets:excel-live-control",
+      "path": "C:/Users/stoic/.agents/skills/112-excel-live-control/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate live Excel skill; neither needed now.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "supabase:supabase",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/supabase/1.0.0/skills/supabase/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "External DB accounts conflict with current local embedded-storage constraint.",
+      "depends": "Explicit change to infrastructure constraints",
+      "output": "No Supabase project",
+      "file_exists": true
+    },
+    {
+      "name": "supabase:supabase-postgres-best-practices",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/supabase/1.0.0/skills/supabase-postgres-best-practices/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "External DB accounts conflict with current local embedded-storage constraint.",
+      "depends": "Explicit change to infrastructure constraints",
+      "output": "No Supabase project",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:brainstorming",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/brainstorming/SKILL.md",
+      "status": "Active",
+      "phase": "1–3",
+      "contribution": "Turn discovery into design options and approved specifications.",
+      "depends": "User answers",
+      "output": "Approved design",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:brainstorming",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/brainstorming/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:diagnosing-superpowers",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/diagnosing-superpowers/SKILL.md",
+      "status": "Conditional",
+      "phase": "0–8",
+      "contribution": "Diagnose a workflow problem if raised.",
+      "depends": "Observed process failure",
+      "output": "Process correction",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:diagnosing-superpowers",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/diagnosing-superpowers/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:dispatching-parallel-agents",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/dispatching-parallel-agents/SKILL.md",
+      "status": "Conditional",
+      "phase": "4–7",
+      "contribution": "Independent subtasks only if execution plan calls for delegation.",
+      "depends": "Approved independent work boundaries",
+      "output": "Consolidated work evidence",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:dispatching-parallel-agents",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/dispatching-parallel-agents/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:executing-plans",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/executing-plans/SKILL.md",
+      "status": "Planned",
+      "phase": "4–8",
+      "contribution": "Execute approved subsystem plans with checkpoints.",
+      "depends": "Approved implementation plan",
+      "output": "Completed plan tasks",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:executing-plans",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/executing-plans/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:finishing-a-development-branch",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/finishing-a-development-branch/SKILL.md",
+      "status": "Conditional",
+      "phase": "8",
+      "contribution": "Prepare integration choices after verification.",
+      "depends": "Passing changes and Git workflow",
+      "output": "Reviewable integration proposal",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:finishing-a-development-branch",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/finishing-a-development-branch/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:receiving-code-review",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/receiving-code-review/SKILL.md",
+      "status": "Conditional",
+      "phase": "4–8",
+      "contribution": "Evaluate and address review feedback.",
+      "depends": "Concrete review findings",
+      "output": "Resolved findings",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:receiving-code-review",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/receiving-code-review/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:requesting-code-review",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/requesting-code-review/SKILL.md",
+      "status": "Planned",
+      "phase": "4–8",
+      "contribution": "Review substantial implementation against requirements.",
+      "depends": "Reviewable code and tests",
+      "output": "Code review evidence",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:requesting-code-review",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/requesting-code-review/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:subagent-driven-development",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/subagent-driven-development/SKILL.md",
+      "status": "Conditional",
+      "phase": "4–7",
+      "contribution": "Alternative execution method if selected.",
+      "depends": "Approved plan and delegation method",
+      "output": "Task implementation and review",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:subagent-driven-development",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/subagent-driven-development/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:systematic-debugging",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/systematic-debugging/SKILL.md",
+      "status": "Conditional",
+      "phase": "4–7",
+      "contribution": "Find root causes before fixing failures.",
+      "depends": "Reproducible failure",
+      "output": "Diagnosis and verified fix",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:systematic-debugging",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/systematic-debugging/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:test-driven-development",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/test-driven-development/SKILL.md",
+      "status": "Planned",
+      "phase": "4–7",
+      "contribution": "Test scheduling, XP and calculations before core implementation.",
+      "depends": "Approved interfaces and rules",
+      "output": "Failing-to-passing core tests",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:test-driven-development",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/test-driven-development/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:using-git-worktrees",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/using-git-worktrees/SKILL.md",
+      "status": "Conditional",
+      "phase": "4",
+      "contribution": "Isolate changes where an existing repository requires it.",
+      "depends": "Verified repository and isolation need",
+      "output": "Managed worktree",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:using-git-worktrees",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/using-git-worktrees/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:using-superpowers",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/using-superpowers/SKILL.md",
+      "status": "Planned",
+      "phase": "0–8",
+      "contribution": "Route relevant workflow skills.",
+      "depends": "Task context",
+      "output": "Coherent workflow",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:using-superpowers",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/using-superpowers/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:verification-before-completion",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/verification-before-completion/SKILL.md",
+      "status": "Active",
+      "phase": "0–8",
+      "contribution": "Require fresh evidence for completion claims; verify this documentation packet.",
+      "depends": "Reviewable deliverable",
+      "output": "Verification record",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:verification-before-completion",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/verification-before-completion/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:writing-plans",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/writing-plans/SKILL.md",
+      "status": "Active",
+      "phase": "0,2",
+      "contribution": "Plan phases now; detailed subsystem plans after design approval.",
+      "depends": "User brief, later approved spec",
+      "output": "Phase plan and implementation plans",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:writing-plans",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/writing-plans/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:writing-skills",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/superpowers/6.4.2/skills/writing-skills/SKILL.md",
+      "status": "Conditional",
+      "phase": "Later",
+      "contribution": "Validate any explicitly scoped reusable skill.",
+      "depends": "Skill-creation requirement",
+      "output": "Skill validation",
+      "file_exists": true
+    },
+    {
+      "name": "superpowers:writing-skills",
+      "path": "C:/Users/stoic/.agents/skills/superpowers/writing-skills/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate entry; use curated version above.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "template-creator:template-creator",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-primary-runtime/template-creator/26.915.20218/skills/template-creator/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "No reusable artifact-template skill requested.",
+      "depends": "Explicit template request",
+      "output": "No invocation planned",
+      "file_exists": true
+    },
+    {
+      "name": "template-creator:template-creator",
+      "path": "C:/Users/stoic/.agents/skills/114-template-creator/SKILL.md",
+      "status": "Duplicate",
+      "phase": "—",
+      "contribution": "Duplicate template skill; neither needed now.",
+      "depends": "Canonical skill",
+      "output": "No duplicate invocation",
+      "file_exists": true
+    },
+    {
+      "name": "visualize:visualize",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-bundled/visualize/1.0.46/skills/visualize/SKILL.md",
+      "status": "Planned",
+      "phase": "2,3",
+      "contribution": "Show scheduling and XP concepts interactively when useful.",
+      "depends": "Approved concepts",
+      "output": "Reviewable visual explanation",
+      "file_exists": true
+    },
+    {
+      "name": "work-pets:create-pet",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/work-pets/0.1.6/skills/create-pet/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "ChatGPT Work pets are outside the Stoic Body game system.",
+      "depends": "Explicit Work pet request",
+      "output": "No invocation planned",
+      "file_exists": true
+    },
+    {
+      "name": "work-pets:pets",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/work-pets/0.1.6/skills/pets/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "ChatGPT Work pets are outside the Stoic Body game system.",
+      "depends": "Explicit Work pet request",
+      "output": "No invocation planned",
+      "file_exists": true
+    },
+    {
+      "name": "work-pets:update-pet",
+      "path": "C:/Users/stoic/.codex/plugins/cache/openai-curated-remote/work-pets/0.1.6/skills/update-pet/SKILL.md",
+      "status": "Not applicable",
+      "phase": "—",
+      "contribution": "ChatGPT Work pets are outside the Stoic Body game system.",
+      "depends": "Explicit Work pet request",
+      "output": "No invocation planned",
+      "file_exists": true
+    }
+  ]
+}

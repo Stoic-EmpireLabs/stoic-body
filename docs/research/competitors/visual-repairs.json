@@ -1,0 +1,26 @@
+[
+  {
+    "id": "tiimo-clear",
+    "url": "https://www.tiimoapp.com/",
+    "captured_at": "2026-10-04T16:43:17.148Z",
+    "status": 200,
+    "screenshot": "screens/tiimo-clear.png",
+    "title": "Visual Planner for Every Neurotype | Tiimo"
+  },
+  {
+    "id": "finch-store",
+    "url": "https://apps.apple.com/us/app/finch-self-care-pet/id1528595748",
+    "captured_at": "2026-10-04T16:43:17.164Z",
+    "status": 200,
+    "screenshot": "screens/finch-store.png",
+    "title": "‎Finch: Self-Care Pet App - App Store"
+  },
+  {
+    "id": "ladder-clear",
+    "url": "https://www.joinladder.com/",
+    "captured_at": "2026-10-04T16:43:17.158Z",
+    "status": 200,
+    "screenshot": "screens/ladder-clear.png",
+    "title": "Ladder | Your Daily Workout Plan"
+  }
+]

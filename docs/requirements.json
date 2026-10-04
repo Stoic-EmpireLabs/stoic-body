@@ -1,0 +1,925 @@
+{
+  "snapshot_date": "2026-10-04",
+  "requirements": [
+    {
+      "id": "P01",
+      "source": "Role; §1",
+      "requirement": "Act across planning, design, research, architecture, development and QA; preserve all source requirements.",
+      "proposed_design": "Project brief, source archive and this traceability register",
+      "phase": "0–8",
+      "verification_plan": "Review source-to-row coverage at every checkpoint",
+      "status": "Project workflow recorded; ongoing checks remain",
+      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md"
+    },
+    {
+      "id": "P02",
+      "source": "§1; First response",
+      "requirement": "Start with planning, inventory every available skill and relevant tool, evaluate duplicates and exclusions without invented capability.",
+      "proposed_design": "Complete skill map with paths, prerequisites, outputs and actual availability boundary",
+      "phase": "0",
+      "verification_plan": "Count every catalog entry, verify files and inspect exclusions",
+      "status": "Project workflow recorded; ongoing checks remain",
+      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md"
+    },
+    {
+      "id": "P03",
+      "source": "§1; §12",
+      "requirement": "Require explicit approval at the end of each phase; show artifact, scope, evidence, limitations and next step.",
+      "proposed_design": "Phase state and approval ledger; no approval inferred from silence",
+      "phase": "0–8",
+      "verification_plan": "Review phase transitions against user approvals",
+      "status": "Project workflow recorded; ongoing checks remain",
+      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md"
+    },
+    {
+      "id": "P04",
+      "source": "§1",
+      "requirement": "Persist project brief, requirements, decisions, progress and interview answers across sessions.",
+      "proposed_design": "Versioned project documents and later resumable onboarding storage",
+      "phase": "0–8",
+      "verification_plan": "Close/reopen documents and app; recover state",
+      "status": "Project workflow recorded; ongoing checks remain",
+      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md"
+    },
+    {
+      "id": "P05",
+      "source": "§12",
+      "requirement": "No coding before planning approval; no purchases, public publication, account creation or irreversible actions without approval.",
+      "proposed_design": "Phase boundaries and action-specific authorization",
+      "phase": "0–8",
+      "verification_plan": "Review action log against authorized scope",
+      "status": "Project workflow recorded; ongoing checks remain",
+      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md"
+    },
+    {
+      "id": "P06",
+      "source": "§13",
+      "requirement": "Clearly label simulated, implemented and execution-verified features; completion needs working evidence.",
+      "proposed_design": "Evidence status per requirement and delivery checklist",
+      "phase": "3–8",
+      "verification_plan": "Trace each completion claim to recent execution evidence",
+      "status": "Project workflow recorded; ongoing checks remain",
+      "evidence": "project-brief.md; skill-inventory.md; decisions.md; progress.md; phase-0-verification.md; phase-1-verification.md"
+    },
+    {
+      "id": "D01",
+      "source": "§2",
+      "requirement": "Interview in about 20 areas with direct, respectful follow-ups; manageable groups, pause/resume, skip/unknown/edit.",
+      "proposed_design": "Separate developer discovery and end-user onboarding flows",
+      "phase": "1,4",
+      "verification_plan": "Resume partial interview and revise an answer without data loss",
+      "status": "Discovery recorded with unknowns; app onboarding not implemented",
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+    },
+    {
+      "id": "D02",
+      "source": "§2.1–5",
+      "requirement": "Capture top goals, reasons, 3/6/12-month success, competing priorities, learning/teaching/building interests and flexible/fixed deadlines.",
+      "proposed_design": "Goal profile with priority and deadline type",
+      "phase": "1,4",
+      "verification_plan": "Changed priorities and deadlines alter the generated plan",
+      "status": "Discovery recorded with unknowns; app onboarding not implemented",
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+    },
+    {
+      "id": "D03",
+      "source": "§2.6–9",
+      "requirement": "Capture work/family/care obligations, sleep/routine, commute, travel, timezone, energy, habits, obstacles and coaching preference.",
+      "proposed_design": "Availability and preferences profile",
+      "phase": "1,4",
+      "verification_plan": "Availability constraints and energy preferences affect suggestions",
+      "status": "Discovery recorded with unknowns; app onboarding not implemented",
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+    },
+    {
+      "id": "D04",
+      "source": "§2.10–13",
+      "requirement": "Capture optional physiological inputs with reasons, health/medication/injury restrictions, food relationship/history and body/performance goals.",
+      "proposed_design": "Sensitive optional profile; required-input and suitability rules",
+      "phase": "1,5",
+      "verification_plan": "Missing or restricted inputs prevent unsupported personalization",
+      "status": "Discovery recorded with unknowns; app onboarding not implemented",
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+    },
+    {
+      "id": "D05",
+      "source": "§2.14–17",
+      "requirement": "Capture activity/training history, equipment, availability, food allergies/preferences/budget/cooking access and diet interests/reasons.",
+      "proposed_design": "Training and nutrition constraints",
+      "phase": "1,5",
+      "verification_plan": "Plan respects available equipment, allergies and preparation time",
+      "status": "Discovery recorded with unknowns; app onboarding not implemented",
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+    },
+    {
+      "id": "D06",
+      "source": "§2.18–20",
+      "requirement": "Capture measurement/device/photo/file consent, platforms, offline/alarms/integrations/privacy and visual/game/reward preferences.",
+      "proposed_design": "Explicit capability and consent settings",
+      "phase": "1,4–6",
+      "verification_plan": "Changing consent and preferences changes enabled features",
+      "status": "Discovery recorded with unknowns; app onboarding not implemented",
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+    },
+    {
+      "id": "D07",
+      "source": "§2",
+      "requirement": "Show assumptions and incomplete personalization; distinguish development interview from future user onboarding.",
+      "proposed_design": "Assumption review and two separate interview records",
+      "phase": "0,1,4",
+      "verification_plan": "No unanswered development question appears as a health fact",
+      "status": "Discovery recorded with unknowns; app onboarding not implemented",
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+    },
+    {
+      "id": "S01",
+      "source": "§3",
+      "requirement": "Connect life goal → milestone → project → task → session → completion → progress; support obligations, health and recreation.",
+      "proposed_design": "Shared goal and calendar model",
+      "phase": "2,4",
+      "verification_plan": "One completion updates its linked goal and daily view consistently",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "S02",
+      "source": "§3",
+      "requirement": "Day/week/month/long-term views, fixed/flexible appointments, recurrence and quick capture.",
+      "proposed_design": "Calendar and quick-entry flows",
+      "phase": "3,4",
+      "verification_plan": "Create and locate one-off and recurring sessions in every view",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "S03",
+      "source": "§3",
+      "requirement": "Account for duration, preparation, travel, buffers, dependencies, deadlines, priorities and energy.",
+      "proposed_design": "Constraint-based scheduling proposal",
+      "phase": "2,4",
+      "verification_plan": "Conflict fixtures include travel, prerequisites and low availability",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "S04",
+      "source": "§3; §5",
+      "requirement": "Coordinate meals, workouts, learning, work, sleep, recovery and leisure in one schedule.",
+      "proposed_design": "Common session types sharing availability",
+      "phase": "4,5,6",
+      "verification_plan": "Integrated week contains no prohibited overlap",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "S05",
+      "source": "§3",
+      "requirement": "Checkboxes, reminders, snooze, skip, partial completion and rescheduling.",
+      "proposed_design": "Session lifecycle with explicit status and history",
+      "phase": "4",
+      "verification_plan": "Every status survives restart and produces correct consequences",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "S06",
+      "source": "§3",
+      "requirement": "Morning planning, evening reflection, weekly review and minimum viable days.",
+      "proposed_design": "Review routines and reduced-capacity planning mode",
+      "phase": "4,6",
+      "verification_plan": "Low-energy mode reduces optional load and preserves locked obligations",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "S07",
+      "source": "§3",
+      "requirement": "Estimate effort against available time; explain infeasible deadlines and offer scope/priority/date changes.",
+      "proposed_design": "Capacity check with explainable alternatives",
+      "phase": "2,4",
+      "verification_plan": "Impossible goal does not produce a falsely feasible schedule",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "S08",
+      "source": "§3",
+      "requirement": "Explain placement; lock appointments, drag tasks, override suggestions and undo.",
+      "proposed_design": "Previewable schedule changes and reversible edits",
+      "phase": "3,4",
+      "verification_plan": "Locked session stays fixed; undo restores prior schedule",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "S09",
+      "source": "§3",
+      "requirement": "Missed tasks trigger proposals without silent moves or overloading tomorrow.",
+      "proposed_design": "Missed-session review and capacity-aware replanning",
+      "phase": "4",
+      "verification_plan": "Reject proposal without changing the calendar; accept only chosen moves",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "S10",
+      "source": "§3",
+      "requirement": "Correct timezone, DST, recurrence, travel and overlap behavior.",
+      "proposed_design": "Timezone-aware recurrence semantics chosen in spec",
+      "phase": "2,4,7",
+      "verification_plan": "Spring/fall transitions and cross-zone fixtures produce expected times",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "N01",
+      "source": "§4",
+      "requirement": "Compare balanced, Mediterranean, higher-protein, vegetarian, vegan, low-carb and ketogenic approaches.",
+      "proposed_design": "Evidence-backed diet library",
+      "phase": "1,5",
+      "verification_plan": "Every named approach has an evidence and limitations record",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "N02",
+      "source": "§4",
+      "requirement": "Compare intermittent fasting/time-restricted eating, OMAD and carnivore approaches.",
+      "proposed_design": "Diet-library entries with suitability distinctions",
+      "phase": "1,5",
+      "verification_plan": "No unsupported equivalence or universal recommendation",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "N03",
+      "source": "§4",
+      "requirement": "Distinguish medically prescribed clear/full liquid diets, nutritionally complete meal replacements and commercial liquid programs.",
+      "proposed_design": "Separate liquid-diet entries and use cases",
+      "phase": "1,5",
+      "verification_plan": "Search and comparison do not conflate these categories",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "N04",
+      "source": "§4",
+      "requirement": "Separate meal timing, food selection and energy intake.",
+      "proposed_design": "Independent diet dimensions",
+      "phase": "2,5",
+      "verification_plan": "Changing an eating window does not silently change food restrictions",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "N05",
+      "source": "§4",
+      "requirement": "Each approach explains method, evidence quality/limits, benefits/risks, adequacy, training/personal fit, practicality/cost/adherence, exclusions and sources/dates.",
+      "proposed_design": "Structured research entry with review date and source provenance",
+      "phase": "1,5",
+      "verification_plan": "Source audit and entry-completeness check",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "N06",
+      "source": "§4",
+      "requirement": "Support restrictive-diet comparison/logging without automatic recommendation; apply screening and professional-oversight limits.",
+      "proposed_design": "Suitability checks and transparent recommendation rules",
+      "phase": "1,2,5",
+      "verification_plan": "Flagged profile cannot receive an unsupported unsupervised plan",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "N07",
+      "source": "§4",
+      "requirement": "Use authoritative health sources and peer-reviewed research; no fabricated or influencer-only evidence.",
+      "proposed_design": "Research register and citation checks",
+      "phase": "1,5,7",
+      "verification_plan": "Open sources and verify they support associated claims",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "N08",
+      "source": "§4",
+      "requirement": "Personalize using goals/baseline, uncertain energy estimates, nutrients, training/recovery/activity, food constraints and clinician instructions.",
+      "proposed_design": "Explainable nutrition estimate with inputs and exclusions",
+      "phase": "2,5",
+      "verification_plan": "Inputs, formula, units, assumptions and missing-data behavior are visible",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "N09",
+      "source": "§4; §8",
+      "requirement": "No perfect-body or guaranteed outcome promises; estimates must be realistic and revisable.",
+      "proposed_design": "Uncertainty and projection copy rules",
+      "phase": "3,5",
+      "verification_plan": "UI audit finds no guarantee or unsupported precision",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "N10",
+      "source": "§4",
+      "requirement": "Daily meal/portion, optional calorie/macronutrient, reliable fiber/nutrient, hydration and optional eating-window logs.",
+      "proposed_design": "Fast editable nutrition journal",
+      "phase": "5",
+      "verification_plan": "Log, correct, save and reopen records with unit fidelity",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "N11",
+      "source": "§4",
+      "requirement": "Track hunger, energy, digestion, adherence, symptoms/notes and optional configurable weighing frequency.",
+      "proposed_design": "Optional check-in fields and reminder preferences",
+      "phase": "5",
+      "verification_plan": "User can disable weighing and continue other functions",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "N12",
+      "source": "§4",
+      "requirement": "Recipes, groceries, meal preparation sessions, substitutions, saved meals and simple logging.",
+      "proposed_design": "Recipe/meal templates linked to calendar",
+      "phase": "5",
+      "verification_plan": "Recipe edits update grocery quantities with user review",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "N13",
+      "source": "§4",
+      "requirement": "Label estimated food data; allow correction of photo/barcode results; never invent precise nutrients from images.",
+      "proposed_design": "Provenance and editable recognition proposals",
+      "phase": "5,6",
+      "verification_plan": "Uncertain image yields estimate/confirmation, not false exact data",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "N14",
+      "source": "§4; §7",
+      "requirement": "Never reward restriction, longer fasting, dehydration or rapid weight loss.",
+      "proposed_design": "XP independent of calorie deficits, fasting duration and scale change",
+      "phase": "2,4,5",
+      "verification_plan": "Extreme entries cannot create bonus XP",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "F01",
+      "source": "§5",
+      "requirement": "Choose training matched to goals, ability, health, equipment, time, nutrition and recovery.",
+      "proposed_design": "Training profile and program-selection rules",
+      "phase": "1,2,5",
+      "verification_plan": "Limited equipment/time profile receives a feasible plan",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "F02",
+      "source": "§5",
+      "requirement": "Support full-body, upper/lower, push/pull/legs and five-day structures.",
+      "proposed_design": "Selectable program templates with suitability rules",
+      "phase": "5",
+      "verification_plan": "Each structure can be represented and scheduled appropriately",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "F03",
+      "source": "§5",
+      "requirement": "Support heavy lifting, lighter higher-rep work, hypertrophy, strength and high-intensity resistance work; distinguish HIT from HIIT.",
+      "proposed_design": "Explicit training-method definitions",
+      "phase": "1,5",
+      "verification_plan": "Method labels and programming rules are unambiguous",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "F04",
+      "source": "§5",
+      "requirement": "Support HIIT, treadmill, walking, steady cardio, appropriate sprints, home/bodyweight work, mobility and recovery.",
+      "proposed_design": "Exercise and conditioning library with substitutions",
+      "phase": "5",
+      "verification_plan": "Named modes available without forcing all into one plan",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "F05",
+      "source": "§5",
+      "requirement": "Each workout supplies purpose/duration, exercises/alternatives, sets/reps/rest/intensity, cues, warm-up/cooldown, progression, recovery/deload, substitutions and stop guidance.",
+      "proposed_design": "Complete workout-session schema",
+      "phase": "2,5",
+      "verification_plan": "Workout completeness and technique-resource review",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "F06",
+      "source": "§5",
+      "requirement": "Log load, repetitions, sets, duration, effort and notes.",
+      "proposed_design": "Workout log with unit conversion",
+      "phase": "5",
+      "verification_plan": "Corrected and offline logs persist without duplicate sets",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "F07",
+      "source": "§5",
+      "requirement": "Adjust from sustained progress, attendance, performance, fatigue and discomfort; avoid overreaction to one data point.",
+      "proposed_design": "Review-window adaptation with user-visible rationale",
+      "phase": "5",
+      "verification_plan": "One outlier does not trigger aggressive program change",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "F08",
+      "source": "§5",
+      "requirement": "Use measurements/history/goals rather than appearance-based body-type prescriptions.",
+      "proposed_design": "Constraint and measurement-based plan inputs",
+      "phase": "1,2,5",
+      "verification_plan": "No physique label is required or treated as a deterministic program rule",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "F09",
+      "source": "§5",
+      "requirement": "Optional private progress/reference photos with consent; no diagnosis, precise image body-fat claims or guaranteed reference physique.",
+      "proposed_design": "Private photo timeline and descriptive comparison",
+      "phase": "5,6",
+      "verification_plan": "Consent withdrawal and deletion work; unsupported inference is absent",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "F10",
+      "source": "§5",
+      "requirement": "Track weight trends, optional measurements, body-fat method/uncertainty, strength, endurance, volume, consistency, sleep and recovery.",
+      "proposed_design": "Measurement registry and progress charts",
+      "phase": "5",
+      "verification_plan": "Source method and units remain visible in charts and exports",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "L01",
+      "source": "§6",
+      "requirement": "Break learning/teaching/building goals into prerequisites and milestones; schedule preparation, practice, review and application.",
+      "proposed_design": "Learning pathway integrated with goal/calendar model",
+      "phase": "6",
+      "verification_plan": "A learning goal produces a feasible prerequisite-ordered schedule",
+      "status": "Initial resource or workflow plan recorded; not implemented",
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+    },
+    {
+      "id": "L02",
+      "source": "§6",
+      "requirement": "Provide useful tutorials/videos/links with fit, level, duration, materials and cost.",
+      "proposed_design": "Resource cards and saved-resource library",
+      "phase": "6",
+      "verification_plan": "Verify every recommended resource and show free/paid label",
+      "status": "Initial resource or workflow plan recorded; not implemented",
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+    },
+    {
+      "id": "L03",
+      "source": "§6",
+      "requirement": "Saved/completed resources, appropriate spaced review, exercise technique media and accessible text alternatives.",
+      "proposed_design": "Resource progress and review sessions",
+      "phase": "5,6",
+      "verification_plan": "Complete a resource and observe next practice/review action",
+      "status": "Initial resource or workflow plan recorded; not implemented",
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+    },
+    {
+      "id": "L04",
+      "source": "§6",
+      "requirement": "No fabricated links/titles/citations; label unverified when browsing unavailable.",
+      "proposed_design": "Resource verification status and fallback behavior",
+      "phase": "6,7",
+      "verification_plan": "Broken or unavailable sources are disclosed, not invented",
+      "status": "Initial resource or workflow plan recorded; not implemented",
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+    },
+    {
+      "id": "G01",
+      "source": "§7",
+      "requirement": "Configurable Strength, Endurance, Discipline, Knowledge and Recovery attributes.",
+      "proposed_design": "Game profile independent of health records",
+      "phase": "2,4",
+      "verification_plan": "Attribute configuration preserves historical records",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "G02",
+      "source": "§7",
+      "requirement": "Starting XP: small task 5, focus/learning 15, workout 25, recovery 15, reflection 10, weekly review 30, milestone 50–150.",
+      "proposed_design": "Versioned XP rules and transparent award ledger",
+      "phase": "2,4",
+      "verification_plan": "Exact default award fixtures match agreed values",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "G03",
+      "source": "§7",
+      "requirement": "Fair partial completion, configurable personal rewards, Level 1 start, next-level cost 100 then +25 each level.",
+      "proposed_design": "Partial-award and level formulas reviewed before implementation",
+      "phase": "2,4",
+      "verification_plan": "Boundary examples: total XP 0/99/100/224/225 produce correct level",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "G04",
+      "source": "§7",
+      "requirement": "Daily quests, weekly missions, campaigns, milestone challenges, badges, optional grace-day streaks, celebrations/sounds/animations, rewards and calm mode.",
+      "proposed_design": "Game UI with optional engagement settings",
+      "phase": "3,4,6",
+      "verification_plan": "Calm/reduced-motion modes disable selected effects; grace days work",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "G05",
+      "source": "§7",
+      "requirement": "No duplicate XP from repeated checks, no subdivision inflation; undo completion reverses its award.",
+      "proposed_design": "Idempotent completion and compensating XP transactions",
+      "phase": "2,4",
+      "verification_plan": "Double click, retry, restart and undo/recomplete do not inflate XP",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "G06",
+      "source": "§7",
+      "requirement": "Recovery counts; no punitive lifetime XP deductions, shame or pressure during illness/injury; XP separate from outcomes.",
+      "proposed_design": "No missed-task penalties; distinguish correction from punishment",
+      "phase": "2,4–6",
+      "verification_plan": "Missed task leaves valid prior XP intact; correcting a false award is auditable",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "R01",
+      "source": "§8",
+      "requirement": "Show baseline/current progress, remaining milestones, trends, consistency, completion range, confidence, assumptions and deadline feasibility.",
+      "proposed_design": "Goal progress view",
+      "phase": "3,5,6",
+      "verification_plan": "Every estimate exposes its inputs and relevant limitations",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "R02",
+      "source": "§8",
+      "requirement": "Body projections use rolling trends and noise; no guaranteed exact date.",
+      "proposed_design": "Trend-based projection rules validated against fixtures",
+      "phase": "2,5",
+      "verification_plan": "Sparse/noisy data widens or suppresses estimates appropriately",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "R03",
+      "source": "§8",
+      "requirement": "Learning/project forecasts use remaining effort, capacity and demonstrated pace; explain recalculation and overrides.",
+      "proposed_design": "Effort forecast with editable assumptions",
+      "phase": "4,6",
+      "verification_plan": "Changed availability revises forecast with explanation",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "Q01",
+      "source": "§9",
+      "requirement": "Different daily Stoic reflection connected to schedule/challenges and a practical action.",
+      "proposed_design": "Schedule-context reflection selection",
+      "phase": "6",
+      "verification_plan": "Different day contexts yield relevant actionable reflection",
+      "status": "Initial resource or workflow plan recorded; not implemented",
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+    },
+    {
+      "id": "Q02",
+      "source": "§9",
+      "requirement": "Separate verified quotes with source, labeled paraphrases and original generated reflections; no false historical attribution.",
+      "proposed_design": "Attributed quote library and explicit content type",
+      "phase": "6",
+      "verification_plan": "Quote/source audit and generation attribution tests",
+      "status": "Initial resource or workflow plan recorded; not implemented",
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+    },
+    {
+      "id": "Q03",
+      "source": "§9",
+      "requirement": "Avoid frequent repetition, save favorites, choose gentle/direct/grill-me coaching.",
+      "proposed_design": "Quote history and tone settings",
+      "phase": "6",
+      "verification_plan": "Recent history and favorites persist; tone preference is respected",
+      "status": "Initial resource or workflow plan recorded; not implemented",
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+    },
+    {
+      "id": "V01",
+      "source": "§10",
+      "requirement": "Propose multiple designs including purple/charcoal/gold with subtle Stoic references; obtain direction approval.",
+      "proposed_design": "Visual alternatives and tokens in Phase 3",
+      "phase": "3",
+      "verification_plan": "User reviews representative screens before implementation",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "V02",
+      "source": "§10",
+      "requirement": "Today screen, next action, schedule, fast logging/completion, progress, calm readability and mobile use.",
+      "proposed_design": "Primary interaction flows and responsive prototype",
+      "phase": "3,4",
+      "verification_plan": "User can identify and finish next action in a usability session",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "V03",
+      "source": "§10",
+      "requirement": "Screen-reader labels, keyboard access, sufficient contrast and reduced motion.",
+      "proposed_design": "Accessibility criteria and test plan",
+      "phase": "2,3,7",
+      "verification_plan": "Keyboard, screen-reader, contrast and reduced-motion evidence",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "V04",
+      "source": "§10",
+      "requirement": "Import photos/files for goals, workouts, recipes, learning and projects; define supported formats and limits.",
+      "proposed_design": "Import staging and reference attachments",
+      "phase": "2,6",
+      "verification_plan": "Each approved format has valid, oversized and malformed-file fixtures",
+      "status": "Initial resource or workflow plan recorded; not implemented",
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+    },
+    {
+      "id": "V05",
+      "source": "§10",
+      "requirement": "Validate uploads, preserve originals, show extraction errors, confirm facts before planning, treat imported instructions as untrusted content.",
+      "proposed_design": "Review-before-apply import pipeline",
+      "phase": "6,7",
+      "verification_plan": "Malformed file and injected instruction cannot silently alter a plan",
+      "status": "Initial resource or workflow plan recorded; not implemented",
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+    },
+    {
+      "id": "T01",
+      "source": "§11",
+      "requirement": "Private-by-default health/photos/schedules, permissions, export/deletion, backup/restore, appropriate storage/access controls and clean logs.",
+      "proposed_design": "Data lifecycle and threat model",
+      "phase": "2,4,6,7",
+      "verification_plan": "Access, log redaction, deletion and restore tests",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "T02",
+      "source": "§11",
+      "requirement": "Disclose personal-data sharing before external AI; transparent costs and optional integrations.",
+      "proposed_design": "Provider consent and data-preview boundary",
+      "phase": "2,4–6",
+      "verification_plan": "No unapproved network path or automatic paid fallback",
+      "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+    },
+    {
+      "id": "T03",
+      "source": "§11",
+      "requirement": "Ask platform/budget before stack; compare responsive web/PWA/native for alarms/background behavior with actual limits.",
+      "proposed_design": "Platform decision record based on official docs and device needs",
+      "phase": "1,2",
+      "verification_plan": "Document reviewed alternatives, costs and measured alarm plan",
+      "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+    },
+    {
+      "id": "T04",
+      "source": "§11",
+      "requirement": "Explicit configurable notifications; verify delivery on selected platform rather than just DB creation.",
+      "proposed_design": "Notification capability check and real-device tests",
+      "phase": "2,4,7",
+      "verification_plan": "Foreground, background, closed-app, permission-denied and restart scenarios recorded",
+      "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+    },
+    {
+      "id": "T05",
+      "source": "§11",
+      "requirement": "Optional later calendar/wearable/health integration with duplicates, conflicts and source attribution handled.",
+      "proposed_design": "Integration adapters after explicit scope decision",
+      "phase": "2,Later",
+      "verification_plan": "Chosen integration passes duplicate, conflict and disconnect scenarios",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "T06",
+      "source": "§11",
+      "requirement": "Scheduling/logging/XP usable without AI or network; manual editing and useful error states.",
+      "proposed_design": "Offline-capable core with recovery semantics selected in architecture",
+      "phase": "2,4,7",
+      "verification_plan": "Offline creation and restart preserve core state; reconnection does not duplicate",
+      "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+    },
+    {
+      "id": "T07",
+      "source": "Workspace guidance",
+      "requirement": "Windows/PowerShell; zero paid services or external DB accounts; local embedded storage; native headless Playwright preferred.",
+      "proposed_design": "Carry existing workspace constraints into architecture comparison",
+      "phase": "0,2–8",
+      "verification_plan": "Review dependency/infrastructure choices and actual request paths",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "T08",
+      "source": "Workspace guidance",
+      "requirement": "Typecheck and lint before calling code complete; TDD for core logic; no secrets committed.",
+      "proposed_design": "Verification commands selected after stack approval",
+      "phase": "2,4–8",
+      "verification_plan": "Record actual command output; verify repository excludes secrets",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "A01",
+      "source": "§12–13",
+      "requirement": "Deliver working setup/user guide/maintenance notes/limitations and final requirement coverage.",
+      "proposed_design": "Delivery package with acceptance report",
+      "phase": "8",
+      "verification_plan": "Fresh setup and user walkthrough match documented behavior",
+      "status": "Planned; not implemented",
+      "evidence": "Not yet available"
+    },
+    {
+      "id": "V06",
+      "source": "Discovery answer 2026-10-04",
+      "requirement": "User priority: \"That its easy to use and addicting\".",
+      "proposed_design": "Low-friction daily loop, satisfying feedback and user-controlled rewards; proposed usability targets await review",
+      "phase": "1,2,3,7",
+      "verification_plan": "Observe next-action discovery, routine completion time and voluntary pilot return behavior; do not equate screen time with benefit",
+      "status": "Planned; not implemented",
+      "evidence": "Direct user answer recorded in discovery.md"
+    },
+    {
+      "id": "B01",
+      "source": "Discovery 2026-10-04",
+      "requirement": "Personal pilot followed by a commercial app to sell, market and publish on Apple App Store, Google Play and Microsoft Store.",
+      "proposed_design": "Public-product roadmap with personal pilot and three distribution targets",
+      "phase": "1,2,6B,8",
+      "verification_plan": "Release checklist records each store independently; publishing waits for approval",
+      "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+    },
+    {
+      "id": "B02",
+      "source": "Discovery 2026-10-04",
+      "requirement": "First-release devices confirmed: iPhone/iPad and Windows PCs; Android timing remains open while Google Play stays a launch target.",
+      "proposed_design": "Device/release matrix with minimum OS versions and Android timing to decide; no stack selected prematurely",
+      "phase": "1,2",
+      "verification_plan": "Confirm supported OS versions and Android timing; test release candidates on each selected device class",
+      "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+    },
+    {
+      "id": "B03",
+      "source": "Commercial scope addition",
+      "requirement": "Choose monetization, pricing and included/paid features with the user; expose full costs.",
+      "proposed_design": "Business-model alternatives and platform-policy review",
+      "phase": "1,2,3,6B",
+      "verification_plan": "User approves model; price, paywall, cancellation and restore flows match it",
+      "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+    },
+    {
+      "id": "B04",
+      "source": "Commercial scope addition",
+      "requirement": "Prepare store packaging, signing, listings, screenshots, privacy disclosures, age rating and submission readiness.",
+      "proposed_design": "Per-store release plan based on current official requirements",
+      "phase": "1,2,6B,7,8",
+      "verification_plan": "Validate packages on target devices and prepare reviewable store submissions",
+      "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+    },
+    {
+      "id": "B05",
+      "source": "Commercial scope addition",
+      "requirement": "If paid digital features are selected, support correct entitlements, restore purchases and relevant billing states.",
+      "proposed_design": "Platform-appropriate purchase adapters; sandbox-only development tests",
+      "phase": "2,6B,7",
+      "verification_plan": "Test success, cancellation, refund/revocation, restore, renewal where applicable and offline behavior",
+      "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+    },
+    {
+      "id": "B06",
+      "source": "Commercial scope addition",
+      "requirement": "Decide local-only, optional sync or accounts; define privacy and isolation for customers.",
+      "proposed_design": "Data ownership, identity and sync decision, preserving local-first constraint until revised",
+      "phase": "1,2,4,6B",
+      "verification_plan": "If accounts/sync selected, verify customer isolation, conflict resolution, deletion and restore",
+      "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+    },
+    {
+      "id": "B07",
+      "source": "Commercial scope addition",
+      "requirement": "Plan marketing, onboarding conversion, support, feedback, updates and operational costs.",
+      "proposed_design": "Launch plan and support/release process with optional consented analytics",
+      "phase": "1,2,6B,8",
+      "verification_plan": "Review launch assets, support contacts, update/rollback procedure and transparent recurring costs",
+      "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+    },
+    {
+      "id": "B08",
+      "source": "Commercial scope addition",
+      "requirement": "Commercial health features and advertising claims require current evidence and jurisdiction/store review.",
+      "proposed_design": "Claims inventory and professional/legal review needs recorded where applicable",
+      "phase": "1,2,6B,7",
+      "verification_plan": "Substantiate displayed claims and identify unresolved review requirements before submission",
+      "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+    },
+    {
+      "id": "B09",
+      "source": "Commercial scope clarification",
+      "requirement": "Current zero-paid infrastructure constraint remains until explicitly changed; store costs/accounts are unapproved.",
+      "proposed_design": "Costs and required user-owned credentials listed before any purchase or enrollment",
+      "phase": "1,2,6B",
+      "verification_plan": "No spending, account creation or live store submission without user approval",
+      "status": "Feasibility reviewed; platform and commercial decisions pending; not implemented",
+      "evidence": "research/platform-and-launch.md; phase-1-discovery.md; research/sources.md"
+    },
+    {
+      "id": "D08",
+      "source": "Personal intake 2026-10-04",
+      "requirement": "Retain the owner-provided profile and every personal goal for a later reviewed app setup, with unknown inputs explicit.",
+      "proposed_design": "Separate local personal profile and goal register; later user-confirmed onboarding/import",
+      "phase": "0,1,4,5,6",
+      "verification_plan": "Match source intake to profile/goals; confirm unknowns; later verify reviewed import creates the intended private records",
+      "status": "Discovery recorded with unknowns; app onboarding not implemented",
+      "evidence": "discovery.md; phase-1-discovery.md; owner-only profile and goal records"
+    },
+    {
+      "id": "T09",
+      "source": "Personal intake privacy handling",
+      "requirement": "Keep owner health data and personal projects out of public repositories, shipped examples and marketing by default.",
+      "proposed_design": "Separate private directory excluded by project Git rule; synthetic public fixtures and explicit consent for any later external use",
+      "phase": "0,2,4,6B,7",
+      "verification_plan": "Verify Git exclusion before any commit; inspect build/demo/marketing artifacts for private-data inclusion",
+      "status": "Planning files separated under private/ with ignore rule; app privacy not implemented",
+      "evidence": "../.gitignore; phase-1-verification.md"
+    },
+    {
+      "id": "S11",
+      "source": "Academic schedule intake 2026-10-04",
+      "requirement": "Let the owner upload an academic schedule in the app, calculate its scheduling implications and integrate it with other goals.",
+      "proposed_design": "Extract candidate classes, research milestones and assignment deadlines; show sources, timezone, uncertainty and conflicts for user confirmation before calendar changes; manual correction if extraction fails",
+      "phase": "2,4,6A,7",
+      "verification_plan": "Import representative timetables with recurring classes and deadlines; check timezone, conflicts, duplicate imports and ambiguous dates; require confirmation; never invent absent deadlines or resubmission permission",
+      "status": "Initial resource or workflow plan recorded; not implemented",
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+    },
+    {
+      "id": "F11",
+      "source": "User addition 2026-10-04",
+      "requirement": "Include home boxing: shadowboxing, footwork and fitness, with bag work conditional on equipment",
+      "proposed_design": "Non-contact boxing option with skill progression, appropriate resources, round/rest tracking and integrated training/recovery load",
+      "phase": "1,2,5,6A,7",
+      "verification_plan": "Absent bag equipment excludes bag sessions; integrate with existing training without duplicate conditioning load; skill resources and suitability reviewed",
+      "status": "Initial evidence or design requirements recorded; production content and implementation pending",
+      "evidence": "research/health-and-training.md; research/sources.md; requirements.md"
+    },
+    {
+      "id": "L05",
+      "source": "User addition 2026-10-04",
+      "requirement": "Support the parent goal of learning to lift/support a daughter as a cheer flyer",
+      "proposed_design": "Coach-led learning pathway, supervised practice, reviewed official resources and coach-approved home preparation; no automatic AI stunt clearance",
+      "phase": "1,2,6A,7",
+      "verification_plan": "Advanced lifts cannot be auto-assigned from videos or physique; coached prerequisites, supervision and facility constraints are explicit; family time is preserved",
+      "status": "Initial resource or workflow plan recorded; not implemented",
+      "evidence": "research/learning-and-resource-plan.md; research/health-and-training.md; research/sources.md"
+    }
+  ]
+}

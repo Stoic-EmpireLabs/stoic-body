@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Next.js build
+.next/
+out/
+
+# Local databases
+data/*.sqlite
+data/*.sqlite-journal
+
+# Vercel
+.vercel/
+
+# Owner-only planning inputs
+/private/
+.env*.local
