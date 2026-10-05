@@ -7,6 +7,11 @@ import { generateMultiWeekSchedule, MultiWeekCampaignEvent } from "@/lib/schedul
 
 export interface QuestionnaireAnswers {
   callsign: string;
+  gender?: "male" | "female";
+  primaryGoal?: "cut" | "recomp" | "bulk" | "maintain";
+  startingBodyType?: "slender" | "average" | "fuller" | "athletic";
+  targetPhysique?: "spartan" | "gladiator" | "titan" | "sculpted";
+  userPhotoUrl?: string;
   age: number;
   height: string;
   currentWeight: number;
@@ -14,13 +19,15 @@ export interface QuestionnaireAnswers {
   targetWeeks: number; // e.g. 4, 8, 10, 12, 16 weeks
   targetDate?: string;
   primaryMission: string;
-  fastingProtocol: "23:1 OMAD" | "16:8 Lean Gains" | "20:4 Warrior Diet" | "3 Clean Meals";
-  proteinPreference: "Fish" | "Turkey" | "Chicken";
+  fastingProtocol: "23:1 OMAD" | "16:8 Lean Gains" | "20:4 Warrior Diet" | "3 Clean Meals" | "Liquid Diet / Smoothies" | "Carnivore / Animal-Based" | string;
+  proteinPreference: "Fish" | "Turkey" | "Chicken" | "Lean Beef" | "Plant Protein" | string;
+  foodPreferences?: string[];
   hydrationFocus: "Lemon Chia Water" | "Fasting Electrolytes" | "EGCG Matcha" | "All Elixirs";
-  trainingFocus: "Calisthenics" | "Boxing" | "Incline Walk" | "Hybrid All-Around";
+  trainingFocus: "Calisthenics" | "Boxing" | "Incline Walk" | "Hybrid All-Around" | string;
   trainingDaysPerWeek: number;
-  techMasteryTrack: "AI Spectrum" | "Antigravity Swarms" | "Vibe Coding" | "Full-Stack Web";
-  dailyStudyMinutes: number;
+  stoicHabits?: string[];
+  techMasteryTrack?: string;
+  dailyStudyMinutes?: number;
 }
 
 export interface ClientProfile {
@@ -28,6 +35,11 @@ export interface ClientProfile {
   name: string;
   role: "founder" | "client";
   callsign: string;
+  gender?: "male" | "female";
+  primaryGoal?: "cut" | "recomp" | "bulk" | "maintain";
+  startingBodyType?: string;
+  targetPhysique?: string;
+  userPhotoUrl?: string;
   age: number;
   height: string;
   currentWeight: number;
@@ -40,8 +52,10 @@ export interface ClientProfile {
   dailyCalories: number;
   fastingProtocol: string;
   proteinPreference: string;
+  foodPreferences?: string[];
   trainingFocus: string;
   techTrack: string;
+  stoicHabits?: string[];
   totalXp: number;
   level: number;
   streakDays: number;
@@ -207,32 +221,54 @@ export function calibrateClientProfile(
   initialGoals: any[];
   multiWeekSchedule: MultiWeekCampaignEvent[];
 } {
-  const targetWeeks = answers.targetWeeks || 12;
+  const targetWeeks = answers.targetWeeks || 10;
   const targetLossTotal = answers.currentWeight - answers.targetWeight;
   const targetWeeklyLossLbs =
     targetWeeks > 0 ? Math.round((targetLossTotal / targetWeeks) * 10) / 10 : 1.5;
-  const dailyCalorieDeficit = Math.round((targetWeeklyLossLbs * 3500) / 7);
+
+  // Scientific Deficit Calculation (Mifflin-St Jeor)
+  const isFemale = answers.gender === "female";
+  const weightKg = (answers.currentWeight || 170) / 2.20462;
+  const heightCm = 178; // approx 5'10"
+  const age = answers.age || 30;
+  const bmr = 10 * weightKg + 6.25 * heightCm - 5 * age + (isFemale ? -161 : 5);
+  const tdee = Math.round(bmr * 1.45); // Moderate active training baseline
+
+  let dailyCalorieDeficit = Math.round((targetWeeklyLossLbs * 3500) / 7);
+  let calorieTarget = Math.max(1500, tdee - dailyCalorieDeficit);
+
+  if (answers.primaryGoal === "bulk") {
+    dailyCalorieDeficit = -350; // Surplus
+    calorieTarget = tdee + 350;
+  } else if (answers.primaryGoal === "maintain") {
+    dailyCalorieDeficit = 0;
+    calorieTarget = tdee;
+  } else if (answers.primaryGoal === "recomp") {
+    dailyCalorieDeficit = 350;
+    calorieTarget = tdee - 350;
+  }
 
   // Target Date calculation
   const now = new Date();
   const targetDateObj = new Date(now.getTime() + targetWeeks * 7 * 86400000);
   const targetDateStr = answers.targetDate || targetDateObj.toISOString().split("T")[0];
 
-  // Protein calculation: ~0.85g to 1.0g per lb of bodyweight or target weight
-  const proteinTarget = Math.round(
-    Math.min(answers.targetWeight, answers.currentWeight) * 0.95
+  // Protein calculation: ~0.90g to 1.0g per lb of target weight
+  const proteinTarget = Math.max(
+    130,
+    Math.round(Math.min(answers.targetWeight, answers.currentWeight) * 0.95)
   );
-
-  const calorieTarget =
-    answers.currentWeight > answers.targetWeight
-      ? Math.max(1600, 2400 - dailyCalorieDeficit)
-      : 2100;
 
   const profile: ClientProfile = {
     id: profileId || `client-${Date.now()}`,
     name: answers.callsign || "Sovereign Initiate",
     role: "client",
     callsign: answers.callsign || "Sovereign Initiate",
+    gender: answers.gender || "male",
+    primaryGoal: answers.primaryGoal || "recomp",
+    startingBodyType: answers.startingBodyType || "athletic",
+    targetPhysique: answers.targetPhysique || "spartan",
+    userPhotoUrl: answers.userPhotoUrl || "",
     age: answers.age || 30,
     height: answers.height || "5'10\"",
     currentWeight: answers.currentWeight || 170,
@@ -245,8 +281,10 @@ export function calibrateClientProfile(
     dailyCalories: calorieTarget || 1800,
     fastingProtocol: answers.fastingProtocol || "23:1 OMAD",
     proteinPreference: answers.proteinPreference || "Chicken",
-    trainingFocus: answers.trainingFocus || "Calisthenics",
-    techTrack: answers.techMasteryTrack || "AI Spectrum",
+    foodPreferences: answers.foodPreferences || ["Chicken", "Greens", "Chia Seeds"],
+    trainingFocus: answers.trainingFocus || "Calisthenics & Boxing",
+    techTrack: answers.techMasteryTrack || "AI Spectrum & Antigravity Swarms",
+    stoicHabits: answers.stoicHabits || ["05:30 Wake", "Lemon Chia Water", "Evening Reflection"],
     totalXp: 500, // Welcome XP Bounty
     level: 1,
     streakDays: 1,
@@ -293,9 +331,9 @@ export function calibrateClientProfile(
       attribute: "Physical",
     },
     {
-      id: `task-tech-${Date.now()}`,
-      title: `${answers.techMasteryTrack} Mastery & Interactive Sandbox Practice`,
-      durationMinutes: answers.dailyStudyMinutes || 45,
+      id: `task-stoic-${Date.now()}`,
+      title: "Stoic High-Focus Deep Work & Daily Intentions Review",
+      durationMinutes: 45,
       tier: 2,
       completed: false,
       time: "11:30",
@@ -331,11 +369,11 @@ export function calibrateClientProfile(
       xpReward: 2000,
     },
     {
-      id: `wg-tech-${Date.now()}`,
-      title: `Complete 5 Interactive Lessons in ${answers.techMasteryTrack}`,
-      targetCount: 5,
-      currentCount: 0,
-      category: "Intellect",
+      id: `wg-habits-${Date.now()}`,
+      title: "Execute Morning Anchor & Evening Stoic Journal (6/7 Days)",
+      targetCount: 6,
+      currentCount: 1,
+      category: "Dominion",
       xpReward: 1800,
     },
   ];

@@ -9,7 +9,7 @@ import {
 } from "@/lib/health";
 
 export default function BodyProgressPage() {
-  const { awardXp, playAnvilChime, playBellSound } = useStoic();
+  const { awardXp, playAnvilChime, playBellSound, activeProfile } = useStoic();
 
   // Scale Weights State (Historical 7-day rolling window)
   const [weights, setWeights] = useState<{ date: string; weight: number }[]>([
@@ -40,8 +40,13 @@ export default function BodyProgressPage() {
   const [dailyDeficit, setDailyDeficit] = useState<number>(500);
   const targetWeight = 155.0;
 
+  // Realistic Goal Physique & Photo Studio State
+  const [userPhoto, setUserPhoto] = useState<string>("");
+  const [goalGender, setGoalGender] = useState<"male" | "female">("male");
+  const [goalPhysique, setGoalPhysique] = useState<string>("spartan");
+
   // Encrypted Vault State
-  const [vaultUnlocked, setVaultUnlocked] = useState(false);
+  const [vaultUnlocked, setVaultUnlocked] = useState(true);
   const [localPhotos, setLocalPhotos] = useState<
     { id: string; date: string; label: string; notes: string }[]
   >([
@@ -530,56 +535,193 @@ export default function BodyProgressPage() {
         </div>
       </section>
 
-      {/* ENCRYPTED PRIVATE PHOTO VAULT */}
-      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl">
-        <div className="flex items-center justify-between mb-3">
+      {/* REALISTIC GOAL PHYSIQUE & PROGRESS PHOTO STUDIO */}
+      <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
-              <span>Encrypted Private Progress Vault</span>
+              <span>Realistic Goal Physique &amp; Progress Photo Studio</span>
               <span className="text-[10px] bg-red-950/80 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30 font-mono font-bold">
-                100% Local Hardware
+                100% Local Hardware Encrypted
               </span>
             </h3>
-            <p className="text-xs text-slate-300">
-              Zero cloud exposure. Progress check-ins stay on your private browser device.
+            <p className="text-xs text-slate-300 mt-0.5">
+              Side-by-side starting baseline vs. realistic goal physique illustration vs. actual verified progress.
             </p>
           </div>
-          <button
-            onClick={() => setVaultUnlocked(!vaultUnlocked)}
-            className="text-xs px-3.5 py-1.5 rounded-lg bg-neutral-900 text-white hover:bg-neutral-800 border border-red-950 transition font-bold"
-          >
-            {vaultUnlocked ? "🔒 Lock Vault" : "🔓 Unlock Vault"}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setGoalGender(goalGender === "male" ? "female" : "male")}
+              className="text-xs px-3 py-1.5 min-h-[44px] rounded-lg bg-zinc-900 border border-white/10 hover:border-amber-500/40 text-amber-300 font-mono font-bold flex items-center gap-1.5"
+            >
+              <span>{goalGender === "male" ? "⚔️ Male Model" : "🛡️ Female Model"}</span>
+            </button>
+            <button
+              onClick={() => setVaultUnlocked(!vaultUnlocked)}
+              className="text-xs px-3.5 py-1.5 min-h-[44px] rounded-lg bg-neutral-900 text-white hover:bg-neutral-800 border border-red-950 transition font-bold flex items-center"
+            >
+              {vaultUnlocked ? "🔒 Lock Vault" : "🔓 Unlock Vault"}
+            </button>
+          </div>
         </div>
 
         {vaultUnlocked ? (
-          <div className="space-y-3">
-            <div className="p-4 rounded-lg bg-[#121218] border border-red-950/60 flex items-center justify-between">
-              <div>
-                <span className="text-xs font-bold text-white block">Attach Weekly Check-In Snapshot</span>
-                <span className="text-[11px] text-slate-300">Record visual definition milestones privately.</span>
-              </div>
-              <button
-                onClick={handleAddPhotoRecord}
-                className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-bold uppercase tracking-wider shadow"
-              >
-                + Record Check-In (+150 XP)
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {localPhotos.map((photo) => (
-                <div key={photo.id} className="p-3.5 rounded-lg bg-[#121218] border border-red-950/60 text-xs">
-                  <div className="flex justify-between items-start mb-1">
-                    <span className="font-bold text-white">{photo.label}</span>
-                    <span className="text-[10px] font-mono text-amber-400 font-bold">{photo.date}</span>
+          <div className="space-y-5">
+            {/* SIDE-BY-SIDE 3-PANEL STUDIO */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              
+              {/* PANEL 1: STARTING PHOTO / BASELINE */}
+              <div className="p-4 rounded-xl bg-[#121218] border border-red-950/60 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between text-xs font-mono font-bold text-amber-400 mb-2 uppercase">
+                    <span>1. Starting Baseline</span>
+                    <span className="text-zinc-500">Day 0</span>
                   </div>
-                  <p className="text-slate-300 text-[11px]">{photo.notes}</p>
-                  <div className="mt-2 pt-2 border-t border-red-950/70 text-[10px] text-emerald-400 flex items-center gap-1">
-                    <span>✓ Local Hardware Encrypted</span>
+                  {userPhoto ? (
+                    <div className="relative rounded-lg overflow-hidden border border-amber-500/40 mb-3 bg-black">
+                      <img
+                        src={userPhoto}
+                        alt="Starting Baseline"
+                        className="w-full h-48 object-cover"
+                      />
+                      <button
+                        onClick={() => setUserPhoto("")}
+                        className="absolute top-2 right-2 bg-black/80 text-red-400 text-[10px] px-2 py-0.5 rounded border border-red-500/40 font-mono"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="h-48 rounded-lg border-2 border-dashed border-zinc-700 flex flex-col items-center justify-center p-3 text-center mb-3 bg-black/40">
+                      <span className="text-2xl mb-1">📷</span>
+                      <span className="text-xs font-bold text-white">Upload Starting Photo</span>
+                      <p className="text-[10px] text-zinc-400 mt-1">
+                        Private local browser storage only.
+                      </p>
+                      <label className="mt-2.5 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-amber-300 text-xs font-mono font-bold cursor-pointer min-h-[40px] flex items-center">
+                        Select Photo
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const r = new FileReader();
+                              r.onload = (ev) => {
+                                if (typeof ev.target?.result === "string") setUserPhoto(ev.target.result);
+                              };
+                              r.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                      </label>
+                    </div>
+                  )}
+                  <div className="space-y-1 text-xs font-mono">
+                    <div className="text-zinc-300">
+                      Scale Weight: <strong className="text-white">170.0 lbs</strong>
+                    </div>
+                    <div className="text-zinc-300">
+                      Estimated Body Fat: <strong className="text-amber-400">{currentBfPercent}%</strong>
+                    </div>
+                    <div className="text-zinc-400 text-[11px]">
+                      Soft abdominal definition &middot; Ready for OMAD deficit
+                    </div>
                   </div>
                 </div>
-              ))}
+                <div className="mt-3 pt-2 border-t border-white/5 text-[10px] text-emerald-400 font-mono">
+                  ✓ Baseline Secure
+                </div>
+              </div>
+
+              {/* PANEL 2: REALISTIC GOAL PHYSIQUE VISUALIZATION */}
+              <div className="p-4 rounded-xl bg-gradient-to-b from-amber-500/10 via-black to-zinc-950 border border-amber-500/40 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between text-xs font-mono font-bold text-amber-400 mb-2 uppercase">
+                    <span>2. Realistic Goal Target</span>
+                    <span className="text-emerald-400">Target Recomp</span>
+                  </div>
+
+                  {/* Archetype Quick Selector */}
+                  <div className="grid grid-cols-2 gap-1.5 mb-3">
+                    {[
+                      { id: "spartan", name: "Spartan" },
+                      { id: "gladiator", name: "Gladiator" },
+                      { id: "titan", name: "Titan" },
+                      { id: "sculpted", name: "Sculpted" },
+                    ].map((arch) => (
+                      <button
+                        key={arch.id}
+                        onClick={() => setGoalPhysique(arch.id)}
+                        className={`py-1 px-2 rounded text-[11px] font-mono font-bold transition min-h-[36px] ${
+                          goalPhysique === arch.id
+                            ? "bg-amber-500 text-black shadow"
+                            : "bg-black/60 border border-white/10 text-zinc-300"
+                        }`}
+                      >
+                        {arch.name}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="h-36 rounded-lg bg-black/60 border border-white/10 p-3 flex flex-col justify-center space-y-1.5 font-mono text-xs mb-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-zinc-400">Model:</span>
+                      <span className="text-amber-300 font-bold uppercase">{goalGender} &bull; {goalPhysique}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-zinc-400">Target Weight:</span>
+                      <span className="text-white font-bold">155.0 lbs</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-zinc-400">Target Body Fat:</span>
+                      <span className="text-emerald-400 font-bold">{goalGender === "female" ? "16-18%" : "8-10%"}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-zinc-400">Lean Mass Score:</span>
+                      <span className="text-amber-300 font-bold">100% Preserved</span>
+                    </div>
+                  </div>
+
+                  <p className="text-[10px] text-zinc-400 italic font-mono leading-snug">
+                    *Grounded in human body composition physics, Mifflin-St Jeor metabolic equations, and 140g protein OMAD.
+                  </p>
+                </div>
+                <div className="mt-3 pt-2 border-t border-white/5 text-[10px] text-amber-400 font-mono">
+                  🎯 Target Velocity: -1.5 lbs / week
+                </div>
+              </div>
+
+              {/* PANEL 3: ACTUAL PROGRESS TIMELINE */}
+              <div className="p-4 rounded-xl bg-[#121218] border border-red-950/60 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between text-xs font-mono font-bold text-amber-400 mb-2 uppercase">
+                    <span>3. Actual Progress</span>
+                    <span className="text-zinc-400">{localPhotos.length} Check-ins</span>
+                  </div>
+
+                  <div className="space-y-2 max-h-48 overflow-y-auto pr-1 mb-3">
+                    {localPhotos.map((photo) => (
+                      <div key={photo.id} className="p-2.5 rounded-lg bg-black/60 border border-white/5 text-xs">
+                        <div className="flex justify-between items-center mb-0.5">
+                          <span className="font-bold text-white text-xs">{photo.label}</span>
+                          <span className="text-[10px] font-mono text-amber-400">{photo.date}</span>
+                        </div>
+                        <p className="text-slate-300 text-[11px] leading-snug">{photo.notes}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleAddPhotoRecord}
+                  className="w-full py-2.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black text-xs font-bold font-mono uppercase tracking-wider shadow min-h-[44px] flex items-center justify-center"
+                >
+                  + Record Check-In (+150 XP)
+                </button>
+              </div>
+
             </div>
           </div>
         ) : (

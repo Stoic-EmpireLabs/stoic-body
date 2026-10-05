@@ -19,7 +19,7 @@ interface AnchorItem {
 }
 
 export default function TodayCommandCenter() {
-  const { awardXp, reverseXp, streakDays, calmMode, mvdActive, toggleMvd } = useStoic();
+  const { awardXp, reverseXp, streakDays, calmMode, mvdActive, toggleMvd, setIsOnboardingOpen } = useStoic();
 
   const [anchors, setAnchors] = useState<AnchorItem[]>([
     {
@@ -193,10 +193,17 @@ export default function TodayCommandCenter() {
               <span>⚡</span> {mvdActive ? "MVD: Active" : "MVD Crisis Mode"}
             </button>
             <button
-              onClick={() => setShowAddTaskModal(true)}
-              className="px-3 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 text-xs font-bold font-mono transition flex items-center gap-1 shadow-sm"
+              onClick={() => setIsOnboardingOpen(true)}
+              className="px-3 py-1.5 min-h-[40px] rounded-lg bg-gradient-to-r from-amber-500/20 to-amber-600/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 text-xs font-bold font-mono transition flex items-center gap-1.5 shadow-sm"
+              title="Open Adaptive Self-Service Questionnaire & Plan Generator"
             >
-              <span>+</span> Add Task / Item
+              <span>⚙️</span> Recalibrate Plan
+            </button>
+            <button
+              onClick={() => setShowAddTaskModal(true)}
+              className="px-3 py-1.5 min-h-[40px] rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 text-xs font-bold font-mono transition flex items-center gap-1 shadow-sm"
+            >
+              <span>+</span> Add Task
             </button>
           </div>
         </div>
