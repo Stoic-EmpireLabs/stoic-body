@@ -1,6 +1,6 @@
 # Account recovery and sync preparation
 
-The next-phase request approves continued implementation. The latest checkpoint names authenticated device sync and launch reliability. The existing zero-paid-service/no-external-database-account rule remains, and a hosting clarification is pending. This reviewable subphase implements the independent recovery prerequisite and a concrete sync deployment decision packet. It must not pretend that a backup transfer is automatic sync.
+The next-phase request approves continued implementation. The latest checkpoint names authenticated device sync and launch reliability. The existing zero-paid-service/no-external-database-account rule remains, and the user selected an intermittently available desktop. This reviewable subphase implements the independent recovery prerequisite and a concrete sync deployment decision packet. It must not pretend that a backup transfer is automatic sync.
 
 ## User experience
 
@@ -26,3 +26,4 @@ Acceptance: mixed complete workspace round trip under a different account; no cr
 
 ## Hosting clarification
 The user selected their desktop, then clarified that the app need not always be on. The desktop may be off between syncs. Each future client must retain usable local data and reconcile when the desktop returns. This recovery checkpoint implements portable account transfer and recovery, not automatic sync; no private-network route was changed.
+

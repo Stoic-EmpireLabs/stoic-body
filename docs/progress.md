@@ -42,3 +42,6 @@ Meal correction handoff: two independent review findings fixed with observed RED
 
 Local accounts, first-use host, resumable questionnaire, guided tour and an independent Windows download are implemented and [published as a GitHub prerelease](https://github.com/Stoic-EmpireLabs/stoic-body/releases/tag/v0.2.0-local-pilot). [Current checkpoint](guided-entry-checkpoint.md) records 120 passing tests, typecheck/lint, 47 additional browser checks, concurrent launcher/restart verification, corrected independent-review findings and the verified uploaded ZIP hash/size. This does not complete the automatic-sync or Store-release requirements.
 
+
+## Account recovery continuation — 2026-10-04
+Settings now includes encrypted account download, preview/confirmation restore and seven local recovery points. The implementation checkpoint passed 127/127 automated tests, typecheck/lint, 47 existing browser checks and Windows launcher/restart smoke. See account-recovery-checkpoint.md for scope and final review/publication evidence. User chose an intermittent desktop host; it need not stay on. Automatic sync and independent offline Apple clients remain unimplemented launch requirements. No network route or sleep setting was changed.
