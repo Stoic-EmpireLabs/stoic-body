@@ -16,6 +16,11 @@ import { RecoveryStore } from '../../src/core/recovery';
 import { SyncHub } from '../../src/core/sync-hub';
 import { SyncClient } from '../../src/core/sync-client';
 import { createSyncTransport, syncEndpoint } from '../../src/core/sync-transport';
+import { readSetup, activeQuestions, legacyCandidates, setupQuestions } from '../../src/core/setup-schema';
+import { buildLifePlan } from '../../src/core/life-plan';
+import { PhotoStore } from '../../src/core/photo-store';
+import { buildGoalVisualBrief, UnavailableGoalImageProvider } from '../../src/core/goal-image-provider';
+import { openPhotoArchive, sealPhotoArchive } from '../../src/core/backup-crypto';
 
 export interface PilotOptions { databasePath: string; port: number; privateOrigin?:string; allowTestSyncLoopback?:boolean }
 export interface PilotServer { url: string; close: () => Promise<void> }
@@ -23,12 +28,14 @@ class HttpError extends Error { constructor(readonly status: number, message: st
 const assets: Record<string, [string, string]> = {
   '/': ['apps/local-pilot/public/index.html', 'text/html'],
   '/favicon.ico': ['assets/brand/stoic-body.ico','image/x-icon'],
+  '/goal-visualization.js': ['apps/local-pilot/public/goal-visualization.js','text/javascript'],
   '/icon.png': ['assets/brand/stoic-body-512.png','image/png'],
   '/app.js': ['apps/local-pilot/public/app.js', 'text/javascript'],
   '/health.js': ['apps/local-pilot/public/health.js', 'text/javascript'],
   '/learn.js': ['apps/local-pilot/public/learn.js', 'text/javascript'],
   '/access.js': ['apps/local-pilot/public/access.js', 'text/javascript'],
   '/host.js': ['apps/local-pilot/public/host.js', 'text/javascript'],
+  '/setup.js': ['apps/local-pilot/public/setup.js', 'text/javascript'],
   '/recovery.js': ['apps/local-pilot/public/recovery.js', 'text/javascript'],
   '/sync.js': ['apps/local-pilot/public/sync.js', 'text/javascript'],
   '/styles.css': ['apps/local-pilot/public/styles.css', 'text/css'],
@@ -58,6 +65,7 @@ async function body(request: IncomingMessage, limit = 1_048_576) {
 export async function startPilot(options: PilotOptions): Promise<PilotServer> {
   if (!Number.isInteger(options.port) || options.port < 0 || options.port > 65535) throw new Error('Invalid port.');
   const repository = new CoreRepository(options.databasePath);
+  const photos=new PhotoStore(repository.database),imageProvider=new UnavailableGoalImageProvider();
   const accounts = new AccountStore(repository.database);
   const recovery = new RecoveryStore(repository, accounts);
   const hub = new SyncHub(repository,accounts);
@@ -109,9 +117,22 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
         if (path === '/api/snapshot' && request.method === 'GET') { json(response, 200, { snapshot: repository.snapshot(owner) }); return; }
         if (path === '/api/health-content' && request.method === 'GET') { json(response, 200, { diets, trainingStyles, meals: mealCatalog }); return; }
         if (path === '/api/learning-content' && request.method === 'GET') { json(response, 200, { courses }); return; }
+        if(path==='/api/setup'&&request.method==='GET'){const s=repository.snapshot(owner),state=readSetup(s);json(response,200,{state,questions:activeQuestions(state),catalog:setupQuestions,legacy:legacyCandidates(s.answers)});return;}
+        if(path==='/api/photos'&&request.method==='GET'){json(response,200,{photos:photos.list(owner),provider:await imageProvider.status()});return;}
         if (request.method !== 'POST' || request.headers.origin !== requestOrigin) throw new HttpError(403, 'Save requests must come from this app.');
-        const data = await body(request, ['/api/recovery/preview','/api/recovery/restore'].includes(path) ? 24*1024*1024 : 1_048_576);
+        const data = await body(request, path==='/api/photos/restore'?44*1024*1024:path==='/api/photos/add'?14*1024*1024:['/api/recovery/preview','/api/recovery/restore'].includes(path) ? 24*1024*1024 : 1_048_576);
         requireCurrent();
+        if(path==='/api/photos/add'){const result=await photos.add(owner,data);requireCurrent();json(response,200,{photo:result});return;}
+        if(path==='/api/photos/read'){const p=object(data);keys(p,['id','original']);const photo=photos.read(owner,text(p.id),p.original===true);json(response,200,{image:photo.bytes.toString('base64'),mime:photo.mime});return;}
+        if(path==='/api/photos/delete'){const p=object(data);keys(p,['id']);photos.remove(owner,text(p.id));json(response,200,{deleted:true});return;}
+        if(path==='/api/photos/export'){const p=object(data);keys(p,['passphrase']);const file=await sealPhotoArchive(photos.archive(owner),p.passphrase);requireCurrent();json(response,200,{file});return;}
+        if(path==='/api/photos/restore'){const p=object(data);keys(p,['passphrase','file']);const archive=await openPhotoArchive(p.file,p.passphrase);requireCurrent();json(response,200,await photos.restore(owner,archive,requireCurrent));return;}
+        if(path==='/api/photos/brief'){
+          keys(object(data),[]);const snapshot=repository.snapshot(owner),s=readSetup(snapshot),a=s.answers,choice=(k:string)=>a[k]?.state==='answered'?a[k]?.selections||[]:[],measure=a.measurements?.state==='answered'?a.measurements:null,metric=measure?.units==='metric';
+          const brief=buildGoalVisualBrief({profileRevision:snapshot.profileRevision,age:a.age?.state==='answered'?Number(a.age.values?.value):0,restrictions:choice('health').length===1?choice('health')[0]:'unknown',heightCm:measure?.units?Number(measure.values?.height)*(metric?1:2.54):0,weightKg:measure?.units?Number(measure.values?.weight)*(metric?1:.45359237):0,targetKg:measure?.values?.target?Number(measure.values.target)*(metric?1:.45359237):null,experience:choice('experience')[0]||'',availableMinutesPerWeek:choice('trainingDays').length*Number(choice('trainingTime')[0]||0),goals:choice('fitnessGoals'),visualGender:['male','female'].includes(choice('visual')[0])?choice('visual')[0] as 'male'|'female':null});
+          json(response,200,{brief,provider:await imageProvider.status()});return;
+        }
+        if(path==='/api/photos/generate'){throw new HttpError(503,(await imageProvider.status()).reason);}
         if(path==='/api/sync/code'){keys(object(data),[]);if(sync.status(owner).linked)throw new Error('This account already uses another host. Create pairing codes on that host.');json(response,200,hub.issueCode(owner));return;}
         if(path==='/api/sync/link-preview'){const preview=await sync.previewLink(owner,data,requireCurrent);requireCurrent();json(response,200,preview);return;}
         if(path==='/api/sync/link-confirm'){const result=await sync.confirmLink(owner,data,requireCurrent);requireCurrent();json(response,200,{...result,...signedIn(session.account,session.csrf)});return;}
@@ -132,6 +153,7 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
         if (path === '/api/auth/logout') { keys(object(data),[]); accounts.logout(cookie!); response.setHeader('Set-Cookie',`stoic_local=; ${cookieFlags} Max-Age=0`); json(response,200,{authenticated:false}); return; }
         if (path === '/api/guide') { recovery.captureBeforeEdit(owner);json(response,200,{guide:accounts.saveGuide(owner,data)}); return; }
         if (path === '/api/meal-preview') { json(response, 200, previewMeal(data)); return; }
+        if(path==='/api/life-plan/preview'){const p=object(data);keys(p,['startDate','timezone','pace']);const s=repository.snapshot(owner);json(response,200,{plan:buildLifePlan({setup:readSetup(s),snapshot:s,startDate:text(p.startDate,10),timezone:zone(p.timezone),pace:p.pace as 'normal'|'lighter'})});return;}
         if (path === '/api/training-preview') { json(response, 200, buildRoutine(data)); return; }
         if (path === '/api/health-summary') {
           const p = object(data); keys(p, ['date', 'unit']); if (!['kg', 'lb'].includes(String(p.unit))) throw new Error('Choose weight units.');

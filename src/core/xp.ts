@@ -1,5 +1,5 @@
 /** Rewards describe follow-through; they never measure health outcomes. */
-export const BASE_XP = Object.freeze({ task: 5, focus: 15, workout: 25, recovery: 15, reflection: 10, weeklyReview: 30 });
+export const BASE_XP = Object.freeze({ task: 5, focus: 15, workout: 25, recovery: 15, reflection: 10, weeklyReview: 30, protected: 0 });
 export type ActionKind = keyof typeof BASE_XP;
 function integer(value: number, min: number, max = Number.MAX_SAFE_INTEGER): void {
     if (!Number.isSafeInteger(value) || value < min || value > max)

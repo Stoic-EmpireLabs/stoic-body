@@ -6,6 +6,7 @@ import { BASE_XP, earnedXp, type ActionKind } from './xp';
 import { courses } from './learning-content';
 import { normalizeHealth } from './health-store';
 import { buildRoutine } from './training';
+import { validateSetup } from './setup-schema';
 
 export const MAX_BUNDLE_BYTES = 16 * 1024 * 1024;
 // Only application-owned identifiers enter SQL. Uploaded column/table names never do.
@@ -67,12 +68,14 @@ export function validateBundle(input: unknown): AccountBundle {
   if(!Array.isArray(b.profile)||b.profile.length!==2) throw new Error('Invalid profile.');
   integer(b.profile[0],0);const answers=jsonObject(b.profile[1]);
   const known=['goals','success','priorities','learning','deadlines','obligations','sleep','time','habits','age','height','units','weight','health','foodRelationship','bodyGoals','training','equipment','foodPreferences','dietInterest','tracking','devices','style'];
-  keys(answers,known);
+  keys(answers,[...known,'setupV2','lifePlan']);
   for(const [question,value] of Object.entries(answers)) {
     const a=object(value); keys(a,['state','value','unit']);
     if(!['answered','unknown','skipped'].includes(String(a.state))) throw new Error('Invalid answer state.');
     if(a.state!=='answered') {keys(a,['state']);continue;}
-    if(['age','height','weight'].includes(question)) {number(a.value,question==='age'?0:1,question==='age'?120:1000);if(question!=='age'&&!['lb','kg','in','cm'].includes(String(a.unit))) throw new Error('Missing measurement unit.');}
+    if(question==='setupV2') validateSetup(JSON.parse(text(a.value,131072)));
+    else if(question==='lifePlan') {const plan=object(JSON.parse(text(a.value,524288)));if(typeof plan.batchId!=='string'||!Array.isArray(plan.tasks)||!Array.isArray(plan.blocks))throw new Error('Invalid life plan.');}
+    else if(['age','height','weight'].includes(question)) {number(a.value,question==='age'?0:1,question==='age'?120:1000);if(question!=='age'&&!['lb','kg','in','cm'].includes(String(a.unit))) throw new Error('Missing measurement unit.');}
     else if(question==='units') {if(!['imperial','metric'].includes(String(a.value)))throw new Error('Invalid units.');}
     else if(Array.isArray(a.value)) {if(a.value.length>50)throw new Error('Too many answers.');a.value.forEach(v=>text(v,200));} else text(a.value,4000);
   }

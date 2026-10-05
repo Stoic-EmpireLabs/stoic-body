@@ -6,6 +6,8 @@ import { migratePlanning, executePlanning, readGoals, readTaskDetails, type Core
 import { earnedXp, type ActionKind } from './xp';
 import { migrateHealth, executeHealth, readHealth, type HealthRecord } from './health-store';
 import { buildRoutine } from './training';
+import { validateSetup, readSetup } from './setup-schema';
+import { buildLifePlan } from './life-plan';
 import { migrateLearning, executeLearning, readLearning, type LearningEnrollment } from './learning-store';
 export interface Command {
     schemaVersion: 1;
@@ -135,7 +137,7 @@ export class CoreRepository {
         id(c.entityId);
         integer(c.baseRevision, 0);
         object(c.payload);
-        if (typeof c.type !== 'string' || !['learning.enroll', 'learning.checkpoint', 'learning.practice', 'training.create', 'health.save', 'health.archive', 'task.create', 'task.update', 'task.archive', 'goal.create', 'goal.update', 'goal.archive', 'schedule.accept', 'schedule.undo', 'occurrence.move', 'occurrence.lock', 'occurrence.create', 'completion.set', 'profile.answer'].includes(c.type))
+        if (typeof c.type !== 'string' || !['setup.save', 'plan.accept', 'learning.enroll', 'learning.checkpoint', 'learning.practice', 'training.create', 'health.save', 'health.archive', 'task.create', 'task.update', 'task.archive', 'goal.create', 'goal.update', 'goal.archive', 'schedule.accept', 'schedule.undo', 'occurrence.move', 'occurrence.lock', 'occurrence.create', 'completion.set', 'profile.answer'].includes(c.type))
             throw new Error('Unsupported command.');
         const serialized = canonical(c);
         if (Buffer.byteLength(serialized, 'utf8') > 1_048_576) throw new Error('Command size exceeds 1 MiB.');
@@ -169,6 +171,42 @@ export class CoreRepository {
     }
     private execute(ownerId: string, c: Command): Receipt {
         const p = object(c.payload), db = this.database;
+        if(c.type==='plan.accept') {
+            keys(p,['startDate','timezone','pace','fingerprint']);const owner=this.owner(ownerId);
+            const conflict:Receipt={operationId:c.operationId,status:'conflict',canonicalRevision:owner.profile_revision,safeReason:'Your profile or calendar changed. Generate a fresh plan preview.'};
+            if(c.baseRevision!==owner.profile_revision)return conflict;
+            const snapshot=this.readSnapshot(ownerId),plan=buildLifePlan({setup:readSetup(snapshot),snapshot,startDate:text(p.startDate,10),timezone:zone(p.timezone),pace:p.pace as 'normal'|'lighter'});
+            if(plan.fingerprint!==p.fingerprint)return conflict;
+            if(plan.missing.length||(!plan.placements.length&&!plan.blocks.length))throw new Error('Answer the missing questions or make time before using this plan.');
+            const batchId='w'+plan.fingerprint.slice(0,15),created=plan.startDate+'T12:00:00.000Z';
+            const nested=(type:string,entityId:string,payload:unknown)=>{const result=executePlanning(db,ownerId,{...c,type,entityId,baseRevision:0,payload});if(result?.status!=='accepted')throw new Error('This plan already exists. Refresh your schedule.');};
+            for(const g of plan.goals)if(!snapshot.goals.some(existing=>existing.id===g.id))nested('goal.create',g.id,{title:g.title,why:g.why});
+            for(const t of plan.tasks){nested('task.create',t.id,{title:t.title,kind:t.kind,durationMinutes:t.minutes,goalId:t.goalId,priority:t.priority,bufferMinutes:5});if(t.routine)db.prepare("INSERT INTO core_health VALUES (?,?,'routine',1,0,?)").run(ownerId,t.id,JSON.stringify({...t.routine,goalId:t.goalId,input:{...t.routine.input,goalId:t.goalId}}));}
+            const placements=[...plan.placements];
+            // Protect the union of sleep/family/fixed windows, excluding existing occupied time.
+            const boundaries=[...new Set(plan.blocks.flatMap(b=>[Date.parse(b.startAt),Date.parse(b.endAt)]))].sort((a,b)=>a-b);
+            let pi=0;
+            for(let i=0;i<boundaries.length-1;i++){
+                const start=boundaries[i],end=boundaries[i+1],labels=plan.blocks.filter(b=>Date.parse(b.startAt)<=start&&Date.parse(b.endAt)>=end).map(b=>b.title);if(!labels.length)continue;
+                let segments=[[start,end]];
+                for(const o of snapshot.occurrences){const t=snapshot.tasks.find(t=>t.id===o.taskId)!;const a=Date.parse(o.startAt)-(t.prepMinutes+t.travelMinutes)*60000,b=Date.parse(o.endAt)+t.bufferMinutes*60000;segments=segments.flatMap(([x,y])=>b<=x||a>=y?[[x,y]]:[[x,Math.max(x,a)],[Math.min(y,b),y]].filter(([l,r])=>r>l));}
+                for(const [a,b]of segments)for(let from=a;from<b;from+=86400000){const to=Math.min(b,from+86400000),taskId=`${batchId}-p${pi++}`,startAt=new Date(from).toISOString(),endAt=new Date(to).toISOString();nested('task.create',taskId,{title:[...new Set(labels)].join(' / ').slice(0,160),kind:'protected',durationMinutes:(to-from)/60000});placements.push({taskId,startAt,endAt,occupiedStartAt:startAt,occupiedEndAt:endAt,reason:'Protected time from your setup.'});}
+            }
+            const proposal={policyVersion:1,timezone:plan.timezone,horizonStart:placements.reduce((v,p)=>p.startAt<v?p.startAt:v,placements[0].startAt),horizonEnd:placements.reduce((v,p)=>p.endAt>v?p.endAt:v,placements[0].endAt),placements,unplaced:plan.unplaced,violations:[],baseRevisions:{tasks:{},reserved:{}}};
+            db.prepare("INSERT INTO core_schedule_batches VALUES (?,?,?,?,'accepted',2,?)").run(ownerId,batchId,plan.fingerprint,JSON.stringify(proposal),created);
+            for(const [i,p]of placements.entries()){const time=assertSlot(db,ownerId,p.taskId,p.startAt);db.prepare('INSERT INTO core_occurrences VALUES (?,?,?,?,?,?,0,0,1)').run(ownerId,`${batchId}-${i}`,p.taskId,time.startAt,time.endAt,plan.timezone);db.prepare('INSERT INTO core_batch_occurrences VALUES (?,?,?,1)').run(ownerId,batchId,`${batchId}-${i}`);}
+            const answers=JSON.parse(owner.answers_json);answers.lifePlan={state:'answered',value:JSON.stringify({...plan,batchId})};
+            db.prepare('UPDATE core_owners SET answers_json=?,profile_revision=profile_revision+1 WHERE id=?').run(JSON.stringify(answers),ownerId);
+            return {operationId:c.operationId,status:'accepted',canonicalRevision:owner.profile_revision+1};
+        }
+        if (c.type === 'setup.save') {
+            keys(p,['state']); const owner=this.owner(ownerId);
+            if(c.baseRevision!==owner.profile_revision) return {operationId:c.operationId,status:'conflict',canonicalRevision:owner.profile_revision,safeReason:'Your answers changed. Reload before saving.'};
+            const state=validateSetup(p.state),answers=JSON.parse(owner.answers_json);
+            answers.setupV2={state:'answered',value:JSON.stringify(state)};
+            db.prepare('UPDATE core_owners SET answers_json=?,profile_revision=profile_revision+1 WHERE id=?').run(JSON.stringify(answers),ownerId);
+            return {operationId:c.operationId,status:'accepted',canonicalRevision:owner.profile_revision+1};
+        }
         const learning = executeLearning(db, ownerId, c);
         if (learning) return learning;
         if (c.type === 'training.create') {

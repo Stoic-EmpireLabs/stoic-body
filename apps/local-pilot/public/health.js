@@ -1,4 +1,4 @@
-/* global window */
+/* global window, GoalVisual */
 'use strict';
 window.Health = (() => {
   let ctx, catalog, tab = 'fuel', generation = 0, preview = null, selectedRoutine = '', selectedExercise = '', weightUnit = 'lb';
@@ -260,7 +260,8 @@ window.Health = (() => {
     const root = document.querySelector('#main'), toolbar = el('div', undefined, 'health-toolbar'), dateForm = el('div', undefined, 'pilot-form');
     const date = field(dateForm, 'health-date', 'Health date', 'date', ctx.date()); date.addEventListener('change', () => { if (date.value) { ctx.setDate(date.value); ctx.render(); } }); toolbar.append(dateForm);
     const tabs = el('nav', undefined, 'health-tabs'); tabs.setAttribute('aria-label', 'Health views');
-    for (const [key, label] of [['meals', 'Meals'], ['fuel', 'Fuel'], ['train', 'Train'], ['progress', 'Progress'], ['evidence', 'Evidence']]) { const b = button(label, () => { if (key === 'meals') showMeals(); else { tab = key; ctx.render(); } }); if (tab === key) b.setAttribute('aria-current', 'page'); tabs.append(b); } toolbar.append(tabs); root.append(toolbar);
+    for (const [key, label] of [['meals', 'Meals'], ['fuel', 'Fuel'], ['train', 'Train'], ['progress', 'Progress'], ['photos','Photos & goal'], ['evidence', 'Evidence']]) { const b = button(label, () => { if (key === 'meals') showMeals(); else { tab = key; ctx.render(); } }); if (tab === key) b.setAttribute('aria-current', 'page'); tabs.append(b); } toolbar.append(tabs); root.append(toolbar);
+    if(tab==='photos'){void GoalVisual.render(root);return;}
     if (!catalog) { root.append(el('p', 'Opening the evidence library…', 'muted')); void ctx.api('health-content').then(data => { catalog = data; if (current === generation) ctx.render(); }).catch(e => { if (current === generation) root.append(el('p', e.message, 'warning')); }); return; }
     ({ meals, fuel, train, progress, evidence })[tab](root, current);
   }

@@ -52,3 +52,20 @@ Recovery publication complete: v0.3.0-local-pilot is available on GitHub with ve
 
 ## Windows desktop and intermittent sync — 2026-10-04
 User continuation and desktop-app steering authorize this checkpoint. Windows install/shortcut, durable replica queue, private account pairing, revocation and retained conflicts are implemented. The desktop may be off between syncs. See desktop-sync-checkpoint.md for 142 tests, 47 browser checks and Windows package evidence. Independent final review and release delivery are in progress. B11 remains partially fulfilled until independent iPhone/iPad offline clients and actual device acceptance are complete. Next work remains Apple clients, native reminders, deletion/privacy and launch readiness.
+
+## Plain-language onboarding — 2026-10-04
+Rewrote questionnaire prompts and setup instructions using everyday language, including a concrete goals example. JavaScript syntax checks and lint passed. Desktop installation updated without changing saved accounts; served app.js and host.js verified on port 4331. GitHub prerelease v0.4.2-local-pilot published with ZIP SHA256 1da7585a1e2de5f65ce6820f7c7bf32c643195766dd1239252fd4ebb21faf17d. Vercel download page verified to link to v0.4.2. Existing preview limitations remain.
+
+
+## Adaptive setup and goal visualization — 2026-10-04
+The user approved the adaptive setup design and added an optional photo-based goal illustration. Two implementation plans are ready for review: adaptive setup/full-week planning and optional goal visualization. Current status is designed, not implemented. Existing answers must be retained; completing setup must generate the plan. Generated physique images must be labeled illustrations, separate from actual progress, with optional private photo intake. No local image-edit backend is execution-verified; no model download, paid provider or external photo transmission has been authorized.
+
+## 2026-10-05 — Adaptive setup and private photo intake
+- Implemented versioned, branching choice questions, multi-select, saved drafts, explicit reuse of legacy answers, unit-preserving measurements and cross-tab conflict review.
+- Implemented deterministic first-week proposals with linked goals, learning checkpoints, business/school/home steps, starter exercise routines, measured recipe examples, meal times, sleep, fixed commitments and family time. Unknown availability produces follow-ups; acceptance is atomic and idempotent. Existing sessions remain in place.
+- Today exposes session instructions and completion XP; Plan displays the current week. Ordinary scheduling/undo remains available. Protected time earns no XP.
+- Implemented private source/actual photo intake, Male/Female/preserve-appearance preference, metadata-stripped display copies, original downloads and separate encrypted photo archive/restore. Photos do not enter routine sync or standard account backups.
+- Verification before review: 163 automated tests passed; typecheck/lint passed; Windows package installed, custom icon shortcut launched, and service/account survived restart. Synthetic UI screenshots in docs/evidence/adaptive-setup.
+- Not complete: real image generation (no model installation approval/backend output yet), cropping, generated-image provenance/export labeling and identity QA. The UI disables generation and explains why. No external AI photo transfer occurs.
+- Limits: meal recipes are examples, not a complete individualized OMAD prescription; deadline effort/capacity estimates remain to be implemented. This is the first-week planner, not completion of the entire original product specification.
+- Release/install/publication are pending final review in this checkpoint.

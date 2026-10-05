@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { BASE_XP, thresholdForLevel, levelProgress, earnedXp, splitBudget } from '../../src/core/xp';
 test('approved actions use sustainable fixed rewards', () => {
-    assert.deepEqual(BASE_XP, { task: 5, focus: 15, workout: 25, recovery: 15, reflection: 10, weeklyReview: 30 });
+    assert.deepEqual(BASE_XP, { task: 5, focus: 15, workout: 25, recovery: 15, reflection: 10, weeklyReview: 30, protected: 0 });
 });
 test('level boundaries match the approved increasing costs', () => {
     assert.deepEqual([1, 2, 3, 4].map(thresholdForLevel), [0, 100, 225, 375]);

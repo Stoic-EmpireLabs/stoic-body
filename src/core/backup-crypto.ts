@@ -24,3 +24,14 @@ export async function openBackup(input:unknown,phrase:unknown):Promise<AccountBu
   try {const decipher=createDecipheriv('aes-256-gcm',k,nonce);decipher.setAAD(Buffer.from('stoic-body-encrypted:1'));decipher.setAuthTag(tag);plain=Buffer.concat([decipher.update(data),decipher.final()]);}catch{throw new Error('Wrong backup passphrase or damaged file.');}finally{k.fill(0);}
   try{return validateBundle(JSON.parse(plain.toString('utf8')));}finally{plain.fill(0);}
 }
+export async function sealPhotoArchive(payload:unknown,phrase:unknown) {
+ const password=pass(phrase),data=Buffer.from(JSON.stringify(payload));if(data.length>32*1024*1024)throw new Error('Photo archive exceeds 32 MiB. Download individual originals instead.');
+ const salt=randomBytes(16),nonce=randomBytes(12),k=await key(password,salt);
+ try{const cipher=createCipheriv('aes-256-gcm',k,nonce);cipher.setAAD(Buffer.from('stoic-body-photos:1'));return {format:'stoic-body-photos',version:1,salt:salt.toString('base64'),nonce:nonce.toString('base64'),data:Buffer.concat([cipher.update(data),cipher.final()]).toString('base64'),tag:cipher.getAuthTag().toString('base64')};}finally{k.fill(0);data.fill(0);}
+}
+export async function openPhotoArchive(input:unknown,phrase:unknown):Promise<unknown> {
+ const password=pass(phrase),e=object(input);keys(e,['format','version','salt','nonce','tag','data']);if(e.format!=='stoic-body-photos'||e.version!==1)throw new Error('Choose an encrypted Stoic Body photo archive.');
+ const salt=base64(e.salt,16,16),nonce=base64(e.nonce,12,12),tag=base64(e.tag,16,16),data=base64(e.data,32*1024*1024),k=await key(password,salt);let plain:Buffer;
+ try{const decipher=createDecipheriv('aes-256-gcm',k,nonce);decipher.setAAD(Buffer.from('stoic-body-photos:1'));decipher.setAuthTag(tag);plain=Buffer.concat([decipher.update(data),decipher.final()]);}catch{throw new Error('Wrong photo archive passphrase or damaged file.');}finally{k.fill(0);}
+ try{return JSON.parse(plain.toString('utf8'));}finally{plain.fill(0);}
+}

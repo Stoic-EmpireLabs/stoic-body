@@ -1,4 +1,4 @@
-/* global window, Health */
+/* global window, Health, Setup */
 'use strict';
 window.Host = (() => {
   let ctx, panel='', saving=false, pending=null, conflict=null, tour=-1, dialog, highlighted, tourEpoch=0;
@@ -28,9 +28,9 @@ window.Host = (() => {
   function status(parent){const p=el('p','','access-error');p.id='host-status';p.setAttribute('role','alert');parent.append(p);}
   function welcome(root){
     const a=ctx.account();ctx.intro(`Welcome, ${a.displayName}.`,'I’m your Stoic Body guide. Let’s turn the things you care about into a day that fits your life.');
-    const hero=el('section',undefined,'pilot-hero host-welcome');hero.append(el('span','YOUR FIRST SMALL STEP','eyebrow'),el('h2','You don’t need to figure it all out today.'),el('p','We’ll begin with a few questions at a time. Then I’ll show you around and help you prepare your first goal. You stay in charge of every plan.'));
+    const hero=el('section',undefined,'pilot-hero host-welcome');hero.append(el('span','YOUR FIRST SMALL STEP','eyebrow'),el('h2','Let’s build a week that works for you.'),el('p','Choose your goals, tell me when you have time, and I’ll put together your schedule. Review it, make changes, then start your first session.'));
     hero.append(button('Let’s set you up',()=>run(async()=>{await persist({stage:'questions'});ctx.render();}),true),button('Explore first',()=>run(async()=>{await persist({stage:'paused'});ctx.navigate('today');})));root.append(hero);
-    const card=ctx.card('Here is what happens next');card.append(el('p','1. Tell me what matters.  2. Build a realistic starting point.  3. Take a guided tour.  4. Review your first plan.','muted'),el('p','About 20 optional questions in four groups. Save and return anytime. Health details are optional and stay in your local account.','muted'));status(card);root.append(card);
+    const card=ctx.card('Here is what happens next');card.append(el('p','Choose your goals → Answer the relevant questions → Review your week → Start your next action.','muted'),el('p','Most questions use choices. Select more than one where it fits, add a note, or skip. You can save and return anytime.','muted'));status(card);root.append(card);
   }
   function question(root){
     const index=conflict?.question??guide().state.question,q=ctx.questions[index],saved=ctx.snapshot().answers[q[0]],group=Math.floor(index/5);
@@ -85,6 +85,7 @@ window.Host = (() => {
   }
   function render(){const root=document.querySelector('#main');
     if(panel==='help'){ctx.intro('You have a guide.','A quick explanation, a clear next step, or another look around.');checklist(root);const c=ctx.card('How this space works');stops.forEach(s=>{const row=el('details');row.append(el('summary',s[3]),el('p',s[4],'muted'));c.append(row);});status(c);root.append(c);return;}
+    if(guide().state.stage!=='welcome'){void Setup.render(root);return;}
     if(conflict){question(root);return;}if(guide().state.stage==='welcome'){welcome(root);return;}if(guide().state.stage==='questions'){question(root);return;}
     ctx.intro('A starting point you can shape.','Your answers are saved. Begin with one goal, one action and one reviewed day.');checklist(root);
     const c=ctx.card('Your context at a glance');for(const q of ctx.questions){const a=ctx.snapshot().answers[q[0]];if(a)c.append(el('h3',q[1]),el('p',a.state==='answered'?`${a.value}${a.unit?` ${a.unit}`:''}`:a.state,'muted'));}status(c);root.append(c);
@@ -102,6 +103,6 @@ window.Host = (() => {
     dialog.addEventListener('cancel',e=>{e.preventDefault();closeTour();});document.body.append(dialog);dialog.showModal();highlight();
   }
   function startTour(step){void run(async()=>{await persist({tourStep:step,tourDone:false});tour=step;showStop();});}
-  return {init:context=>{ctx=context;},render,help:()=>{panel='help';ctx.navigate('setup');},dashboard:root=>{if(count()<20||!guide().state.tourDone||!ctx.snapshot().occurrences.length)checklist(root,true);},afterRender:()=>{if(tour>=0)highlight();},resetPanel:()=>{panel='';}};
+  return {init:context=>{ctx=context;},render,help:()=>{panel='help';ctx.navigate('setup');},dashboard:root=>Setup.dashboard(root),afterRender:()=>{if(tour>=0)highlight();},resetPanel:()=>{panel='';}};
 })();
 

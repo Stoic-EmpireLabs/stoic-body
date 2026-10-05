@@ -1,6 +1,7 @@
 import { build } from 'esbuild';
-import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
-import { resolve, dirname, basename } from 'node:path';
+import { copyFile, mkdir, readFile, writeFile, readdir, stat } from 'node:fs/promises';
+import { resolve, dirname, basename, relative } from 'node:path';
+import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
@@ -14,18 +15,28 @@ export async function buildDesktop({ outputRoot = resolve('private/releases', ne
   await mkdir(outputRoot, { recursive: true });
   await mkdir(folder); // Refuse an existing build instead of overwriting it.
   const entries = [
-    ...['index.html', 'app.js', 'health.js', 'learn.js', 'access.js', 'host.js', 'recovery.js', 'sync.js', 'styles.css'].map(f => [`apps/local-pilot/public/${f}`, `apps/local-pilot/public/${f}`]),
+    ...['index.html', 'app.js', 'health.js', 'learn.js', 'access.js', 'setup.js', 'goal-visualization.js', 'host.js', 'recovery.js', 'sync.js', 'styles.css'].map(f => [`apps/local-pilot/public/${f}`, `apps/local-pilot/public/${f}`]),
     ...['styles.css', 'appearance.js'].map(f => [`prototypes/phase-3/${f}`, `prototypes/phase-3/${f}`]),
     ...['Start Stoic Body.cmd', 'Stop Stoic Body.cmd', 'Install Stoic Body.cmd', 'launch.ps1', 'install.ps1', 'README.txt'].map(f => [`apps/desktop/${f}`, f]),
     [process.execPath, 'runtime/node.exe'], ['apps/desktop/node-LICENSE.txt', 'runtime/LICENSE.txt'],
     ...['stoic-body.ico','stoic-body-512.png'].map(f=>[`assets/brand/${f}`,`assets/brand/${f}`]),
   ];
+  // Vendor only the reviewed Windows decoder and its runtime dependencies, including licenses.
+  const require=createRequire(import.meta.url);
+  for(const name of ['sharp','@img/sharp-win32-x64','@img/colour','detect-libc','semver']){
+    let source=dirname(require.resolve(name==='@img/sharp-win32-x64'?name+'/package':name));
+    for(;;){try{if(JSON.parse(await readFile(resolve(source,'package.json'),'utf8')).name===name)break;}catch{/* Move up to this package root. */}const parent=dirname(source);if(parent===source)throw new Error(`Cannot locate ${name}`);source=parent;}
+    for(const file of await readdir(source,{recursive:true})){
+      const full=resolve(source,file);if(!(await stat(full)).isFile()||/(^|[\\/])(node_modules|test|tests|\.git)([\\/]|$)/.test(file))continue;
+      entries.push([full,`node_modules/${name}/${relative(source,full).replaceAll('\\','/')}`]);
+    }
+  }
   for (const [source, relative] of entries) {
     const destination = resolve(folder, relative);
     await mkdir(dirname(destination), { recursive: true });
     await copyFile(source, destination);
   }
-  await build({ entryPoints: ['apps/local-pilot/main.ts'], bundle: true, platform: 'node', target: 'node24', format: 'cjs', outfile: resolve(folder, 'server.cjs'), legalComments: 'eof' });
+  await build({ entryPoints: ['apps/local-pilot/main.ts'], bundle: true, platform: 'node', target: 'node24', format: 'cjs', external:['sharp'], outfile: resolve(folder, 'server.cjs'), legalComments: 'eof' });
   const files = [];
   for (const relative of [...entries.map(e => e[1]), 'server.cjs'].sort()) {
     const bytes = await readFile(resolve(folder, relative));

@@ -1,4 +1,4 @@
-/* global Appearance, Health, Learn, Access, Host, Recovery, DeviceSync */
+/* global Setup, GoalVisual, Appearance, Health, Learn, Access, Host, Recovery, DeviceSync */
 'use strict';
 const $ = selector => document.querySelector(selector);
 const labels = { today: 'Today', goals: 'Goals', plan: 'Plan', health: 'Health', learn: 'Learn', profile: 'Profile', settings: 'Settings', setup: 'Your guide' };
@@ -115,6 +115,7 @@ function render() {
   const l = level(snapshot.totalXp); $('#level-label').textContent = `Level ${l.rank}`;
   document.querySelectorAll('#navigation button').forEach(b => { if (b.dataset.view === currentView) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   $('#main').replaceChildren();
+  $('#main').dataset.view=currentView;
   ({ today: renderToday, goals: renderGoals, plan: renderPlan, health: Health.render, learn: Learn.render, profile: renderProfile, settings: renderSettings, setup: Host.render })[currentView]();
   Host.afterRender();
   setBusy(busy);
@@ -123,12 +124,12 @@ function renderToday() {
   const heading = intro('Your day, your direction.', 'A little structure. A clear next action. Room for real life.');
   Host.dashboard($('#main'));
   const date = element('label', 'Selected date', 'date-field'); const input = element('input'); input.type = 'date'; input.value = selectedDate; input.addEventListener('change', () => { selectedDate = input.value; render(); }); date.append(input); heading.append(date);
-  const sessions = snapshot.occurrences.filter(o => dayOf(o.startAt) === selectedDate);
+  const sessions = snapshot.occurrences.filter(o => dayOf(o.startAt) === selectedDate && snapshot.tasks.find(t=>t.id===o.taskId)?.kind !== 'protected').sort((a,b)=>a.startAt.localeCompare(b.startAt));
   const next = sessions.find(o => o.fraction < 1);
   const hero = element('section', undefined, 'pilot-hero'); hero.append(element('span', 'ONE INTENTIONAL STEP', 'eyebrow'));
   hero.append(element('h2', next ? snapshot.tasks.find(t => t.id === next.taskId).title : sessions.length ? 'Leave room to recover.' : 'Build a day worth finishing.'));
   hero.append(element('p', next ? `${time(next.startAt)}–${time(next.endAt)} · ${timezone}. Your accepted plan stays in your hands.` : 'Choose meaningful work, protect your time, and let consistency add up.'));
-  hero.append(action(next ? 'See your plan' : 'Plan your day', () => navigate('plan'), true)); $('#main').append(hero);
+  hero.append(action(next ? 'Start this session' : 'See your week', () => {if(next){const detail=document.querySelector(`[data-session="${next.id}"]`);if(detail){detail.open=true;detail.scrollIntoView({behavior:'auto',block:'center'});detail.querySelector('summary').focus();}}else navigate('plan');}, true)); $('#main').append(hero);
   const metrics = element('div', undefined, 'pilot-metrics');
   for (const [count, label] of [[sessions.filter(o => o.fraction === 1).length, 'sessions completed'], [sessions.reduce((sum, o) => sum + Math.floor(snapshot.tasks.find(t => t.id === o.taskId).budget * o.fraction), 0), 'XP this day'], [snapshot.goals.filter(g => !g.archived).length, 'active goals']]) {
     const m = element('div', undefined, 'metric'); m.append(element('strong', String(count)), element('span', label)); metrics.append(m);
@@ -139,10 +140,11 @@ function renderToday() {
     const t = snapshot.tasks.find(t => t.id === occurrence.taskId), row = element('article', undefined, 'pilot-row'), head = element('div', undefined, 'row-head');
     head.append(element('h3', t.title), element('span', `${Math.floor(t.budget * occurrence.fraction)} / ${t.budget} XP`, 'xp-mark')); row.append(head);
     row.append(element('p', `${time(occurrence.startAt)}–${time(occurrence.endAt)} · ${Math.round(occurrence.fraction * 100)}% complete${occurrence.locked ? ' · Protected' : ''}`));
+    const detail=element('details');detail.dataset.session=occurrence.id;detail.append(element('summary','What to do'));Setup.taskDetails(detail,t.id);row.append(detail);
     const controls = element('div', undefined, 'pilot-actions');
     if (occurrence.fraction < 1) {
       if (occurrence.fraction !== .5) controls.append(action('Half done', () => command('completion.set', occurrence.id, { fraction: .5 }, occurrence.revision)));
-      controls.append(action('Complete', () => command('completion.set', occurrence.id, { fraction: 1 }, occurrence.revision, 'Practice recorded. Your progress is saved.'), true));
+      controls.append(action('Complete', () => command('completion.set', occurrence.id, { fraction: 1 }, occurrence.revision, `Done. +${t.budget-Math.floor(t.budget*occurrence.fraction)} XP — your progress is saved.`), true));
     }
     if (occurrence.fraction > 0) controls.append(action('Undo completion', () => command('completion.set', occurrence.id, { fraction: 0 }, occurrence.revision, 'Completion corrected. Only its award was reversed.')));
     if (occurrence.fraction === 0) {
@@ -156,6 +158,7 @@ function renderToday() {
   const track = element('div', undefined, 'progress-track'), fill = element('span'); fill.style.width = `${l.remaining / l.cost * 100}%`; track.append(fill); right.append(track);
   right.append(element('p', 'A planned recovery session earns 15 XP. Missing a task does not take away your earned progress.', 'muted'));
   right.append(action('Explore your goals', () => navigate('goals'))); columns.append(list, right); $('#main').append(columns);
+  const protectedTime=snapshot.occurrences.filter(o=>dayOf(o.startAt)===selectedDate&&snapshot.tasks.find(t=>t.id===o.taskId)?.kind==='protected');if(protectedTime.length){const d=element('details',undefined,'pilot-card');d.append(element('summary','Sleep, family and other commitments'));for(const o of protectedTime)d.append(element('p',`${time(o.startAt)}–${time(o.endAt)} · ${snapshot.tasks.find(t=>t.id===o.taskId).title}`));$('#main').append(d);}
 }
 function renderGoals() {
   intro('Give your effort a purpose.', 'Create a goal, then define the small actions that move it forward.');
@@ -186,11 +189,12 @@ function renderGoals() {
   forms.append(goalCard, taskCard); columns.append(list, forms); $('#main').append(columns);
   const tasks = card('Your action library'); tasks.classList.add('task-list');
   if (!snapshot.tasks.length) empty(tasks, 'No actions yet.', 'Keep the first one small enough to fit a real day.');
-  for (const t of snapshot.tasks) { const row = element('article', undefined, 'pilot-row'); row.append(element('h3', t.title), element('p', `${t.durationMinutes} min + ${t.prepMinutes + t.travelMinutes + t.bufferMinutes} min preparation, travel and buffer · ${t.budget} XP${t.archived ? ' · Archived' : ''}`)); const controls = element('div', undefined, 'pilot-actions'); controls.append(action('Edit task', () => { editTask = t; render(); $('#task-form input').focus(); }), action(t.archived ? 'Restore task' : 'Archive task', () => command('task.archive', t.id, { archived: !t.archived }, t.revision))); row.append(controls); tasks.append(row); }
+  for (const t of snapshot.tasks.filter(t=>t.kind!=='protected')) { const row = element('article', undefined, 'pilot-row'); row.append(element('h3', t.title), element('p', `${t.durationMinutes} min + ${t.prepMinutes + t.travelMinutes + t.bufferMinutes} min preparation, travel and buffer · ${t.budget} XP${t.archived ? ' · Archived' : ''}`)); const controls = element('div', undefined, 'pilot-actions'); controls.append(action('Edit task', () => { editTask = t; render(); $('#task-form input').focus(); }), action(t.archived ? 'Restore task' : 'Archive task', () => command('task.archive', t.id, { archived: !t.archived }, t.revision))); row.append(controls); tasks.append(row); }
   $('#main').append(tasks);
 }
 function renderPlan() {
   intro('Make room for what matters.', 'Choose an available window. Review every proposed session before saving.');
+  Setup.calendar($('#main'));
   const formCard = card('Your available time');
   formCard.insertAdjacentHTML('beforeend', '<form id="plan-form" class="pilot-form"><div class="form-pair"><label>Planning date<input name="date" type="date" required></label><label>Timezone<input name="zone" required></label></div><div class="form-pair"><label>Available from<input name="start" type="time" value="07:00" required></label><label>Available until<input name="end" type="time" value="18:00" required></label></div><p class="muted">Choose time outside sleep, work and protected family commitments. Existing sessions stay in place. Only unscheduled actions are proposed.</p><button class="button primary" data-save type="submit">Preview schedule</button></form>');
   const form = formCard.querySelector('form'); form.elements.date.value = selectedDate; form.elements.zone.value = timezone;
@@ -200,7 +204,7 @@ function renderPlan() {
   $('#main').append(formCard);
   const manual = card(movingSession ? 'Move an existing session' : 'Protect a fixed session'); manual.classList.add('pilot-review');
   manual.insertAdjacentHTML('beforeend', '<form id="manual-form" class="pilot-form"><label>Session task<select name="task" required></select></label><div class="form-pair"><label>Session date and time<input name="when" type="datetime-local" required></label><label>Session timezone<input name="timezone" required></label></div><label class="checkbox-label"><input name="locked" type="checkbox" checked>Protect this session</label><p class="muted">Add family time, appointments or obligations as tasks in Goals first. Preview the exact time before saving.</p><button type="submit" class="button ghost" data-save>Preview session time</button></form>');
-  const mf = manual.querySelector('form'); snapshot.tasks.filter(t => !t.archived).forEach(t => option(mf.elements.task, t.id, t.title));
+  const mf = manual.querySelector('form'); snapshot.tasks.filter(t => !t.archived && t.kind!=='protected').forEach(t => option(mf.elements.task, t.id, t.title));
   mf.elements.when.value = `${selectedDate}T09:00`; mf.elements.timezone.value = timezone;
   if (movingSession) { mf.elements.task.value = movingSession.taskId; mf.elements.task.disabled = true; mf.elements.locked.checked = false; mf.elements.locked.disabled = true; manual.append(action('Cancel move', () => { movingSession = null; manualPreview = null; render(); })); }
   mf.addEventListener('submit', event => { event.preventDefault(); manualDraft = { taskId: mf.elements.task.value, locked: mf.elements.locked.checked, moving: movingSession }; void send('time', { local: mf.elements.when.value, timezone: mf.elements.timezone.value }, 'Review the time, then confirm.'); });
@@ -229,6 +233,7 @@ function renderPlan() {
   for (const batch of snapshot.scheduleBatches.slice(0, 5)) { const row = element('div', undefined, 'pilot-row'); row.append(element('h3', batch.status === 'accepted' ? 'Accepted schedule' : 'Schedule undone'), element('p', 'Undo is available while all sessions in the plan remain untouched.')); if (batch.status === 'accepted') row.append(action('Undo schedule', () => command('schedule.undo', batch.id, {}, batch.revision, 'Schedule undone. Tasks remain available to plan again.'))); history.append(row); } $('#main').append(history);
 }
 function renderProfile() {
+  if(snapshot.answers.setupV2){void Setup.render($('#main'));return;}
   intro('Know yourself. Plan honestly.', 'One question at a time. Skip, leave unknown, or edit later.');
   const c = card('Your context'), question = questions.find(q => q[0] === questionId);
   c.insertAdjacentHTML('beforeend', '<div class="pilot-form"><label>Question<select id="question-picker"></select></label></div>');
@@ -275,6 +280,8 @@ Learn.init({ element, action, card, intro, snapshot: () => snapshot, api, comman
 Access.init({element,card,api,announceAccountChange});
 Recovery.init({element,card,api,announceAccountChange,account:()=>account,refreshSession:async()=>{const fresh=await api('bootstrap');token=fresh.token;}});
 DeviceSync.init({element,card,api,updated:()=>{message('Workspace updated. Open Today, Goals or Plan to see your current records.');}});
+Setup.init({element,action,card,intro,snapshot:()=>snapshot,account:()=>account,guide:()=>guide,api,render,navigate,setBusy,setDate:value=>{selectedDate=value;}});
+GoalVisual.init({element,action,card,snapshot:()=>snapshot,api,render,navigate});
 Host.init({element,action,card,intro,questions,snapshot:()=>snapshot,account:()=>account,guide:()=>guide,api,render,navigate,setBusy});
 let idleTimer;
 function resetIdle() { clearTimeout(idleTimer); if (account) idleTimer = setTimeout(() => { void Access.signOut(); }, 30 * 60 * 1000); }
