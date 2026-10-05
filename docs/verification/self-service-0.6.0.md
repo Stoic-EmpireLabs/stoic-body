@@ -30,3 +30,12 @@ Recipe portions are calculated examples, not a complete nutritionally validated 
 The Vercel site distributes the Windows package; private accounts run locally. Native Apple clients, guaranteed native alarms and Store releases retain their previous unfinished status.
 
 Research and adopted patterns: [self-service research](../research/self-service-setup.md).
+
+## Release verification
+
+- Source/build commit: `2432f8a13ea359b6e5d4c46000634c865d60473e`.
+- [GitHub Windows preview 0.6.0](https://github.com/Stoic-EmpireLabs/stoic-body/releases/tag/v0.6.0-local-pilot) published. ZIP: 43,877,512 bytes; local and uploaded SHA256 agree: `8462dfebd1ff2c1b920cfab303c37564a8bfad1e17324be401ccd97dcb646fe6`.
+- [Vercel download page](https://stoic-body-desktop.vercel.app/) returned HTTP 200 and the 0.6.0 download link.
+- Installed package verified against its manifest. Existing desktop wrapper and both icons point to 0.6.0. Live `/api/identity` returned `0.6.0-local`; new setup script and reference artwork were served successfully.
+- Fresh consistent SQLite backup created before switching. Both existing accounts, answer hashes and sync configuration preserved; database integrity `ok`. No user profile was rewritten during installation.
+- Generic body artwork and the built-in generation prompt: [asset provenance](../../assets/brand/body-references.md).

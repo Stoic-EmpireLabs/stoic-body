@@ -4,3 +4,4 @@
 - Preserve the accepted black/red/gold identity and user-selectable appearance.
 - Keep owner information under ignored private/; use synthetic test and public examples.
 - Later-phase authorization does not erase unfinished acceptance requirements from earlier phases. Report both accurately.
+- Stoic Body is a self-service fitness, diet, habit and Stoic-motivation app: completing choice-based setup must create a usable first week without a trainer approval step or manual re-entry; retain targeted health exclusions and keep learning/course questions outside onboarding.
