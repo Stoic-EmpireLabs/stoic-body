@@ -34,7 +34,7 @@ window.Host = (() => {
   }
   function question(root){
     const index=conflict?.question??guide().state.question,q=ctx.questions[index],saved=ctx.snapshot().answers[q[0]],group=Math.floor(index/5);
-    ctx.intro(['Your direction','Your everyday reality','Your health context','Your practice & preferences'][group],'Specific answers help. “Skip” and “unknown” are useful answers, too.');
+    ctx.intro(['Your goals','Your daily routine','Your health and fitness','Your preferences'][group],'Tell us what you can. You can skip any question or come back to it later.');
     const card=ctx.card(q[1].replace(/^\d+\. /,''));card.append(el('span',`Question ${index+1} of 20`,'status-tag'));
     const progress=el('progress');progress.max=20;progress.value=count();progress.setAttribute('aria-label','Questions addressed');card.append(progress,el('p',q[2],'profile-prompt'));
     const form=el('form',undefined,'pilot-form'),label=el('label','Your answer'),input=el(q[3]==='units'?'select':q[3]==='number'?'input':'textarea');input.setAttribute('aria-label','Your answer');input.required=true;
@@ -62,9 +62,9 @@ window.Host = (() => {
     controls.append(button('Skip this question',()=>run(()=>answer('skipped'))),button('I do not know yet',()=>run(()=>answer('unknown'))));
     if(index>0)controls.append(button('Back',()=>run(()=>move({question:index-1}))));
     controls.append(button('Save and finish later',()=>run(async()=>{if(input.value.trim()){if(!form.reportValidity())return;await answer('answered',true);}else{await persist({stage:'paused'});ctx.navigate('today');}})));
-    card.append(controls,el('p',`${count()} of 20 questions addressed. ${saved?`Previously saved: ${saved.state}.`:''}`,'muted'));
+    card.append(controls,el('p',`${count()} of 20 questions completed. ${saved?`Previously saved: ${saved.state}.`:''}`,'muted'));
     if(['height','weight'].includes(q[0])&&ctx.snapshot().answers.units?.state!=='answered')card.append(el('p','Choose measurement units before entering numbers. You can skip this measurement or go back to Question 9.','warning'));
-    card.append(el('p','Your answers help organize your starting point. They do not automatically authorize health plans, alarms or changes to your calendar.','muted'));status(card);root.append(card);
+    card.append(el('p','We use your answers to help you get started. You will review plans, reminders and calendar changes before they are applied.','muted'));status(card);root.append(card);
   }
   function firstGoal(){
     const answer=ctx.snapshot().answers.goals,title=answer?.state==='answered'?String(answer.value).split('\n')[0].slice(0,160):'';
