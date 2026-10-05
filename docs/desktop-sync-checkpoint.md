@@ -45,3 +45,12 @@ Local OS file access can read SQLite, browser sessions and device credentials. B
 3. Use bounded full snapshots before compact deltas. Cost: bandwidth and the 16 MiB account ceiling.
 4. Keep tour position and theme local while syncing profile answers. Cost: setup position can differ by device.
 5. Preserve the development branch and ignored evidence and use prior GitHub publication authorization. Cost: local storage; main and unrelated services remain outside this work.
+
+## Final independent review and correction evidence
+A fresh reviewer found no Critical issues, two Important issues and one Minor documentation issue. Both Important issues were reproduced before correction: idle sync removed local day previews, and conflicted schedules lacked recoverable details in Settings. The corrected tests prove preview survival before/during requests, safe rejection of genuinely stale plans, visible original times/timezone and task identity, and dismissal of only the selected proposal. Four additional persistent review-regression scenarios exercise pairing retry, lost completion responses, substituted remote account identity and password recovery during a request.
+
+Final full suite: **146/146**, typecheck and lint pass. The reviewer independently executed 10 focused checks plus synthetic race probes. There is no second review; corrections are verified by observed failing-to-passing regression tests and the full suite.
+
+Deferred minor: README says shortcut Properties > Open File Location finds the app folder, but the shortcut target is PowerShell. Use its **Start in** folder, or run Stop Stoic Body.cmd from the extracted download. The owner handoff includes a direct Stop launcher link.
+
+Review boundaries remain explicit: Apple/native alarms/Stores are later milestones (cost: full launch is incomplete); same-PC tests are not physical second-device acceptance (cost: device-specific defects may remain); owner installation and private route are separate delivery checks (cost: code review alone is not deployment proof); unsigned file hashes are integrity checks, not signed publisher authentication (cost: no signing or Store trust yet).

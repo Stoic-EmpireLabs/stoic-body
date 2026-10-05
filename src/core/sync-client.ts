@@ -61,7 +61,23 @@ export class SyncClient {
    this.repo.database.prepare("INSERT INTO app_sync_queue(owner_id,operation_id,wire_json,state) VALUES (?,?,?,'queued')").run(owner,command.operationId,wire);
   }return receipt;
  });}
- status(owner:string){const link=this.link(owner),queue=this.queue(owner);return {linked:Boolean(link),state:link?.state??'local',endpoint:link?.endpoint??null,remoteName:link?.remoteName??null,lastSuccess:link?.lastSuccess??null,error:link?.error??null,queued:queue.filter(r=>r.state==='queued').length,conflicts:queue.filter(r=>r.state==='conflict').map(r=>({operationId:r.operation_id,reason:r.reason,command:JSON.parse(r.wire_json).command}))};}
+ private conflictDetails(owner:string,wire:WireOperation){
+  const db=this.repo.database,entity=wire.command.entityId;
+  const taskName=(taskId:string)=>String(db.prepare('SELECT title FROM core_tasks WHERE owner_id=? AND id=?').get(owner,taskId)?.title??taskId);
+  const goal=db.prepare('SELECT title FROM core_goals WHERE owner_id=? AND id=?').get(owner,entity),session=db.prepare('SELECT task_id FROM core_occurrences WHERE owner_id=? AND id=?').get(owner,entity);
+  const entityLabel=wire.command.type.startsWith('goal.')?String(goal?.title??entity):session?taskName(String(session.task_id)):taskName(entity);
+  const p=wire.preview?.proposal as {timezone:string;placements:{taskId:string;startAt:string;endAt:string}[]}|undefined;
+  const schedule=p?{timezone:p.timezone,placements:p.placements.map(v=>({taskId:v.taskId,title:taskName(v.taskId),startAt:v.startAt,endAt:v.endAt}))}:null;
+  return {entityId:entity,entityLabel,schedule};
+ }
+ status(owner:string){const link=this.link(owner),queue=this.queue(owner);return {linked:Boolean(link),state:link?.state??'local',endpoint:link?.endpoint??null,remoteName:link?.remoteName??null,lastSuccess:link?.lastSuccess??null,error:link?.error??null,queued:queue.filter(r=>r.state==='queued').length,conflicts:queue.filter(r=>r.state==='conflict').map(r=>{const wire=JSON.parse(r.wire_json);return {operationId:r.operation_id,reason:r.reason,command:wire.command,details:this.conflictDetails(owner,wire)};})};}
+ private installCanonical(owner:string,bundle:AccountBundle){
+  // Day previews are deliberate local drafts, not uploaded commands. Retain their
+  // original state hashes so the usual acceptance check still rejects stale plans.
+  const db=this.repo.database,previews=db.prepare("SELECT * FROM core_schedule_batches WHERE owner_id=? AND status='preview'").all(owner);
+  installBundle(this.repo,owner,bundle,true);
+  for(const p of previews)db.prepare("INSERT OR IGNORE INTO core_schedule_batches VALUES (?,?,?,?,'preview',?,?)").run(owner,p.id,p.state_hash,p.proposal_json,p.revision,p.created_at);
+ }
  resolve(owner:string,input:unknown){const p=object(input);keys(p,['operationId']);const op=id(p.operationId);this.repo.database.prepare("DELETE FROM app_sync_queue WHERE owner_id=? AND operation_id=? AND state='conflict'").run(owner,op);}
  disconnect(owner:string){transaction(this.repo.database,()=>{this.repo.database.prepare('DELETE FROM app_sync_links WHERE owner_id=?').run(owner);this.repo.database.prepare('DELETE FROM app_sync_pairing WHERE owner_id=?').run(owner);this.repo.database.prepare("UPDATE app_sync_queue SET state='conflict',reason='Disconnected: this saved proposal has not been merged. Export a backup or copy its contents before dismissing.' WHERE owner_id=?").run(owner);});this.retry.delete(owner);}
  start(){if(this.timer||this.closed)return;const tick=()=>{for(const row of this.repo.database.prepare('SELECT owner_id FROM app_sync_links').all()){const owner=String(row.owner_id),retry=this.retry.get(owner);if(!retry||retry.at<=Date.now())void this.run(owner);}};this.timer=setInterval(tick,15000);this.timer.unref();tick();}
@@ -78,7 +94,7 @@ export class SyncClient {
     if(!this.current(owner,link))return;
     if(r.results.some(x=>x.status==='conflict'||x.status==='rejected'))this.recovery.point(owner,'Before sync conflict reconciliation');
     for(const result of r.results){if(result.status==='accepted'||result.status==='duplicate')this.repo.database.prepare('DELETE FROM app_sync_queue WHERE owner_id=? AND operation_id=?').run(owner,result.operationId);else this.repo.database.prepare("UPDATE app_sync_queue SET state='conflict',reason=? WHERE owner_id=? AND operation_id=?").run(result.reason??'Review this change against the host version.',owner,result.operationId);}
-    if(coreDigest(captureBundle(this.repo,this.accounts,owner))!==coreDigest(r.bundle))installBundle(this.repo,owner,r.bundle,true);
+    if(coreDigest(captureBundle(this.repo,this.accounts,owner))!==coreDigest(r.bundle))this.installCanonical(owner,r.bundle);
     for(const row of this.queue(owner).filter(q=>q.state==='queued')){
      const db=this.repo.database;db.exec('SAVEPOINT rebase_command');try{const c=prepareWire(this.repo,owner,JSON.parse(row.wire_json)),receipt=this.repo.apply(owner,c,{enqueue:false});if(receipt.status==='conflict')throw new Error(receipt.safeReason??'A newer edit needs review.');db.exec('RELEASE rebase_command');}
      catch(e){db.exec('ROLLBACK TO rebase_command; RELEASE rebase_command');if(e&&typeof e==='object'&&'code' in e)throw e;db.prepare("UPDATE app_sync_queue SET state='conflict',reason=? WHERE owner_id=? AND operation_id=?").run(e instanceof Error?e.message:'Review this saved proposal.',owner,row.operation_id);}
