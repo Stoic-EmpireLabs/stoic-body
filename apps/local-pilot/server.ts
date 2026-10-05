@@ -13,8 +13,11 @@ import { courses } from '../../src/core/learning-content';
 import { mealCatalog, previewMeal } from '../../src/core/meals';
 import { AccountStore, AccountError, type Account } from '../../src/core/accounts';
 import { RecoveryStore } from '../../src/core/recovery';
+import { SyncHub } from '../../src/core/sync-hub';
+import { SyncClient } from '../../src/core/sync-client';
+import { createSyncTransport, syncEndpoint } from '../../src/core/sync-transport';
 
-export interface PilotOptions { databasePath: string; port: number }
+export interface PilotOptions { databasePath: string; port: number; privateOrigin?:string; allowTestSyncLoopback?:boolean }
 export interface PilotServer { url: string; close: () => Promise<void> }
 class HttpError extends Error { constructor(readonly status: number, message: string) { super(message); } }
 const assets: Record<string, [string, string]> = {
@@ -48,12 +51,15 @@ async function body(request: IncomingMessage, limit = 1_048_576) {
   try { return JSON.parse(Buffer.concat(parts).toString('utf8')); }
   catch { throw new HttpError(400, 'The request could not be read.'); }
 }
-/** Loopback-only personal pilot. Not a remote authentication or deployment service. */
+/** Always listens on loopback. An optional exact private HTTPS origin may proxy it. */
 export async function startPilot(options: PilotOptions): Promise<PilotServer> {
   if (!Number.isInteger(options.port) || options.port < 0 || options.port > 65535) throw new Error('Invalid port.');
   const repository = new CoreRepository(options.databasePath);
   const accounts = new AccountStore(repository.database);
   const recovery = new RecoveryStore(repository, accounts);
+  const hub = new SyncHub(repository,accounts);
+  const sync = new SyncClient(repository,accounts,recovery,createSyncTransport(options.allowTestSyncLoopback),hub.instanceId,options.allowTestSyncLoopback);
+  const privateOrigin=options.privateOrigin?syncEndpoint(options.privateOrigin):undefined;
   let origin = '';
   const server = createServer((request, response) => {
     response.setHeader('Cache-Control', 'no-store');
@@ -62,10 +68,17 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
     response.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
     response.setHeader('Content-Security-Policy', "default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");
     void (async () => {
-      if (request.headers.host !== new URL(origin).host || (request.headers.origin && request.headers.origin !== origin)
+      const requestOrigin=privateOrigin&&request.headers.host===new URL(privateOrigin).host?privateOrigin:origin;
+      if (request.headers.host !== new URL(requestOrigin).host || (request.headers.origin && request.headers.origin !== requestOrigin)
         || request.headers['sec-fetch-site'] === 'cross-site') throw new HttpError(403, 'Open this app directly on this computer.');
       const path = new URL(request.url ?? '/', origin).pathname;
-      if (path === '/api/identity' && request.method === 'GET') { json(response, 200, { product: 'Stoic Body', edition: 'desktop-local', version: '0.3.0-local' }); return; }
+      if (path === '/api/identity' && request.method === 'GET') { json(response, 200, { product: 'Stoic Body', edition: 'desktop-local', version: '0.4.0-local' }); return; }
+      if(['/api/sync/claim','/api/sync/exchange'].includes(path)){
+        if(request.method!=='POST')throw new HttpError(405,'Use a sync client.');const data=await body(request);
+        if(path.endsWith('/claim')){json(response,200,hub.claim(data));return;}
+        const bearer=request.headers.authorization;if(!bearer?.startsWith('Bearer '))throw new HttpError(401,'Device authorization is required.');json(response,200,hub.exchange(bearer.slice(7),data));return;
+      }
+      const cookieFlags=`HttpOnly; SameSite=Strict; Path=/;${requestOrigin.startsWith('https:')?' Secure;':''}`;
       const cookie = request.headers.cookie?.split(';').map(v => v.trim()).find(v => v.startsWith('stoic_local='))?.slice('stoic_local='.length);
       const session = accounts.authenticate(cookie);
       const signedIn = (account: Account, token: string) => ({ authenticated: true, account, token, snapshot: repository.snapshot(account.id), guide: accounts.readGuide(account.id), mode: 'local' });
@@ -73,12 +86,13 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
         json(response, 200, session ? signedIn(session.account, session.csrf) : { authenticated: false, mode: 'local' }); return;
       }
       if (['/api/auth/register','/api/auth/login','/api/auth/recover'].includes(path)) {
-        if (request.method !== 'POST' || request.headers.origin !== origin) throw new HttpError(403,'Account requests must come from this app.');
+        if (request.method !== 'POST' || request.headers.origin !== requestOrigin) throw new HttpError(403,'Account requests must come from this app.');
         const data = await body(request);
         const result = path.endsWith('/register') ? await accounts.register(data) : path.endsWith('/recover') ? await accounts.recover(data) : {account:await accounts.login(data)};
+        if(path.endsWith('/recover')){hub.reset(result.account.id);sync.disconnect(result.account.id);}
         if(cookie) accounts.logout(cookie);
         const fresh = accounts.createSession(result.account.id);
-        response.setHeader('Set-Cookie',`stoic_local=${fresh.key}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200`);
+        response.setHeader('Set-Cookie',`stoic_local=${fresh.key}; ${cookieFlags} Max-Age=43200`);
         json(response,200,{...signedIn(result.account,fresh.csrf),...('recoveryKey' in result ? {recoveryKey:result.recoveryKey} : {})}); return;
       }
       if (path.startsWith('/api/')) {
@@ -88,23 +102,31 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
         const owner = session.account.id;
         const requireCurrent = () => { const live=accounts.authenticate(cookie);if(!live||live.account.id!==owner||!secretEquals(supplied,live.csrf))throw new HttpError(401,'Your session changed. Sign in again.'); };
         if (path === '/api/recovery/points' && request.method === 'GET') { json(response,200,{points:recovery.list(owner)});return; }
+        if (path === '/api/sync/status' && request.method === 'GET') {json(response,200,{...sync.status(owner),devices:hub.devices(owner),hostAddress:privateOrigin??null});return;}
         if (path === '/api/snapshot' && request.method === 'GET') { json(response, 200, { snapshot: repository.snapshot(owner) }); return; }
         if (path === '/api/health-content' && request.method === 'GET') { json(response, 200, { diets, trainingStyles, meals: mealCatalog }); return; }
         if (path === '/api/learning-content' && request.method === 'GET') { json(response, 200, { courses }); return; }
-        if (request.method !== 'POST' || request.headers.origin !== origin) throw new HttpError(403, 'Save requests must come from this app.');
+        if (request.method !== 'POST' || request.headers.origin !== requestOrigin) throw new HttpError(403, 'Save requests must come from this app.');
         const data = await body(request, ['/api/recovery/preview','/api/recovery/restore'].includes(path) ? 24*1024*1024 : 1_048_576);
         requireCurrent();
+        if(path==='/api/sync/code'){keys(object(data),[]);if(sync.status(owner).linked)throw new Error('This account already uses another host. Create pairing codes on that host.');json(response,200,hub.issueCode(owner));return;}
+        if(path==='/api/sync/link-preview'){const preview=await sync.previewLink(owner,data,requireCurrent);requireCurrent();json(response,200,preview);return;}
+        if(path==='/api/sync/link-confirm'){const result=await sync.confirmLink(owner,data,requireCurrent);requireCurrent();json(response,200,{...result,...signedIn(session.account,session.csrf)});return;}
+        if(path==='/api/sync/now'){keys(object(data),[]);await sync.run(owner);requireCurrent();json(response,200,{...sync.status(owner),snapshot:repository.snapshot(owner)});return;}
+        if(path==='/api/sync/disconnect'){keys(object(data),[]);sync.disconnect(owner);json(response,200,sync.status(owner));return;}
+        if(path==='/api/sync/resolve'){sync.resolve(owner,data);json(response,200,sync.status(owner));return;}
+        if(path==='/api/sync/revoke'){const p=object(data);keys(p,['deviceId']);hub.revoke(owner,text(p.deviceId));json(response,200,{devices:hub.devices(owner)});return;}
         if (path === '/api/recovery/status') { json(response,200,recovery.status(owner,data));return; }
         if (path === '/api/recovery/export') { const p=object(data);keys(p,['passphrase']);const file=await recovery.export(owner,p.passphrase);requireCurrent();json(response,200,{file});return; }
         if (path === '/api/recovery/preview') { const p=object(data);keys(p,['source','passphrase']);const preview=await recovery.preview(owner,p.source,p.passphrase);requireCurrent();json(response,200,preview);return; }
         if (path === '/api/recovery/restore') {
-          const result=await recovery.restore(owner,data,requireCurrent);
+          const result=await recovery.restore(owner,data,requireCurrent,()=>{hub.reset(owner);sync.disconnect(owner);});
           repository.database.prepare('DELETE FROM app_sessions WHERE owner_id=?').run(owner);
           const fresh=accounts.createSession(owner);
-          response.setHeader('Set-Cookie',`stoic_local=${fresh.key}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200`);
+          response.setHeader('Set-Cookie',`stoic_local=${fresh.key}; ${cookieFlags} Max-Age=43200`);
           json(response,200,{...result,...signedIn(session.account,fresh.csrf)});return;
         }
-        if (path === '/api/auth/logout') { keys(object(data),[]); accounts.logout(cookie!); response.setHeader('Set-Cookie','stoic_local=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0'); json(response,200,{authenticated:false}); return; }
+        if (path === '/api/auth/logout') { keys(object(data),[]); accounts.logout(cookie!); response.setHeader('Set-Cookie',`stoic_local=; ${cookieFlags} Max-Age=0`); json(response,200,{authenticated:false}); return; }
         if (path === '/api/guide') { recovery.captureBeforeEdit(owner);json(response,200,{guide:accounts.saveGuide(owner,data)}); return; }
         if (path === '/api/meal-preview') { json(response, 200, previewMeal(data)); return; }
         if (path === '/api/training-preview') { json(response, 200, buildRoutine(data)); return; }
@@ -115,7 +137,8 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
         if (path === '/api/training-advice') { const p = object(data); keys(p, ['routineId', 'exercise']); json(response, 200, progressionAdvice(repository.snapshot(owner).health, text(p.routineId), text(p.exercise))); return; }
         if (path === '/api/command') {
           recovery.captureBeforeEdit(owner);
-          const receipt = repository.apply(owner, data as Command);
+          const receipt = sync.apply(owner, data as Command);
+          void sync.run(owner);
           json(response, receipt.status === 'conflict' ? 409 : 200, { receipt, snapshot: repository.snapshot(owner), ...(receipt.safeReason ? { error: receipt.safeReason } : {}) }); return;
         }
         if (path === '/api/propose') { recovery.captureBeforeEdit(owner);json(response, 200, repository.proposeDay(owner, data as DayInput)); return; }
@@ -147,11 +170,11 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
       origin = `http://127.0.0.1:${address.port}`; accept();
     });
   });
-  let closed = false;
+  sync.start();let closed = false;
   return { url: origin, close: async () => {
     if (closed) return; closed = true;
     server.closeIdleConnections();
-    await new Promise<void>((accept, reject) => server.close(error => error ? reject(error) : accept())); repository.close();
+    await new Promise<void>((accept, reject) => server.close(error => error ? reject(error) : accept())); await sync.close();repository.close();
   } };
 }
 

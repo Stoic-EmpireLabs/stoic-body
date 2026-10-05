@@ -42,7 +42,7 @@ export function captureBundle(repo: CoreRepository, accounts: AccountStore, owne
   }catch(error){if(ownTransaction&&db.isTransaction)db.exec('ROLLBACK');throw error;}
 }
 /** Caller owns the transaction. Credentials and other accounts are never replaced. */
-export function installBundle(repo: CoreRepository, owner: string, bundle: AccountBundle) {
+export function installBundle(repo: CoreRepository, owner: string, bundle: AccountBundle, preserveGuide=false) {
   const db=repo.database;
   if(!db.isTransaction) throw new Error('Restore requires a transaction.');
   for(const table of [...tables].reverse()) db.prepare(`DELETE FROM ${table} WHERE owner_id=?`).run(owner);
@@ -51,7 +51,7 @@ export function installBundle(repo: CoreRepository, owner: string, bundle: Accou
     const insert=db.prepare(`INSERT INTO ${table}(owner_id,${columns[table].join(',')}) VALUES (${Array(columns[table].length+1).fill('?').join(',')})`);
     for(const row of bundle.tables[table]) insert.run(owner,...row);
   }
-  db.prepare('UPDATE app_accounts SET guide_json=?,guide_revision=guide_revision+1 WHERE owner_id=?').run(JSON.stringify(bundle.guide),owner);
+  if(!preserveGuide)db.prepare('UPDATE app_accounts SET guide_json=?,guide_revision=guide_revision+1 WHERE owner_id=?').run(JSON.stringify(bundle.guide),owner);
 }
 function jsonObject(v: unknown) { return object(JSON.parse(text(v,MAX_BUNDLE_BYTES))); }
 function guide(v:unknown): GuideState {

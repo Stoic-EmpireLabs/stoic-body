@@ -13,7 +13,7 @@ export class RecoveryStore {
  }
  private current(owner:string) {return captureBundle(this.repo,this.accounts,owner);}
  private fingerprint(owner:string) {return createHash('sha256').update(canonical({bundle:bundleDigest(this.current(owner)),guideRevision:this.accounts.readGuide(owner).revision})).digest('hex');}
- private point(owner:string,reason:string) {
+ point(owner:string,reason:string) {
   const b=this.current(owner),db=this.repo.database;
   db.prepare('INSERT INTO app_recovery_points VALUES (?,?,?,?,?)').run(randomUUID(),owner,this.now(),reason,JSON.stringify(b));
   db.prepare('DELETE FROM app_recovery_points WHERE owner_id=? AND id NOT IN (SELECT id FROM app_recovery_points WHERE owner_id=? ORDER BY created_at DESC,rowid DESC LIMIT 7)').run(owner,owner);
@@ -42,7 +42,7 @@ export class RecoveryStore {
   if(previous&&previous.request_hash!==requestHash)throw new AccountError(409,'Restore identifier was already used.');
   return {completed:Boolean(previous)};
  }
- async restore(owner:string,input:unknown,guard=()=>{}) {
+ async restore(owner:string,input:unknown,guard=()=>{},resetSync=()=>{}) {
   const p=object(input);keys(p,['source','passphrase','expectedFingerprint','digest','operationId']);id(p.operationId);text(p.expectedFingerprint,64);text(p.digest,64);
   const requestHash=createHash('sha256').update(canonical({fingerprint:p.expectedFingerprint,digest:p.digest})).digest('hex');
   guard();if(this.status(owner,{operationId:p.operationId,expectedFingerprint:p.expectedFingerprint,digest:p.digest}).completed)return {duplicate:true};
@@ -53,7 +53,7 @@ export class RecoveryStore {
    const previous=db.prepare('SELECT request_hash FROM app_restore_receipts WHERE owner_id=? AND operation_id=?').get(owner,String(p.operationId));
    if(previous){if(previous.request_hash!==requestHash)throw new AccountError(409,'Restore identifier was already used.');db.exec('COMMIT');return {duplicate:true};}
    if(this.fingerprint(owner)!==p.expectedFingerprint)throw new AccountError(409,'Your workspace changed after the preview. Preview again before restoring.');
-   this.point(owner,'Before restore');installBundle(this.repo,owner,b);
+   this.point(owner,'Before restore');installBundle(this.repo,owner,b);resetSync();
    db.prepare('INSERT INTO app_restore_receipts VALUES (?,?,?)').run(owner,String(p.operationId),requestHash);
    db.exec('COMMIT');return {duplicate:false};
   }catch(e){if(db.isTransaction)db.exec('ROLLBACK');throw e;}
