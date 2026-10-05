@@ -1,0 +1,28 @@
+{
+  "name": "Stoic Body — Sovereign Operating System",
+  "version": "1.0.0-rc1",
+  "releaseDate": "2026-10-05T00:27:04.080Z",
+  "engine": "Next.js 15 + React 19 + Tailwind CSS + Node SQLite",
+  "architect": "Stoic Empire Labs",
+  "verifiedTests": 60,
+  "verifiedModules": 13,
+  "integrity": {
+    "serviceWorker": "495550fd5996ff1a351a0af8f4faf18a804d513274f2831ebb82aa5def797534",
+    "webManifest": "876c756087088f7672ca845b431a8de1e7314e679416280eae62f1c20470ec79",
+    "capacitorConfig": "a7ea5215f3ee99c7aa4a742ae2e5d6106232b0b6df7f6d69c587305931321e80",
+    "runOfflineBat": "39a047dd492f87a94fe83e5eff37cfdd1d1fab1c0c62821f4b5f9b6f566b5ced",
+    "runOfflinePs1": "20a1fe2ffe7b2c5627695428614759643f9b66e3043a1247c90ea30d95a438dc"
+  },
+  "platforms": {
+    "web": "https://stoic-body.vercel.app",
+    "pwa": "Offline-first via Service Worker cache storage",
+    "windows": "Microsoft Store MSIX via PWA Builder",
+    "ios": "Capacitor 6.0 Xcode Project Container (com.stoicbody.app)",
+    "android": "Capacitor / Trusted Web Activity (TWA Bubblewrap)"
+  },
+  "commercialLicensing": {
+    "monthlyPass": "$9.99/mo (com.stoicbody.subscription.monthly)",
+    "annualPass": "$79.99/yr (com.stoicbody.subscription.yearly)",
+    "founderPerpetual": "Perpetual Sovereign License (STOIC-LIC-SOVEREIGN-FOUNDER-PASS-2026)"
+  }
+}

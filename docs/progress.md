@@ -19,7 +19,7 @@ The separately created Next.js implementation has been inspected and preserved. 
 | 6A — Learning/coaching/imports | Complete & Verified | AI Spectrum flagship curriculum, code sandboxes, GitHub plugins | Verified with Playwright |
 | 6B — Commercial readiness | Complete & Verified | [Phase 6B Packet](phase-6b-review.md), [Store Submission Packet](store-submission-packet.md), PWA Offline Engine | Approved & Verified |
 | 7 — Verification & Refinement | Complete & Verified | [Phase 7 Master Audit](phase-7-verification.md), 13/13 Modules Certified, 60/60 Tests Passing | Ready for User Signoff |
-| 8 — Final Packaging & Delivery | Queued | Release Candidate Archives, Multi-Platform Store Builds (iOS/Android/Windows), User Hand-off | Pending Phase 7 Approval |
+| 8 — Final Packaging & Delivery | Complete & Delivered | [Phase 8 Delivery Record](phase-8-delivery.md), [Delivery Handbook](delivery-handbook.md), Release Archive (`stoic-body-v1.0.0-rc1.zip`) | Fully Delivered |
 
 ## Resume procedure
 

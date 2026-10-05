@@ -108,7 +108,7 @@ test("Phase 6 Courses — Custom Course Creation", () => {
     title: "FastAPI & LangGraph Production Microservice",
     repoSource: "tiangolo/fastapi",
     repoStars: "75k ★",
-    category: "Full-Stack AI Apps",
+    category: "Full-Stack Frontend & Backend",
     level: "Advanced",
     description: "Building an asynchronous AI microservice in Python with FastAPI and LangGraph.",
     estimatedHours: 3,

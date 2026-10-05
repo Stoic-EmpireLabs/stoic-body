@@ -1,0 +1,21 @@
+{
+  "appId": "com.stoicbody.app",
+  "appName": "Stoic Body",
+  "webDir": "out",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://stoic-body.vercel.app",
+    "cleartext": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#0A0B10",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#0A0B10"
+    }
+  }
+}

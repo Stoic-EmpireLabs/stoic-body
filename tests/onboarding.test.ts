@@ -6,7 +6,7 @@ import {
   calibrateClientProfile,
   getHostContextDirective,
   QuestionnaireAnswers,
-} from "../src/lib/onboarding.ts";
+} from "../src/lib/onboarding";
 
 test("Onboarding — Founder Profile Baseline Integrity", () => {
   assert.equal(FOUNDER_PROFILE.id, "founder");

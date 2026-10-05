@@ -1,22 +1,52 @@
 {
-  "name": "Stoic Body — Discipline & Sovereign Life Game",
+  "name": "Stoic Body — Sovereign Operating System",
   "short_name": "Stoic Body",
   "description": "Classical Stoic discipline meets RPG habits, calisthenics, boxing intervals, and 23:1 OMAD nutrition.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0A0B10",
   "theme_color": "#13141C",
   "orientation": "portrait-primary",
+  "categories": ["health", "fitness", "productivity", "lifestyle"],
   "icons": [
     {
       "src": "/icon.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Boxing & Training",
+      "short_name": "Training",
+      "url": "/training",
+      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "23:1 OMAD Nutrition",
+      "short_name": "Nutrition",
+      "url": "/nutrition",
+      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Strategic Goals",
+      "short_name": "Goals",
+      "url": "/goals",
+      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Stoic Advisory",
+      "short_name": "Coaching",
+      "url": "/coaching",
+      "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
     }
   ]
 }

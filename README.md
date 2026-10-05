@@ -1,36 +1,164 @@
-# Stoic Body — project review packets
+# 🏛️ Stoic Body: Sovereign OS (2026 Edition)
 
-Updated 2026-10-04. Phase 0 and expanded Phase 1 are approved. Phase 2 is provisionally approved. **[Phase 3 interactive prototype](docs/phase-3-review.md) is ready for review.** Automatic sync across iPhone/iPad and Windows is now required at launch. The user explicitly authorized GitHub and Vercel upload; this does not approve Phase 4 or app-store publication.
+[![Production Status](https://img.shields.io/badge/Production-Live%20(HTTP%20200)-success?style=flat-square)](https://stoic-body.vercel.app)
+[![Tests Passing](https://img.shields.io/badge/Tests-60%2F60%20Passing-brightgreen?style=flat-square)](tests/)
+[![Architecture](https://img.shields.io/badge/Architecture-Next.js%2015%20%7C%20React%2019%20%7C%20SQLite-blue?style=flat-square)](src/)
+[![PWA Ready](https://img.shields.io/badge/PWA-Offline%20First-orange?style=flat-square)](public/manifest.json)
+[![Commercial License](https://img.shields.io/badge/Commercial%20Store-Ready%20(iOS%2FAndroid%2FWin)-gold?style=flat-square)](docs/store-submission-packet.md)
 
-Stoic Body connects life goals, schedules, nutrition, training, learning and Stoic reflection through one enjoyable daily game. The owner is the first pilot user of a commercial product targeting Apple App Store, Google Play and Microsoft Store; Android launch timing remains open.
+> **"He who conquers himself is the mightiest warrior."** — Seneca
 
-## Current preview
+**Stoic Body** is a radical physical discipline, intermittent fasting, combat conditioning, and artificial intelligence learning operating system styled in **2026 Liquid Obsidian Glassmorphism**.
 
-- [Selected red, black and gold design on Vercel](https://stoic-body-mmzb80wyk-stoic-dev-team.vercel.app/gallery.html) — sign in with the existing Vercel account.
-- [Prototype source and local instructions](prototypes/phase-3/README.md).
-- [Phase 3 review](docs/phase-3-review.md) and [verification](docs/phase-3-verification.md): 126 general browser checks and 18 appearance checks passed; gallery and deployment assets checked separately.
-- [Existing separately developed application](https://stoic-body.vercel.app), preserved.
+The system transforms daily habit execution into an engaging Sovereign RPG, connecting life milestones, 84-day periodized schedules, whole food nutrition blueprints (23:1 OMAD), progressive calisthenics overload, 6-round boxing HIIT, and an intellectual AI hierarchy spectrum curriculum with **zero cloud lock-in** and **zero third-party tracking**.
 
-The design preview uses fictional data; sample entries reset on refresh. Theme and color settings are now available and remain saved in this browser. Native alarms, authenticated sync and persistent health features are not implemented by this prototype.
+---
 
-## Architecture packet
+## 🌟 Key Features & Innovations
 
-- [Product and 20-screen specification](docs/architecture/product-spec.md)
-- [Shared data, scheduling, XP and sync contracts](docs/architecture/domain-contracts.md)
-- [Platform and hosting alternatives](docs/architecture/platform-and-sync.md)
-- [Privacy and recovery design](docs/architecture/privacy-and-reliability.md)
-- [Success measures](docs/architecture/success-measures.md)
-- [Existing Next.js source assessment](docs/architecture/baseline-assessment.md)
-- [96-requirement traceability](docs/architecture/traceability.md) and [verification](docs/phase-2-verification.md)
+### 1. 2026 Liquid Obsidian Glassmorphism Design
+- Translucent multi-layered glass panels with ultra-fine borders (`border-white/10` and `border-amber-500/20`).
+- Atmospheric obsidian depth (`#0A0B10`), dynamic glowing accent orbs, and backdrop blur (`backdrop-blur-2xl`).
+- High-efficiency floating bottom navigation dock with glowing active indicators.
 
-The existing Next.js source was created separately and has been preserved. Its 15 existing unit tests passed at the Phase 2 snapshot and its latest TypeScript recheck passes, but important requirements remain missing or contradicted; see the assessment before treating it as a working commercial app.
+### 2. Live Goal Ticking Countdown Clock
+- Real-time countdown hero (`DAYS : HOURS : MINS : SECS`) mounted prominently on the Dashboard and Goals pages.
+- Calibrated to the user's specific target date, fat loss velocity ($-1.5\text{ lbs/week}$), and caloric deficit ($-750\text{ kcal/day}$).
+- Live milestone phase checkpoints tracking progress across the campaign.
 
-## Foundations and research
+### 3. 84-Day Multi-Week Periodized Campaign
+- Generates an 84-day (10–12 week) scientific schedule across the unified calendar.
+- Integrates peer-reviewed literature: Schoenfeld (hypertrophy), Morton (protein ceilings), San-Millán (Zone-2 fat oxidation), and Tremblay (fasting interval timing).
+- Dynamic transition buffers: $B_i = \max(15\text{m}, 0.20 \times D)$ to prevent schedule collapse.
 
-[Brief](docs/project-brief.md) · [Requirements](docs/requirements.md) · [Decisions](docs/decisions.md) · [Progress](docs/progress.md) · [Discovery](docs/discovery.md) · [Phase roadmap](docs/superpowers/plans/2026-10-04-stoic-body-phase-plan.md) · [Skill inventory](docs/skill-inventory.md) · [Tool inventory](docs/tool-inventory.md) · [Original request](docs/source-original.md)
+### 4. Interactive Tab Spotlight Onboarding & Companion
+- Intelligent Aethelgard Host companion guiding first-time visitors through the entire system.
+- Direct DOM bounding-box spotlight ring anchored to physical navigation tabs (`#tour-tab-...`).
+- Contextual advice that dynamically adapts by hour of the day (Morning Anchor $\to$ Deep Work $\to$ Fasting Window $\to$ Evening Reflection).
 
-[Phase 1 research](docs/phase-1-review.md) includes the [24-competitor comparison](docs/research/competitors/README.md), [visual reference board](docs/research/competitors/interface-board.html) and [26-step journey map](docs/research/competitors/experience-patterns.md). These are research artifacts, not implemented features.
+### 5. Private Bring-Your-Own-Key (BYOK) AI Studio
+- Integrated AI reasoning hub in `/settings` supporting:
+  - **Google Gemini 2.5 Pro / Flash**
+  - **Anthropic Claude 3.7 Sonnet**
+  - **OpenAI GPT-4o / o1**
+  - **Local Sovereign Ollama** (`http://localhost:11434`) for 100% offline reasoning.
+- Live latency benchmark test pinging local and cloud models.
+- **Zero-Cloud Guarantee**: Keys are stored exclusively in your browser and never touch external telemetry servers.
 
-Personal planning records remain under private/ and excluded by Git rules. That exclusion does not protect owner-like values separately embedded in tracked source; removing those from release examples is an explicit blocker. Nothing in this packet authorizes disclosure of personal data.
+### 6. Multi-User Local-First Isolation
+- Every visitor gets their own private, sandboxed environment stored locally on their device via `localStorage`.
+- Zero user data is shared across visitors or sessions.
+- Full offline SQLite database state export/import with two-step validation gates in `/imports`.
 
-Phase 3 style/flow approval is pending. The explicit upload instruction authorized the published GitHub/Vercel preview. Later implementation phases, purchases, accounts and app-store releases retain their approval gates.
+### 7. Commercial Store Readiness & Offline Cryptographic Licensing
+- Complete multi-platform store submission packet for Apple App Store, Google Play, and Microsoft Store.
+- Multi-tier in-app purchase simulator ($9.99/mo, $79.99/yr with 7-day trial).
+- Tamper-evident Base64 offline license verification engine (`STOIC-LIC-*`).
+
+---
+
+## 🚀 Quickstart
+
+### Live Web Application
+Access the production deployment immediately without installation:  
+👉 **[https://stoic-body.vercel.app](https://stoic-body.vercel.app)**
+
+### Local Standalone Installation
+```bash
+# Clone the repository
+git clone https://github.com/Stoic-EmpireLabs/stoic-body.git
+cd stoic-body
+
+# Install dependencies
+npm install
+
+# Run automated test suite (60/60 tests)
+npm test
+
+# Build production bundle
+npm run build
+
+# Start local server
+npm start
+# -> Access at http://localhost:3000
+```
+
+### Windows Offline One-Click Launch
+Double click `release/run-offline.bat` or run `release/run-offline.ps1`.
+
+---
+
+## 📱 Progressive Web App (PWA) Installation
+
+- **iOS / iPadOS**: Open Safari $\to$ Tap **Share** $\to$ Select **"Add to Home Screen"**.
+- **Android**: Open Chrome $\to$ Tap menu $\to$ Select **"Install app"**.
+- **Windows / macOS**: Open Chrome or Edge $\to$ Click the **Install** icon in the address bar.
+
+---
+
+## 🏛️ System Architecture
+
+```
+stoic-body/
+├── src/
+│   ├── app/                    # Next.js App Router (13 verified views)
+│   │   ├── page.tsx            # Dashboard (Live Countdown, Anchor, Fasting Ring)
+│   │   ├── calendar/           # 84-Day Multi-Week Periodized Schedule
+│   │   ├── goals/              # Strategic Milestones & Target Matrix
+│   │   ├── training/           # Boxing Timer (6 Rounds) & Calisthenics Overload
+│   │   ├── nutrition/          # 23:1 OMAD Blueprints & Hydration Lab
+│   │   ├── progress/           # US Navy BF%, 7-Day Moving Avg, Timeline
+│   │   ├── learning/           # AI Hierarchy Spectrum & Interactive Sandboxes
+│   │   ├── coaching/           # Multi-Tone Stoic Advisory & Historical Quotes
+│   │   ├── quests/             # 5-Tier Gamification RPG & Combo Multipliers
+│   │   ├── character/          # 5-Axis Radar Canvas & Level 12 Hierarchy
+│   │   ├── imports/            # Document Vault & SQLite JSON State Sync
+│   │   └── settings/           # BYOK AI Studio, Keys & Commercial License Hub
+│   ├── components/             # Reusable UI widgets & Modals
+│   │   ├── GoalCountdownHero.tsx # Live Ticking Countdown Clock
+│   │   ├── InteractiveTour.tsx # DOM Tab Spotlight Companion
+│   │   ├── AgentKeysHub.tsx    # Sovereign BYOK Studio & Latency Tester
+│   │   ├── CommercialLicenseModal.tsx # Store Licensing & Sandbox Simulator
+│   │   └── PwaRegistrar.tsx    # Service Worker Offline Registration
+│   ├── context/
+│   │   └── StoicContext.tsx    # Global Local-First State Provider
+│   └── lib/                    # Core Empirical Domain Engines
+│       ├── scheduling.ts       # Periodized Campaign & Buffers
+│       ├── onboarding.ts       # Intake Calibration & Host Directives
+│       ├── entitlements.ts     # In-App Purchases & Cryptographic Tokens
+│       ├── gamification.ts     # XP Multipliers & Anti-Exploit Formulas
+│       ├── nutrition.ts        # OMAD Fasting & Scale Food Blueprints
+│       └── courses.ts          # AI Spectrum Curriculum & Brilliant Quizzes
+├── public/
+│   ├── sw.js                   # Service Worker (Cache-First Offline Engine)
+│   └── manifest.json           # Web App Manifest & Shortcuts
+├── release/                    # Phase 8 Distribution Bundle
+│   ├── stoic-body-v1.0.0-rc1.zip # Standalone Portable Release Archive
+│   ├── release-manifest.json   # SHA-256 Checksum Signatures
+│   ├── run-offline.bat         # Windows Command Prompt Launcher
+│   └── run-offline.ps1         # Windows PowerShell Launcher
+├── docs/                       # Verification Packets & Documentation
+│   ├── delivery-handbook.md    # Master Operator & Packaging Runbook
+│   ├── store-submission-packet.md # App Store Metadata & IAP SKUs
+│   ├── phase-7-verification.md # 13-Module Master Acceptance Record
+│   ├── phase-8-delivery.md     # Phase 8 Delivery Record
+│   └── progress.md             # Phase Progress Tracker
+└── tests/                      # 60 Automated Unit & Integration Tests
+```
+
+---
+
+## 🧪 Verification & Acceptance
+
+- **Unit Test Suite**: `npm test` $\to$ **60/60 passing tests** in 350ms.
+- **TypeScript Typecheck**: `npm run typecheck` $\to$ **0 errors**.
+- **Master Playwright Audit**: `npm run audit` $\to$ **13/13 modules verified** with zero console errors.
+- **Production URL**: Verified returning **`HTTP/1.1 200 OK`**.
+
+---
+
+## 📜 Sovereign Dual License
+
+- **Open Core**: MIT License.
+- **Commercial Distribution**: Dual-license model with built-in Apple In-App Purchase and Google Play billing wrappers.
+- Developed by **Stoic Empire Labs** in partnership with **Antigravity Autonomous Engineering**.

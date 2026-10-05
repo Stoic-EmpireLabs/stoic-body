@@ -21,3 +21,4 @@ data/*.sqlite-journal
 *.png
 test-results/
 verification-screenshots/
+*.tsbuildinfo
