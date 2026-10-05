@@ -18,4 +18,9 @@ The owner's new **Stoic Body Desktop** shortcut is distinct from the older web s
 
 The desktop service can be stopped and restarted; saved data remains local. Private HTTPS was verified with correct certificate validation and an explicit DNS mapping. Normal hostname resolution on the owner's PC currently fails, so physical second-device automatic sync is not accepted as verified. See the [desktop checkpoint](desktop-sync-checkpoint.md) for other open launch milestones and review rulings.
 
-GitHub release, Vercel URL and final installation receipts are appended after publication verification.
+## Verified publication and installation receipts
+
+- Public website: [stoic-body-desktop.vercel.app](https://stoic-body-desktop.vercel.app). Deployment `dpl_F3vXFbWuTcFBRXRuzEvNNG5zq4qk` uploaded exactly six allowlisted public files. Anonymous headless-browser checks passed on the production alias at 1440px and 390px, including all images and the seven-frame favicon.
+- [v0.4.1 Windows prerelease](https://github.com/Stoic-EmpireLabs/stoic-body/releases/tag/v0.4.1-local-pilot), built from `45f39cad68db18ce6fb6025c0dce7c67c3c876fc`. The 35,086,194-byte public ZIP was fetched successfully without credentials and matched SHA256 `cf537b28db986d9194c4533ad3c670c605017fa6e38612251059cc0878094411`.
+- The owner's installed app reports `Stoic Body / desktop-local / 0.4.1-local`. Its **Stoic Body Desktop** shortcut uses the installed custom ICO. Only the newly owned desktop service was stopped for this update; the older web shortcut and source pilot were preserved.
+- The Vercel page distributes the working Windows app and labels its current limits. It is not a replacement for the private local app or proof of remote sync acceptance. No new phase or Store publication was performed.
