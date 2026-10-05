@@ -30,3 +30,12 @@ Not delivered in this release:
 Photos are excluded from normal account backups and routine sync. Use their separate encrypted archive. Existing standard backups remain readable; older app versions reject new structured state instead of silently removing it. Local Windows files still require the user's normal device-account protections.
 
 Synthetic visual evidence: `docs/evidence/adaptive-setup/`. No client photos or owner account data are included in the release.
+
+## Release evidence
+
+- Full post-review suite: 171/171 tests passed; typecheck and lint passed.
+- Packaged Windows checks passed, including native image decoding and photo persistence after restart.
+- Source/build commit: `2a26f2a767a8f5d6ae397bf0985c49eaabeeb45d`.
+- [GitHub 0.5.0 release](https://github.com/Stoic-EmpireLabs/stoic-body/releases/tag/v0.5.0-local-pilot).
+- Archive: 43,803,716 bytes; SHA-256 `48b3d1d7b71a10718d05b467bda7fb733436196f1b983ddeb5fc17ca30f1e879`. Remote asset digest matches the locally verified archive.
+- [Vercel download page](https://stoic-body-desktop.vercel.app/) returned HTTP 200 with the 0.5.0 download link and explicit disabled-generation disclosure.

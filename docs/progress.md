@@ -69,3 +69,5 @@ The user approved the adaptive setup design and added an optional photo-based go
 - Not complete: real image generation (no model installation approval/backend output yet), cropping, generated-image provenance/export labeling and identity QA. The UI disables generation and explains why. No external AI photo transfer occurs.
 - Limits: meal recipes are examples, not a complete individualized OMAD prescription; deadline effort/capacity estimates remain to be implemented. This is the first-week planner, not completion of the entire original product specification.
 - Release/install/publication are pending final review in this checkpoint.
+
+Release checkpoint: 0.5.0 published on GitHub and Vercel after all nine review regressions were corrected. Final suite 171/171, typecheck/lint pass, packaged native decoder and photo restart tests pass. Release evidence and remaining scope are recorded in docs/verification/adaptive-setup-0.5.0.md. AI rendering remains unavailable; no downloaded model or generated client-physique output is claimed.
