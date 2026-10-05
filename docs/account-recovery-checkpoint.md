@@ -41,3 +41,10 @@ Final independent review and release evidence will be appended after verificatio
 Independent review of 338002d2..d0c7998 found four Important issues and no Critical or Minor findings. A single correction pass reproduced every failure before fixing it: coherent WAL snapshots across writers, cancelled-session/batch integrity, retries after retention prunes the source, and receipt reconciliation after a lost response or cookie. Five new regression tests now pass. Final suite: **132/132**, typecheck and lint pass. The reviewer independently reran six focused tests; broader browser and packaging evidence was executed by the implementer.
 
 Remaining review boundaries: required sync/offline clients are not implemented; direct OS access can read local SQLite; future course/routine changes need versioned migrations; benchmark and package claims rely on documented primary sources and executed checks. No minor findings are deferred.
+
+## Published Windows prerelease
+[Download v0.3.0](https://github.com/Stoic-EmpireLabs/stoic-body/releases/tag/v0.3.0-local-pilot). Published source: 75c5482e1cc179b93233dc3229f97febf7bad892. The corrected Windows package passed fresh concurrent-launch/signup/stop/restart smoke. All 17 allowlisted application/runtime files were verified against manifest hashes inside the ZIP (18 files including manifest).
+
+GitHub confirms uploaded assets, prerelease status and the source commit. Direct ZIP HEAD returned HTTP 200 and 34,796,626 bytes. GitHub's digest and the downloaded checksum file match the verified local ZIP: 2e82958f0add96e148c2605d4cbd61bd665b74fded221f8285ec9e46d58e451e.
+
+Source pilot was restarted and its identity endpoint confirms version 0.3.0-local. Real user data was not seeded or restored by tests. The development branch is pushed; main and the separate Vercel prototype were not changed.

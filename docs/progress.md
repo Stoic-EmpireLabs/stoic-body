@@ -45,3 +45,5 @@ Local accounts, first-use host, resumable questionnaire, guided tour and an inde
 
 ## Account recovery continuation — 2026-10-04
 Settings now includes encrypted account download, preview/confirmation restore and seven local recovery points. The implementation checkpoint passed 127/127 automated tests, typecheck/lint, 47 existing browser checks and Windows launcher/restart smoke. See account-recovery-checkpoint.md for scope and final review/publication evidence. User chose an intermittent desktop host; it need not stay on. Automatic sync and independent offline Apple clients remain unimplemented launch requirements. No network route or sleep setting was changed.
+
+Recovery publication complete: v0.3.0-local-pilot is available on GitHub with verified asset digest, HTTP 200 and source commit. Final corrected suite is 132/132; Windows package smoke and typecheck/lint pass. Local pilot now serves version 0.3.0-local. This is a recovery checkpoint, not full Phase 4/7/8 closure.
