@@ -6,11 +6,12 @@ export interface PhotoRecord {id:string;kind:'source'|'actual';createdAt:string;
 const MAX_BYTES=10*1024*1024, MAX_PIXELS=24_000_000;
 export class PhotoStore {
  private decoding=false;
- constructor(private db:DatabaseSync){db.exec(`CREATE TABLE IF NOT EXISTS app_photos(owner_id TEXT NOT NULL REFERENCES core_owners(id),id TEXT NOT NULL,kind TEXT NOT NULL,created_at TEXT NOT NULL,mime TEXT NOT NULL,original BLOB NOT NULL,preview BLOB NOT NULL,width INTEGER NOT NULL,height INTEGER NOT NULL,digest TEXT NOT NULL,PRIMARY KEY(owner_id,id));`);}
+ constructor(private db:DatabaseSync){db.exec(`CREATE TABLE IF NOT EXISTS app_photos(owner_id TEXT NOT NULL REFERENCES core_owners(id),id TEXT NOT NULL,kind TEXT NOT NULL,created_at TEXT NOT NULL,mime TEXT NOT NULL,original BLOB NOT NULL,preview BLOB NOT NULL,width INTEGER NOT NULL,height INTEGER NOT NULL,digest TEXT NOT NULL,PRIMARY KEY(owner_id,id));CREATE TABLE IF NOT EXISTS app_photo_deletions(owner_id TEXT NOT NULL REFERENCES core_owners(id),id TEXT NOT NULL,PRIMARY KEY(owner_id,id));`);}
  list(owner:string):PhotoRecord[]{return this.db.prepare('SELECT id,kind,created_at AS createdAt,mime,length(original) AS byteLength,width,height FROM app_photos WHERE owner_id=? ORDER BY created_at DESC').all(owner) as unknown as PhotoRecord[];}
  async add(owner:string,input:unknown):Promise<PhotoRecord>{
   const p=object(input);keys(p,['kind','image','consent','uploadId']);if(p.consent!==true)throw new Error('Confirm photo storage consent.');if(!['source','actual'].includes(String(p.kind)))throw new Error('Choose starting photo or actual progress.');
   const photoId=p.uploadId===undefined?randomUUID():id(p.uploadId);
+  const requireNotDeleted=()=>{if(this.db.prepare('SELECT 1 FROM app_photo_deletions WHERE owner_id=? AND id=?').get(owner,photoId))throw new Error('This photo was deleted. Choose the file again to start a new upload.');};requireNotDeleted();
   if(typeof p.image!=='string'||p.image.length>Math.ceil(MAX_BYTES/3)*4)throw new Error('Choose an image under 10 MiB.');
   const bytes=Buffer.from(p.image,'base64');if(!bytes.length||bytes.length>MAX_BYTES||bytes.toString('base64')!==p.image)throw new Error('Invalid photo encoding.');
   const digest=createHash('sha256').update(bytes).digest('hex'),prior=this.db.prepare('SELECT digest,kind FROM app_photos WHERE owner_id=? AND id=?').get(owner,photoId);
@@ -24,12 +25,12 @@ export class PhotoStore {
    // Decode, orient and strip EXIF/GPS metadata. The original remains private and unchanged.
    const preview=await decoder.rotate().resize({width:1600,height:1600,fit:'inside',withoutEnlargement:true}).png().toBuffer();
    const createdAt=new Date().toISOString(),mime=m.format==='jpeg'?'image/jpeg':`image/${m.format}`;
-   this.db.prepare('INSERT INTO app_photos VALUES(?,?,?,?,?,?,?,?,?,?)').run(owner,photoId,p.kind as string,createdAt,mime,bytes,preview,m.width,m.height,digest);
+   requireNotDeleted();this.db.prepare('INSERT INTO app_photos VALUES(?,?,?,?,?,?,?,?,?,?)').run(owner,photoId,p.kind as string,createdAt,mime,bytes,preview,m.width,m.height,digest);
    return {id:photoId,kind:p.kind as PhotoRecord['kind'],createdAt,mime,byteLength:bytes.length,width:m.width,height:m.height};
-  }catch(e){if(e instanceof Error&&/storage is full|Choose/.test(e.message))throw e;throw new Error('This image could not be decoded safely. Try another JPEG, PNG or WebP.');}finally{this.decoding=false;}
+  }catch(e){if(e instanceof Error&&/storage is full|Choose|deleted/.test(e.message))throw e;throw new Error('This image could not be decoded safely. Try another JPEG, PNG or WebP.');}finally{this.decoding=false;}
  }
  read(owner:string,photoId:string,original=false){const row=this.db.prepare('SELECT original,preview,mime FROM app_photos WHERE owner_id=? AND id=?').get(owner,id(photoId));if(!row)throw new Error('Photo not found.');return {bytes:Buffer.from((original?row.original:row.preview) as Uint8Array),mime:original?String(row.mime):'image/png'};}
- remove(owner:string,photoId:string){this.read(owner,photoId);this.db.prepare('DELETE FROM app_photos WHERE owner_id=? AND id=?').run(owner,photoId);}
+ remove(owner:string,photoId:string){this.read(owner,photoId);this.db.exec('BEGIN IMMEDIATE');try{this.db.prepare('INSERT OR IGNORE INTO app_photo_deletions VALUES(?,?)').run(owner,photoId);this.db.prepare('DELETE FROM app_photos WHERE owner_id=? AND id=?').run(owner,photoId);this.db.exec('COMMIT');}catch(e){this.db.exec('ROLLBACK');throw e;}}
  archive(owner:string){const records=this.list(owner);if(records.reduce((n,p)=>n+p.byteLength,0)>23*1024*1024)throw new Error('Photo archive exceeds 32 MiB encoded. Download individual originals instead.');return {version:1,photos:records.map(p=>({id:p.id,kind:p.kind,createdAt:p.createdAt,image:this.read(owner,p.id,true).bytes.toString('base64')}))};}
  async restore(owner:string,input:unknown,requireCurrent:()=>void=()=>{}){
   const archive=object(input);keys(archive,['version','photos']);if(archive.version!==1||!Array.isArray(archive.photos)||archive.photos.length>50)throw new Error('Invalid photo archive.');

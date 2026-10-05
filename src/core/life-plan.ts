@@ -3,13 +3,14 @@ import type { Snapshot } from './repository';
 import { selected, validateSetup, areaOptions, type SetupState } from './setup-schema';
 import { proposeSchedule, type Placement, type PlanningTask, type ScheduleInput } from './scheduler';
 import { resolveWallTime } from './time';
-import { canonical, zone } from './validation';
+import { canonical, zone, object, keys, id, text } from './validation';
 import { buildRoutine, type Routine } from './training';
 import { courses } from './learning-content';
 import { mealCatalog, previewMeal } from './meals';
 import type { ActionKind } from './xp';
 
 export interface LifeTask {id:string;goalId:string|null;title:string;kind:ActionKind;minutes:number;detail:string;reason:string;courseId?:string;url?:string;routine?:Routine;priority:number;day:number}
+export function validateTaskInstructions(value:unknown){const v=object(value);keys(v,['id','detail','reason','url']);const result:{id:string;detail:string;reason:string;url?:string}={id:id(v.id),detail:text(v.detail,20000),reason:text(v.reason,2000)};if(v.url!==undefined){const link=new URL(text(v.url,2000));if(!['https:','http:'].includes(link.protocol)||link.username||link.password)throw new Error('Invalid task resource link.');result.url=link.href;}return result;}
 export interface PlanBlock {id:string;title:string;startAt:string;endAt:string;kind:'sleep'|'fixed'|'family'|'meal'}
 export interface LifePlanDraft {fingerprint:string;startDate:string;timezone:string;pace:'normal'|'lighter';profileRevision:number;goals:{id:string;title:string;why:string}[];tasks:LifeTask[];blocks:PlanBlock[];placements:Placement[];unplaced:{taskId:string;reason:string}[];missing:{questionId:string;message:string}[];warnings:string[];milestones:string[];meals:ReturnType<typeof previewMeal>[];assumptions:string[]}
 const addDays=(d:string,n:number)=>new Date(Date.parse(d+'T12:00:00Z')+n*86400000).toISOString().slice(0,10);
@@ -37,7 +38,7 @@ export function buildLifePlan(input:{setup:SetupState;snapshot:Snapshot;startDat
   const d=addDays(date,n),weekday=new Date(d+'T12:00:00Z').getUTCDay()||7;
   if(sleep?.start&&sleep.end&&sleep.start!==sleep.end)block('Sleep',at(d,sleep.start),at(addDays(d,sleep.end<=sleep.start?1:0),sleep.end),'sleep');
   if(n>=0&&areas.includes('food')&&s.answers.mealTimes?.state==='answered')for(const t of Object.values(s.answers.mealTimes.values||{}).filter(Boolean)){const a=at(d,t);block('Meal time',a,new Date(Date.parse(a)+30*60000).toISOString(),'meal');}
-  for(const i of intervals.filter(i=>i.days.includes(weekday))){const a=at(d,i.start),b=at(addDays(d,i.end<=i.start?1:0),i.end);if(i.kind==='fixed')block(i.title||'Fixed commitment',a,b,'fixed');else if(n>=0)available.push({startAt:a,endAt:b});}
+  for(const i of intervals.filter(i=>i.days.includes(weekday))){const a=at(d,i.start),b=at(addDays(d,i.end<=i.start?1:0),i.end);if(b<=a){if(n>=0)missing('availability',`On ${d}, ${i.start}–${i.end} becomes empty or reversed after the daylight-saving change. Choose a different time window.`);continue;}if(i.kind==='fixed')block(i.title||'Fixed commitment',a,b,'fixed');else if(n>=0)available.push({startAt:a,endAt:b});}
   if(n>=0&&areas.includes('family')){
    if(selected(s,'family').includes('weekends')&&weekday>=6)block('Family time',at(d,'00:00'),at(addDays(d,1),'00:00'),'family');
    else if(selected(s,'family').includes('evenings'))block('Family time',at(d,'18:00'),at(addDays(d,1),'00:00'),'family');
@@ -59,11 +60,12 @@ export function buildLifePlan(input:{setup:SetupState;snapshot:Snapshot;startDat
    if(!selected(s,'trainingDays').length)missing('trainingDays','Choose which days you can exercise.');
    if(!selected(s,'equipment').length)missing('equipment','Confirm your equipment, including bodyweight only if appropriate.');
    const choices=selected(s,'fitnessGoals'),equipment=selected(s,'equipment').filter(v=>v!=='none');let lastStrength=-3;
+   const existingStrengthDays=snap.occurrences.filter(o=>{const t=snap.tasks.find(t=>t.id===o.taskId),routine=snap.health.find(r=>r.id===o.taskId&&r.kind==='routine');return t?.kind==='workout'&&!['walk','boxing','recovery'].includes(String(routine?.data.style));}).map(o=>{const d=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(o.startAt));return (Date.parse(d+'T12:00Z')-Date.parse(date+'T12:00Z'))/86400000;});
    for(const n of openDays){const weekday=new Date(addDays(date,n)+'T12:00:00Z').getUTCDay()||7;if(!selected(s,'trainingDays').includes(String(weekday)))continue;
-    const strength=n-lastStrength>=2;let style=strength?(choices.includes('calisthenics')?'calisthenics':'full-body'):choices.includes('boxing')?'boxing':equipment.includes('treadmill')?'walk':'recovery';
+    const strength=n-lastStrength>=2&&existingStrengthDays.every(day=>Math.abs(n-day)>=2);let style=strength?(choices.includes('calisthenics')?'calisthenics':'full-body'):choices.includes('boxing')?'boxing':equipment.includes('treadmill')?'walk':'recovery';
     if(!choices.some(v=>['strength','definition','calisthenics'].includes(v)))style=choices.includes('boxing')?'boxing':equipment.includes('treadmill')?'walk':'recovery';
     if(['full-body','calisthenics'].includes(style))lastStrength=n;
-    const minutes=light?30:Number(one('trainingTime','30')),routine=buildRoutine({adult:true,restrictions:'none',equipment,style,minutes,preference:one('reps','balanced')});
+    const minutes=Math.min(Number(one('trainingTime','30')),light?30:90),routine=buildRoutine({adult:true,restrictions:'none',equipment,style,minutes,preference:one('reps','balanced')});
     if(!routine.eligible){plan.warnings.push(...routine.reasons);continue;}
     task('fitness',routine.title,routine.minutes,n,[routine.warmup,...routine.exercises.map(e=>`${e.name}: ${e.prescription} ${e.cue}`),routine.cooldown,routine.intensity,routine.progression,routine.stop].join('\n'),{kind:routine.kind,routine,priority:9,reason:routine.rationale});
    }
@@ -91,7 +93,7 @@ export function buildLifePlan(input:{setup:SetupState;snapshot:Snapshot;startDat
   if(openDays.length)task('food','Plan groceries for the week',20,openDays[0],'Use your selected recipes to list ingredients and quantities. Check what you already have before shopping.',{kind:'task'});
  }
  if(areas.includes('routine'))for(const n of openDays)task('routine','Evening reflection',5,n,'What went well? What needs to change tomorrow? Choose one manageable next step.',{kind:'reflection',priority:1});
- if(one('deadlines')==='known'){const deadline=s.answers.deadlines?.values?.date;if(!deadline)missing('deadlines','Enter the deadline date you selected.');else plan.warnings.push(`Deadline ${deadline}${s.answers.deadlines?.custom?' — '+s.answers.deadlines.custom:''}: remaining work has not been estimated. This starter week does not guarantee completion by that date.`);}
+ if(areas.some(a=>['business','school','home'].includes(a))&&one('deadlines')==='known'){const deadline=s.answers.deadlines?.values?.date;if(!deadline)missing('deadlines','Enter the deadline date you selected.');else plan.warnings.push(`Deadline ${deadline}${s.answers.deadlines?.custom?' — '+s.answers.deadlines.custom:''}: remaining work has not been estimated. This starter week does not guarantee completion by that date.`);}
  if(s.answers.areas?.custom)plan.assumptions.push('Your goal notes: '+s.answers.areas.custom);
  if(plan.missing.length)return plan;
  // Existing accepted sessions and their preparation/buffers remain reserved.

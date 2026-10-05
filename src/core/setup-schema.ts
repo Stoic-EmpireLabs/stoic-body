@@ -71,8 +71,9 @@ export function legacyCandidates(answers:Record<string,Answer>){
  suggest('areas',areas,String(answers.goals?.value||''));
  for(const key of ['units'])if(answers[key]?.state==='answered')suggest(key,[String(answers[key].value)]);
  if(answers.age?.state==='answered'&&typeof answers.age.value==='number')suggestions.age={selections:[],state:'answered',values:{value:String(answers.age.value)}};
- const values:Record<string,string>={};for(const key of ['height','weight'])if(answers[key]?.state==='answered'&&typeof answers[key].value==='number')values[key]=String(answers[key].value);
- if(Object.keys(values).length){const unit=answers.weight?.unit||answers.height?.unit;suggestions.measurements={selections:[],state:'answered',values,units:unit==='kg'||unit==='cm'?'metric':'imperial'};}
+ const unit=answers.weight?.unit||answers.height?.unit,metric=unit==='kg'||unit==='cm';
+ const values:Record<string,string>={};for(const key of ['height','weight'])if(answers[key]?.state==='answered'&&typeof answers[key].value==='number'){const a=answers[key];let value=a.value as number;if(key==='height'&&a.unit===(metric?'in':'cm'))value*=metric?2.54:1/2.54;if(key==='weight'&&a.unit===(metric?'lb':'kg'))value*=metric?.45359237:1/.45359237;values[key]=String(Math.round(value*100)/100);}
+ if(Object.keys(values).length)suggestions.measurements={selections:[],state:'answered',values,units:metric?'metric':'imperial'};
  const match=(target:string,source:string,pairs:[string,RegExp][])=>{const raw=answers[source]?.state==='answered'?String(answers[source].value):'';suggest(target,pairs.filter(([,p])=>p.test(raw)).map(([v])=>v),raw);};
  match('equipment','equipment',[['cables',/cable/i],['bench',/bench/i],['barbell',/barbell|bench press/i],['pullup',/pull.?up/i],['treadmill',/treadmill/i],['bag',/punching bag|heavy bag/i]]);
  match('subjects','learning',[['ai',/\bai\b|artificial/i],['web',/web|design|frontend/i],['coding',/coding|software|program/i],['automation',/automat/i],['antigravity',/antigravity/i]]);

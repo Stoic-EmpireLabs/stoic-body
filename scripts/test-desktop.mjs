@@ -7,6 +7,7 @@ import { promisify } from 'node:util';
 import { createServer } from 'node:net';
 import { createHash } from 'node:crypto';
 import { chromium } from 'playwright';
+import sharp from 'sharp';
 import { buildDesktop } from './build-desktop.mjs';
 
 const run = promisify(execFile);
@@ -63,6 +64,14 @@ try {
   assert.equal(state.account.displayName, 'New client');
   assert.equal(state.snapshot.goals.length, 0);
   assert.equal(Object.keys(state.snapshot.answers).length, 0);
+  const image=await sharp({create:{width:8,height:8,channels:3,background:'#ccc'}}).png().toBuffer();
+  const photoHeaders={Origin:url,'Content-Type':'application/json',Cookie:login.headers.get('set-cookie').split(';')[0],'X-Stoic-Token':state.token};
+  const upload=await fetch(url+'/api/photos/add',{method:'POST',headers:photoHeaders,body:JSON.stringify({kind:'source',image:image.toString('base64'),consent:true,uploadId:'packaged-decoder-test'})});
+  assert.equal(upload.status,200,await upload.text());
+  await launch('-Stop');await launch('-NoBrowser');
+  const relogin=await fetch(url+'/api/auth/login',{method:'POST',headers:{Origin:url,'Content-Type':'application/json'},body:JSON.stringify({username:'new-client',password:'new client test passphrase'})}),reopened=await relogin.json();
+  const photos=await fetch(url+'/api/photos',{headers:{Cookie:relogin.headers.get('set-cookie').split(';')[0],'X-Stoic-Token':reopened.token}});assert.equal((await photos.json()).photos.length,1);
+  console.log('PASS: bundled native photo decoder executes and private photo survives restart.');
   console.log('PASS: allowlisted Windows bundle, real launcher, fresh account, isolated data, stop and restart.');
 } finally {
   await browser.close();

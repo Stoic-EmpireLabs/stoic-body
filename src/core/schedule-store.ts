@@ -35,7 +35,7 @@ export function createDayProposal(db: DatabaseSync, owner: string, s: Snapshot, 
   const end = resolveWallTime(`${p.date}T${p.endTime}`, timezone, { source: 'user' });
   const warnings = [start, end].filter(r => r.status !== 'exact').map(r => r.explanation);
   const completed = s.tasks.filter(t => s.occurrences.some(o => o.taskId === t.id && o.fraction === 1)).map(t => t.id);
-  const candidates = new Map(s.tasks.filter(t => !t.archived && !s.occurrences.some(o => o.taskId === t.id)).map(t => [t.id, t]));
+  const candidates = new Map(s.tasks.filter(t => !t.archived && t.kind!=='protected' && !s.occurrences.some(o => o.taskId === t.id)).map(t => [t.id, t]));
   const blocked = [];
   let changed = true;
   while (changed) {

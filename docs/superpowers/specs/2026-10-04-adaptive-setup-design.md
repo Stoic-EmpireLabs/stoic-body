@@ -1,6 +1,6 @@
 # Stoic Body: adaptive setup that produces a usable plan
 
-Status: core redesign approved by the user on 2026-10-04; optional goal visualization added by direct user request. Implementation plans pending review. Not implemented. Review date: 2026-10-04, America/Denver.
+Status: implementation approved by the user. The 0.5.0 preview implements adaptive first-week planning and private actual-photo storage. AI goal-image rendering remains blocked on local model installation and verification. See the [release coverage](../../verification/adaptive-setup-0.5.0.md) for implemented, verified and remaining scope. Updated 2026-10-05, America/Denver.
 
 ## What must change
 
@@ -10,7 +10,7 @@ Success means: select answers, receive relevant follow-ups, review a complete pr
 
 The user specifically requests multiple-choice questions with multiple selections, adaptive questions, a complete generated plan and schedule, and a friendly, enjoyable daily experience.
 
-## Observed implementation gaps
+## Gaps observed before this redesign
 
 - `apps/local-pilot/public/app.js` defines a fixed list of 20 questions. Most render as text areas.
 - `apps/local-pilot/public/host.js` advances by a fixed index and ends with a checklist pointing to manual forms.

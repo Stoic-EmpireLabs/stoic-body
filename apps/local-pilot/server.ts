@@ -83,7 +83,7 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
       if (request.headers.host !== new URL(requestOrigin).host || (request.headers.origin && request.headers.origin !== requestOrigin)
         || request.headers['sec-fetch-site'] === 'cross-site') throw new HttpError(403, 'Open this app directly on this computer.');
       const path = new URL(request.url ?? '/', origin).pathname;
-      if (path === '/api/identity' && request.method === 'GET') { json(response, 200, { product: 'Stoic Body', edition: 'desktop-local', version: '0.4.1-local' }); return; }
+      if (path === '/api/identity' && request.method === 'GET') { json(response, 200, { product: 'Stoic Body', edition: 'desktop-local', version: '0.5.0-local' }); return; }
       if(['/api/sync/claim','/api/sync/exchange'].includes(path)){
         if(request.method!=='POST')throw new HttpError(405,'Use a sync client.');const data=await body(request);
         if(path.endsWith('/claim')){json(response,200,hub.claim(data));return;}

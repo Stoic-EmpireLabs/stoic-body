@@ -7,7 +7,7 @@ import { earnedXp, type ActionKind } from './xp';
 import { migrateHealth, executeHealth, readHealth, type HealthRecord } from './health-store';
 import { buildRoutine } from './training';
 import { validateSetup, readSetup } from './setup-schema';
-import { buildLifePlan } from './life-plan';
+import { buildLifePlan, validateTaskInstructions } from './life-plan';
 import { migrateLearning, executeLearning, readLearning, type LearningEnrollment } from './learning-store';
 export interface Command {
     schemaVersion: 1;
@@ -43,6 +43,7 @@ export interface CoreTask {
     priority: number;
     dependencies: string[];
     archived: boolean;
+    instructions?:{detail:string;reason:string;url?:string};
 }
 export interface CoreOccurrence {
     id: string;
@@ -192,7 +193,7 @@ export class CoreRepository {
                 for(const o of snapshot.occurrences){const t=snapshot.tasks.find(t=>t.id===o.taskId)!;const a=Date.parse(o.startAt)-(t.prepMinutes+t.travelMinutes)*60000,b=Date.parse(o.endAt)+t.bufferMinutes*60000;segments=segments.flatMap(([x,y])=>b<=x||a>=y?[[x,y]]:[[x,Math.max(x,a)],[Math.min(y,b),y]].filter(([l,r])=>r>l));}
                 for(const [a,b]of segments)for(let from=a;from<b;from+=86400000){const to=Math.min(b,from+86400000),taskId=`${batchId}-p${pi++}`,startAt=new Date(from).toISOString(),endAt=new Date(to).toISOString();nested('task.create',taskId,{title:[...new Set(labels)].join(' / ').slice(0,160),kind:'protected',durationMinutes:(to-from)/60000});placements.push({taskId,startAt,endAt,occupiedStartAt:startAt,occupiedEndAt:endAt,reason:'Protected time from your setup.'});}
             }
-            const proposal={policyVersion:1,timezone:plan.timezone,horizonStart:placements.reduce((v,p)=>p.startAt<v?p.startAt:v,placements[0].startAt),horizonEnd:placements.reduce((v,p)=>p.endAt>v?p.endAt:v,placements[0].endAt),placements,unplaced:plan.unplaced,violations:[],baseRevisions:{tasks:{},reserved:{}}};
+            const proposal={policyVersion:1,timezone:plan.timezone,horizonStart:placements.reduce((v,p)=>p.startAt<v?p.startAt:v,placements[0].startAt),horizonEnd:placements.reduce((v,p)=>p.endAt>v?p.endAt:v,placements[0].endAt),placements,unplaced:plan.unplaced,violations:[],baseRevisions:{tasks:{},reserved:{}},taskInstructions:plan.tasks.map(t=>validateTaskInstructions({id:t.id,detail:t.detail,reason:t.reason,...(t.url?{url:t.url}:{})}))};
             db.prepare("INSERT INTO core_schedule_batches VALUES (?,?,?,?,'accepted',2,?)").run(ownerId,batchId,plan.fingerprint,JSON.stringify(proposal),created);
             for(const [i,p]of placements.entries()){const time=assertSlot(db,ownerId,p.taskId,p.startAt);db.prepare('INSERT INTO core_occurrences VALUES (?,?,?,?,?,?,0,0,1)').run(ownerId,`${batchId}-${i}`,p.taskId,time.startAt,time.endAt,plan.timezone);db.prepare('INSERT INTO core_batch_occurrences VALUES (?,?,?,1)').run(ownerId,batchId,`${batchId}-${i}`);}
             const answers=JSON.parse(owner.answers_json);answers.lifePlan={state:'answered',value:JSON.stringify({...plan,batchId})};
@@ -331,6 +332,8 @@ export class CoreRepository {
         const owner = this.owner(ownerId), db = this.database;
         const tasks = db.prepare('SELECT id,title,kind,duration_minutes AS durationMinutes,prep_minutes AS prepMinutes,travel_minutes AS travelMinutes,buffer_minutes AS bufferMinutes,budget,revision FROM core_tasks WHERE owner_id=? ORDER BY id').all(ownerId) as unknown as CoreTask[];
         for (const task of tasks) Object.assign(task, readTaskDetails(db, ownerId, task.id));
+        const taskMap=new Map(tasks.map(t=>[t.id,t]));
+        for(const row of db.prepare("SELECT proposal_json FROM core_schedule_batches WHERE owner_id=? AND status!='preview'").all(ownerId))for(const raw of JSON.parse(String(row.proposal_json)).taskInstructions||[]){const context=validateTaskInstructions(raw),task=taskMap.get(context.id);if(task)task.instructions={detail:context.detail,reason:context.reason,...(context.url?{url:context.url}:{})};}
         const occurrences = db.prepare('SELECT id,task_id AS taskId,start_at AS startAt,end_at AS endAt,timezone,locked,fraction,revision FROM core_occurrences o WHERE owner_id=? AND NOT EXISTS (SELECT 1 FROM core_cancelled_occurrences c WHERE c.owner_id=o.owner_id AND c.occurrence_id=o.id) ORDER BY start_at,id').all(ownerId) as unknown as CoreOccurrence[];
         const xpEvents = db.prepare('SELECT operation_id AS operationId,occurrence_id AS occurrenceId,delta,revision FROM core_xp_events WHERE owner_id=? ORDER BY sequence').all(ownerId) as unknown as XpEvent[];
         const pending = db.prepare('SELECT command_json FROM core_outbox WHERE owner_id=? ORDER BY sequence').all(ownerId).map(row => JSON.parse(String(row.command_json)) as Command);

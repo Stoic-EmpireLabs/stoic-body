@@ -13,6 +13,9 @@ test('private source photo validates consent, bytes and owner; preserves origina
  assert.equal((await sharp(s.read('a',p.id).bytes).metadata()).exif,undefined);
  assert.throws(()=>s.remove('b',p.id),/not found/i);s.remove('a',p.id);assert.equal(s.list('a').length,0);r.close();
 });
+test('a delayed upload retry cannot recreate a deleted photo',async()=>{
+ const r=new CoreRepository(':memory:');r.createOwner('a');const s=new PhotoStore(r.database),p={uploadId:'retry-source',kind:'source',image:(await pixel()).toString('base64'),consent:true};await s.add('a',p);s.remove('a',p.uploadId);await assert.rejects(s.add('a',p),/deleted/i);assert.equal(s.list('a').length,0);r.close();
+});
 test('photo intake rejects disguised, oversized and excessive-pixel images',async()=>{
  const r=new CoreRepository(':memory:');r.createOwner('a');const s=new PhotoStore(r.database);
  for(const image of [Buffer.from('<svg/>').toString('base64'),Buffer.alloc(10*1024*1024+1).toString('base64')])await assert.rejects(s.add('a',{kind:'source',image,consent:true}));

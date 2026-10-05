@@ -98,3 +98,25 @@ conflict. Disconnecting keeps local records and retained proposals.
 
 Runtime: Node.js v24.19.0, license and notices in runtime/LICENSE.txt.
 manifest.json records source commit and SHA-256 hashes for the packaged files.
+
+ADAPTIVE SETUP AND PHOTOS (0.5.0)
+Setup uses choices and only asks follow-ups for selected goals. Existing written
+answers remain saved; suggested mappings need your review. Confirm available
+hours and sleep, then review a whole first week before accepting it. Start a
+session from Today to read its instructions. Plan shows your accepted week.
+
+Health > Photos & goal stores starting and actual-progress photos on this device.
+Display copies strip location metadata. Originals remain unchanged and may retain
+camera metadata. Standard account backups and device sync EXCLUDE photos. Use the
+separate encrypted photo archive there, or download originals. Archive restore adds
+photos without replacing existing images. Photo archives are limited to 32 MiB.
+
+AI GOAL-IMAGE GENERATION IS NOT ENABLED IN THIS RELEASE. It needs an installed,
+verified local image editor and tested client-likeness preservation. No client
+photo is sent to an external AI service. A future goal illustration is aspirational,
+not a predicted body-fat measurement or guaranteed outcome. Male/Female visual
+preferences are optional and do not alter physiological calculations.
+
+Meal bowls provide measured example portions, not a complete OMAD day. Confirm
+nutritional adequacy before using restrictive eating. Deadline effort estimates,
+advanced forecast calculations, native alarms and Store distribution remain open.
