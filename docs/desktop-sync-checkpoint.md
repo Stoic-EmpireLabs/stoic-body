@@ -54,3 +54,9 @@ Final full suite: **146/146**, typecheck and lint pass. The reviewer independent
 Deferred minor: README says shortcut Properties > Open File Location finds the app folder, but the shortcut target is PowerShell. Use its **Start in** folder, or run Stop Stoic Body.cmd from the extracted download. The owner handoff includes a direct Stop launcher link.
 
 Review boundaries remain explicit: Apple/native alarms/Stores are later milestones (cost: full launch is incomplete); same-PC tests are not physical second-device acceptance (cost: device-specific defects may remain); owner installation and private route are separate delivery checks (cost: code review alone is not deployment proof); unsigned file hashes are integrity checks, not signed publisher authentication (cost: no signing or Store trust yet).
+
+## Executed desktop delivery
+
+The v0.4.0-local-pilot Windows prerelease was published to GitHub from b31c4f06e2fc23695027d5474dd68bd4d06c0403. The owner's separate desktop installation starts on local port 4331, preserves the earlier pilot on 4330, and opens an actual Edge app window. Its dedicated data directory was populated using a consistent SQLite backup; the source had zero accounts, goals and tasks at that check. No personal account was created by verification.
+
+The existing private network listener was preserved and an additional private HTTPS listener configured. HTTPS identity and certificate validation passed using an explicit DNS mapping; ordinary hostname lookup failed. Physical second-device sync is therefore still unverified. No public Funnel, firewall, sleep or global DNS setting was changed. The requested icon and Vercel distribution follow in [branding delivery](branding-delivery.md).

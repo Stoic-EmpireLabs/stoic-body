@@ -22,6 +22,8 @@ export interface PilotServer { url: string; close: () => Promise<void> }
 class HttpError extends Error { constructor(readonly status: number, message: string) { super(message); } }
 const assets: Record<string, [string, string]> = {
   '/': ['apps/local-pilot/public/index.html', 'text/html'],
+  '/favicon.ico': ['assets/brand/stoic-body.ico','image/x-icon'],
+  '/icon.png': ['assets/brand/stoic-body-512.png','image/png'],
   '/app.js': ['apps/local-pilot/public/app.js', 'text/javascript'],
   '/health.js': ['apps/local-pilot/public/health.js', 'text/javascript'],
   '/learn.js': ['apps/local-pilot/public/learn.js', 'text/javascript'],
@@ -73,7 +75,7 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
       if (request.headers.host !== new URL(requestOrigin).host || (request.headers.origin && request.headers.origin !== requestOrigin)
         || request.headers['sec-fetch-site'] === 'cross-site') throw new HttpError(403, 'Open this app directly on this computer.');
       const path = new URL(request.url ?? '/', origin).pathname;
-      if (path === '/api/identity' && request.method === 'GET') { json(response, 200, { product: 'Stoic Body', edition: 'desktop-local', version: '0.4.0-local' }); return; }
+      if (path === '/api/identity' && request.method === 'GET') { json(response, 200, { product: 'Stoic Body', edition: 'desktop-local', version: '0.4.1-local' }); return; }
       if(['/api/sync/claim','/api/sync/exchange'].includes(path)){
         if(request.method!=='POST')throw new HttpError(405,'Use a sync client.');const data=await body(request);
         if(path.endsWith('/claim')){json(response,200,hub.claim(data));return;}
@@ -152,7 +154,7 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
       if (request.method !== 'GET' || !Object.hasOwn(assets, path)) throw new HttpError(404, 'Page not found.');
       const [file, type] = assets[path];
       const bytes = await readFile(resolve(file));
-      response.writeHead(200, { 'Content-Type': `${type}; charset=utf-8` }); response.end(bytes);
+      response.writeHead(200, { 'Content-Type': type.startsWith('text/')?`${type}; charset=utf-8`:type }); response.end(bytes);
     })().catch(error => {
       if (response.writableEnded || response.destroyed) return;
       if (error instanceof HttpError || error instanceof AccountError) { json(response, error.status, { error: error.message }); return; }

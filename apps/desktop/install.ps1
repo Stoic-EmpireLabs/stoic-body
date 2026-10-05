@@ -38,6 +38,7 @@ try {
     $shortcut.Arguments = '-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + (Join-Path $destination 'launch.ps1') + '"'
     $shortcut.WorkingDirectory = $destination
     $shortcut.WindowStyle = 7
+    $shortcut.IconLocation = (Join-Path $destination 'assets\brand\stoic-body.ico') + ',0'
     $shortcut.Description = 'Stoic Body - your daily practice, saved on this computer'
     $shortcut.Save()
     Write-Host "Installed and verified: $destination"

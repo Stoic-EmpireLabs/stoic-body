@@ -1,5 +1,7 @@
 # Progress tracker
 
+Latest delivery: the Windows desktop/intermittent-sync checkpoint passed 146 automated tests and 47 browser journey checks. Recovery, encrypted exports and Windows replica sync are implemented. The owner's side-by-side desktop installation was verified; physical second-device sync remains unverified because ordinary private-host DNS lookup fails on the owner's PC. See [current desktop checkpoint](desktop-sync-checkpoint.md) and [branding delivery](branding-delivery.md). Earlier entries below are historical; Apple offline apps, native alarms and Store releases remain open.
+
 Updated: 2026-10-04
 
 Current state: Phase 0 and expanded Phase 1 approved. Phase 2 provisionally approved by “for now yes.” Phase 3 design and theme/color Settings accepted by “Great.Next phase.” Phase 4 now has a [working local browser pilot](phase-4-local-pilot.md) on branch codex/stoic-body-core: saved profiles, goal/task edits, reviewed scheduling, protected sessions, completion and XP. Full Phase 4 remains open. Required automatic sync, native clients/alarms and backup/restore are not implemented. Hosting and final client choices remain unresolved; no paid infrastructure or external database account is assumed.
