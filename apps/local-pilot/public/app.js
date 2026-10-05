@@ -264,14 +264,16 @@ async function boot() {
     if (!result.authenticated) { snapshot = null; pendingRequest = null; Access.show(); return; }
     $('#access').hidden = true; document.querySelector('.pilot-shell').hidden = false; resetIdle();
     if (['welcome','questions'].includes(guide.state.stage)) { currentView = 'setup'; Host.resetPanel(); }
+    if(Recovery.hasPending(account.id))currentView='settings';
     errorMessage(pendingRequest ? 'Reconnected. Your earlier save still needs a retry.' : ''); render();
+    if(Recovery.takeConfirmed(account.id))message('Your previous restore completed successfully.');
   } catch (error) { if (!snapshot) Access.show(error.message); else errorMessage(error.message); }
   finally { setBusy(false); }
 }
 Health.init({ element, action, card, intro, snapshot: () => snapshot, date: () => selectedDate, setDate: d => { selectedDate = d; }, api, command, send, render });
 Learn.init({ element, action, card, intro, snapshot: () => snapshot, api, command, render, navigate });
 Access.init({element,card,api,announceAccountChange});
-Recovery.init({element,card,api,announceAccountChange});
+Recovery.init({element,card,api,announceAccountChange,account:()=>account,refreshSession:async()=>{const fresh=await api('bootstrap');token=fresh.token;}});
 Host.init({element,action,card,intro,questions,snapshot:()=>snapshot,account:()=>account,guide:()=>guide,api,render,navigate,setBusy});
 let idleTimer;
 function resetIdle() { clearTimeout(idleTimer); if (account) idleTimer = setTimeout(() => { void Access.signOut(); }, 30 * 60 * 1000); }

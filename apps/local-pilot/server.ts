@@ -94,6 +94,7 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
         if (request.method !== 'POST' || request.headers.origin !== origin) throw new HttpError(403, 'Save requests must come from this app.');
         const data = await body(request, ['/api/recovery/preview','/api/recovery/restore'].includes(path) ? 24*1024*1024 : 1_048_576);
         requireCurrent();
+        if (path === '/api/recovery/status') { json(response,200,recovery.status(owner,data));return; }
         if (path === '/api/recovery/export') { const p=object(data);keys(p,['passphrase']);const file=await recovery.export(owner,p.passphrase);requireCurrent();json(response,200,{file});return; }
         if (path === '/api/recovery/preview') { const p=object(data);keys(p,['source','passphrase']);const preview=await recovery.preview(owner,p.source,p.passphrase);requireCurrent();json(response,200,preview);return; }
         if (path === '/api/recovery/restore') {

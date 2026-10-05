@@ -31,10 +31,15 @@ const tables = Object.keys(columns) as Table[];
 const hash = (value: unknown) => createHash('sha256').update(canonical(value)).digest('hex');
 export function bundleDigest(bundle: AccountBundle) { return hash({profile:bundle.profile,guide:bundle.guide,tables:bundle.tables}); }
 export function captureBundle(repo: CoreRepository, accounts: AccountStore, owner: string): AccountBundle {
-  const db=repo.database, row=db.prepare('SELECT profile_revision,answers_json FROM core_owners WHERE id=?').get(owner);
-  if(!row) throw new Error('Account not found.');
-  return {format:'stoic-body-account',version:1,createdAt:new Date().toISOString(),profile:[Number(row.profile_revision),String(row.answers_json)],guide:accounts.readGuide(owner).state,
-    tables:Object.fromEntries(tables.map(table=>[table,db.prepare(`SELECT ${columns[table].join(',')} FROM ${table} WHERE owner_id=? ORDER BY rowid`).all(owner).map(r=>columns[table].map(c=>r[c] as Cell))])) as AccountBundle['tables']};
+  const db=repo.database, ownTransaction=!db.isTransaction;
+  if(ownTransaction)db.exec('BEGIN');
+  try {
+    const row=db.prepare('SELECT profile_revision,answers_json FROM core_owners WHERE id=?').get(owner);
+    if(!row) throw new Error('Account not found.');
+    const bundle:AccountBundle={format:'stoic-body-account',version:1,createdAt:new Date().toISOString(),profile:[Number(row.profile_revision),String(row.answers_json)],guide:accounts.readGuide(owner).state,
+      tables:Object.fromEntries(tables.map(table=>[table,db.prepare(`SELECT ${columns[table].join(',')} FROM ${table} WHERE owner_id=? ORDER BY rowid`).all(owner).map(r=>columns[table].map(c=>r[c] as Cell))])) as AccountBundle['tables']};
+    if(ownTransaction)db.exec('COMMIT');return bundle;
+  }catch(error){if(ownTransaction&&db.isTransaction)db.exec('ROLLBACK');throw error;}
 }
 /** Caller owns the transaction. Credentials and other accounts are never replaced. */
 export function installBundle(repo: CoreRepository, owner: string, bundle: AccountBundle) {
@@ -96,6 +101,23 @@ export function validateBundle(input: unknown): AccountBundle {
       const [oid,tid,start,end,tz,,fraction]=row,task=taskMap.get(String(tid))!;instant(start);instant(end);zone(tz);
       if(Date.parse(String(end))-Date.parse(String(start))!==task.durationMinutes*60000||(earned.get(String(oid))??0)!==earnedXp(task.budget,Number(fraction)))throw new Error('Invalid schedule or XP ledger.');
     }
+    const cancelled=new Set(bundle.tables.core_cancelled_occurrences.map(r=>String(r[0]))), legitimateCancelled=new Set<string>();
+    const allOccurrences=new Map(bundle.tables.core_occurrences.map(r=>[String(r[0]),r]));
+    for(const batch of bundle.tables.core_schedule_batches){
+      const batchId=String(batch[0]),proposal=jsonObject(batch[2]),members=bundle.tables.core_batch_occurrences.filter(r=>r[0]===batchId);
+      if(!Array.isArray(proposal.placements))throw new Error('Invalid batch placements.');
+      if(batch[3]==='preview'){if(members.length)throw new Error('Preview batch has accepted members.');continue;}
+      if(members.length!==proposal.placements.length)throw new Error('Incomplete batch membership.');
+      for(const [index,raw] of proposal.placements.entries()){
+        const placement=object(raw),member=members.find(r=>r[1]===`${batchId}-${index}`),occurrence=member&&allOccurrences.get(String(member[1]));
+        if(!member||member[2]!==1||!occurrence||occurrence[1]!==placement.taskId)throw new Error('Invalid batch member.');
+        if(batch[3]==='undone'){
+          if(!cancelled.has(String(occurrence[0]))||occurrence[5]!==0||occurrence[6]!==0||occurrence[7]!==2||s.xpEvents.some(e=>e.occurrenceId===occurrence[0]))throw new Error('Invalid cancelled batch session.');
+          legitimateCancelled.add(String(occurrence[0]));
+        }else if(cancelled.has(String(occurrence[0])))throw new Error('Accepted batch session cannot be cancelled.');
+      }
+    }
+    if(cancelled.size!==legitimateCancelled.size)throw new Error('Cancelled session lacks an undone batch.');
     const slots=s.occurrences.map(o=>{const t=taskMap.get(o.taskId)!;return {start:Date.parse(o.startAt)-(t.prepMinutes+t.travelMinutes)*60000,end:Date.parse(o.endAt)+t.bufferMinutes*60000};}).sort((a,b)=>a.start-b.start);
     for(let i=1;i<slots.length;i++)if(slots[i].start<slots[i-1].end)throw new Error('Overlapping schedule.');
     for(const r of s.health){object(r.data);if(r.kind==='routine'){

@@ -3,6 +3,10 @@
 window.Recovery=(()=>{
  let ctx;
  function init(value){ctx=value;}
+ const attemptKey='stoic-restore-attempt',confirmedKey='stoic-restore-confirmed';
+ function attempt(owner){try{const value=JSON.parse(sessionStorage.getItem(attemptKey)||'null');if(value?.owner===owner)return value.request;if(value)sessionStorage.removeItem(attemptKey);}catch{sessionStorage.removeItem(attemptKey);}return null;}
+ function hasPending(owner){return Boolean(attempt(owner));}
+ function takeConfirmed(owner){const value=sessionStorage.getItem(confirmedKey);sessionStorage.removeItem(confirmedKey);return value===owner;}
  function render(root){
   const {element:el,card,api}=ctx,section=card('Data & recovery');section.id='recovery';root.append(section);
   section.append(el('p','Keep a portable, encrypted copy of your goals, schedule, XP, health logs, course progress and setup answers. Your password, recovery key, other accounts and browser theme are excluded.','muted'));
@@ -11,6 +15,13 @@ window.Recovery=(()=>{
   let working=false,pending=null;
   const run=async(fn)=>{if(working)return;working=true;status.textContent='Working…';section.setAttribute('aria-busy','true');section.querySelectorAll('button,input').forEach(x=>x.disabled=true);try{await fn();}catch(e){status.textContent=e.message;if(e.responseStatus===409){pending=null;review.replaceChildren();}}finally{working=false;section.removeAttribute('aria-busy');section.querySelectorAll('button,input').forEach(x=>x.disabled=false);}};
   const button=(title,fn)=>{const b=el('button',title,'button ghost');b.type='button';b.addEventListener('click',()=>void run(fn));return b;};
+  const checkResult=button('Check last restore result',async()=>{
+    const request=attempt(ctx.account().id);if(!request){status.textContent='No unresolved restore was recorded in this tab.';return;}
+    await ctx.refreshSession();const result=await api('recovery/status',request);
+    if(result.completed){sessionStorage.removeItem(attemptKey);sessionStorage.setItem(confirmedKey,ctx.account().id);ctx.announceAccountChange();location.replace('/?view=settings');}
+    else status.textContent='No completed restore was found yet. Check again before starting another restore.';
+  });checkResult.hidden=!hasPending(ctx.account().id);section.append(checkResult);
+  if(!checkResult.hidden)status.textContent='A restore result needs checking. No backup passphrase or file was saved in this tab.';
   const field=(title,type)=>{const label=el('label',title,'recovery-label'),input=el('input');input.type=type;label.append(input);section.append(label);return input;};
   section.append(el('h3','Download a backup'));
   const phrase=field('Backup passphrase','password');phrase.minLength=15;phrase.maxLength=128;phrase.autocomplete='new-password';
@@ -30,7 +41,14 @@ window.Recovery=(()=>{
     const label=el('label','Replace my current app data with this backup','recovery-confirm'),check=el('input');check.type='checkbox';label.prepend(check);review.append(label);
     review.append(button('Confirm restore',async()=>{
       if(!check.checked){status.textContent='Read the preview and check the replacement confirmation first.';return;}
-      await api('recovery/restore',pending);pending=null;pass.value='';file.value='';ctx.announceAccountChange();location.replace('/?view=settings');
+      const request={operationId:pending.operationId,expectedFingerprint:pending.expectedFingerprint,digest:pending.digest};
+      // Retain only opaque receipt identifiers across sign-in; never the file or passphrase.
+      sessionStorage.setItem(attemptKey,JSON.stringify({owner:ctx.account().id,request}));checkResult.hidden=false;
+      try{await api('recovery/restore',pending);}catch(error){
+        if([400,409,413].includes(error.responseStatus)){sessionStorage.removeItem(attemptKey);checkResult.hidden=true;throw error;}
+        pending=null;pass.value='';file.value='';review.replaceChildren();throw new Error('The restore result is uncertain. Choose Check last restore result; sign in again if needed.');
+      }
+      sessionStorage.removeItem(attemptKey);pending=null;pass.value='';file.value='';ctx.announceAccountChange();location.replace('/?view=settings');
     }),button('Cancel restore',async()=>{pending=null;pass.value='';file.value='';review.replaceChildren();status.textContent='Restore cancelled. Your data has not changed.';}));
     status.textContent='Preview ready. Nothing has been replaced.';
   }
@@ -40,5 +58,5 @@ window.Recovery=(()=>{
   const points=el('div');section.append(points,review);
   void api('recovery/points').then(data=>{if(!section.isConnected)return;if(!data.points.length)points.append(el('p','A recovery point will appear before your next saved edit.','muted'));for(const point of data.points)points.append(button(`Preview ${point.reason.toLowerCase()} · ${new Date(point.createdAt).toLocaleString()}`,async()=>{pending=null;review.replaceChildren();const source={pointId:point.id},p=await api('recovery/preview',{source});if(section.isConnected)show(p,source);}));}).catch(e=>{if(section.isConnected)status.textContent=e.message;});
  }
- return {init,render};
+ return {init,render,hasPending,takeConfirmed};
 })();

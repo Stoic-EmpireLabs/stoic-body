@@ -35,9 +35,17 @@ export class RecoveryStore {
   const b=await this.read(owner,source,passphrase);
   return {createdAt:b.createdAt,incoming:counts(b),current:counts(this.current(owner)),fingerprint:this.fingerprint(owner),digest:bundleDigest(b)};
  }
+ status(owner:string,input:unknown) {
+  const p=object(input);keys(p,['operationId','expectedFingerprint','digest']);id(p.operationId);text(p.expectedFingerprint,64);text(p.digest,64);
+  const requestHash=createHash('sha256').update(canonical({fingerprint:p.expectedFingerprint,digest:p.digest})).digest('hex');
+  const previous=this.repo.database.prepare('SELECT request_hash FROM app_restore_receipts WHERE owner_id=? AND operation_id=?').get(owner,String(p.operationId));
+  if(previous&&previous.request_hash!==requestHash)throw new AccountError(409,'Restore identifier was already used.');
+  return {completed:Boolean(previous)};
+ }
  async restore(owner:string,input:unknown,guard=()=>{}) {
   const p=object(input);keys(p,['source','passphrase','expectedFingerprint','digest','operationId']);id(p.operationId);text(p.expectedFingerprint,64);text(p.digest,64);
   const requestHash=createHash('sha256').update(canonical({fingerprint:p.expectedFingerprint,digest:p.digest})).digest('hex');
+  guard();if(this.status(owner,{operationId:p.operationId,expectedFingerprint:p.expectedFingerprint,digest:p.digest}).completed)return {duplicate:true};
   const b=await this.read(owner,p.source,p.passphrase);guard();
   if(bundleDigest(b)!==p.digest)throw new AccountError(409,'Selected backup changed. Preview it again.');
   const db=this.repo.database;db.exec('BEGIN IMMEDIATE');
