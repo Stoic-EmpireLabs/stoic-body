@@ -140,7 +140,8 @@ export class CoreRepository {
         const serialized = canonical(c);
         if (Buffer.byteLength(serialized, 'utf8') > 1_048_576) throw new Error('Command size exceeds 1 MiB.');
         const hash = createHash('sha256').update(serialized).digest('hex'), db = this.database;
-        db.exec('BEGIN IMMEDIATE');
+        const ownTransaction = !db.isTransaction;
+        if (ownTransaction) db.exec('BEGIN IMMEDIATE');
         try {
             this.owner(ownerId);
             const previous = db.prepare('SELECT request_hash,receipt_json FROM core_operations WHERE owner_id=? AND operation_id=?').get(ownerId, command.operationId) as {
@@ -151,18 +152,18 @@ export class CoreRepository {
                 if (previous.request_hash !== hash)
                     throw new Error('Operation identifier was already used for another command.');
                 const r = JSON.parse(previous.receipt_json) as Receipt;
-                db.exec('COMMIT');
+                if (ownTransaction) db.exec('COMMIT');
                 return { ...r, status: r.status === 'conflict' ? 'conflict' : 'duplicate' };
             }
             const receipt = this.execute(ownerId, command);
             db.prepare('INSERT INTO core_operations VALUES (?,?,?,?)').run(ownerId, command.operationId, hash, JSON.stringify(receipt));
             if (enqueue && receipt.status !== 'conflict')
                 db.prepare('INSERT INTO core_outbox(owner_id,operation_id,command_json) VALUES (?,?,?)').run(ownerId, command.operationId, JSON.stringify(command));
-            db.exec('COMMIT');
+            if (ownTransaction) db.exec('COMMIT');
             return receipt;
         }
         catch (error) {
-            if (db.isTransaction) db.exec('ROLLBACK');
+            if (ownTransaction && db.isTransaction) db.exec('ROLLBACK');
             throw error;
         }
     }
@@ -277,13 +278,14 @@ export class CoreRepository {
         catch (error) { if (db.isTransaction) db.exec('ROLLBACK'); throw error; }
     }
     snapshot(ownerId: string): Snapshot {
-        this.database.exec('BEGIN');
+        const ownTransaction = !this.database.isTransaction;
+        if (ownTransaction) this.database.exec('BEGIN');
         try {
             const result = this.readSnapshot(ownerId);
-            this.database.exec('COMMIT');
+            if (ownTransaction) this.database.exec('COMMIT');
             return result;
         } catch (error) {
-            if (this.database.isTransaction) this.database.exec('ROLLBACK');
+            if (ownTransaction && this.database.isTransaction) this.database.exec('ROLLBACK');
             throw error;
         }
     }
