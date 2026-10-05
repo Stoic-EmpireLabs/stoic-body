@@ -1,0 +1,10 @@
+# Desktop sync benchmarks — 2026-10-04
+
+| Primary source | Observed pattern / limitation | Stoic Body adoption and test |
+|---|---|---|
+| [Todoist offline guide](https://www.todoist.com/help/todoist/features/use-todoist-while-offline-4rbaZw), updated September 4, 2026 | Describes offline task editing and automatic reconnection, with an offline indicator; includes cautions about unsynced data on closing/signing out | Show pending/offline status. Persist accepted changes in SQLite before reporting saved and test restart with the host off; do not depend on a live browser memory queue |
+| [Todoist sync troubleshooting](https://www.todoist.com/help/todoist/troubleshooting/troubleshoot-syncing-issues-in-todoist-d6dDzzpF), updated September 18, 2026 | Visible account identity, last-sync/manual sync, actionable warnings; warns against clearing unsynced local state | Named linked device, last success, Sync now, retained conflicts and no 'clear data' troubleshooting. Browser and two-client tests |
+| [TickTick FAQ](https://help.ticktick.com/articles/7055792921664028672) and [backup/import](https://help.ticktick.com/articles/7055781405648748544) | Account/settings-centered integration and recovery flows; vendor guidance does not prove conflict correctness or delivery timing | Keep pairing, disconnection and encrypted backup together in Settings; explicit replacement preview |
+| [Tailscale Serve](https://tailscale.com/docs/reference/tailscale-cli/serve) | Private tailnet HTTP proxy over configurable HTTPS listener; requires reachable host and client network access | Private HTTPS transport only; do not equate a private endpoint with offline client support, and preserve the existing service |
+
+No proprietary engagement, sales rankings or measured sync latency is claimed. These are established product patterns from vendor documentation, not independent performance benchmarks. SQLite transaction evidence comes from executable multi-connection and restart tests. Full canonical snapshots are a deliberately bounded first protocol; compact deltas and independent Apple clients remain later work.
