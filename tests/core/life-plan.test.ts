@@ -27,3 +27,9 @@ test('plan acceptance persists one week exactly once and rejects stale proposals
  const total=r.snapshot('a').occurrences.length;assert.ok(total>=5);assert.equal(r.apply('a',c).status,'duplicate');assert.equal(r.snapshot('a').occurrences.length,total);
  assert.equal(r.apply('a',command('plan.accept',{...input,fingerprint:plan.fingerprint},1)).status,'conflict');r.close();
 });
+test('elapsed training windows do not replace the next available strength workout with recovery',()=>{
+ const r=new CoreRepository(':memory:');r.createOwner('a');
+ const setup=validateSetup({version:2,cursor:null,answers:{areas:{selections:['fitness']},availability:{intervals:[{days:[1,2],start:'08:00',end:'09:00',kind:'free'}]},sleep:{values:{start:'23:00',end:'07:00'}},age:{values:{value:'33'}},health:{selections:['none']},fitnessGoals:{selections:['strength']},equipment:{selections:['cables']},trainingDays:{selections:['1','2']},trainingTime:{selections:['30']}}});
+ const input={setup,snapshot:r.snapshot('a'),startDate:'2026-10-05',timezone:'America/Denver',pace:'normal' as const,notBefore:'2026-10-06T02:00:00.000Z'},plan=buildLifePlan(input);
+ assert.equal(plan.missing.length,0);assert.ok(plan.placements.some(p=>plan.tasks.find(t=>t.id===p.taskId)?.routine?.style==='full-body'));assert.ok(plan.placements.every(p=>p.startAt>=input.notBefore));r.close();
+});

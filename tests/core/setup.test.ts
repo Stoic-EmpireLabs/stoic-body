@@ -6,7 +6,7 @@ import { CoreRepository } from '../../src/core/repository';
 test('selected areas determine follow-ups and multiple choices survive',()=>{
  const s=validateSetup({version:2,cursor:'areas',answers:{areas:{selections:['learning','business']}}});
  const ids=activeQuestions(s).map(q=>q.id);
- assert.ok(ids.includes('subjects')&&ids.includes('business'));assert.ok(!ids.includes('equipment'));
+ assert.ok(!ids.includes('subjects')&&ids.includes('business'));assert.ok(!ids.includes('equipment'));
  assert.deepEqual(s.answers.areas.selections,['learning','business']);
  assert.throws(()=>validateSetup({...s,answers:{...s.answers,priority:{selections:['fitness','learning']}}}));
  assert.throws(()=>validateSetup({...s,answers:{...s.answers,equipment:{selections:['none','barbell']}}}));

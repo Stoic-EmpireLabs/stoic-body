@@ -121,20 +121,23 @@ function render() {
   setBusy(busy);
 }
 function renderToday() {
-  const heading = intro('Your day, your direction.', 'A little structure. A clear next action. Room for real life.');
+  const heading = intro('Let’s get started.', 'Your workouts, meals and daily practice.');
   Host.dashboard($('#main'));
   const date = element('label', 'Selected date', 'date-field'); const input = element('input'); input.type = 'date'; input.value = selectedDate; input.addEventListener('change', () => { selectedDate = input.value; render(); }); date.append(input); heading.append(date);
   const sessions = snapshot.occurrences.filter(o => dayOf(o.startAt) === selectedDate && snapshot.tasks.find(t=>t.id===o.taskId)?.kind !== 'protected').sort((a,b)=>a.startAt.localeCompare(b.startAt));
   const next = sessions.find(o => o.fraction < 1);
+  const upcoming=!next?snapshot.occurrences.filter(o=>o.fraction<1&&dayOf(o.startAt)>selectedDate&&snapshot.tasks.find(t=>t.id===o.taskId)?.kind!=='protected').sort((a,b)=>a.startAt.localeCompare(b.startAt))[0]:null;
   const hero = element('section', undefined, 'pilot-hero'); hero.append(element('span', 'ONE INTENTIONAL STEP', 'eyebrow'));
-  hero.append(element('h2', next ? snapshot.tasks.find(t => t.id === next.taskId).title : sessions.length ? 'Leave room to recover.' : 'Build a day worth finishing.'));
-  hero.append(element('p', next ? `${time(next.startAt)}–${time(next.endAt)} · ${timezone}. Your accepted plan stays in your hands.` : 'Choose meaningful work, protect your time, and let consistency add up.'));
-  hero.append(action(next ? 'Start this session' : 'See your week', () => {if(next){const detail=document.querySelector(`[data-session="${next.id}"]`);if(detail){detail.open=true;detail.scrollIntoView({behavior:'auto',block:'center'});detail.querySelector('summary').focus();}}else navigate('plan');}, true)); $('#main').append(hero);
+  hero.append(element('h2', next ? snapshot.tasks.find(t => t.id === next.taskId).title : upcoming ? 'Your next session is ready.' : sessions.length ? 'Leave room to recover.' : 'Make room for your next step.'));
+  hero.append(element('p', next ? `${time(next.startAt)}–${time(next.endAt)} · ${timezone}. Your accepted plan stays in your hands.` : upcoming ? `${dayOf(upcoming.startAt)} · ${time(upcoming.startAt)} · ${snapshot.tasks.find(t=>t.id===upcoming.taskId).title}` : 'Open your setup to build or adjust your week.'));
+  hero.append(action(next ? 'Start this session' : upcoming ? 'Open next session' : 'See your week', () => {if(next){const detail=document.querySelector(`[data-session="${next.id}"]`);if(detail){detail.open=true;detail.scrollIntoView({behavior:'auto',block:'center'});detail.querySelector('summary').focus();}}else if(upcoming){selectedDate=dayOf(upcoming.startAt);render();}else navigate('plan');}, true)); $('#main').append(hero);
   const metrics = element('div', undefined, 'pilot-metrics');
   for (const [count, label] of [[sessions.filter(o => o.fraction === 1).length, 'sessions completed'], [sessions.reduce((sum, o) => sum + Math.floor(snapshot.tasks.find(t => t.id === o.taskId).budget * o.fraction), 0), 'XP this day'], [snapshot.goals.filter(g => !g.archived).length, 'active goals']]) {
     const m = element('div', undefined, 'metric'); m.append(element('strong', String(count)), element('span', label)); metrics.append(m);
   } $('#main').append(metrics);
-  const columns = element('div', undefined, 'pilot-columns'), list = card('Your accepted schedule'), right = card('Consistency becomes progress');
+  const columns = element('div', undefined, 'pilot-columns'), list = card('Your schedule'), right = card('Today’s Stoic practice');
+  const reflections=['Put your effort into the next action you can control. Let the results take time.','A difficult day can still hold one useful choice. Make that choice small enough to begin.','Keep your promises realistic. A steady practice grows through repetition, not punishment.','Rest deliberately. Protect the energy you need for tomorrow’s work.','Notice what interrupted you without judging yourself. Adjust the plan and return to it.','Practice patience with progress. Record what happened, learn from it, and continue.','Make room for the people who matter. Discipline should support the life you want to live.'];
+  right.append(element('p',reflections[new Date(selectedDate+'T12:00Z').getUTCDay()]),element('small','Original Stoic-inspired reflection · Stoic Body','muted'));
   if (!sessions.length) empty(list, 'Nothing scheduled yet.', 'Add a goal and a task, then review a proposed day.');
   for (const occurrence of sessions) {
     const t = snapshot.tasks.find(t => t.id === occurrence.taskId), row = element('article', undefined, 'pilot-row'), head = element('div', undefined, 'row-head');

@@ -8,20 +8,24 @@ import { buildRoutine, type Routine } from './training';
 import { courses } from './learning-content';
 import { mealCatalog, previewMeal } from './meals';
 import type { ActionKind } from './xp';
+import { nutritionPlan } from './nutrition-plan';
 
 export interface LifeTask {id:string;goalId:string|null;title:string;kind:ActionKind;minutes:number;detail:string;reason:string;courseId?:string;url?:string;routine?:Routine;priority:number;day:number}
 export function validateTaskInstructions(value:unknown){const v=object(value);keys(v,['id','detail','reason','url']);const result:{id:string;detail:string;reason:string;url?:string}={id:id(v.id),detail:text(v.detail,20000),reason:text(v.reason,2000)};if(v.url!==undefined){const link=new URL(text(v.url,2000));if(!['https:','http:'].includes(link.protocol)||link.username||link.password)throw new Error('Invalid task resource link.');result.url=link.href;}return result;}
 export interface PlanBlock {id:string;title:string;startAt:string;endAt:string;kind:'sleep'|'fixed'|'family'|'meal'}
-export interface LifePlanDraft {fingerprint:string;startDate:string;timezone:string;pace:'normal'|'lighter';profileRevision:number;goals:{id:string;title:string;why:string}[];tasks:LifeTask[];blocks:PlanBlock[];placements:Placement[];unplaced:{taskId:string;reason:string}[];missing:{questionId:string;message:string}[];warnings:string[];milestones:string[];meals:ReturnType<typeof previewMeal>[];assumptions:string[]}
+export interface LifePlanDraft {fingerprint:string;startDate:string;timezone:string;notBefore?:string;nutrition?:ReturnType<typeof nutritionPlan>;pace:'normal'|'lighter';profileRevision:number;goals:{id:string;title:string;why:string}[];tasks:LifeTask[];blocks:PlanBlock[];placements:Placement[];unplaced:{taskId:string;reason:string}[];missing:{questionId:string;message:string}[];warnings:string[];milestones:string[];meals:ReturnType<typeof previewMeal>[];assumptions:string[]}
 const addDays=(d:string,n:number)=>new Date(Date.parse(d+'T12:00:00Z')+n*86400000).toISOString().slice(0,10);
 const hash=(v:unknown)=>createHash('sha256').update(canonical(v)).digest('hex');
-export function buildLifePlan(input:{setup:SetupState;snapshot:Snapshot;startDate:string;timezone:string;pace:'normal'|'lighter'}):LifePlanDraft{
+export function buildLifePlan(input:{setup:SetupState;snapshot:Snapshot;startDate:string;timezone:string;pace:'normal'|'lighter';notBefore?:string}):LifePlanDraft{
  const s=validateSetup(input.setup),snap=input.snapshot,date=input.startDate,tz=zone(input.timezone);
  if(!/^\d{4}-\d\d-\d\d$/.test(date)||!Number.isFinite(Date.parse(date))||addDays(date,0)!==date)throw new Error('Choose a valid start date.');
  if(!['normal','lighter'].includes(input.pace))throw new Error('Choose a valid pace.');
- const fingerprint=hash({s,date,tz,pace:input.pace,revision:snap.profileRevision,tasks:snap.tasks,occurrences:snap.occurrences,goals:snap.goals});
+ if(input.notBefore!==undefined&&(!/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(input.notBefore)||!Number.isFinite(Date.parse(input.notBefore))))throw new Error('Choose a valid plan start time.');
+ const fingerprint=hash({s,date,tz,...(input.notBefore?{notBefore:input.notBefore}:{}),pace:input.pace,revision:snap.profileRevision,tasks:snap.tasks,occurrences:snap.occurrences,goals:snap.goals});
  const prefix='w'+fingerprint.slice(0,15),areas=selected(s,'areas'),one=(key:string,fallback='')=>selected(s,key)[0]||fallback;
  const plan:LifePlanDraft={fingerprint,startDate:date,timezone:tz,pace:input.pace,profileRevision:snap.profileRevision,goals:[],tasks:[],blocks:[],placements:[],unplaced:[],missing:[],warnings:[],milestones:[],meals:[],assumptions:['This is a first-week starting plan. Review the timing, meal portions and exercise suitability before accepting.','Long-term milestones are checkpoints, not guaranteed results or completion dates.']};
+ if(input.notBefore)plan.notBefore=input.notBefore;
+ if(areas.includes('food'))plan.nutrition=nutritionPlan(s);
  const missing=(questionId:string,message:string)=>plan.missing.push({questionId,message});
  if(!areas.length)missing('areas','Choose at least one area you want help with.');
  const intervals=s.answers.availability?.state==='answered'?s.answers.availability.intervals||[]:[];
@@ -52,27 +56,27 @@ export function buildLifePlan(input:{setup:SetupState;snapshot:Snapshot;startDat
  const light=input.pace==='lighter'||one('pace')==='light'||selected(s,'habits').includes('overload');
  const focus=Math.min(Number(one('sessionLength','30')),light?20:60),priority=one('priority',areas[0]);
  function task(area:string,title:string,minutes:number,day:number,detail:string,extra:Partial<LifeTask>={}){const t:LifeTask={id:`${prefix}-t${plan.tasks.length}`,goalId:plan.goals.find(g=>g.id.endsWith('-'+area))?.id||null,title:title.slice(0,160),kind:'focus',minutes,day,detail,reason:`Fits your ${area} goal and selected availability.`,priority:area===priority?8:4,...extra};plan.tasks.push(t);}
- const openDays=Array.from({length:7},(_,n)=>n).filter(n=>{const day=new Date(addDays(date,n)+'T12:00:00Z').getUTCDay()||7;return intervals.some(i=>i.kind==='free'&&i.days.includes(day))&&!(areas.includes('family')&&selected(s,'family').includes('weekends')&&day>=6);});
+ const openDays=Array.from({length:7},(_,n)=>n).filter(n=>{const day=new Date(addDays(date,n)+'T12:00:00Z').getUTCDay()||7,from=at(addDays(date,n),'00:00'),until=at(addDays(date,n+1),'00:00'),earliest=input.notBefore&&input.notBefore>from?input.notBefore:from;return available.some(w=>w.startAt<until&&w.endAt>earliest)&&!(areas.includes('family')&&selected(s,'family').includes('weekends')&&day>=6);});
  if(areas.includes('fitness')){
-  const adult=s.answers.age?.state==='answered'&&Number(s.answers.age?.values?.value)>=18,clear=selected(s,'health').length===1&&one('health')==='none';
+  const adult=s.answers.age?.state==='answered'&&Number(s.answers.age?.values?.value)>=18,clear=selected(s,'health').length>0&&selected(s,'health').every(v=>['none','food-tracking'].includes(v))&&!s.answers.health?.custom?.trim();
   if(!adult||!clear){plan.warnings.push('Exercise sessions need confirmed adult age and no relevant restrictions, or a professionally supplied plan.');task('fitness','Review a suitable exercise plan',15,openDays[0]??0,'Confirm age and restrictions in setup, or discuss a suitable plan with a qualified professional.');}
   else{
    if(!selected(s,'trainingDays').length)missing('trainingDays','Choose which days you can exercise.');
    if(!selected(s,'equipment').length)missing('equipment','Confirm your equipment, including bodyweight only if appropriate.');
-   const choices=selected(s,'fitnessGoals'),equipment=selected(s,'equipment').filter(v=>v!=='none');let lastStrength=-3;
+   const choices=selected(s,'fitnessGoals').length?selected(s,'fitnessGoals'):['strength'],equipment=selected(s,'equipment').filter(v=>v!=='none');let lastStrength=-3;
    const existingStrengthDays=snap.occurrences.filter(o=>{const t=snap.tasks.find(t=>t.id===o.taskId),routine=snap.health.find(r=>r.id===o.taskId&&r.kind==='routine');return t?.kind==='workout'&&!['walk','boxing','recovery'].includes(String(routine?.data.style));}).map(o=>{const d=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(o.startAt));return (Date.parse(d+'T12:00Z')-Date.parse(date+'T12:00Z'))/86400000;});
    for(const n of openDays){const weekday=new Date(addDays(date,n)+'T12:00:00Z').getUTCDay()||7;if(!selected(s,'trainingDays').includes(String(weekday)))continue;
     const strength=n-lastStrength>=2&&existingStrengthDays.every(day=>Math.abs(n-day)>=2);let style=strength?(choices.includes('calisthenics')?'calisthenics':'full-body'):choices.includes('boxing')?'boxing':equipment.includes('treadmill')?'walk':'recovery';
     if(!choices.some(v=>['strength','definition','calisthenics'].includes(v)))style=choices.includes('boxing')?'boxing':equipment.includes('treadmill')?'walk':'recovery';
     if(['full-body','calisthenics'].includes(style))lastStrength=n;
-    const minutes=Math.min(Number(one('trainingTime','30')),light?30:90),routine=buildRoutine({adult:true,restrictions:'none',equipment,style,minutes,preference:one('reps','balanced')});
+    const minutes=Math.min(Number(one('trainingTime','30')),light?30:90),routine=buildRoutine({adult:true,restrictions:'none',equipment,style,minutes,preference:one('reps','balanced'),experience:one('experience','new')});
     if(!routine.eligible){plan.warnings.push(...routine.reasons);continue;}
     task('fitness',routine.title,routine.minutes,n,[routine.warmup,...routine.exercises.map(e=>`${e.name}: ${e.prescription} ${e.cue}`),routine.cooldown,routine.intensity,routine.progression,routine.stop].join('\n'),{kind:routine.kind,routine,priority:9,reason:routine.rationale});
    }
   }
   plan.milestones.push('Fitness: complete a manageable week; review effort and recovery after three comparable sessions before changing difficulty.');
  }
- if(areas.includes('learning')){
+ if(areas.includes('learning')&&selected(s,'subjects').length){
   const map:Record<string,string>={ai:'ai-roadmap',web:'design',coding:'software',automation:'automation',antigravity:'antigravity'},subjects=selected(s,'subjects');
   if(!subjects.length)missing('subjects','Choose a subject so we can select your first lessons.');
   for(const [i,n] of openDays.slice(0,light?3:5).entries()){const course=courses.find(c=>c.id===map[subjects[i%subjects.length]]);if(!course)continue;const step=course.checkpoints[Math.floor(i/subjects.length)%course.checkpoints.length];task('learning',step.title,focus,n,`${one('learningLevel')==='experienced'?'Apply this to a small project and test the result.':one('learningLevel')==='some'?'Review what you know, then complete the practical checkpoint.':'Start with the introduction and work through the checkpoint at your own pace.'}\n${step.deliverable}\nPrerequisites: ${course.prerequisite}\n${course.cost}`,{courseId:course.id,url:step.url,reason:`You chose ${course.title}. Estimated resource time: ${step.minutes} minutes; continue in another session if needed.`});}
@@ -85,19 +89,24 @@ export function buildLifePlan(input:{setup:SetupState;snapshot:Snapshot;startDat
   const foods=selected(s,'foods'),unsafe=one('health')!=='none'||selected(s,'health').length!==1||Boolean(s.answers.foods?.custom);
   if(!foods.length)missing('foods','Choose your preferred foods.');
   if(unsafe)plan.warnings.push('Review food restrictions and allergy notes before using recipes. Meal quantities are not personalized while restrictions are unresolved.');
-  else for(const food of foods.filter(f=>f!=='plant'))plan.meals.push(previewMeal({id:food+'-bowl'}));
+  else if(!['carnivore','keto','vegan','vegetarian','liquid'].includes(one('diet')))for(const food of foods.filter(f=>f!=='plant')){
+   const calories=plan.nutrition?.targets?.calories,mealCount=['omad'].includes(one('eating'))?1:['two','window'].includes(one('eating'))?2:3;
+   const base=previewMeal({id:food+'-bowl'}),scale=calories?Math.min(1.5,Math.max(.8,calories/mealCount/base.nutrients.calories)):1;
+   plan.meals.push(previewMeal({id:food+'-bowl',amounts:Object.fromEntries(base.ingredients.map(i=>[i.id,Math.round(Math.min(i.max,Math.max(i.min,i.grams*scale)))]))}));
+  }
   if(foods.includes('plant'))plan.warnings.push('A nutritionally reviewed plant-based recipe is still needed; no meat recipe has been substituted.');
   if(['omad','window'].includes(one('eating')))plan.warnings.push('Your eating-window preference is saved. Recipe portions are examples for one meal, not a complete OMAD day; daily nutritional adequacy needs review before treating them as your full intake.');
   plan.assumptions.push(...mealCatalog.guidance.slice(0,2));
-  for(const n of openDays)task('food','Prepare and plan your meals',one('cooking')==='15'?15:30,n,'Choose from the recipe details in this plan. Review total daily intake and allergies. Plain water or unsweetened tea are simple drink options. Use Health to log what you actually eat.',{kind:'task'});
+  for(const n of openDays){const meal=plan.meals[n%Math.max(1,plan.meals.length)];task('food',meal?'Prepare '+meal.title:'Plan today’s meals',one('cooking')==='15'?15:30,n,[plan.nutrition?.targets?`Daily starting target: about ${plan.nutrition.targets.calories} kcal and ${plan.nutrition.targets.protein} g protein.`:'Use the foods and portions that fit your existing needs.',meal?`${meal.ingredients.map(i=>`${i.grams} g ${i.name}`).join('; ')}. About ${meal.nutrients.calories} kcal, ${meal.nutrients.protein} g protein for this serving. This is one meal, not your entire daily food intake.`:'Use a menu that matches your selected eating style; this version has no matching complete menu to substitute automatically.','Plain water or unsweetened tea with your meal. Log what you actually eat in Health.'].join('\n'),{kind:'task'});}
   if(openDays.length)task('food','Plan groceries for the week',20,openDays[0],'Use your selected recipes to list ingredients and quantities. Check what you already have before shopping.',{kind:'task'});
  }
- if(areas.includes('routine'))for(const n of openDays)task('routine','Evening reflection',5,n,'What went well? What needs to change tomorrow? Choose one manageable next step.',{kind:'reflection',priority:1});
+ if(areas.includes('routine'))for(const n of openDays){const habits=selected(s,'dailyHabits').length?selected(s,'dailyHabits'):['reflection'];const choices:Record<string,[string,string,number]>={planning:['Plan my day','Look at today’s schedule. Choose what matters most and adjust any time that no longer fits.',3],reflection:['Evening reflection','What was within your control today? What did you practice well? Choose one thing to do differently tomorrow.',5],journal:['Write a short journal entry','Write a few lines about your choices, what you learned, and what you can influence today.',5],tidy:['Five-minute tidy-up','Put away a small set of items. Stop when the five minutes are done.',5],pause:['Take a screen-free break','Set your device aside. Notice your surroundings and let your breathing stay comfortable.',5]};for(const h of habits){const [title,detail,minutes]=choices[h];task('routine',title,minutes,n,detail,{kind:h==='reflection'?'reflection':'task',priority:1});}}
  if(areas.some(a=>['business','school','home'].includes(a))&&one('deadlines')==='known'){const deadline=s.answers.deadlines?.values?.date;if(!deadline)missing('deadlines','Enter the deadline date you selected.');else plan.warnings.push(`Deadline ${deadline}${s.answers.deadlines?.custom?' — '+s.answers.deadlines.custom:''}: remaining work has not been estimated. This starter week does not guarantee completion by that date.`);}
  if(s.answers.areas?.custom)plan.assumptions.push('Your goal notes: '+s.answers.areas.custom);
  if(plan.missing.length)return plan;
  // Existing accepted sessions and their preparation/buffers remain reserved.
  const reserved:ScheduleInput['reserved']=snap.occurrences.map(o=>{const t=snap.tasks.find(t=>t.id===o.taskId)!;return {id:o.id,startAt:new Date(Date.parse(o.startAt)-(t.prepMinutes+t.travelMinutes)*60000).toISOString(),endAt:new Date(Date.parse(o.endAt)+t.bufferMinutes*60000).toISOString(),revision:o.revision,kind:'accepted'};});
+ if(input.notBefore&&input.notBefore>start)reserved.push({id:prefix+'-elapsed',startAt:start,endAt:input.notBefore<end?input.notBefore:end,revision:1,kind:'fixed'});
  // Overlapping protected time is unioned for the scheduling engine, while labels remain visible.
  const raw=plan.blocks.map(b=>({start:Date.parse(b.startAt),end:Date.parse(b.endAt)})).sort((a,b)=>a.start-b.start),merged:{start:number;end:number}[]=[];
  for(const slot of raw){const prev=merged[merged.length-1];if(prev&&slot.start<=prev.end)prev.end=Math.max(prev.end,slot.end);else merged.push({...slot});}
@@ -105,5 +114,6 @@ export function buildLifePlan(input:{setup:SetupState;snapshot:Snapshot;startDat
  const tasks:PlanningTask[]=plan.tasks.map(t=>({id:t.id,revision:1,priority:t.priority,durationMinutes:t.minutes,prepMinutes:0,travelMinutes:0,bufferMinutes:5,dependencies:[],earliestAt:at(addDays(date,t.day),t.kind==='reflection'?'18:00':'00:00'),deadlineAt:at(addDays(date,t.day+1),'00:00')}));
  const proposal=proposeSchedule({horizonStart:start,horizonEnd:end,timezone:tz,policyVersion:1,availability:available,reserved,tasks,completedDependencyIds:[]});
  plan.placements=proposal.placements;plan.unplaced=proposal.unplaced;plan.warnings.push(...proposal.violations.map(v=>v.message));
+ if(plan.tasks.length&&!plan.placements.length)missing('availability','No actions fit the remaining free time. Add a longer window or choose different days to start your plan.');
  return plan;
 }

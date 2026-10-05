@@ -5,7 +5,8 @@ export const trainingStyles = { 'full-body': 'Full-body basics', upper: 'Upper-b
 export interface Exercise { name: string; prescription: string; cue: string; alternative: string; minutes: number }
 export interface Routine { eligible: boolean; reasons: string[]; title: string; style: string; minutes: number; kind: 'workout' | 'recovery'; exercises: Exercise[]; warmup: string; cooldown: string; intensity: string; progression: string; recovery: string; stop: string; rationale: string; sources: typeof healthSources.resistance[]; goalId: string | null; input: Record<string, unknown> }
 export function buildRoutine(input: unknown): Routine {
-  const p = object(input); keys(p, ['adult', 'restrictions', 'equipment', 'style', 'minutes', 'preference', 'goalId']);
+  const p = object(input); keys(p, ['adult', 'restrictions', 'equipment', 'style', 'minutes', 'preference', 'goalId', 'experience']);
+  if(p.experience!==undefined&&!['new','some','regular'].includes(String(p.experience)))throw new Error('Choose your exercise experience.');
   if (typeof p.adult !== 'boolean' || !['none', 'yes', 'unknown'].includes(String(p.restrictions))) throw new Error('Complete the adult and restriction questions.');
   const style = text(p.style, 30); if (!Object.hasOwn(trainingStyles, style)) throw new Error('Choose a listed session style.');
   const minutes = integer(p.minutes, 20, 90), preference = text(p.preference, 30);
@@ -15,9 +16,10 @@ export function buildRoutine(input: unknown): Routine {
   if (!p.adult || p.restrictions !== 'none') reasons.push('Starter generation is for adults reporting no relevant restrictions. Keep logging and review exercise suitability with a qualified professional.');
   if (['heavy', 'hiit', 'hit', 'sprints'].includes(style)) reasons.push('This method needs a fuller ability and safety assessment. Choose a moderate starter session or record a professionally supplied plan as a task. HIIT means intervals; HIT resistance is a different method.');
   if (style === 'walk' && !equipment.includes('treadmill')) reasons.push('A treadmill is required for this selection. An outdoor walk can be entered as an ordinary task.');
-  const reps = preference === 'higher-reps' ? '2 sets of 12–20 controlled repetitions' : '2 sets of 8–12 controlled repetitions';
-  const block = preference === 'higher-reps' ? 6 : 5;
-  if (style === 'full-body' && minutes < 8 + 3 * block) reasons.push(`This full-body starter needs at least ${8 + 3 * block} minutes to include pushing, pulling and legs plus warm-up/cooldown. Choose a longer window or a focused shorter session.`);
+  const sets=p.experience==='regular'?3:2;
+  const reps = preference === 'higher-reps' ? `${sets} sets of 12–20 controlled repetitions` : `${sets} sets of 8–12 controlled repetitions`;
+  const block = (preference === 'higher-reps' ? 6 : 5)+(sets===3?2:0);
+  // Short sessions use one controlled set per movement rather than omitting a whole movement pattern.
   const strength = (name: string, cue: string, alternative: string): Exercise => ({ name, cue, alternative, minutes: block, prescription: `${reps}; rest 60–90 seconds between sets. Start with an easy load; stop before technique changes.` });
   const push = strength('Incline push-up', 'Use a stable fixed surface. Keep your body aligned and lower only through a comfortable range.', 'Use a higher stable surface or a wall.');
   const pull = equipment.includes('cables') ? strength('Cable row', 'Set a light load. Keep your torso quiet and draw your elbows back without shrugging or jerking.', 'Prone W raise for light control work; it is not an equivalent loaded pull.') : strength('Prone W raise', 'Lie face down with elbows bent into a W. Lift the hands slightly without forcing your back or neck.', 'A light cable row when equipment and technique are available.');
@@ -27,6 +29,7 @@ export function buildRoutine(input: unknown): Routine {
   const calf = strength('Supported calf raise', 'Use fixed support for balance and lift heels slowly without bouncing.', 'Seated calf raise.');
   const candidates = style === 'upper' ? [push, pull, core] : style === 'push' ? [push, core] : style === 'pull' ? [pull, core] : ['lower', 'legs'].includes(style) ? [squat, bridge, calf] : style === 'calisthenics' ? [push, squat, core, bridge] : [push, pull, squat, bridge, core];
   let exercises = candidates.slice(0, Math.floor((minutes - 8) / block));
+  if(style==='full-body'&&exercises.length<3)exercises=candidates.slice(0,3).map(e=>({...e,minutes:(minutes-8)/3,prescription:`1 set of ${preference==='higher-reps'?'12–15':'8–12'} controlled repetitions; rest as needed. Use an easy load.`}));
   if (style === 'boxing') exercises = [{ name: 'Shadowboxing and footwork', minutes: minutes - 8, prescription: `Easy 1-minute practice rounds with 1-minute relaxed recovery, for up to ${minutes - 8} minutes including rests. No sparring or contact.`, cue: 'Start balanced. Practice small steps and relaxed straight punches; do not lock elbows or punch with hand weights.', alternative: 'Footwork only, or an easy walk. Bag work needs separate equipment and technique instruction.' }];
   if (style === 'walk') exercises = [{ name: 'Treadmill walk', minutes: minutes - 8, prescription: `${minutes - 8} minutes at a comfortable conversational pace; speed and incline are your choice, not a target.`, cue: 'Learn the stop control and safety clip before starting. Begin slowly and use the machine as directed.', alternative: 'Shorten the walk or choose recovery if fatigued.' }];
   if (style === 'recovery') exercises = [{ name: 'Gentle mobility', minutes: minutes - 8, prescription: `Up to ${minutes - 8} minutes of comfortable shoulder, ankle and hip movement with frequent pauses.`, cue: 'Use slow pain-free ranges. Avoid forcing stretches or holding your breath.', alternative: 'Quiet rest is a valid recovery choice.' }];

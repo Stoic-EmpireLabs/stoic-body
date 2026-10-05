@@ -120,3 +120,12 @@ preferences are optional and do not alter physiological calculations.
 Meal bowls provide measured example portions, not a complete OMAD day. Confirm
 nutritional adequacy before using restrictive eating. Deadline effort estimates,
 advanced forecast calculations, native alarms and Store distribution remain open.
+
+SELF-SERVICE FITNESS SETUP (0.6.0)
+Choose bulk, cut, lean out or maintain. Pick your equipment, available days,
+foods, meal timing and habits. The last setup button saves your first week and
+opens Today. Existing answers remain saved; Profile lets you change them.
+Calorie estimates use confirmed measurements and the equation you choose.
+Body reference pictures describe preferences; they do not measure body fat.
+Learning courses are optional tools, not part of setup. Add learning time
+manually to your calendar when you want it.

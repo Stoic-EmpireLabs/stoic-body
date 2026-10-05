@@ -71,3 +71,6 @@ The user approved the adaptive setup design and added an optional photo-based go
 - Release/install/publication are pending final review in this checkpoint.
 
 Release checkpoint: 0.5.0 published on GitHub and Vercel after all nine review regressions were corrected. Final suite 171/171, typecheck/lint pass, packaged native decoder and photo restart tests pass. Release evidence and remaining scope are recorded in docs/verification/adaptive-setup-0.5.0.md. AI rendering remains unavailable; no downloaded model or generated client-physique output is claimed.
+
+## 2026-10-05 — Self-service fitness correction (0.6.0)
+The user clarified the primary product: workouts, dieting, daily habits and Stoic motivation. Implemented cut/bulk/lean-out/maintain choices, body-reference artwork, named diets and timing, transparent calculated starting targets, scheduling presets, selectable habits, and automatic first-week acceptance on setup completion. Removed learning/course questions while preserving existing records. Clinical exclusions do not block unrelated scheduling. See docs/verification/self-service-0.6.0.md for evidence and honest limits; no generative AI runtime or complete menu for every restrictive diet is claimed.

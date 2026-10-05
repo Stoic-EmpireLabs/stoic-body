@@ -73,32 +73,31 @@ test('reconnect discards an uncertain save when the current account has changed'
 }));
 
 test('conflicting questionnaire answers retain a draft and explicitly review before retrying',async()=>fixture(async page=>{
-  await signup(page); await page.getByRole('button',{name:'Let’s set you up',exact:true}).click();
+  await signup(page); await page.getByRole('button',{name:'Build my fitness plan',exact:true}).click();
   const other=await page.context().newPage(); other.setDefaultTimeout(5000); await other.goto(page.url());
-  await other.getByRole('checkbox',{name:'Grow my business',exact:true}).check();
-  await other.getByLabel('Anything else? (optional)',{exact:true}).fill('Second tab draft');
-  await page.getByRole('checkbox',{name:'Learn new skills',exact:true}).check();
+  await other.getByRole('checkbox',{name:'Make time for family',exact:true}).check();
+  await other.getByText('Add a note (optional)',{exact:true}).click();await other.getByLabel('Your note',{exact:true}).fill('Second tab draft');
+  await page.getByRole('checkbox',{name:'Build a daily routine',exact:true}).check();
   await page.getByRole('button',{name:'Save and continue',exact:true}).click();
-  await page.getByRole('heading',{name:'Which comes first when time is tight?',exact:true}).waitFor();
+  await page.getByRole('heading',{name:'When do you have time for your goals?',exact:true}).waitFor();
   await other.getByRole('button',{name:'Save and continue',exact:true}).click();
-  await other.getByText('What would you like help with? Saved: Learn new skills',{exact:true}).waitFor();
-  assert.equal(await other.getByLabel('Anything else? (optional)',{exact:true}).inputValue(),'Second tab draft');
+  await other.getByText('What would you like help with? Saved: Build a daily routine',{exact:true}).waitFor();
+  assert.equal(await other.getByLabel('Your note',{exact:true}).inputValue(),'Second tab draft');
   await other.getByRole('button',{name:'Keep my changes',exact:true}).click();
-  await other.getByRole('heading',{name:'Which comes first when time is tight?',exact:true}).waitFor();
+  await other.getByRole('heading',{name:'When do you have time for your goals?',exact:true}).waitFor();
   const fresh=await(await other.request.get(new URL(other.url()).origin+'/api/bootstrap')).json();
   const answer=JSON.parse(fresh.snapshot.answers.setupV2.value).answers.areas;
-  assert.equal(answer.custom,'Second tab draft'); assert.deepEqual(answer.selections,['business']);
+  assert.equal(answer.custom,'Second tab draft'); assert.deepEqual(answer.selections,['family']);
 }));
 test('new client resumes adaptive setup and accepts a whole week without manually creating tasks',async()=>fixture(async page=>{
   await page.getByRole('heading',{name:'A life, intentionally lived.',exact:true}).waitFor();
-  await mkdir('docs/evidence/guided-entry',{recursive:true}); await page.screenshot({path:'docs/evidence/guided-entry/welcome-desktop.png',fullPage:true});
+  await mkdir('docs/evidence/self-service',{recursive:true}); await page.screenshot({path:'docs/evidence/self-service/welcome-desktop.png',fullPage:true});
   assert.equal(await page.locator('.pilot-shell').isVisible(),false);
-  await signup(page); await page.getByRole('button',{name:'Let’s set you up',exact:true}).click();
+  await signup(page); await page.getByRole('button',{name:'Build my fitness plan',exact:true}).click();
   await page.getByRole('checkbox',{name:'Build a daily routine',exact:true}).check();
   await page.getByRole('button',{name:'Save and continue',exact:true}).click();
-  await page.getByRole('heading',{name:'Which comes first when time is tight?',exact:true}).waitFor();
-  await page.screenshot({path:'docs/evidence/guided-entry/questionnaire-desktop.png',fullPage:true});
-  await page.getByRole('button',{name:'Skip',exact:true}).click();
+  await page.getByRole('heading',{name:'When do you have time for your goals?',exact:true}).waitFor();
+  await page.screenshot({path:'docs/evidence/self-service/questionnaire-desktop.png',fullPage:true});
   await page.getByRole('heading',{name:'When do you have time for your goals?',exact:true}).waitFor();
   await page.getByRole('button',{name:'Save for later',exact:true}).click();
   await page.getByRole('button',{name:'Continue setup',exact:true}).waitFor();
@@ -109,17 +108,17 @@ test('new client resumes adaptive setup and accepts a whole week without manuall
   await page.getByRole('button',{name:'Save and continue',exact:true}).click();
   await page.getByLabel('Bedtime',{exact:true}).fill('23:00'); await page.getByLabel('Wake-up time',{exact:true}).fill('07:00');
   await page.getByRole('button',{name:'Save and continue',exact:true}).click();
-  for(const title of ['How much would you like to take on?','What gets in your way?','How would you like your guide to sound?','What makes progress feel rewarding?']){
+  for(const title of ['How much would you like to take on?','Which daily habits do you want to build?']){
     await page.getByRole('heading',{name:title,exact:true}).waitFor(); await page.getByRole('button',{name:'Skip',exact:true}).click();
   }
-  await page.getByRole('button',{name:'Use this plan',exact:true}).waitFor();
-  await mkdir('docs/evidence/adaptive-setup',{recursive:true});await page.screenshot({path:'docs/evidence/adaptive-setup/ready-week-desktop.png',fullPage:true});
-  await page.getByRole('button',{name:'Use this plan',exact:true}).click();
+  await page.getByRole('heading',{name:'Let’s get started.',exact:true}).waitFor();
+  await mkdir('docs/evidence/self-service',{recursive:true});await page.screenshot({path:'docs/evidence/self-service/ready-week-desktop.png',fullPage:true});
+
   await page.getByRole('button',{name:'Today',exact:true}).waitFor();
   const saved=await(await page.request.get(new URL(page.url()).origin+'/api/bootstrap')).json();
   assert.ok(saved.snapshot.occurrences.length>5); assert.equal(saved.snapshot.goals.length,1); assert.ok(saved.snapshot.answers.lifePlan);
-  await page.getByRole('button',{name:'Start this session',exact:true}).click();await page.screenshot({path:'docs/evidence/adaptive-setup/today-desktop.png',fullPage:true});
-  await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);await page.screenshot({path:'docs/evidence/adaptive-setup/today-mobile.png',fullPage:true});await page.setViewportSize({width:1365,height:950});
+  if(await page.getByRole('button',{name:'Start this session',exact:true}).count())await page.getByRole('button',{name:'Start this session',exact:true}).click();await page.screenshot({path:'docs/evidence/self-service/today-desktop.png',fullPage:true});
+  await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);await page.screenshot({path:'docs/evidence/self-service/today-mobile.png',fullPage:true});await page.setViewportSize({width:1365,height:950});
   await page.getByRole('button',{name:'Sign out',exact:true}).click();
   await page.getByRole('heading',{name:'A life, intentionally lived.',exact:true}).waitFor();
   assert.equal(await page.locator('.pilot-shell').isVisible(),false);
@@ -138,10 +137,10 @@ test('whole-app guide covers every view, pauses with Escape, resumes and fits mo
   await page.keyboard.press('Escape'); await dialog.waitFor({state:'hidden'});
   await page.getByRole('button',{name:'Help & tour',exact:true}).click(); await page.getByRole('button',{name:'Resume app tour',exact:true}).click();
   assert.match(await dialog.innerText(),/2 of 12/i);
-  await mkdir('docs/evidence/guided-entry',{recursive:true}); await page.screenshot({path:'docs/evidence/guided-entry/tour-desktop.png',fullPage:true});
+  await mkdir('docs/evidence/self-service',{recursive:true}); await page.screenshot({path:'docs/evidence/self-service/tour-desktop.png',fullPage:true});
   for(let step=2;step<12;step++) {await page.getByRole('button',{name:'Next stop',exact:true}).click(); await page.getByText(`Stop ${step+1} of 12`,{exact:true}).waitFor();}
   await page.getByRole('button',{name:'Finish tour',exact:true}).click(); await dialog.waitFor({state:'hidden'});
   await page.getByRole('button',{name:'Help & tour',exact:true}).click(); await page.getByRole('button',{name:'Replay app tour',exact:true}).waitFor();
   await page.setViewportSize({width:390,height:844}); assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
-  await page.screenshot({path:'docs/evidence/guided-entry/host-mobile.png',fullPage:true});
+  await page.screenshot({path:'docs/evidence/self-service/host-mobile.png',fullPage:true});
 }));

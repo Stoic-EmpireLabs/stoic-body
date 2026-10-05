@@ -19,7 +19,7 @@ export async function buildDesktop({ outputRoot = resolve('private/releases', ne
     ...['styles.css', 'appearance.js'].map(f => [`prototypes/phase-3/${f}`, `prototypes/phase-3/${f}`]),
     ...['Start Stoic Body.cmd', 'Stop Stoic Body.cmd', 'Install Stoic Body.cmd', 'launch.ps1', 'install.ps1', 'README.txt'].map(f => [`apps/desktop/${f}`, f]),
     [process.execPath, 'runtime/node.exe'], ['apps/desktop/node-LICENSE.txt', 'runtime/LICENSE.txt'],
-    ...['stoic-body.ico','stoic-body-512.png'].map(f=>[`assets/brand/${f}`,`assets/brand/${f}`]),
+    ...['stoic-body.ico','stoic-body-512.png','body-references.webp'].map(f=>[`assets/brand/${f}`,`assets/brand/${f}`]),
   ];
   // Vendor only the reviewed Windows decoder and its runtime dependencies, including licenses.
   const require=createRequire(import.meta.url);

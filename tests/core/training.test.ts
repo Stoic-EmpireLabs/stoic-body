@@ -19,8 +19,11 @@ test('routine generation respects screening, equipment and time', () => {
 });
 test('short full-body requests cannot silently omit all lower-body training', () => {
   const tooShort = buildRoutine({ ...input, minutes: 20 });
-  assert.equal(tooShort.eligible, false);
-  assert.match(tooShort.reasons.join(' '), /26 minutes/);
+  assert.equal(tooShort.eligible, true);
+  assert.ok(tooShort.exercises.some(e=>e.name==='Bodyweight squat'));
+  assert.ok(tooShort.exercises.some(e=>e.name==='Cable row'));
+  assert.ok(tooShort.exercises.every(e=>e.prescription.startsWith('1 set')));
+  assert.ok(tooShort.exercises.reduce((n,e)=>n+e.minutes,8)<=20);
   const enough = buildRoutine({ ...input, minutes: 26 });
   assert.equal(enough.eligible, true); assert.ok(enough.exercises.some(e => e.name === 'Bodyweight squat'));
 });

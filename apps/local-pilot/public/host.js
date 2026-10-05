@@ -4,12 +4,12 @@ window.Host = (() => {
   let ctx, panel='', saving=false, pending=null, conflict=null, tour=-1, dialog, highlighted, tourEpoch=0;
   const drafts={}, el=(...a)=>ctx.element(...a), button=(...a)=>ctx.action(...a);
   const stops=[
-    ['today',null,'#main .pilot-hero','Start with Today','This is your home base: your next action, accepted schedule and progress. Empty is okay. Your first job is choosing one meaningful goal.'],
+    ['today',null,'#main .pilot-hero','Start with Today','Setup puts your workouts, meal preparation and habits here. Start the next session, follow its instructions, then mark what you completed.'],
     ['goals',null,'#goal-form','Give your effort a purpose','Create a goal and explain why it matters. Add a small task below it, choose a realistic duration and link it to the goal. Nothing is scheduled yet.'],
-    ['plan',null,'#plan-form','Make room for real life','Enter a free window outside sleep and fixed commitments. Preview the day, inspect any conflicts, then accept. The app only saves a proposed schedule when you confirm.'],
+    ['plan',null,'#plan-form','Make room for real life','Your setup creates the first week automatically. Move sessions when life changes, or add personal tasks such as learning time. Sleep and commitments remain protected.'],
     ['health','meals','#meal-preview','Know what goes on your plate','Choose chicken, turkey, salmon or a drink. Adjust cooked ingredient weights and review estimated nutrition. Use in food log prepares a draft; Save food records what you ate.'],
     ['health','fuel','#food-form','Record your actual day','Food, water, energy and sleep logs help you notice patterns. Unknown nutrients stay unknown. Food logs and eating fewer calories never earn XP.'],
-    ['health','train','#main .pilot-columns','Train within your reality','Review suitability, choose equipment and preview a starter session. Save its task to Plan, then record actual sets and effort. These starter sessions are not medical clearance.'],
+    ['health','train','#main .pilot-columns','Train within your reality','Your setup already adds workouts to Today. Here you can build an extra routine and log actual sets, repetitions and effort. Follow the instructions inside each session.'],
     ['health','progress','#main .pilot-columns','Look at the trend','Record weight or optional measurements with units and method. Trends include uncertainty; a single weigh-in does not decide your next meal or predict an exact goal date.'],
     ['health','evidence','#diet-comparison','Understand your options','Compare diet evidence, risks and sources. Meal timing and food choices are different. Selecting OMAD or another approach does not automatically create a daily prescription.'],
     ['learn',null,'#main','Learn, then put it to work','Choose a path, open its learning resource, keep notes and complete practical checkpoints. Add a practice task to Plan. XP comes from the scheduled practice, not repeated checkboxes.'],
@@ -28,9 +28,9 @@ window.Host = (() => {
   function status(parent){const p=el('p','','access-error');p.id='host-status';p.setAttribute('role','alert');parent.append(p);}
   function welcome(root){
     const a=ctx.account();ctx.intro(`Welcome, ${a.displayName}.`,'I’m your Stoic Body guide. Let’s turn the things you care about into a day that fits your life.');
-    const hero=el('section',undefined,'pilot-hero host-welcome');hero.append(el('span','YOUR FIRST SMALL STEP','eyebrow'),el('h2','Let’s build a week that works for you.'),el('p','Choose your goals, tell me when you have time, and I’ll put together your schedule. Review it, make changes, then start your first session.'));
-    hero.append(button('Let’s set you up',()=>run(async()=>{await persist({stage:'questions'});ctx.render();}),true),button('Explore first',()=>run(async()=>{await persist({stage:'paused'});ctx.navigate('today');})));root.append(hero);
-    const card=ctx.card('Here is what happens next');card.append(el('p','Choose your goals → Answer the relevant questions → Review your week → Start your next action.','muted'),el('p','Most questions use choices. Select more than one where it fits, add a note, or skip. You can save and return anytime.','muted'));status(card);root.append(card);
+    const hero=el('section',undefined,'pilot-hero host-welcome');hero.append(el('span','YOUR FIRST SMALL STEP','eyebrow'),el('h2','Let’s build a week that works for you.'),el('p','Choose your goals, tell me when you have time, and I’ll put together your schedule. Finish setup and start your first session. You can adjust the plan anytime.'));
+    hero.append(button('Build my fitness plan',()=>run(async()=>{await persist({stage:'questions'});ctx.render();}),true),button('Explore first',()=>run(async()=>{await persist({stage:'paused'});ctx.navigate('today');})));root.append(hero);
+    const card=ctx.card('Ready when you are');card.append(el('p','Choose cut, bulk, lean out or maintain. Pick the exercise, foods and daily habits that fit your life. Finishing setup saves your first week and opens your next action.'),el('p','Most answers are tap-to-select. Exact measurements and times have editable fields. The app calculates your plan automatically; there is no trainer queue.','muted'));status(card);root.append(card);
   }
   function question(root){
     const index=conflict?.question??guide().state.question,q=ctx.questions[index],saved=ctx.snapshot().answers[q[0]],group=Math.floor(index/5);
@@ -72,9 +72,9 @@ window.Host = (() => {
   }
   function checklist(parent,compact=false){
     const s=ctx.snapshot(),card=ctx.card(compact?'Your next small step':'Your starting point');card.id='host-checklist';
-    card.append(el('p',`${count()} / 20 questions addressed. Build your setup at your own pace.`,'muted'));
+    card.append(el('p',s.answers.lifePlan?'Your week is ready. Open Today to start, or update your answers in Profile.':'Finish the multiple-choice setup to create your workouts, meals and habit schedule.','muted'));
     const rows=[
-      [count()===20,'Share your context',count()?'Continue setup':'Start setup',()=>run(async()=>{panel='';await persist({stage:'questions'});ctx.navigate('setup');})],
+      [Boolean(s.answers.lifePlan),'Build my personal plan',s.answers.lifePlan?'Update my choices':'Continue setup',()=>run(async()=>{panel='';await persist({stage:'questions'});ctx.navigate('setup');})],
       [s.goals.some(g=>!g.archived),'Choose a meaningful goal','Review my first goal',firstGoal],
       [s.tasks.some(t=>!t.archived),'Make one small action','Create an action',()=>ctx.navigate('goals')],
       [s.occurrences.length>0,'Review a realistic day','Open Plan',()=>ctx.navigate('plan')],

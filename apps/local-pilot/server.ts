@@ -18,6 +18,8 @@ import { SyncClient } from '../../src/core/sync-client';
 import { createSyncTransport, syncEndpoint } from '../../src/core/sync-transport';
 import { readSetup, activeQuestions, legacyCandidates, setupQuestions } from '../../src/core/setup-schema';
 import { buildLifePlan } from '../../src/core/life-plan';
+import { nutritionPlan } from '../../src/core/nutrition-plan';
+import { validateSetup, optionalSetupQuestions } from '../../src/core/setup-schema';
 import { PhotoStore } from '../../src/core/photo-store';
 import { buildGoalVisualBrief, UnavailableGoalImageProvider } from '../../src/core/goal-image-provider';
 import { openPhotoArchive, sealPhotoArchive } from '../../src/core/backup-crypto';
@@ -36,6 +38,7 @@ const assets: Record<string, [string, string]> = {
   '/access.js': ['apps/local-pilot/public/access.js', 'text/javascript'],
   '/host.js': ['apps/local-pilot/public/host.js', 'text/javascript'],
   '/setup.js': ['apps/local-pilot/public/setup.js', 'text/javascript'],
+  '/body-references.webp': ['assets/brand/body-references.webp','image/webp'],
   '/recovery.js': ['apps/local-pilot/public/recovery.js', 'text/javascript'],
   '/sync.js': ['apps/local-pilot/public/sync.js', 'text/javascript'],
   '/styles.css': ['apps/local-pilot/public/styles.css', 'text/css'],
@@ -83,7 +86,7 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
       if (request.headers.host !== new URL(requestOrigin).host || (request.headers.origin && request.headers.origin !== requestOrigin)
         || request.headers['sec-fetch-site'] === 'cross-site') throw new HttpError(403, 'Open this app directly on this computer.');
       const path = new URL(request.url ?? '/', origin).pathname;
-      if (path === '/api/identity' && request.method === 'GET') { json(response, 200, { product: 'Stoic Body', edition: 'desktop-local', version: '0.5.0-local' }); return; }
+      if (path === '/api/identity' && request.method === 'GET') { json(response, 200, { product: 'Stoic Body', edition: 'desktop-local', version: '0.6.0-local' }); return; }
       if(['/api/sync/claim','/api/sync/exchange'].includes(path)){
         if(request.method!=='POST')throw new HttpError(405,'Use a sync client.');const data=await body(request);
         if(path.endsWith('/claim')){json(response,200,hub.claim(data));return;}
@@ -117,7 +120,7 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
         if (path === '/api/snapshot' && request.method === 'GET') { json(response, 200, { snapshot: repository.snapshot(owner) }); return; }
         if (path === '/api/health-content' && request.method === 'GET') { json(response, 200, { diets, trainingStyles, meals: mealCatalog }); return; }
         if (path === '/api/learning-content' && request.method === 'GET') { json(response, 200, { courses }); return; }
-        if(path==='/api/setup'&&request.method==='GET'){const s=repository.snapshot(owner),state=readSetup(s);json(response,200,{state,questions:activeQuestions(state),catalog:setupQuestions,legacy:legacyCandidates(s.answers)});return;}
+        if(path==='/api/setup'&&request.method==='GET'){const s=repository.snapshot(owner),state=readSetup(s);json(response,200,{state,questions:activeQuestions(state),catalog:setupQuestions,optional:optionalSetupQuestions,legacy:legacyCandidates(s.answers)});return;}
         if(path==='/api/photos'&&request.method==='GET'){json(response,200,{photos:photos.list(owner),provider:await imageProvider.status()});return;}
         if (request.method !== 'POST' || request.headers.origin !== requestOrigin) throw new HttpError(403, 'Save requests must come from this app.');
         const data = await body(request, path==='/api/photos/restore'?44*1024*1024:path==='/api/photos/add'?14*1024*1024:['/api/recovery/preview','/api/recovery/restore'].includes(path) ? 24*1024*1024 : 1_048_576);
@@ -153,7 +156,8 @@ export async function startPilot(options: PilotOptions): Promise<PilotServer> {
         if (path === '/api/auth/logout') { keys(object(data),[]); accounts.logout(cookie!); response.setHeader('Set-Cookie',`stoic_local=; ${cookieFlags} Max-Age=0`); json(response,200,{authenticated:false}); return; }
         if (path === '/api/guide') { recovery.captureBeforeEdit(owner);json(response,200,{guide:accounts.saveGuide(owner,data)}); return; }
         if (path === '/api/meal-preview') { json(response, 200, previewMeal(data)); return; }
-        if(path==='/api/life-plan/preview'){const p=object(data);keys(p,['startDate','timezone','pace']);const s=repository.snapshot(owner);json(response,200,{plan:buildLifePlan({setup:readSetup(s),snapshot:s,startDate:text(p.startDate,10),timezone:zone(p.timezone),pace:p.pace as 'normal'|'lighter'})});return;}
+        if(path==='/api/setup/insights'){const p=object(data);keys(p,['state']);json(response,200,{nutrition:nutritionPlan(validateSetup(p.state))});return;}
+        if(path==='/api/life-plan/preview'){const p=object(data);keys(p,['startDate','timezone','pace','notBefore']);const s=repository.snapshot(owner);json(response,200,{plan:buildLifePlan({setup:readSetup(s),snapshot:s,startDate:text(p.startDate,10),timezone:zone(p.timezone),pace:p.pace as 'normal'|'lighter',...(p.notBefore?{notBefore:text(p.notBefore,30)}:{})})});return;}
         if (path === '/api/training-preview') { json(response, 200, buildRoutine(data)); return; }
         if (path === '/api/health-summary') {
           const p = object(data); keys(p, ['date', 'unit']); if (!['kg', 'lb'].includes(String(p.unit))) throw new Error('Choose weight units.');

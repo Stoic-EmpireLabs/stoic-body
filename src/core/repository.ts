@@ -173,10 +173,10 @@ export class CoreRepository {
     private execute(ownerId: string, c: Command): Receipt {
         const p = object(c.payload), db = this.database;
         if(c.type==='plan.accept') {
-            keys(p,['startDate','timezone','pace','fingerprint']);const owner=this.owner(ownerId);
+            keys(p,['startDate','timezone','pace','fingerprint','notBefore']);const owner=this.owner(ownerId);
             const conflict:Receipt={operationId:c.operationId,status:'conflict',canonicalRevision:owner.profile_revision,safeReason:'Your profile or calendar changed. Generate a fresh plan preview.'};
             if(c.baseRevision!==owner.profile_revision)return conflict;
-            const snapshot=this.readSnapshot(ownerId),plan=buildLifePlan({setup:readSetup(snapshot),snapshot,startDate:text(p.startDate,10),timezone:zone(p.timezone),pace:p.pace as 'normal'|'lighter'});
+            const snapshot=this.readSnapshot(ownerId),plan=buildLifePlan({setup:readSetup(snapshot),snapshot,startDate:text(p.startDate,10),timezone:zone(p.timezone),pace:p.pace as 'normal'|'lighter',...(p.notBefore?{notBefore:text(p.notBefore,30)}:{})});
             if(plan.fingerprint!==p.fingerprint)return conflict;
             if(plan.missing.length||(!plan.placements.length&&!plan.blocks.length))throw new Error('Answer the missing questions or make time before using this plan.');
             const batchId='w'+plan.fingerprint.slice(0,15),created=plan.startDate+'T12:00:00.000Z';
