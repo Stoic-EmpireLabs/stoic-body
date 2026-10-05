@@ -1,4 +1,4 @@
-/* global Appearance, Health, Learn, Access, Host, Recovery */
+/* global Appearance, Health, Learn, Access, Host, Recovery, DeviceSync */
 'use strict';
 const $ = selector => document.querySelector(selector);
 const labels = { today: 'Today', goals: 'Goals', plan: 'Plan', health: 'Health', learn: 'Learn', profile: 'Profile', settings: 'Settings', setup: 'Your guide' };
@@ -50,7 +50,7 @@ function action(text, callback, primary = false) { const b = element('button', t
 function message(text) { $('#notice').textContent = text; $('#notice').hidden = !text; }
 function errorMessage(text) { $('#error-message').textContent = text; $('#error-panel').hidden = !text; $('#retry').hidden = !pendingRequest; }
 function setBusy(value) { busy = value; document.querySelectorAll('[data-save]').forEach(b => { b.disabled = value || Boolean(pendingRequest); }); $('#retry').disabled = value; $('#reload').disabled = value; }
-async function api(path, data) {
+async function api(path, data, adopt=true) {
   const epoch = identityEpoch, owner = account?.id;
   let response;
   try { response = await fetch(`/api/${path}`, { method: data === undefined ? 'GET' : 'POST', headers: { 'X-Stoic-Token': token || '', 'Content-Type': 'application/json' }, ...(data === undefined ? {} : { body: JSON.stringify(data) }) }); }
@@ -68,7 +68,7 @@ async function api(path, data) {
     clearChangedIdentity(); throw Object.assign(new Error('Your sign-in changed.'),{responseStatus:401});
   }
   if (response.status === 401 && !path.startsWith('auth/')) { snapshot = null; token = null; document.querySelector('.pilot-shell').hidden = true; location.replace('/'); throw new Error('Please sign in again.'); }
-  if (result.snapshot) snapshot = result.snapshot;
+  if (result.snapshot && adopt) {snapshot = result.snapshot;$('#sync-update').hidden=true;}
   if (result.guide) guide = result.guide;
   if (result.account) account = result.account;
   if (!response.ok) { const e = new Error(result.error || 'This change could not be saved.'); e.responseStatus = response.status; throw e; }
@@ -249,7 +249,7 @@ function renderProfile() {
 function renderSettings() {
   intro('Make this space yours.', 'Choose the light, the colors and the mood of your daily practice.');
   const appearance = element('div'); appearance.innerHTML = Appearance.markup(); $('#main').append(appearance);
-  const storage = card('Your account'); storage.append(element('p', `Signed in as ${account.displayName} (@${account.username}). Your goals, profile, calendar and XP are saved on this computer. A reload does not erase your progress.`, 'muted'), element('p', 'Sign-in protects access through this app; it does not encrypt the database against someone with access to your operating-system files. Device sync and native alarms are still being built. This pilot does not send your entries to an AI service.', 'muted'),action('Open my guide',Host.help)); $('#main').append(storage);Recovery.render($('#main'));
+  const storage = card('Your account'); storage.append(element('p', `Signed in as ${account.displayName} (@${account.username}). Your goals, profile, calendar and XP are saved on this computer. A reload does not erase your progress.`, 'muted'), element('p', 'Sign-in protects access through this app; it does not encrypt the database or device credentials against someone with access to your Windows files. Private Windows sync is available below. Native alarms remain in development. This pilot does not send entries to an AI service.', 'muted'),action('Open my guide',Host.help)); $('#main').append(storage);DeviceSync.render($('#main'));Recovery.render($('#main'));
 }
 document.addEventListener('click', event => { const b = event.target.closest('button[data-view]'); if (b) navigate(b.dataset.view); });
 $('#retry').addEventListener('click', () => { if (pendingRequest) { const p = pendingRequest; void send(p.path, p.data, p.success); } });
@@ -274,8 +274,13 @@ Health.init({ element, action, card, intro, snapshot: () => snapshot, date: () =
 Learn.init({ element, action, card, intro, snapshot: () => snapshot, api, command, render, navigate });
 Access.init({element,card,api,announceAccountChange});
 Recovery.init({element,card,api,announceAccountChange,account:()=>account,refreshSession:async()=>{const fresh=await api('bootstrap');token=fresh.token;}});
+DeviceSync.init({element,card,api,updated:()=>{message('Workspace updated. Open Today, Goals or Plan to see your current records.');}});
 Host.init({element,action,card,intro,questions,snapshot:()=>snapshot,account:()=>account,guide:()=>guide,api,render,navigate,setBusy});
 let idleTimer;
 function resetIdle() { clearTimeout(idleTimer); if (account) idleTimer = setTimeout(() => { void Access.signOut(); }, 30 * 60 * 1000); }
 document.addEventListener('pointerdown',resetIdle);document.addEventListener('keydown',resetIdle);
+let checkingUpdates=false;
+async function checkUpdates(){if(checkingUpdates||busy||pendingRequest||!snapshot||resettingIdentity||document.hidden)return;checkingUpdates=true;try{const result=await api('snapshot',undefined,false);if(snapshot&&JSON.stringify(result.snapshot)!==JSON.stringify(snapshot))$('#sync-update').hidden=false;}catch{/* Existing identity guard handles session changes; local work stays visible on network failure. */}finally{checkingUpdates=false;}}
+$('#sync-refresh').addEventListener('click',async()=>{if(busy||pendingRequest)return;try{await api('snapshot');preview=null;manualPreview=null;editGoal=null;editTask=null;render();message('Showing the latest saved workspace.');}catch(e){errorMessage(e.message);}});
+setInterval(()=>void checkUpdates(),15000);window.addEventListener('focus',()=>void checkUpdates());
 void boot();

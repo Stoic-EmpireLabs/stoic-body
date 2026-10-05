@@ -84,3 +84,10 @@ Phase 0 was approved on 2026-10-04 by the user message: Great. continue throguh 
 - User chose their desktop as the sync host and clarified that it need not always be on. Do not make always-on hosting a requirement. Retain automatic sync at launch, local offline core, and visible conflict/retry handling.
 - Complete account recovery before connecting devices: encrypted portable files, preview/confirmation, seven local points, and no credential transfer. Separate local accounts remain independent until actual sync is implemented.
 - Preserve the existing private network service; no Tailscale, firewall, sleep or ULTRON changes in this checkpoint.
+
+## Windows desktop and intermittent sync — 2026-10-04
+- Continue the authorized Windows checkpoint inline; use a per-user installer and Edge app window with browser fallback. A shortcut launches the app; SQLite saves data separately from executable versions.
+- Use a single canonical desktop host per account and durable Windows replicas. Reject cascaded hosting, retain stale proposals, and require confirmation before pairing replaces data.
+- Use full bounded snapshots for the first protocol; compact deltas are future work. Keep tour/theme local and profile answers shared. Reset grants/links on restore and password recovery.
+- A private HTTPS listener may be configured on an unused port using the existing Tailscale connection; preserve all unrelated listeners. No always-on requirement, public Funnel, firewall/sleep change, paid service or external database.
+- Preserve the isolated branch/evidence and publish the verified desktop prerelease under the existing GitHub authorization. Independent Apple clients and Store acceptance remain open.

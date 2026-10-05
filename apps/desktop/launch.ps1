@@ -57,7 +57,14 @@ try {
         } catch { Start-Sleep -Milliseconds 200 }
     }
     if (-not $ready) { throw 'The local service did not become ready. Check startup-error.log in your StoicBody data folder.' }
-    if (-not $NoBrowser) { Start-Process $url }
+    if (-not $NoBrowser) {
+        $edgePath = @("${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe", "$env:ProgramFiles\Microsoft\Edge\Application\msedge.exe") | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+        if ($edgePath) {
+            # Visible app window is the requested desktop experience; the helper remains hidden.
+            $profilePath = Join-Path $dataFolder 'web-profile'
+            Start-Process -FilePath $edgePath -ArgumentList @("--app=$url", ('--user-data-dir="' + $profilePath + '"'), '--no-first-run')
+        } else { Start-Process $url; Write-Host 'Microsoft Edge was not found. Stoic Body opened in your default browser.' }
+    }
     Write-Host "Stoic Body is ready: $url"
     Write-Host "Saved data: $dataFolder"
 } catch { Write-Error $_.Exception.Message; exit 1 }

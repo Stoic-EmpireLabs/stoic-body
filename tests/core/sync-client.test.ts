@@ -15,6 +15,7 @@ const cmd=(type:string,entityId:string,payload:unknown,baseRevision=0):Command=>
 test('offline replicas survive restart, merge unique logs, deduplicate XP and retain conflicts in either order',async()=>{
  for(const reverse of [false,true]){
   const dir=mkdtempSync(join(tmpdir(),'stoic-sync-')),hubRepo=new CoreRepository(join(dir,'hub.sqlite')),auth=new AccountStore(hubRepo.database),owner=await richFixture(hubRepo,auth),hub=new SyncHub(hubRepo,auth);let online=true;
+  const initial=hubRepo.snapshot(owner).occurrences[0];hubRepo.apply(owner,cmd('completion.set',initial.id,{fraction:0},initial.revision));
   const transport:SyncTransport=async(_endpoint,path,data,secret)=>{if(!online)throw new Error('Host offline');return path==='claim'?hub.claim(data):hub.exchange(secret!,data);};
   const replicas=[] as {repo:CoreRepository;client:SyncClient;owner:string;path:string}[];
   try{
@@ -24,7 +25,7 @@ test('offline replicas survive restart, merge unique logs, deduplicate XP and re
    online=false;
    for(const [index,r] of replicas.entries()){
     r.client.apply(r.owner,cmd('health.save',`water-${index}`,{kind:'water',data:{date:'2026-10-05',ml:500,notes:'Synthetic'}}));
-    r.client.apply(r.owner,cmd('completion.set',r.repo.snapshot(r.owner).occurrences[0].id,{fraction:1},1));
+    const occurrence=r.repo.snapshot(r.owner).occurrences[0];r.client.apply(r.owner,cmd('completion.set',occurrence.id,{fraction:1},occurrence.revision));
     r.client.apply(r.owner,cmd('goal.update','goal',{title:`Proposal ${index}`,why:'Saved offline'},1));
     await r.client.run(r.owner);assert.equal(r.client.status(r.owner).state,'offline');await r.client.close();r.repo.close();
     r.repo=new CoreRepository(r.path);const accounts=new AccountStore(r.repo.database);r.client=new SyncClient(r.repo,accounts,new RecoveryStore(r.repo,accounts),transport,hub.instanceId+'-restart');assert.equal(r.client.status(r.owner).queued,3);
@@ -43,6 +44,7 @@ test('edits during a slow response survive rebasing; disconnect invalidates an i
  const recovery=new RecoveryStore(repo,accounts),client=new SyncClient(repo,accounts,recovery,transport,'separate-instance');
  try{
   const p=await client.previewLink(local,{endpoint:'https://test.ts.net',code:hub.issueCode(owner).code,name:'Laptop'});await client.confirmLink(local,{previewId:p.previewId});const guideRevision=accounts.readGuide(local).revision;
+  repo.database.exec("CREATE TRIGGER fail_queue BEFORE INSERT ON app_sync_queue BEGIN SELECT RAISE(ABORT,'disk failure'); END;");assert.throws(()=>client.apply(local,cmd('goal.create','rollback',{title:'Must not persist',why:'Atomic queue'})));assert.equal(repo.snapshot(local).goals.length,1);repo.database.exec('DROP TRIGGER fail_queue');
   wait=true;const running=client.run(local);client.apply(local,cmd('goal.create','during-request',{title:'Saved while syncing',why:'Do not discard'}));release();await running;assert.equal(repo.snapshot(local).goals.length,2);assert.equal(client.status(local).queued,1);assert.equal(accounts.readGuide(local).revision,guideRevision);
   wait=false;await client.run(local);assert.equal(hubRepo.snapshot(owner).goals.length,2);
   wait=true;const stale=client.run(local);client.disconnect(local);client.apply(local,cmd('goal.create','after-disconnect',{title:'Keep local edit',why:'Private'}));release();await stale;assert.equal(repo.snapshot(local).goals.length,3);assert.equal(client.status(local).linked,false);

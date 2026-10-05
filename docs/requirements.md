@@ -128,3 +128,6 @@ Date: 2026-10-04. 101 requirements including the five learning additions below. 
 
 ## Account recovery checkpoint — 2026-10-04
 Portable encrypted account export, previewed owner-scoped restore, seven local recovery points, stale-preview rejection, atomic rollback and credential exclusion are implemented. Evidence: tests/core/account-bundle.test.ts, tests/core/recovery.test.ts, tests/pilot/backup.test.ts and tests/pilot/recovery-ui.test.ts. Automatic iPhone/iPad/Windows sync (B11), standalone offline Apple clients and background alarms remain open; the desktop may be off between syncs.
+
+## Windows desktop and intermittent sync — 2026-10-04
+B11 is partially implemented: independent Windows SQLite replicas, durable offline queue, restart/reconnect, account isolation, explicit conflicts and revocation. T06 is execution-verified for Windows. ENTRY03 now includes a verified per-user installer and desktop shortcut. T01 recovery resets sync generations and preserves credentials. See desktop-sync-checkpoint.md and sync core/HTTP/browser tests. iPhone/iPad offline clients, native alarms, account deletion and Store delivery are still required.

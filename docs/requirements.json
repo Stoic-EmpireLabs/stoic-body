@@ -1183,6 +1183,11 @@
         "plan": "superpowers/plans/2026-10-04-core-implementation.md",
         "acceptance": "C01/C02/C05/C06; access isolation, durable offline transactions, failure/retry, full backup/restore/deletion",
         "status": "Design proposed; implementation acceptance not executed"
+      },
+      "desktop_checkpoint": {
+        "date": "2026-10-04",
+        "status": "Execution-verified for Windows; Apple offline client pending",
+        "evidence": "desktop-sync-checkpoint.md; tests/core/sync-client.test.ts; tests/pilot/sync.test.ts; tests/pilot/sync-ui.test.ts; scripts/test-desktop.mjs"
       }
     },
     {
@@ -1279,6 +1284,11 @@
         "plan": "superpowers/plans/2026-10-04-release-implementation.md",
         "acceptance": "R01/R02/R04; approved offer, per-store packaging, substantiated claims, costs and publication gates",
         "status": "Design proposed; implementation acceptance not executed"
+      },
+      "desktop_checkpoint": {
+        "date": "2026-10-04",
+        "status": "Partially implemented; Windows desktop/sync verified, full launch requirement open",
+        "evidence": "desktop-sync-checkpoint.md; tests/core/sync-client.test.ts; tests/pilot/sync.test.ts; tests/pilot/sync-ui.test.ts; scripts/test-desktop.mjs"
       }
     },
     {
@@ -1343,6 +1353,11 @@
         "plan": "superpowers/plans/2026-10-04-core-implementation.md",
         "acceptance": "C05/C06; required automatic sync, account isolation, conflicts, revocation and deletion",
         "status": "Design proposed; implementation acceptance not executed"
+      },
+      "desktop_checkpoint": {
+        "date": "2026-10-04",
+        "status": "Partially implemented; Windows desktop/sync verified, full launch requirement open",
+        "evidence": "desktop-sync-checkpoint.md; tests/core/sync-client.test.ts; tests/pilot/sync.test.ts; tests/pilot/sync-ui.test.ts; scripts/test-desktop.mjs"
       }
     },
     {
@@ -1528,13 +1543,18 @@
       "proposed_design": "Local transactional outbox, authenticated command/delta service, owner-scoped records and explicit conflict resolution",
       "phase": "2,4,7,8",
       "verification_plan": "Two devices offline then reconnect in both orders; completion awards once, edits conflict visibly, restart preserves records, revoked/deleted accounts cannot sync",
-      "status": "Confirmed launch requirement; user selected intermittent desktop host; independent offline clients and automatic sync not implemented",
+      "status": "Windows automatic private sync implemented and tested with separate databases/HTTP clients; physical second-device and independent Apple offline acceptance remain open",
       "evidence": "decisions.md; architecture/platform-and-sync.md; architecture/domain-contracts.md; account-recovery-checkpoint.md",
       "phase2": {
         "design": "architecture/platform-and-sync.md",
         "plan": "superpowers/plans/2026-10-04-core-implementation.md",
         "acceptance": "C05/C06; required automatic sync, account isolation, conflicts, revocation and deletion",
         "status": "Design proposed; implementation acceptance not executed"
+      },
+      "desktop_checkpoint": {
+        "date": "2026-10-04",
+        "status": "Partially implemented; Windows desktop/sync verified, full launch requirement open",
+        "evidence": "desktop-sync-checkpoint.md; tests/core/sync-client.test.ts; tests/pilot/sync.test.ts; tests/pilot/sync-ui.test.ts; scripts/test-desktop.mjs"
       }
     }
   ]

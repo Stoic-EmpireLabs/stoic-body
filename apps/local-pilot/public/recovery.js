@@ -10,7 +10,7 @@ window.Recovery=(()=>{
  function render(root){
   const {element:el,card,api}=ctx,section=card('Data & recovery');section.id='recovery';root.append(section);
   section.append(el('p','Keep a portable, encrypted copy of your goals, schedule, XP, health logs, course progress and setup answers. Your password, recovery key, other accounts and browser theme are excluded.','muted'));
-  section.append(el('p','This version saves on this computer. Automatic device sync is not connected. The planned sync host may be off between syncs; separate offline clients are still in development.','muted'));
+  section.append(el('p','An account backup contains saved app records, not unmerged sync proposals or device credentials. Review proposals in Your devices and copy their contents separately. Restoring disconnects device links; pair again after reviewing the restored workspace.','muted'));
   const status=el('p');status.setAttribute('role','status');status.setAttribute('aria-live','polite');section.append(status);
   let working=false,pending=null;
   const run=async(fn)=>{if(working)return;working=true;status.textContent='Working…';section.setAttribute('aria-busy','true');section.querySelectorAll('button,input').forEach(x=>x.disabled=true);try{await fn();}catch(e){status.textContent=e.message;if(e.responseStatus===409){pending=null;review.replaceChildren();}}finally{working=false;section.removeAttribute('aria-busy');section.querySelectorAll('button,input').forEach(x=>x.disabled=false);}};

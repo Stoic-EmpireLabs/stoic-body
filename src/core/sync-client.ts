@@ -43,7 +43,7 @@ export class SyncClient {
   const response=this.exchange(await this.request(endpoint,'exchange',{protocol:1,epoch:claim.epoch,operations:[]},c.secret));guard();this.canPair(owner);
   if(this.candidate(owner)?.candidate.previewId!==c.previewId||this.credential(owner)!==c.credential)throw new Error('Pairing changed. Preview again.');if(response.instanceId!==claim.instanceId||response.epoch!==claim.epoch)throw new Error('Host identity changed.');
   const fingerprint=this.fingerprint(owner);this.repo.database.prepare('UPDATE app_sync_pairing SET preview_json=? WHERE owner_id=?').run(JSON.stringify({exchange:response,fingerprint}),owner);
-  return {previewId:c.previewId,account:response.account,endpoint,incoming:counts(response.bundle),current:counts(captureBundle(this.repo,this.accounts,owner))};
+  return {previewId:c.previewId,hostAccount:response.account,endpoint,incoming:counts(response.bundle),current:counts(captureBundle(this.repo,this.accounts,owner))};
  }
  async confirmLink(owner:string,input:unknown,guard=()=>{}){
   const p=object(input);keys(p,['previewId']);const previewId=id(p.previewId);guard();if(this.link(owner)?.previewId===previewId)return {linked:true,duplicate:true};this.canPair(owner);

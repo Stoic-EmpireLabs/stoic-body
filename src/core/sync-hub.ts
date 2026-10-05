@@ -15,12 +15,13 @@ export class SyncHub {
   db.prepare('INSERT OR IGNORE INTO app_sync_meta VALUES (1,?)').run(randomUUID());this.instanceId=String(db.prepare('SELECT instance_id FROM app_sync_meta WHERE id=1').get()!.instance_id);
  }
  private credential(owner:string){const r=this.repo.database.prepare('SELECT password_hash FROM app_accounts WHERE owner_id=?').get(owner);if(!r)throw new AccountError(401,'Account is unavailable.');return String(r.password_hash);}
+ private requireHost(owner:string){const db=this.repo.database;if(db.prepare("SELECT 1 FROM sqlite_master WHERE name='app_sync_links'").get()&&db.prepare('SELECT 1 FROM app_sync_links WHERE owner_id=?').get(owner))throw new AccountError(409,'This account uses another host. Create the pairing code on that host.');}
  private epoch(owner:string){const db=this.repo.database;db.prepare('INSERT OR IGNORE INTO app_sync_hosts VALUES (?,?)').run(owner,randomUUID());return String(db.prepare('SELECT epoch FROM app_sync_hosts WHERE owner_id=?').get(owner)!.epoch);}
- issueCode(owner:string){this.credential(owner);const db=this.repo.database;db.prepare('DELETE FROM app_sync_codes WHERE expires<? OR owner_id=?').run(this.now(),owner);const code=randomBytes(32).toString('hex');db.prepare('INSERT INTO app_sync_codes VALUES (?,?,?,NULL,NULL)').run(tokenHash(code),owner,this.now()+600000);return {code,expiresAt:this.now()+600000,instanceId:this.instanceId};}
+ issueCode(owner:string){this.credential(owner);this.requireHost(owner);const db=this.repo.database;db.prepare('DELETE FROM app_sync_codes WHERE expires<? OR owner_id=?').run(this.now(),owner);const code=randomBytes(32).toString('hex');db.prepare('INSERT INTO app_sync_codes VALUES (?,?,?,NULL,NULL)').run(tokenHash(code),owner,this.now()+600000);return {code,expiresAt:this.now()+600000,instanceId:this.instanceId};}
  claim(input:unknown){
   const p=object(input);keys(p,['code','deviceId','name','secret']);const deviceId=id(p.deviceId),name=text(p.name,60),secret=tokenHash(p.secret),code=tokenHash(p.code),db=this.repo.database;
   return transaction(db,()=>{const c=db.prepare('SELECT * FROM app_sync_codes WHERE code_hash=?').get(code);if(!c||Number(c.expires)<this.now())throw new AccountError(401,'Pairing code expired or unavailable.');
-   const owner=String(c.owner_id),epoch=this.epoch(owner);
+   const owner=String(c.owner_id),epoch=this.epoch(owner);this.requireHost(owner);
    if(c.device_id){if(c.device_id!==deviceId||c.secret_hash!==secret)throw new AccountError(401,'Pairing code was already used.');this.authenticate(String(p.secret));return {instanceId:this.instanceId,epoch};}
    db.prepare('INSERT INTO app_sync_devices VALUES (?,?,?,?,?,?,0)').run(deviceId,owner,name,secret,this.credential(owner),epoch);
    db.prepare('UPDATE app_sync_codes SET device_id=?,secret_hash=? WHERE code_hash=?').run(deviceId,secret,code);return {instanceId:this.instanceId,epoch};
