@@ -126,7 +126,7 @@ export default function InteractiveTour() {
               zIndex: 56,
               pointerEvents: "none",
             }}
-            className="flex flex-col items-center animate-bounce"
+            className="flex flex-col items-center animate-pulse"
           >
             <div className="w-0 h-0 border-x-[8px] border-x-transparent border-b-[10px] border-b-amber-400 drop-shadow-[0_0_10px_rgba(245,158,11,0.9)]" />
             <span className="text-[10px] bg-gradient-to-r from-amber-500 to-red-600 text-black font-mono font-black px-2.5 py-0.5 rounded shadow-lg whitespace-nowrap tracking-wider uppercase">
@@ -201,7 +201,7 @@ export default function InteractiveTour() {
         </div>
 
         {/* Host Narration */}
-        <div className="bg-zinc-900/80 border-l-4 border-amber-500 rounded-r-xl p-3.5 mb-4 text-xs text-zinc-200 leading-relaxed shadow-inner">
+        <div className="bg-zinc-900/80 border border-amber-500/25 ring-1 ring-white/5 rounded-xl p-3.5 mb-4 text-xs text-zinc-200 leading-relaxed shadow-inner">
           {currentStep.hostDialogue}
         </div>
 

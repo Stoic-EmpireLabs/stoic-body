@@ -123,7 +123,7 @@ export default function HostOnboardingModal() {
         </div>
 
         {/* HOST DIALOGUE SPEECH BUBBLE */}
-        <div className="bg-[#12121A] border-l-4 border-amber-500 rounded-r-xl p-4 mb-6 shadow-inner text-sm text-zinc-200 leading-relaxed font-sans">
+        <div className="bg-[#12121A]/85 border border-amber-500/30 ring-1 ring-white/5 rounded-xl p-4 mb-6 shadow-inner text-sm text-zinc-200 leading-relaxed font-sans backdrop-blur-sm">
           {step === 1 && (
             <p>
               &ldquo;Welcome to <strong>Stoic Sovereign</strong>. I am your autonomous system host. This is not a passive logging tool — it is a gamified operating system engineered for radical physical discipline, sovereign intellect, and zero-compromise execution. Let us establish your identity in the registry.&rdquo;

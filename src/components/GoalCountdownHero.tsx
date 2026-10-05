@@ -86,88 +86,82 @@ export default function GoalCountdownHero() {
         </div>
       </div>
 
-      {/* LIVE COUNTDOWN TICKER DISPLAY */}
-      <div className="relative z-10 grid grid-cols-4 gap-2 sm:gap-4 mb-6">
-        {[
-          { label: "DAYS", value: String(countdown.days).padStart(2, "0") },
-          { label: "HOURS", value: String(countdown.hours).padStart(2, "0") },
-          { label: "MINUTES", value: String(countdown.minutes).padStart(2, "0") },
-          { label: "SECONDS", value: String(countdown.seconds).padStart(2, "0") },
-        ].map((unit, idx) => (
-          <div
-            key={unit.label}
-            className="relative bg-zinc-900/60 backdrop-blur-md border border-white/10 rounded-xl p-3 sm:p-4 text-center shadow-inner group hover:border-amber-500/40 transition"
-          >
-            <div className="text-2xl sm:text-4xl font-extrabold font-mono text-white tracking-tight group-hover:text-amber-300 transition">
-              {unit.value}
+      {/* LIVE COUNTDOWN TICKER DISPLAY (Distilled: Unified strip, no nested cards) */}
+      <div className="relative z-10 bg-black/50 border border-white/10 rounded-xl py-3.5 px-2 sm:px-6 mb-6">
+        <div className="grid grid-cols-4 divide-x divide-white/10">
+          {[
+            { label: "DAYS", value: String(countdown.days).padStart(2, "0") },
+            { label: "HOURS", value: String(countdown.hours).padStart(2, "0") },
+            { label: "MINUTES", value: String(countdown.minutes).padStart(2, "0") },
+            { label: "SECONDS", value: String(countdown.seconds).padStart(2, "0") },
+          ].map((unit) => (
+            <div key={unit.label} className="text-center px-2">
+              <div className="text-2xl sm:text-4xl font-extrabold font-mono tabular-nums text-white tracking-tight">
+                {unit.value}
+              </div>
+              <div className="text-[9px] sm:text-[11px] font-mono text-amber-400/90 font-bold uppercase tracking-widest mt-1">
+                {unit.label}
+              </div>
             </div>
-            <div className="text-[9px] sm:text-[11px] font-mono text-amber-400/90 font-bold uppercase tracking-widest mt-1">
-              {unit.label}
-            </div>
-            {idx < 3 && (
-              <span className="hidden sm:block absolute -right-2.5 top-1/2 -translate-y-1/2 text-zinc-600 font-mono font-bold text-xl">
-                :
-              </span>
-            )}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
-      {/* Target Recomp Physics & Scientific Mechanism */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-3 mb-5 text-xs font-mono">
-        <div className="bg-zinc-900/40 border border-white/5 rounded-xl p-3">
-          <div className="text-zinc-400 text-[10px] uppercase">Weekly Fat Loss Velocity</div>
-          <div className="text-sm font-bold text-emerald-400 mt-0.5">
+      {/* Target Recomp Physics (Distilled: Clean 3-column metric row with subtle dividers) */}
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10 border-y border-white/10 py-3 mb-5 text-xs font-mono">
+        <div className="py-2 md:py-0 md:pr-4">
+          <div className="text-zinc-400 text-[10px] uppercase tracking-wider">Weekly Fat Loss Velocity</div>
+          <div className="text-sm font-bold text-emerald-400 mt-1">
             -{activeProfile.targetWeeklyLossLbs || 1.5} lbs / week
           </div>
-          <div className="text-[10px] text-zinc-500 mt-1">
-            Preserves 100% skeletal lean mass via 140g protein
-          </div>
+          <p className="text-[11px] text-zinc-400 mt-0.5">
+            Preserves 100% lean mass via 140g protein
+          </p>
         </div>
 
-        <div className="bg-zinc-900/40 border border-white/5 rounded-xl p-3">
-          <div className="text-zinc-400 text-[10px] uppercase">Target Energy Balance</div>
-          <div className="text-sm font-bold text-amber-400 mt-0.5">
-            1,800 kcal &bull; -{activeProfile.dailyCalorieDeficit || 750} kcal Deficit
+        <div className="py-2 md:py-0 md:px-4">
+          <div className="text-zinc-400 text-[10px] uppercase tracking-wider">Target Energy Balance</div>
+          <div className="text-sm font-bold text-amber-400 mt-1">
+            1,800 kcal &bull; -{activeProfile.dailyCalorieDeficit || 750} kcal
           </div>
-          <div className="text-[10px] text-zinc-500 mt-1">
-            23:1 OMAD: High lipolysis &amp; HGH release
-          </div>
+          <p className="text-[11px] text-zinc-400 mt-0.5">
+            23:1 OMAD: Elevated lipolysis &amp; HGH
+          </p>
         </div>
 
-        <div className="bg-zinc-900/40 border border-white/5 rounded-xl p-3">
-          <div className="text-zinc-400 text-[10px] uppercase">Movement Modality</div>
-          <div className="text-sm font-bold text-white mt-0.5">
+        <div className="py-2 md:py-0 md:pl-4">
+          <div className="text-zinc-400 text-[10px] uppercase tracking-wider">Movement Modality</div>
+          <div className="text-sm font-bold text-white mt-1">
             {activeProfile.trainingFocus || "Calisthenics & Boxing"}
           </div>
-          <div className="text-[10px] text-zinc-500 mt-1">
+          <p className="text-[11px] text-zinc-400 mt-0.5">
             Zero dumbbells &bull; Mechanical tension &amp; EPOC
-          </div>
+          </p>
         </div>
       </div>
 
-      {/* Milestone Checkpoint Roadmap */}
-      <div className="relative z-10 pt-4 border-t border-white/10">
+      {/* Milestone Checkpoint Roadmap (Distilled: Clean progression step strip) */}
+      <div className="relative z-10 pt-2">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider">
-            Periodized Milestone Roadmap:
+            Periodized Milestone Roadmap
           </span>
           <Link
             href="/calendar"
             className="text-xs font-mono font-bold text-amber-400 hover:text-amber-300 underline flex items-center gap-1"
           >
-            <span>View Full {activeProfile.targetWeeks || 10}-Week Scheduled Calendar &rarr;</span>
+            <span>View Full {activeProfile.targetWeeks || 10}-Week Calendar &rarr;</span>
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {milestones.map((m, idx) => (
             <div
               key={m.phaseName}
-              className={`p-3 rounded-xl border text-left transition ${
+              className={`p-3 rounded-xl transition ${
                 idx === 0
-                  ? "bg-amber-500/10 border-amber-500/50 text-white"
-                  : "bg-zinc-900/40 border-white/5 text-zinc-300"
+                  ? "bg-amber-500/10 border border-amber-500/40 text-white"
+                  : "bg-black/30 border border-white/5 text-zinc-300"
               }`}
             >
               <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 mb-1">
@@ -179,11 +173,11 @@ export default function GoalCountdownHero() {
                 <span>{m.phaseName}</span>
               </div>
               <div className="text-[11px] font-mono text-amber-400 font-bold mt-1">
-                Checkpoint: {m.targetWeightLbs} lbs
+                Target: {m.targetWeightLbs} lbs
               </div>
-              <div className="text-[10px] text-zinc-400 mt-1 leading-snug">
+              <p className="text-[11px] text-zinc-400 mt-1 leading-snug">
                 {m.focusProtocol}
-              </div>
+              </p>
             </div>
           ))}
         </div>

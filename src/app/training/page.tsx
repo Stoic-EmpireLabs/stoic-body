@@ -254,18 +254,20 @@ export default function TrainingStudio() {
             <h3 className="text-[11px] font-bold uppercase tracking-wider text-amber-400">
               Active Round Drill Callout &middot; Combination #{comboIndex + 1}
             </h3>
-            <div className="flex gap-1.5">
+            <div className="flex gap-2">
               <button
                 onClick={() =>
                   setComboIndex((c) => (c - 1 + combos.length) % combos.length)
                 }
-                className="px-2 py-0.5 rounded bg-black border border-red-950 text-slate-300 hover:text-white text-xs font-bold"
+                aria-label="Previous Combination Drill"
+                className="px-3 py-2 min-h-[44px] rounded-lg bg-black/80 border border-white/10 text-slate-300 hover:text-white text-xs font-bold font-mono transition hover:border-amber-500/40"
               >
                 &larr; Prev
               </button>
               <button
                 onClick={() => setComboIndex((c) => (c + 1) % combos.length)}
-                className="px-2 py-0.5 rounded bg-black border border-red-950 text-slate-300 hover:text-white text-xs font-bold"
+                aria-label="Next Combination Drill"
+                className="px-3 py-2 min-h-[44px] rounded-lg bg-black/80 border border-white/10 text-slate-300 hover:text-white text-xs font-bold font-mono transition hover:border-amber-500/40"
               >
                 Next &rarr;
               </button>
@@ -332,7 +334,8 @@ export default function TrainingStudio() {
                   <button
                     key={s}
                     onClick={() => toggleSet("pullups", s)}
-                    className={`w-9 h-9 rounded font-mono text-xs font-bold transition ${
+                    aria-label={`Toggle Set ${s} for Strict Overhand Pull-Ups`}
+                    className={`w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg font-mono text-xs font-bold transition flex items-center justify-center ${
                       isDone
                         ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
                         : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
@@ -358,7 +361,8 @@ export default function TrainingStudio() {
                   <button
                     key={s}
                     onClick={() => toggleSet("dips", s)}
-                    className={`w-9 h-9 rounded font-mono text-xs font-bold transition ${
+                    aria-label={`Toggle Set ${s} for Parallel Bar Dips`}
+                    className={`w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg font-mono text-xs font-bold transition flex items-center justify-center ${
                       isDone
                         ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
                         : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
@@ -384,7 +388,8 @@ export default function TrainingStudio() {
                   <button
                     key={s}
                     onClick={() => toggleSet("pushups", s)}
-                    className={`w-9 h-9 rounded font-mono text-xs font-bold transition ${
+                    aria-label={`Toggle Set ${s} for Diamond Push-Up Burnout`}
+                    className={`w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg font-mono text-xs font-bold transition flex items-center justify-center ${
                       isDone
                         ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
                         : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
@@ -410,7 +415,8 @@ export default function TrainingStudio() {
                   <button
                     key={s}
                     onClick={() => toggleSet("core", s)}
-                    className={`w-9 h-9 rounded font-mono text-xs font-bold transition ${
+                    aria-label={`Toggle Set ${s} for Hanging Leg Raises & Hollow Holds`}
+                    className={`w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg font-mono text-xs font-bold transition flex items-center justify-center ${
                       isDone
                         ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
                         : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
@@ -436,7 +442,8 @@ export default function TrainingStudio() {
                   <button
                     key={s}
                     onClick={() => toggleSet("rows", s)}
-                    className={`w-9 h-9 rounded font-mono text-xs font-bold transition ${
+                    aria-label={`Toggle Set ${s} for Inverted Australian Rows`}
+                    className={`w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg font-mono text-xs font-bold transition flex items-center justify-center ${
                       isDone
                         ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
                         : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"
@@ -462,7 +469,8 @@ export default function TrainingStudio() {
                   <button
                     key={s}
                     onClick={() => toggleSet("squats", s)}
-                    className={`w-9 h-9 rounded font-mono text-xs font-bold transition ${
+                    aria-label={`Toggle Set ${s} for Bodyweight Pistol Squat Progressions`}
+                    className={`w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg font-mono text-xs font-bold transition flex items-center justify-center ${
                       isDone
                         ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow"
                         : "bg-black border border-red-950/80 text-slate-300 hover:text-white hover:border-amber-500/40"

@@ -49,55 +49,55 @@ export default function GoalsPage() {
     setShowAddModal(false);
   };
 
-  // Distinct category styling (Black, Red, Gold theme + differentiated goal colors)
+  // Cohesive Obsidian styling with refined category accent badges
   const getCategoryStyles = (cat: string) => {
     switch (cat) {
       case "Physical":
         return {
-          cardBg: "bg-[#10080A]",
-          border: "border-red-600/40 hover:border-red-500",
-          tag: "bg-red-600 text-white font-bold",
+          cardBg: "bg-zinc-950/70 backdrop-blur-md",
+          border: "border-white/10 hover:border-red-500/40",
+          tag: "bg-red-950/70 border border-red-500/40 text-red-300 font-mono font-medium",
           bar: "bg-red-500",
           xpText: "text-red-400",
         };
       case "Consulting":
         return {
-          cardBg: "bg-[#110E07]",
-          border: "border-amber-500/40 hover:border-amber-400",
-          tag: "bg-amber-500 text-black font-bold",
+          cardBg: "bg-zinc-950/70 backdrop-blur-md",
+          border: "border-white/10 hover:border-amber-500/40",
+          tag: "bg-amber-950/70 border border-amber-500/40 text-amber-300 font-mono font-medium",
           bar: "bg-amber-400",
           xpText: "text-amber-400",
         };
       case "DBA":
         return {
-          cardBg: "bg-[#090C14]",
-          border: "border-blue-600/40 hover:border-blue-400",
-          tag: "bg-blue-600 text-white font-bold",
+          cardBg: "bg-zinc-950/70 backdrop-blur-md",
+          border: "border-white/10 hover:border-blue-500/40",
+          tag: "bg-blue-950/70 border border-blue-500/40 text-blue-300 font-mono font-medium",
           bar: "bg-blue-400",
           xpText: "text-blue-400",
         };
       case "Recovery":
         return {
-          cardBg: "bg-[#08120D]",
-          border: "border-emerald-600/40 hover:border-emerald-400",
-          tag: "bg-emerald-600 text-white font-bold",
+          cardBg: "bg-zinc-950/70 backdrop-blur-md",
+          border: "border-white/10 hover:border-emerald-500/40",
+          tag: "bg-emerald-950/70 border border-emerald-500/40 text-emerald-300 font-mono font-medium",
           bar: "bg-emerald-400",
           xpText: "text-emerald-400",
         };
       case "Intellect":
         return {
-          cardBg: "bg-[#100B1A]",
-          border: "border-purple-600/40 hover:border-purple-400",
-          tag: "bg-purple-600 text-white font-bold",
+          cardBg: "bg-zinc-950/70 backdrop-blur-md",
+          border: "border-white/10 hover:border-purple-500/40",
+          tag: "bg-purple-950/70 border border-purple-500/40 text-purple-300 font-mono font-medium",
           bar: "bg-purple-400",
           xpText: "text-purple-300",
         };
       case "Family":
       default:
         return {
-          cardBg: "bg-[#12080E]",
-          border: "border-rose-600/40 hover:border-rose-400",
-          tag: "bg-rose-600 text-white font-bold",
+          cardBg: "bg-zinc-950/70 backdrop-blur-md",
+          border: "border-white/10 hover:border-rose-500/40",
+          tag: "bg-rose-950/70 border border-rose-500/40 text-rose-300 font-mono font-medium",
           bar: "bg-rose-400",
           xpText: "text-rose-400",
         };

@@ -293,34 +293,26 @@ export default function TodayCommandCenter() {
             <p className="text-xs text-slate-300 mt-0.5">
               Feeding Window opens at <strong className="text-white font-mono">05:30 PM</strong> (Target: ~1,800 kcal &middot; 140g Protein)
             </p>
-            <div className="mt-2 flex items-center gap-3 text-xs text-slate-200 flex-wrap">
-              <span>
-                Protein Target: <strong className="text-amber-400 font-mono font-bold">140g</strong>
-              </span>
-              <span className="text-red-600">&bull;</span>
-              <span>
-                Body Recomp: <strong className="text-white font-mono font-bold">170 &rarr; 155 lbs</strong>
-              </span>
-              <span className="text-red-600">&bull;</span>
-              <span className="text-emerald-400 font-semibold">
-                Menu: Fish, Turkey, or Chicken + Rice &amp; Veggies
-              </span>
+            <div className="mt-2.5 flex items-center gap-4 text-xs font-mono text-zinc-300 flex-wrap">
+              <span>Protein Target: <strong className="text-amber-400">140g</strong></span>
+              <span>Recomp: <strong className="text-white">170 &rarr; 155 lbs</strong></span>
+              <span className="text-emerald-400 font-medium">Autophagy Active</span>
             </div>
-            <div className="mt-2 p-2 rounded bg-black/60 border border-red-950 text-[11px] text-slate-300 font-mono">
-              <span className="text-amber-300 font-bold">Tonight&apos;s Blueprint:</span> 14oz Fish or 16oz Turkey/Chicken + 2.5c Rice + 2c Greens + 24oz Lemon Chia Seed Water (1,800 kcal &bull; 140g P)
-            </div>
+            <p className="mt-2 text-[11px] text-zinc-400 font-mono">
+              <strong className="text-amber-300 font-bold">Tonight&apos;s Blueprint:</strong> 14oz Fish or 16oz Turkey + 2.5c Rice + 2c Greens + 24oz Lemon Chia Water (1,800 kcal &bull; 140g P)
+            </p>
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row items-center gap-2 shrink-0">
+        <div className="flex flex-col sm:flex-row items-center gap-2.5 shrink-0">
           <Link
             href="/nutrition"
-            className="px-3.5 py-2 rounded-lg bg-black/80 hover:bg-neutral-900 border border-amber-500/40 text-amber-300 text-xs font-bold transition flex items-center gap-1.5"
+            className="px-4 py-2.5 min-h-[44px] rounded-xl bg-black/80 hover:bg-neutral-900 border border-amber-500/40 text-amber-300 text-xs font-bold font-mono transition flex items-center gap-1.5"
           >
-            <span>🥗</span> View Exact Portions &amp; Drinks &rarr;
+            <span>🥗</span> View Portions &rarr;
           </Link>
           <button
             onClick={() => awardXp(300, "OMAD Single Feeding Window Logged", "Discipline")}
-            className="px-4 py-2 rounded-lg bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white border border-red-600/50 text-xs font-bold shadow-lg transition"
+            className="px-4 py-2.5 min-h-[44px] rounded-xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white border border-red-600/50 text-xs font-bold font-mono shadow-lg transition flex items-center justify-center"
           >
             Log OMAD Meal (+300 XP)
           </button>

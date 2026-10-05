@@ -77,7 +77,7 @@ export default function CoachingPage() {
             onClick={() => setTone("philosophical_stoic")}
             className={`px-3 py-1.5 rounded text-xs font-bold transition ${
               tone === "philosophical_stoic"
-                ? "bg-gradient-to-r from-indigo-700 to-indigo-800 text-white border border-indigo-500/60 shadow"
+                ? "bg-gradient-to-r from-stone-800 to-stone-900 text-amber-200 border border-amber-500/50 shadow"
                 : "text-slate-300 hover:text-white"
             }`}
           >
@@ -93,7 +93,7 @@ export default function CoachingPage() {
             ? "bg-[#0E0608] border-red-700/60"
             : tone === "direct_centurion"
             ? "bg-[#0E0B05] border-amber-600/60"
-            : "bg-[#080812] border-indigo-600/60"
+            : "bg-[#0C0B10] border-amber-700/40"
         }`}
       >
         <div className="flex items-center justify-between mb-3">
@@ -103,7 +103,7 @@ export default function CoachingPage() {
                 ? "bg-red-950/80 text-red-300 border-red-600/50"
                 : tone === "direct_centurion"
                 ? "bg-amber-950/80 text-amber-300 border-amber-600/50"
-                : "bg-indigo-950/80 text-indigo-300 border-indigo-600/50"
+                : "bg-stone-900/80 text-amber-200 border-amber-600/40"
             }`}
           >
             Advisor: {dialogue.headline}

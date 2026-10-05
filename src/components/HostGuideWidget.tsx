@@ -74,13 +74,13 @@ export default function HostGuideWidget() {
       {/* Host Companion Slide-over / Modal */}
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end p-4 animate-fade-in">
-          <div className="w-full max-w-sm bg-[#0B0B12] border-l-2 sm:border-2 border-amber-500/50 rounded-2xl p-5 shadow-2xl shadow-red-950/80 text-white flex flex-col justify-between overflow-y-auto">
+          <div className="w-full max-w-sm bg-zinc-950/95 border border-amber-500/30 ring-1 ring-white/10 rounded-2xl p-5 shadow-2xl shadow-red-950/80 text-white flex flex-col justify-between overflow-y-auto">
             
             {/* Top Bar */}
             <div>
               <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-red-600 p-[1.5px] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-red-600 p-[1.5px] flex items-center justify-center">
                     <div className="w-full h-full bg-black rounded-[9px] flex items-center justify-center text-base">
                       🤖
                     </div>
@@ -97,14 +97,15 @@ export default function HostGuideWidget() {
 
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-zinc-500 hover:text-zinc-300 text-lg font-bold p-1"
+                  aria-label="Close companion guide"
+                  className="text-zinc-400 hover:text-white text-xl font-bold p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition"
                 >
                   &times;
                 </button>
               </div>
 
               {/* Real-Time Context Directive */}
-              <div className="bg-[#141422] border-l-4 border-amber-500 rounded-r-xl p-3.5 mb-4">
+              <div className="bg-zinc-900/70 border border-amber-500/30 rounded-xl p-3.5 mb-4 shadow-sm">
                 <div className="text-xs font-bold text-amber-400 mb-1 flex items-center gap-1.5 font-mono">
                   <span>⚡</span>
                   <span>{directive.title}</span>
@@ -114,7 +115,7 @@ export default function HostGuideWidget() {
                 </p>
                 <button
                   onClick={() => handleAction(directive.actionRoute)}
-                  className="mt-2.5 text-[11px] font-mono font-bold text-amber-300 hover:text-white flex items-center gap-1 underline"
+                  className="mt-2.5 text-[11px] font-mono font-bold text-amber-300 hover:text-white flex items-center gap-1 underline min-h-[32px]"
                 >
                   {directive.suggestedAction} &rarr;
                 </button>
