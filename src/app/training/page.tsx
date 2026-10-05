@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useStoic } from "@/context/StoicContext";
 import { generateBoxingCombos, BoxingCombo } from "@/lib/health";
+import WorkoutBlueprintCard from "@/components/WorkoutBlueprintCard";
 
 interface IntervalPreset {
   id: string;
@@ -176,6 +177,9 @@ export default function TrainingStudio() {
 
   return (
     <div className="space-y-6">
+
+      {/* FLAGSHIP ANATOMICAL WORKOUT BLUEPRINT DECK */}
+      <WorkoutBlueprintCard initialSplit="push" />
 
       {/* BOXING ROUND TIMER HERO */}
       <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-6 shadow-2xl relative overflow-hidden">

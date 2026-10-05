@@ -13,6 +13,8 @@ import {
   getMealBlueprintByProtein,
 } from "@/lib/nutrition";
 import { fireBrilliantConfetti } from "@/lib/confetti";
+import FieldNotebookDietCard from "@/components/FieldNotebookDietCard";
+import BiohackGuideModal from "@/components/BiohackGuideModal";
 
 const FOUNDER_PRESET_MEALS: Omit<MealLogItem, "id" | "loggedAt">[] = [
   {
@@ -68,6 +70,7 @@ export default function NutritionPage() {
   const [selectedProtein, setSelectedProtein] = useState<ProteinSourceType>("Chicken");
   const [activeDrinkId, setActiveDrinkId] = useState<string>("drink-lemon-chia");
   const [blueprintLoggedFeedback, setBlueprintLoggedFeedback] = useState<string | null>(null);
+  const [isBiohacksOpen, setIsBiohacksOpen] = useState(false);
 
   // Local-First Meal Ledger State (seeded with the user's Chicken & Rice default feast)
   const [meals, setMeals] = useState<MealLogItem[]>([
@@ -434,6 +437,12 @@ export default function NutritionPage() {
           </div>
         </div>
       </section>
+
+      {/* TACTICAL FIELD-NOTEBOOK NUTRITION DECK */}
+      <FieldNotebookDietCard onOpenBiohacks={() => setIsBiohacksOpen(true)} />
+
+      {/* STOIC APOTHECARY BIOHACK MODAL */}
+      <BiohackGuideModal isOpen={isBiohacksOpen} onClose={() => setIsBiohacksOpen(false)} />
 
       {/* SOVEREIGN MEAL BLUEPRINTS & EXACT PORTIONS */}
       <section className="bg-[#0A0A0F] border border-amber-500/40 rounded-xl p-5 shadow-2xl space-y-5 relative overflow-hidden">

@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useStoic } from "@/context/StoicContext";
 import { calculateTaskPoints, DifficultyTier } from "@/lib/gamification";
 import GoalCountdownHero from "@/components/GoalCountdownHero";
+import WorkoutBlueprintCard from "@/components/WorkoutBlueprintCard";
+import BiohackGuideModal from "@/components/BiohackGuideModal";
+import AIVisualStudioModal from "@/components/AIVisualStudioModal";
 
 interface AnchorItem {
   id: string;
@@ -71,6 +74,8 @@ export default function TodayCommandCenter() {
   const [reflectionText, setReflectionText] = useState("");
   const [reflectionSaved, setReflectionSaved] = useState(false);
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
+  const [isBiohacksOpen, setIsBiohacksOpen] = useState(false);
+  const [isAIStudioOpen, setIsAIStudioOpen] = useState(false);
   const [customTitle, setCustomTitle] = useState("");
   const [customSubtitle, setCustomSubtitle] = useState("");
   const [customTier, setCustomTier] = useState<DifficultyTier>(DifficultyTier.Routine);
@@ -193,6 +198,20 @@ export default function TodayCommandCenter() {
               <span>⚡</span> {mvdActive ? "MVD: Active" : "MVD Crisis Mode"}
             </button>
             <button
+              onClick={() => setIsBiohacksOpen(true)}
+              className="px-3 py-1.5 min-h-[40px] rounded-lg bg-red-950/50 text-red-300 border border-red-500/40 hover:bg-red-900/50 text-xs font-bold font-mono transition flex items-center gap-1.5 shadow-sm"
+              title="Open Stoic Apothecary Symptom Biohacks"
+            >
+              <span>🌿</span> Biohacks
+            </button>
+            <button
+              onClick={() => setIsAIStudioOpen(true)}
+              className="px-3 py-1.5 min-h-[40px] rounded-lg bg-gradient-to-r from-amber-500/20 to-amber-600/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 text-xs font-bold font-mono transition flex items-center gap-1.5 shadow-sm"
+              title="Open AI Visual Studio"
+            >
+              <span>✨</span> AI Studio
+            </button>
+            <button
               onClick={() => setIsOnboardingOpen(true)}
               className="px-3 py-1.5 min-h-[40px] rounded-lg bg-gradient-to-r from-amber-500/20 to-amber-600/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 text-xs font-bold font-mono transition flex items-center gap-1.5 shadow-sm"
               title="Open Adaptive Self-Service Questionnaire & Plan Generator"
@@ -261,6 +280,9 @@ export default function TodayCommandCenter() {
           ))}
         </div>
       </section>
+
+      {/* FLAGSHIP VISUAL WORKOUT BLUEPRINT SUITE */}
+      <WorkoutBlueprintCard onOpenAIStudio={() => setIsAIStudioOpen(true)} />
 
       {/* 23:1 OMAD FASTING PROTOCOL (2026 Liquid Obsidian Glassmorphism) */}
       <section id="tour-target-fasting" className="bg-gradient-to-b from-zinc-950/80 via-black/90 to-zinc-950/80 backdrop-blur-2xl border border-white/10 ring-1 ring-amber-500/20 rounded-2xl p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.8)] relative overflow-hidden transition-all hover:border-amber-500/40 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -557,6 +579,10 @@ export default function TodayCommandCenter() {
           </div>
         </div>
       )}
+
+      {/* BIOHACKS & AI VISUAL STUDIO MODALS */}
+      <BiohackGuideModal isOpen={isBiohacksOpen} onClose={() => setIsBiohacksOpen(false)} />
+      <AIVisualStudioModal isOpen={isAIStudioOpen} onClose={() => setIsAIStudioOpen(false)} />
 
     </div>
   );
