@@ -6,6 +6,7 @@ import { useStoic } from "@/context/StoicContext";
 import { calculateTaskPoints, DifficultyTier } from "@/lib/gamification";
 import GoalCountdownHero from "@/components/GoalCountdownHero";
 import WorkoutBlueprintCard from "@/components/WorkoutBlueprintCard";
+import FieldNotebookDietCard from "@/components/FieldNotebookDietCard";
 import BiohackGuideModal from "@/components/BiohackGuideModal";
 import AIVisualStudioModal from "@/components/AIVisualStudioModal";
 
@@ -22,7 +23,18 @@ interface AnchorItem {
 }
 
 export default function TodayCommandCenter() {
-  const { awardXp, reverseXp, streakDays, calmMode, mvdActive, toggleMvd, setIsOnboardingOpen } = useStoic();
+  const {
+    awardXp,
+    reverseXp,
+    streakDays,
+    calmMode,
+    mvdActive,
+    toggleMvd,
+    setIsOnboardingOpen,
+    activeProfile,
+  } = useStoic();
+
+  const [visualSuiteTab, setVisualSuiteTab] = useState<"workout" | "nutrition" | "biohacks">("workout");
 
   const [anchors, setAnchors] = useState<AnchorItem[]>([
     {
@@ -281,8 +293,80 @@ export default function TodayCommandCenter() {
         </div>
       </section>
 
-      {/* FLAGSHIP VISUAL WORKOUT BLUEPRINT SUITE */}
-      <WorkoutBlueprintCard onOpenAIStudio={() => setIsAIStudioOpen(true)} />
+      {/* FLAGSHIP TACTICAL VISUAL SUITE */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between flex-wrap gap-2 px-1">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
+            <h2 className="text-sm font-bold uppercase tracking-wider text-amber-400 font-mono">
+              Sovereign Visual Command Suite
+            </h2>
+          </div>
+          <div className="flex items-center bg-black/80 p-1 rounded-xl border border-white/10 text-xs font-mono">
+            <button
+              onClick={() => setVisualSuiteTab("workout")}
+              className={`px-3 py-1.5 rounded-lg transition font-bold flex items-center gap-1.5 ${
+                visualSuiteTab === "workout"
+                  ? "bg-gradient-to-r from-red-700 to-red-800 text-white shadow border border-red-500/50"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <span>⚔️</span> Workout Blueprints
+            </button>
+            <button
+              onClick={() => setVisualSuiteTab("nutrition")}
+              className={`px-3 py-1.5 rounded-lg transition font-bold flex items-center gap-1.5 ${
+                visualSuiteTab === "nutrition"
+                  ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow font-black"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <span>📓</span> Tactical Nutrition Journal
+            </button>
+            <button
+              onClick={() => {
+                setVisualSuiteTab("biohacks");
+                setIsBiohacksOpen(true);
+              }}
+              className={`px-3 py-1.5 rounded-lg transition font-bold flex items-center gap-1.5 ${
+                visualSuiteTab === "biohacks"
+                  ? "bg-emerald-600 text-white shadow"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <span>🌿</span> Stoic Apothecary
+            </button>
+          </div>
+        </div>
+
+        {visualSuiteTab === "workout" && (
+          <WorkoutBlueprintCard onOpenAIStudio={() => setIsAIStudioOpen(true)} />
+        )}
+        {visualSuiteTab === "nutrition" && (
+          <FieldNotebookDietCard
+            goal={activeProfile.primaryGoal === "bulk" ? "Clean Bulk" : "Aggressive Cut"}
+            targetCalories={activeProfile.dailyCalories || 1800}
+            onOpenBiohacks={() => setIsBiohacksOpen(true)}
+          />
+        )}
+        {visualSuiteTab === "biohacks" && (
+          <div className="p-6 rounded-2xl bg-[#0A0A0F] border border-emerald-900/50 text-center space-y-4">
+            <div className="max-w-md mx-auto space-y-2">
+              <span className="text-3xl">🌿</span>
+              <h3 className="text-lg font-bold text-white">Stoic Apothecary &amp; Symptom Biohacks</h3>
+              <p className="text-xs text-slate-300">
+                Comic-illustrated quick-relief botanical protocols for Bloating, DOMS Soreness, Afternoon Crashes, Sugar Cravings, and NSDR Deep Sleep.
+              </p>
+              <button
+                onClick={() => setIsBiohacksOpen(true)}
+                className="mt-3 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 text-white font-mono font-bold text-xs uppercase tracking-wider shadow-lg transition"
+              >
+                Open Botanical Apothecary Modal &rarr;
+              </button>
+            </div>
+          </div>
+        )}
+      </section>
 
       {/* 23:1 OMAD FASTING PROTOCOL (2026 Liquid Obsidian Glassmorphism) */}
       <section id="tour-target-fasting" className="bg-gradient-to-b from-zinc-950/80 via-black/90 to-zinc-950/80 backdrop-blur-2xl border border-white/10 ring-1 ring-amber-500/20 rounded-2xl p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.8)] relative overflow-hidden transition-all hover:border-amber-500/40 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -314,21 +398,21 @@ export default function TodayCommandCenter() {
           </div>
           <div>
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <span>23:1 OMAD Fasting Protocol</span>
+              <span>{activeProfile.fastingProtocol || "23:1 OMAD"} Fasting Protocol</span>
               <span className="text-[10px] bg-red-950/70 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30 font-mono font-bold">
                 Stage: Autophagy &amp; Fat Oxidation
               </span>
             </h3>
             <p className="text-xs text-slate-300 mt-0.5">
-              Feeding Window opens at <strong className="text-white font-mono">05:30 PM</strong> (Target: ~1,800 kcal &middot; 140g Protein)
+              Feeding Window opens at <strong className="text-white font-mono">05:30 PM</strong> (Target: ~{activeProfile.dailyCalories || 1800} kcal &middot; {activeProfile.dailyProtein || 140}g Protein)
             </p>
             <div className="mt-2.5 flex items-center gap-4 text-xs font-mono text-zinc-300 flex-wrap">
-              <span>Protein Target: <strong className="text-amber-400">140g</strong></span>
-              <span>Recomp: <strong className="text-white">170 &rarr; 155 lbs</strong></span>
+              <span>Protein Target: <strong className="text-amber-400">{activeProfile.dailyProtein || 140}g</strong></span>
+              <span>Recomp: <strong className="text-white">{activeProfile.currentWeight || 170} &rarr; {activeProfile.targetWeight || 155} lbs</strong></span>
               <span className="text-emerald-400 font-medium">Autophagy Active</span>
             </div>
             <p className="mt-2 text-[11px] text-zinc-400 font-mono">
-              <strong className="text-amber-300 font-bold">Tonight&apos;s Blueprint:</strong> 14oz Fish or 16oz Turkey + 2.5c Rice + 2c Greens + 24oz Lemon Chia Water (1,800 kcal &bull; 140g P)
+              <strong className="text-amber-300 font-bold">Tonight&apos;s Blueprint:</strong> {activeProfile.proteinPreference || "Wild Fish or Lean Turkey"} Feast + 2.5c Rice + 2c Greens + 24oz Lemon Chia Water (~{activeProfile.dailyCalories || 1800} kcal &bull; {activeProfile.dailyProtein || 140}g P)
             </p>
           </div>
         </div>
@@ -340,10 +424,10 @@ export default function TodayCommandCenter() {
             <span>🥗</span> View Portions &rarr;
           </Link>
           <button
-            onClick={() => awardXp(300, "OMAD Single Feeding Window Logged", "Discipline")}
+            onClick={() => awardXp(300, `${activeProfile.fastingProtocol || "OMAD"} Feeding Window Logged`, "Discipline")}
             className="px-4 py-2.5 min-h-[44px] rounded-xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white border border-red-600/50 text-xs font-bold font-mono shadow-lg transition flex items-center justify-center"
           >
-            Log OMAD Meal (+300 XP)
+            Log Feeding Window (+300 XP)
           </button>
         </div>
       </section>

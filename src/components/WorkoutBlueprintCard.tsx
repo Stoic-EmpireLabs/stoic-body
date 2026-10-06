@@ -22,6 +22,7 @@ export default function WorkoutBlueprintCard({
   const [activeSplit, setActiveSplit] = useState<"push" | "pull" | "legs">(initialSplit);
   const [completedSets, setCompletedSets] = useState<Record<string, boolean>>({});
   const [showFullSheet, setShowFullSheet] = useState(false);
+  const [viewMode, setViewMode] = useState<"split" | "logger" | "poster">("split");
 
   const blueprint: WorkoutBlueprint = WORKOUT_BLUEPRINTS[activeSplit] || WORKOUT_BLUEPRINTS.push;
 
@@ -70,8 +71,8 @@ export default function WorkoutBlueprintCard({
   };
 
   return (
-    <div className="bg-[#0A0A0F] border border-red-950/80 rounded-2xl p-5 shadow-2xl space-y-5">
-      {/* Header with Split Tabs & AI Studio Button */}
+    <div className="bg-[#0A0A0F] border border-red-950/80 rounded-2xl p-4 sm:p-6 shadow-2xl space-y-5">
+      {/* Header with Split Tabs, View Mode, & AI Studio Button */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-red-950/60 pb-4">
         <div>
           <div className="flex items-center gap-2">
@@ -84,7 +85,7 @@ export default function WorkoutBlueprintCard({
           <p className="text-xs text-slate-400 mt-0.5">{blueprint.subtitle}</p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {/* Split Buttons */}
           <div className="flex bg-black/80 p-1 rounded-lg border border-red-950/80">
             {(["push", "pull", "legs"] as const).map((split) => (
@@ -100,6 +101,34 @@ export default function WorkoutBlueprintCard({
                 {split}
               </button>
             ))}
+          </div>
+
+          {/* View Mode Switcher */}
+          <div className="hidden sm:flex bg-black/80 p-1 rounded-lg border border-white/10 text-xs font-mono">
+            <button
+              onClick={() => setViewMode("split")}
+              className={`px-2.5 py-1 rounded transition ${
+                viewMode === "split" ? "bg-amber-500 text-black font-bold" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              Split View
+            </button>
+            <button
+              onClick={() => setViewMode("logger")}
+              className={`px-2.5 py-1 rounded transition ${
+                viewMode === "logger" ? "bg-amber-500 text-black font-bold" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              Sets Only
+            </button>
+            <button
+              onClick={() => setViewMode("poster")}
+              className={`px-2.5 py-1 rounded transition ${
+                viewMode === "poster" ? "bg-amber-500 text-black font-bold" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              Poster Only
+            </button>
           </div>
 
           {onOpenAIStudio && (
@@ -141,30 +170,47 @@ export default function WorkoutBlueprintCard({
         </button>
       </div>
 
-      {/* High-Resolution Blueprint Sheet Banner (Click to Expand) */}
-      <div className="relative rounded-xl overflow-hidden border border-red-950/80 group">
-        <div className="aspect-[16/9] sm:aspect-[21/9] relative bg-neutral-900 cursor-pointer" onClick={() => setShowFullSheet(true)}>
-          <Image
-            src={blueprint.sheetIllustrationUrl}
-            alt={blueprint.title}
-            fill
-            className="object-cover object-top opacity-90 group-hover:opacity-100 group-hover:scale-[1.02] transition duration-300"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-          <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
-            <span className="text-xs font-mono font-bold text-amber-300 bg-black/80 px-2.5 py-1 rounded border border-amber-500/40 backdrop-blur-md flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-red-400" />
-              Anatomical Muscle Heatmap &middot; Click to Zoom Blueprint
-            </span>
-            <span className="text-xs font-mono font-bold text-white/80 bg-black/80 p-1.5 rounded border border-white/10 hover:border-amber-400 transition">
-              <ZoomIn className="w-4 h-4" />
-            </span>
+      {/* DUAL PANE / ADAPTIVE LAYOUT */}
+      <div className={`grid gap-6 ${viewMode === "split" ? "grid-cols-1 lg:grid-cols-12" : "grid-cols-1"}`}>
+        
+        {/* LEFT PANE: HIGH-RESOLUTION ANATOMICAL BLUEPRINT POSTER (3:4 Ratio, Uncropped) */}
+        {(viewMode === "split" || viewMode === "poster") && (
+          <div className={`${viewMode === "split" ? "lg:col-span-5" : "w-full max-w-xl mx-auto"} space-y-2`}>
+            <div
+              className="relative rounded-xl overflow-hidden border border-red-950/80 bg-black cursor-pointer group shadow-2xl"
+              onClick={() => setShowFullSheet(true)}
+            >
+              <div className="relative aspect-[3/4] w-full">
+                <Image
+                  src={blueprint.sheetIllustrationUrl}
+                  alt={blueprint.title}
+                  fill
+                  className="object-contain group-hover:scale-[1.02] transition duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition" />
+                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                  <span className="text-[11px] font-mono font-bold text-amber-300 bg-black/85 px-2.5 py-1 rounded border border-amber-500/40 backdrop-blur-md flex items-center gap-1.5 shadow">
+                    <Activity className="w-3.5 h-3.5 text-red-400" />
+                    Anatomical Muscle Blueprint &middot; Click to Zoom
+                  </span>
+                  <span className="text-xs font-mono font-bold text-white bg-black/85 p-1.5 rounded border border-white/20 hover:border-amber-400 transition shadow">
+                    <ZoomIn className="w-4 h-4" />
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-between text-[11px] text-zinc-400 font-mono px-1">
+              <span>Crimson Zones = Active Primary Targets</span>
+              <button onClick={() => setShowFullSheet(true)} className="text-amber-400 underline hover:text-amber-300">
+                Inspect 4K Anatomy &rarr;
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
+        )}
 
-      {/* Exercise Cards Grid with Muscle Badges & Set Checkers */}
-      <div className="space-y-3">
+        {/* RIGHT PANE: EXERCISES LIST & INTERACTIVE SET TRACKER */}
+        {(viewMode === "split" || viewMode === "logger") && (
+          <div className={`${viewMode === "split" ? "lg:col-span-7" : "w-full"} space-y-3`}>
         {blueprint.exercises.map((ex, idx) => {
           const allSetsDone = Array.from({ length: ex.sets }).every((_, i) => completedSets[`${ex.id}-s${i + 1}`]);
 
@@ -225,28 +271,30 @@ export default function WorkoutBlueprintCard({
             </div>
           );
         })}
-      </div>
 
-      {/* Cardio Finisher Card */}
-      {blueprint.cardioFinisher && (
-        <div className="p-4 rounded-xl bg-gradient-to-r from-red-950/40 to-black border border-red-900/40 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-red-900/60 border border-red-500/40 flex items-center justify-center text-red-300">
-              <Flame className="w-5 h-5 text-amber-400" />
-            </div>
-            <div>
-              <div className="text-xs font-mono font-bold text-amber-400 uppercase">
-                Cardio Finisher &middot; {blueprint.cardioFinisher.durationMin} Minutes
+          {/* Cardio Finisher Card */}
+          {blueprint.cardioFinisher && (
+            <div className="p-4 rounded-xl bg-gradient-to-r from-red-950/40 to-black border border-red-900/40 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-red-900/60 border border-red-500/40 flex items-center justify-center text-red-300">
+                  <Flame className="w-5 h-5 text-amber-400" />
+                </div>
+                <div>
+                  <div className="text-xs font-mono font-bold text-amber-400 uppercase">
+                    Cardio Finisher &middot; {blueprint.cardioFinisher.durationMin} Minutes
+                  </div>
+                  <div className="text-sm font-bold text-white">{blueprint.cardioFinisher.name}</div>
+                  <div className="text-xs text-slate-400">{blueprint.cardioFinisher.intensity}</div>
+                </div>
               </div>
-              <div className="text-sm font-bold text-white">{blueprint.cardioFinisher.name}</div>
-              <div className="text-xs text-slate-400">{blueprint.cardioFinisher.intensity}</div>
+              <span className="px-3 py-1.5 rounded-lg bg-black/60 border border-white/10 text-xs font-mono font-bold text-slate-300">
+                Zone 2 Aerobic
+              </span>
             </div>
-          </div>
-          <span className="px-3 py-1.5 rounded-lg bg-black/60 border border-white/10 text-xs font-mono font-bold text-slate-300">
-            Zone 2 Aerobic
-          </span>
+          )}
         </div>
       )}
+    </div>
 
       {/* Zoom Modal for Full Sheet Blueprint */}
       {showFullSheet && (

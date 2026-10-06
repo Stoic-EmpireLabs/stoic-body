@@ -173,7 +173,7 @@ export const WORKOUT_BLUEPRINTS: Record<string, WorkoutBlueprint> = {
     id: "legs",
     title: "Day 3 -> Legs",
     subtitle: "Squats · Romanian Deadlift · Leg Press · Curls · Calves",
-    sheetIllustrationUrl: "/assets/blueprints/pull-day.jpg",
+    sheetIllustrationUrl: "/assets/blueprints/legs-day.jpg",
     exercises: [
       {
         id: "legs-1",
@@ -182,7 +182,7 @@ export const WORKOUT_BLUEPRINTS: Record<string, WorkoutBlueprint> = {
         sets: 3,
         repsRange: "5–8 reps",
         rpeTarget: 8.5,
-        illustrationUrl: "/assets/blueprints/pull-day.jpg",
+        illustrationUrl: "/assets/blueprints/legs-day.jpg",
       },
       {
         id: "legs-2",
@@ -191,7 +191,7 @@ export const WORKOUT_BLUEPRINTS: Record<string, WorkoutBlueprint> = {
         sets: 3,
         repsRange: "6–8 reps",
         rpeTarget: 8.5,
-        illustrationUrl: "/assets/blueprints/pull-day.jpg",
+        illustrationUrl: "/assets/blueprints/legs-day.jpg",
       },
       {
         id: "legs-3",
@@ -200,7 +200,7 @@ export const WORKOUT_BLUEPRINTS: Record<string, WorkoutBlueprint> = {
         sets: 2,
         repsRange: "10–12 reps",
         rpeTarget: 9.0,
-        illustrationUrl: "/assets/blueprints/pull-day.jpg",
+        illustrationUrl: "/assets/blueprints/legs-day.jpg",
       },
       {
         id: "legs-4",
@@ -209,7 +209,7 @@ export const WORKOUT_BLUEPRINTS: Record<string, WorkoutBlueprint> = {
         sets: 3,
         repsRange: "10–12 reps",
         rpeTarget: 9.0,
-        illustrationUrl: "/assets/blueprints/pull-day.jpg",
+        illustrationUrl: "/assets/blueprints/legs-day.jpg",
       },
       {
         id: "legs-5",
@@ -218,7 +218,7 @@ export const WORKOUT_BLUEPRINTS: Record<string, WorkoutBlueprint> = {
         sets: 4,
         repsRange: "10–15 reps",
         rpeTarget: 9.5,
-        illustrationUrl: "/assets/blueprints/pull-day.jpg",
+        illustrationUrl: "/assets/blueprints/legs-day.jpg",
       },
     ],
     cardioFinisher: {

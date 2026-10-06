@@ -9,33 +9,53 @@ import { Sparkles, X, Wand2, Download, Check, Camera, RefreshCw } from "lucide-r
 interface AIVisualStudioModalProps {
   isOpen: boolean;
   onClose: () => void;
-  defaultType?: "workout" | "nutrition" | "biohack" | "physique";
+  defaultType?: string;
+  initialType?: string;
+  onApplyImage?: (url: string) => void;
 }
 
 export const AI_GENERATED_PRESETS = [
   {
     type: "workout",
-    label: "🏋️‍♂️ Push Day Blueprint",
+    label: "🏋️‍♂️ Push Day",
     previewUrl: "/assets/blueprints/push-day.jpg",
     prompt: "Anatomical muscle heatmap highlighting upper chest, front delts, and lateral deltoids.",
   },
   {
     type: "pull",
-    label: "🥋 Pull Day Blueprint",
+    label: "🥋 Pull Day",
     previewUrl: "/assets/blueprints/pull-day.jpg",
     prompt: "Lats and upper back muscle heatmap with cable rows and hammer curls.",
   },
   {
+    type: "legs",
+    label: "🦵 Legs Day",
+    previewUrl: "/assets/blueprints/legs-day.jpg",
+    prompt: "Anatomical lower body heatmap highlighting quadriceps, hamstrings, gluteus maximus, and calves.",
+  },
+  {
     type: "nutrition",
-    label: "📓 Cutting Field Journal",
+    label: "📓 Nutrition Journal",
     previewUrl: "/assets/blueprints/notebook-diet.jpg",
     prompt: "Tactical lined-notebook cutting diet with Roman numerals and boxed macro summary.",
   },
   {
     type: "biohack",
-    label: "🌿 Ginger Bloat Biohack",
+    label: "🌿 Biohack Guide",
     previewUrl: "/assets/blueprints/bloating-ginger.jpg",
     prompt: "Warm hand-drawn comic guide for gut bloating and fresh ginger infusion.",
+  },
+  {
+    type: "physique_male",
+    label: "⚔️ Male Spartan",
+    previewUrl: "/assets/brand/male-goal-physique.jpg",
+    prompt: "Realistic athletic male Spartan physique, 8-10% body fat, chiseled six-pack abs and V-taper.",
+  },
+  {
+    type: "physique_female",
+    label: "🛡️ Female Spartan",
+    previewUrl: "/assets/brand/female-goal-physique.jpg",
+    prompt: "Realistic athletic female Spartan physique, 16-18% body fat, toned abdominal definition and athletic shoulders.",
   },
 ];
 
@@ -43,9 +63,11 @@ export default function AIVisualStudioModal({
   isOpen,
   onClose,
   defaultType = "workout",
+  initialType,
+  onApplyImage,
 }: AIVisualStudioModalProps) {
   const { awardXp, playBellSound, playAnvilChime } = useStoic();
-  const [visualType, setVisualType] = useState<string>(defaultType);
+  const [visualType, setVisualType] = useState<string>(initialType || defaultType);
   const [customPrompt, setCustomPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedResult, setGeneratedResult] = useState<{
@@ -202,7 +224,12 @@ export default function AIVisualStudioModal({
 
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
-                  onClick={onClose}
+                  onClick={() => {
+                    if (onApplyImage && generatedResult?.imageUrl) {
+                      onApplyImage(generatedResult.imageUrl);
+                    }
+                    onClose();
+                  }}
                   className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-black font-mono font-bold text-xs hover:from-amber-400 transition"
                 >
                   Apply to My Plan

@@ -505,25 +505,33 @@ export default function HostOnboardingModal() {
                   </div>
 
                   {/* Goal Physique Preview Card */}
-                  <div className="w-full sm:w-1/2 p-3.5 rounded-xl bg-zinc-900/80 border border-amber-500/30 text-xs font-mono space-y-2">
+                  <div className="w-full sm:w-1/2 p-3 rounded-xl bg-zinc-900/90 border border-amber-500/30 text-xs font-mono space-y-2">
                     <div className="flex items-center justify-between text-[11px] text-amber-400 font-bold uppercase">
-                      <span>Realistic Goal Visualization</span>
+                      <span>Realistic Goal Physique</span>
                       <span className="text-[9px] bg-red-950/80 text-red-300 px-1.5 py-0.5 rounded border border-red-600/40">
-                        Physique Physics
+                        {isFemale ? "♀ Female Model" : "♂ Male Model"}
                       </span>
                     </div>
-                    <div className="text-white">
-                      Target Physique: <strong className="text-amber-300 uppercase">{formData.targetPhysique}</strong>
+
+                    <div className="relative rounded-lg overflow-hidden border border-amber-500/40 h-36 bg-black group">
+                      <img
+                        src={isFemale ? "/assets/brand/female-goal-physique.jpg" : "/assets/brand/male-goal-physique.jpg"}
+                        alt="Realistic Goal Target Visual"
+                        className="w-full h-full object-cover object-top transition duration-300 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70" />
+                      <div className="absolute bottom-1.5 left-2 right-2 flex items-center justify-between text-[10px] font-mono">
+                        <span className="text-white font-bold uppercase">{formData.targetPhysique}</span>
+                        <span className="text-emerald-400 font-bold">{isFemale ? "16-18% BF" : "8-10% BF"}</span>
+                      </div>
                     </div>
-                    <div className="text-zinc-300 text-[11px]">
-                      Expected Body Fat: <strong className="text-emerald-400">{isFemale ? "16-18%" : "8-10%"}</strong>
+
+                    <div className="space-y-0.5 text-[11px] text-zinc-300">
+                      <div>Target: <strong className="text-white">{formData.targetWeight} lbs</strong> &bull; <strong className="text-amber-300">{dailyProtein}g Protein</strong></div>
+                      <div className="text-[10px] text-zinc-400 italic">
+                        *Grounded in human body composition physics and Mifflin-St Jeor metabolic equations.
+                      </div>
                     </div>
-                    <div className="text-zinc-300 text-[11px]">
-                      Lean Mass Protection: <strong className="text-amber-300">100% via 140g Protein</strong>
-                    </div>
-                    <p className="text-[10px] text-zinc-400 italic">
-                      *Goal illustration is grounded in empirical body composition metrics and Mifflin-St Jeor metabolic physics.
-                    </p>
                   </div>
                 </div>
               </div>
@@ -825,7 +833,7 @@ export default function HostOnboardingModal() {
           {step === 7 && (
             <div className="space-y-4">
               <span className="text-xs font-bold text-amber-400 uppercase tracking-wider font-mono block">
-                Sovereign Blueprint Ready &bull; Autonomous Schedule Generated
+                Sovereign Blueprint Ready &bull; Complete 7-Day Protocol Generated
               </span>
 
               {/* Blueprint Summary Card */}
@@ -851,16 +859,46 @@ export default function HostOnboardingModal() {
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg bg-black/60 border border-white/10 space-y-1">
-                  <div className="text-amber-400 font-bold">Autonomous Calendar Generation:</div>
-                  <div className="text-zinc-300 text-[11px]">
-                    &bull; <strong>{formData.trainingDaysPerWeek}x Weekly Workouts:</strong> {formData.trainingFocus} (Scheduled at 06:30 AM)
+                {/* 7-DAY SCHEDULE ACCORDION / SUMMARY */}
+                <div className="p-3 rounded-lg bg-black/60 border border-white/10 space-y-2">
+                  <div className="flex items-center justify-between text-amber-400 font-bold">
+                    <span>Generated 7-Day Autonomous Training &amp; Feeding Schedule:</span>
+                    <span className="text-[10px] text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
+                      Periodized Active
+                    </span>
                   </div>
-                  <div className="text-zinc-300 text-[11px]">
-                    &bull; <strong>Daily Eating Window:</strong> {formData.fastingProtocol} Feast at 05:30 PM ({dailyProtein}g Protein Target)
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-zinc-300">
+                    <div className="p-2 rounded bg-zinc-900/60 border border-white/5">
+                      <strong className="text-amber-300">Day 1 (Mon):</strong> Push Blueprint (Chest &amp; Triceps) + 20m Incline Walk
+                    </div>
+                    <div className="p-2 rounded bg-zinc-900/60 border border-white/5">
+                      <strong className="text-amber-300">Day 2 (Tue):</strong> Pull Blueprint (Strict Pull-Ups &amp; Lats) + 18m Cycling
+                    </div>
+                    <div className="p-2 rounded bg-zinc-900/60 border border-white/5">
+                      <strong className="text-amber-300">Day 3 (Wed):</strong> Legs Blueprint (Squats, RDLs, Calves)
+                    </div>
+                    <div className="p-2 rounded bg-zinc-900/60 border border-white/5">
+                      <strong className="text-amber-300">Day 4 (Thu):</strong> Combat Conditioning (6-Rounds Boxing Interval)
+                    </div>
+                    <div className="p-2 rounded bg-zinc-900/60 border border-white/5">
+                      <strong className="text-amber-300">Day 5 (Fri):</strong> Upper Hypertrophy Burnout (Dips &amp; Core)
+                    </div>
+                    <div className="p-2 rounded bg-zinc-900/60 border border-white/5">
+                      <strong className="text-amber-300">Day 6 (Sat):</strong> Zone 2 Aerobic Outdoor Ruck &middot; 45m
+                    </div>
+                    <div className="p-2 rounded bg-zinc-900/60 border border-white/5 sm:col-span-2">
+                      <strong className="text-amber-300">Day 7 (Sun):</strong> Active Recovery, Mobility &amp; Weekly Stoic Telemetry Audit
+                    </div>
                   </div>
-                  <div className="text-zinc-300 text-[11px]">
-                    &bull; <strong>Daily Stoic Anchors:</strong> {(formData.stoicHabits || []).join(", ")}
+
+                  <div className="pt-2 border-t border-white/5 flex flex-wrap items-center justify-between text-[11px] text-zinc-400">
+                    <span>
+                      Daily Feast: <strong className="text-white">{formData.fastingProtocol}</strong> at 05:30 PM &bull; {formData.proteinPreference || "Wild Fish / Turkey"} ({dailyProtein}g Protein)
+                    </span>
+                    <span>
+                      Hydration: <strong className="text-amber-300">{formData.hydrationFocus}</strong>
+                    </span>
                   </div>
                 </div>
               </div>

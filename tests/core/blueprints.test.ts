@@ -15,6 +15,15 @@ test("Workout Blueprints — Push, Pull, and Legs workout blueprints with anatom
   assert.ok(pull, "Pull blueprint should exist");
   assert.ok(pull.title.includes("Pull"));
   assert.ok(pull.exercises[0].targetMuscleGroups.includes("Latissimus Dorsi"));
+
+  const legs = getWorkoutBlueprint("legs");
+  assert.ok(legs, "Legs blueprint should exist");
+  assert.ok(legs.title.includes("Legs"));
+  assert.equal(legs.sheetIllustrationUrl, "/assets/blueprints/legs-day.jpg");
+  assert.ok(legs.exercises.length >= 5);
+  assert.ok(legs.exercises.some((e) => e.name.includes("Squat")));
+  assert.ok(legs.exercises.some((e) => e.name.includes("Deadlift")));
+  assert.ok(legs.exercises.some((e) => e.targetMuscleGroups.includes("Gastrocnemius")));
 });
 
 test("Workout Blueprints — Include cardio finishers and sets x reps ranges", () => {

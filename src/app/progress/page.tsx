@@ -7,9 +7,12 @@ import {
   projectRecompositionTimeline,
   calculateMovingAverageWeight,
 } from "@/lib/health";
+import AIVisualStudioModal from "@/components/AIVisualStudioModal";
 
 export default function BodyProgressPage() {
   const { awardXp, playAnvilChime, playBellSound, activeProfile } = useStoic();
+  const [isAIStudioOpen, setIsAIStudioOpen] = useState(false);
+  const [customGoalPhoto, setCustomGoalPhoto] = useState<string>("");
 
   // Scale Weights State (Historical 7-day rolling window)
   const [weights, setWeights] = useState<{ date: string; weight: number }[]>([
@@ -665,26 +668,55 @@ export default function BodyProgressPage() {
                     ))}
                   </div>
 
-                  <div className="h-36 rounded-lg bg-black/60 border border-white/10 p-3 flex flex-col justify-center space-y-1.5 font-mono text-xs mb-3">
+                  {/* Realistic Goal Visual Image */}
+                  <div className="relative rounded-lg overflow-hidden border border-amber-500/40 mb-3 h-48 bg-black group">
+                    <img
+                      src={
+                        customGoalPhoto ||
+                        (goalGender === "female"
+                          ? "/assets/brand/female-goal-physique.jpg"
+                          : "/assets/brand/male-goal-physique.jpg")
+                      }
+                      alt="Realistic Goal Physique"
+                      className="w-full h-full object-cover object-top transition duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent opacity-80" />
+                    <div className="absolute top-2 left-2 bg-black/85 px-2 py-0.5 rounded text-[10px] font-mono text-amber-300 border border-amber-500/40">
+                      {goalGender === "female" ? "♀ Female Spartan" : "♂ Male Spartan"} &bull; {goalPhysique.toUpperCase()}
+                    </div>
+                    <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[11px] font-mono">
+                      <span className="text-white font-bold">{goalGender === "female" ? "135 lbs · 16-18% BF" : "155 lbs · 8-10% BF"}</span>
+                      <span className="text-emerald-400 font-bold">Six-Pack &amp; V-Taper</span>
+                    </div>
+                  </div>
+
+                  <div className="p-2.5 rounded-lg bg-black/60 border border-white/10 space-y-1 font-mono text-[11px] mb-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-zinc-400">Model:</span>
+                      <span className="text-zinc-400">Target Model:</span>
                       <span className="text-amber-300 font-bold uppercase">{goalGender} &bull; {goalPhysique}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-zinc-400">Target Weight:</span>
-                      <span className="text-white font-bold">155.0 lbs</span>
+                      <span className="text-zinc-400">Target Goal Weight:</span>
+                      <span className="text-white font-bold">{goalGender === "female" ? "135.0 lbs" : "155.0 lbs"}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-zinc-400">Target Body Fat:</span>
                       <span className="text-emerald-400 font-bold">{goalGender === "female" ? "16-18%" : "8-10%"}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-zinc-400">Lean Mass Score:</span>
-                      <span className="text-amber-300 font-bold">100% Preserved</span>
+                      <span className="text-zinc-400">Lean Mass Protection:</span>
+                      <span className="text-amber-300 font-bold">100% via 140g Protein</span>
                     </div>
                   </div>
 
-                  <p className="text-[10px] text-zinc-400 italic font-mono leading-snug">
+                  <button
+                    onClick={() => setIsAIStudioOpen(true)}
+                    className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition min-h-[38px]"
+                  >
+                    <span>✨</span> Launch AI Visual Studio &rarr;
+                  </button>
+
+                  <p className="text-[10px] text-zinc-400 italic font-mono leading-snug mt-2">
                     *Grounded in human body composition physics, Mifflin-St Jeor metabolic equations, and 140g protein OMAD.
                   </p>
                 </div>
@@ -730,6 +762,19 @@ export default function BodyProgressPage() {
           </div>
         )}
       </section>
+
+      {/* IN-APP AI VISUAL STUDIO MODAL */}
+      <AIVisualStudioModal
+        isOpen={isAIStudioOpen}
+        onClose={() => setIsAIStudioOpen(false)}
+        initialType={goalGender === "female" ? "physique_female" : "physique_male"}
+        onApplyImage={(url: string) => {
+          setCustomGoalPhoto(url);
+          setIsAIStudioOpen(false);
+          awardXp(500, "Personalized Goal Physique Visual Synchronized", "Dominion");
+          playBellSound();
+        }}
+      />
 
     </div>
   );
