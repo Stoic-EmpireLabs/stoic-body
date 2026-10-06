@@ -83,7 +83,7 @@ export const FOUNDER_PROFILE: ClientProfile = {
   id: "founder",
   name: "Stoic Sovereign",
   role: "founder",
-  callsign: "Stoic Centurion",
+  callsign: "Stoic Marine (USMC)",
   age: 33,
   height: "5'10\"",
   currentWeight: 170.0,
@@ -175,12 +175,12 @@ export const APP_TOUR_STEPS: TourStep[] = [
     id: "tour-tab-progress",
     stepNumber: 6,
     title: "6. 170→155 Recomp Data Analytics & Body Fat Scanner",
-    subtitle: "7-day rolling moving average & US Navy body composition formulas",
+    subtitle: "7-day rolling moving average & USMC body composition standards (MCO 6110.3A)",
     tabLabel: "170→155 Recomp",
     targetSelector: "#tour-tab-progress",
     route: "/progress",
     hostDialogue:
-      "Water weight fluctuates daily — discipline does not. This module filters day-to-day noise using a 7-day rolling moving average, computes your body fat percentage using the US Navy tape method, and models your exact fat loss velocity.",
+      "Water weight fluctuates daily — discipline does not. This module filters day-to-day noise using a 7-day rolling moving average, computes your body fat percentage using the USMC circumference tape test standard (MCO 6110.3A), and models your exact fat loss velocity.",
     actionHint: "Enter your morning weigh-in to update the rolling trendline.",
   },
   {

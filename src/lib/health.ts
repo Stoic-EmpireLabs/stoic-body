@@ -52,10 +52,11 @@ export function calculateDailyMacros(meals: MealLogItem[]): DailyMacroTotals {
 }
 
 /**
- * US Navy Formula for Body Fat Percentage (Men)
- * %BF = 86.010 * log10(waist - neck) - 70.041 * log10(height) + 36.76
+ * USMC Body Composition Program (BCP) Circumference Tape Test Formula
+ * Marine Corps Order (MCO) 6110.3A Standard (Male Marines)
+ * Formula: %BF = 86.010 * log10(abdomen - neck) - 70.041 * log10(height) + 36.76
  */
-export function calculateBodyFatNavy(
+export function calculateBodyFatUSMC(
   waistInches: number,
   neckInches: number,
   heightInches: number
@@ -68,6 +69,10 @@ export function calculateBodyFatNavy(
 
   return Math.round(Math.max(3, Math.min(50, bf)) * 10) / 10;
 }
+
+// Aliases for military and backward-compatibility
+export const calculateBodyFatNavy = calculateBodyFatUSMC;
+export const calculateBodyFatMilitary = calculateBodyFatUSMC;
 
 /**
  * Estimates body recomposition timeline for fat loss

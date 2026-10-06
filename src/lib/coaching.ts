@@ -120,12 +120,12 @@ export function generateCoachingDialogue(
   }
 
   if (tone === "direct_centurion") {
-    // Military Discipline & Tactical Order
+    // Marine Corps Discipline & Tactical Order
     return {
       tone: "direct_centurion",
-      headline: "Centurion Tactical Order: Line Movement Only",
-      content: `Soldier. Current status: Level ${context.currentLevel}, Frontline Centurion. ${context.completedTaskCount} objectives secured today, ${context.pendingTaskCount} remain in the field. Target mass is 155 lbs. Calisthenics, boxing rounds, and consulting acquisitions require physical grit, not theoretical contemplation.`,
-      actionPrompt: "Mount the objective. Complete the next repetition. Dismissed.",
+      headline: "Marine Centurion Tactical Order: Line Movement Only",
+      content: `Marine. Current status: Level ${context.currentLevel}, Frontline Leatherneck. ${context.completedTaskCount} objectives secured today, ${context.pendingTaskCount} remain in the field. Target mass is 155 lbs. Calisthenics, 6 rounds of striking, and sovereign tech execution require raw Marine grit—improvise, adapt, and overcome. Zero excuses.`,
+      actionPrompt: "Semper Fi. Mount the objective. Complete the next repetition. Dismissed.",
       quote,
     };
   }

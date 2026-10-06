@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useStoic } from "@/context/StoicContext";
 import {
+  calculateBodyFatUSMC,
   calculateBodyFatNavy,
   projectRecompositionTimeline,
   calculateMovingAverageWeight,
@@ -26,7 +27,7 @@ export default function BodyProgressPage() {
   ]);
   const [newWeightInput, setNewWeightInput] = useState("169.5");
 
-  // US Navy Body Fat Calculator State (Default 5'10", 33.5" waist, 15.5" neck)
+  // USMC Body Composition Program (BCP) State (MCO 6110.3A Standard, Default 5'10", 33.5" waist, 15.5" neck)
   const [heightInches, setHeightInches] = useState<number>(70); // 5'10"
   const [waistInches, setWaistInches] = useState<number>(33.5);
   const [neckInches, setNeckInches] = useState<number>(15.5);
@@ -86,10 +87,10 @@ export default function BodyProgressPage() {
         } catch (e) {}
       }
 
-      const savedWaist = localStorage.getItem("stoic_navy_waist");
+      const savedWaist = localStorage.getItem("stoic_usmc_waist") || localStorage.getItem("stoic_navy_waist");
       if (savedWaist) setWaistInches(Number(savedWaist));
 
-      const savedNeck = localStorage.getItem("stoic_navy_neck");
+      const savedNeck = localStorage.getItem("stoic_usmc_neck") || localStorage.getItem("stoic_navy_neck");
       if (savedNeck) setNeckInches(Number(savedNeck));
     }
   }, []);
@@ -99,9 +100,9 @@ export default function BodyProgressPage() {
   const currentWeightEst = rollingAvg > 0 ? rollingAvg : 170.0;
   const lbsToLose = Math.max(0, currentWeightEst - targetWeight);
 
-  // Navy Body Fat % Calculations
-  const currentBfPercent = calculateBodyFatNavy(waistInches, neckInches, heightInches);
-  const targetBfPercent = calculateBodyFatNavy(31.0, neckInches, heightInches); // 31" waist target
+  // USMC Body Fat % Calculations (Marine Corps Order 6110.3A BCP Standard)
+  const currentBfPercent = calculateBodyFatUSMC(waistInches, neckInches, heightInches);
+  const targetBfPercent = calculateBodyFatUSMC(31.0, neckInches, heightInches); // 31" waist target
 
   // Lean vs Fat Mass breakdown
   const fatMassLbs = Math.round(((currentWeightEst * currentBfPercent) / 100) * 10) / 10;
@@ -136,10 +137,13 @@ export default function BodyProgressPage() {
   const handleSaveTape = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("stoic_progress_tape", JSON.stringify(tapeData));
+      localStorage.setItem("stoic_usmc_waist", String(waistInches));
+      localStorage.setItem("stoic_usmc_neck", String(neckInches));
+      // Backward compatibility key
       localStorage.setItem("stoic_navy_waist", String(waistInches));
       localStorage.setItem("stoic_navy_neck", String(neckInches));
     }
-    awardXp(100, "Circumference Tape Telemetry Saved", "Discipline");
+    awardXp(100, "USMC Tape Telemetry Saved", "Discipline");
     playBellSound();
   };
 
@@ -265,20 +269,40 @@ export default function BodyProgressPage() {
         </div>
       </section>
 
-      {/* US NAVY BODY FAT & RECOMPOSITION ENGINE */}
+      {/* USMC BODY COMPOSITION PROGRAM (BCP) & RECOMPOSITION ENGINE */}
       <section className="bg-[#0A0A0F] border border-red-950/80 rounded-xl p-5 shadow-2xl">
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-wider text-white">
-              US Navy Body Fat Formula &amp; Abdominal Telemetry
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
+              <span>USMC Body Composition Program (BCP) &amp; Marine Tape Telemetry</span>
+              <span className="text-[10px] bg-red-950/90 text-amber-300 px-2 py-0.5 rounded border border-amber-500/40 font-mono font-bold">
+                MCO 6110.3A Standard
+              </span>
             </h3>
-            <p className="text-xs text-slate-300">
-              Validated clinical formula: 86.010 &times; log10(waist - neck) - 70.041 &times; log10(height) + 36.76.
+            <p className="text-xs text-slate-300 mt-0.5">
+              Marine Corps circumference formula: 86.010 &times; log10(abdomen - neck) - 70.041 &times; log10(height) + 36.76.
             </p>
           </div>
-          <span className="text-xs font-mono font-bold px-3 py-1 rounded bg-amber-950/80 text-amber-300 border border-amber-500/40">
-            Current Est: {currentBfPercent}% Body Fat
-          </span>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-mono font-bold px-3 py-1 rounded bg-amber-950/80 text-amber-300 border border-amber-500/40">
+              Current Est: {currentBfPercent}% Body Fat
+            </span>
+            <span
+              className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded border ${
+                currentBfPercent <= 12.0
+                  ? "bg-emerald-950/80 text-emerald-300 border-emerald-500/50"
+                  : currentBfPercent <= 18.0
+                  ? "bg-amber-950/80 text-amber-300 border-amber-500/50"
+                  : "bg-red-950/80 text-red-300 border-red-500/50"
+              }`}
+            >
+              {currentBfPercent <= 12.0
+                ? "🦅 USMC Elite Recon Standard (Semper Fi)"
+                : currentBfPercent <= 18.0
+                ? "🦅 USMC BCP Compliant & Combat Ready"
+                : "🦅 USMC Recomp Target (170 → 155 lbs)"}
+            </span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
@@ -375,7 +399,7 @@ export default function BodyProgressPage() {
                 </div>
                 <div className="flex justify-between text-slate-300">
                   <span>Target @ 155 lbs (31.0&quot; Waist):</span>
-                  <span className="font-mono font-bold text-amber-400">~{targetBfPercent}% (Visible Abs)</span>
+                  <span className="font-mono font-bold text-amber-400">~{targetBfPercent}% (Marine Recon Abs)</span>
                 </div>
                 <div className="flex justify-between text-slate-300">
                   <span>Net Fat to Oxidize:</span>

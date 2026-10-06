@@ -8,7 +8,7 @@ const TABS = [
   { href: "/goals", label: "Goals & Countdown", testSelector: "text=Goals & Weekly Targets Hub" },
   { href: "/training", label: "Boxing & Calisthenics", testSelector: "button:has-text('PULL')" },
   { href: "/nutrition", label: "23:1 OMAD", testSelector: "button:has-text('Turkey')" },
-  { href: "/progress", label: "170→155 Recomp", testSelector: "text=US Navy Body Fat Formula" },
+  { href: "/progress", label: "170→155 Recomp", testSelector: "text=USMC Body Composition" },
   { href: "/learning", label: "AI Spectrum & Courses", testSelector: "text=AI Hierarchy Spectrum" },
   { href: "/coaching", label: "Stoic Coach", testSelector: "button:has-text('Centurion')" },
   { href: "/quests", label: "Quests", testSelector: "button:has-text('Forge New Quest')" },

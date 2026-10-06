@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   calculateDailyMacros,
+  calculateBodyFatUSMC,
   calculateBodyFatNavy,
   projectRecompositionTimeline,
   calculateMovingAverageWeight,
@@ -22,19 +23,22 @@ test("Phase 5 Health — Daily Macro & Caloric Balance", () => {
   assert.equal(totals.proteinMet(140), true, "Should meet or exceed 140g protein target");
 });
 
-test("Phase 5 Health — US Navy Body Fat Percentage Formula", () => {
-  // Male: 5'10" (70 inches), waist 34 inches, neck 15.5 inches
+test("Phase 5 Health — USMC Body Fat Percentage Formula (MCO 6110.3A)", () => {
+  // Male Marine: 5'10" (70 inches), waist 34 inches, neck 15.5 inches
   const heightInches = 70;
   const waistInches = 34;
   const neckInches = 15.5;
 
-  const bf = calculateBodyFatNavy(waistInches, neckInches, heightInches);
+  const bf = calculateBodyFatUSMC(waistInches, neckInches, heightInches);
   assert.ok(bf >= 14 && bf <= 18, `Body fat must be realistic (~16%), got ${bf}%`);
 
   // Target waist 31 inches, neck 15.5 inches (leaner state)
-  const bfLean = calculateBodyFatNavy(31, 15.5, 70);
+  const bfLean = calculateBodyFatUSMC(31, 15.5, 70);
   assert.ok(bfLean < bf, "Leaner waist must yield lower body fat percentage");
   assert.ok(bfLean >= 9 && bfLean <= 13, `Leaner state should be ~11%, got ${bfLean}%`);
+
+  // Ensure calculateBodyFatNavy alias returns identical result
+  assert.equal(calculateBodyFatNavy(waistInches, neckInches, heightInches), bf);
 });
 
 test("Phase 5 Health — 170 -> 155 lbs Recomp Timeline Forecast", () => {
