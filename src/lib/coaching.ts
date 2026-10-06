@@ -139,3 +139,184 @@ export function generateCoachingDialogue(
     quote,
   };
 }
+
+export interface StoicInquiryOption {
+  id: string;
+  category: "Fasting & Discipline" | "Fatigue & Training" | "Focus & Overwhelm" | "Mindset & Adversity";
+  label: string;
+  dilemma: string;
+}
+
+export const PRESET_INQUIRIES: StoicInquiryOption[] = [
+  {
+    id: "fasting-temptation",
+    category: "Fasting & Discipline",
+    label: "Tempted to Break 23:1 OMAD Fast Early",
+    dilemma: "I feel intense hunger pangs at hour 19. My mind is bargaining to eat snacks before 05:30 PM.",
+  },
+  {
+    id: "workout-friction",
+    category: "Fatigue & Training",
+    label: "Hesitation Before Heavy Leg Day / Boxing",
+    dilemma: "I feel low physical drive and friction before initiating heavy barbell squats and 6 rounds of striking.",
+  },
+  {
+    id: "doctoral-overwhelm",
+    category: "Focus & Overwhelm",
+    label: "Overwhelmed by Doctoral Dissertation & Client Deliverables",
+    dilemma: "Too many open cognitive loops between DBA research, client deliverables, and software builds.",
+  },
+  {
+    id: "scale-weight-frustration",
+    category: "Mindset & Adversity",
+    label: "Frustrated by Scale Weight Fluctuation",
+    dilemma: "Scale weight ticked up 0.5 lbs despite strict calorie deficit. Starting to question progress.",
+  },
+  {
+    id: "doubt-and-impostor",
+    category: "Mindset & Adversity",
+    label: "Combatting Impostor Syndrome & High-Gravity Friction",
+    dilemma: "Feeling self-doubt about executing multiple elite ambitions simultaneously.",
+  },
+];
+
+export interface OracleGuidance {
+  tone: CoachingTone;
+  dilemma: string;
+  verdictTitle: string;
+  withinControl: string[];
+  outsideControl: string[];
+  quote: AuthenticatedQuote;
+  tacticalActionDirective: string;
+  inversionExercise: string;
+}
+
+export function resolveStoicOracleGuidance(
+  dilemma: string,
+  tone: CoachingTone,
+  context?: Partial<CoachingContext>
+): OracleGuidance {
+  const d = dilemma.toLowerCase();
+  let quote = AUTHENTICATED_STOIC_QUOTES[0];
+  let verdictTitle = "The Sovereign Citadel Response";
+  let withinControl = [
+    "Your immediate physical response in the next 120 seconds",
+    "Whether you reach for cold mineral water or surrender to craving",
+    "Your internal mental narrative and emotional detachment",
+  ];
+  let outsideControl = [
+    "Immediate visceral sensations of hunger or transient fatigue",
+    "Past moments of hesitation or missed targets",
+    "External timelines and speed of biological adaptation",
+  ];
+  let tacticalActionDirective = "Down 24oz cold electrolyte water. Execute 25 push-ups to flood dopamine.";
+  let inversionExercise = "Premeditate the regret of breaking discipline: 30 seconds of pleasure followed by 24 hours of self-betrayal.";
+
+  if (d.includes("fast") || d.includes("hungry") || d.includes("food") || d.includes("eat")) {
+    quote = AUTHENTICATED_STOIC_QUOTES.find((q) => q.category === "temperance") || AUTHENTICATED_STOIC_QUOTES[6];
+    verdictTitle =
+      tone === "grill_me"
+        ? "Socratic Interrogation: Physical Hunger vs Mental Weakness"
+        : tone === "direct_centurion"
+        ? "Centurion Order: Fasting Discipline & Lipid Oxidation"
+        : "Citadel of Temperance: The Autophagy Protocol";
+    withinControl = [
+      "Whether your hand touches food before 05:30 PM",
+      "Hydrating with 24oz cold mineral water and lemon pinch",
+      "Reframing hunger pangs as ghrelin-induced fat oxidation",
+    ];
+    outsideControl = [
+      "Natural stomach growls as digestive tract clears glycogen",
+      "Food aromas or environmental eating cues from others",
+    ];
+    tacticalActionDirective = "Brew 1 cup green tea with lemon or ingest 500mg pink Himalayan salt in cold water immediately.";
+    inversionExercise = "Ask yourself: Has any Spartan warrior ever perished from delaying dinner by two hours?";
+  } else if (
+    d.includes("workout") ||
+    d.includes("squat") ||
+    d.includes("boxing") ||
+    d.includes("train") ||
+    d.includes("lazy") ||
+    d.includes("tired")
+  ) {
+    quote = AUTHENTICATED_STOIC_QUOTES.find((q) => q.author === "Epictetus") || AUTHENTICATED_STOIC_QUOTES[4];
+    verdictTitle =
+      tone === "grill_me"
+        ? "Socratic Confrontation: Zero Negotiations with Comfort"
+        : tone === "direct_centurion"
+        ? "Centurion Combat Drill: Step into the Line"
+        : "The Olympic Conqueror: Physical Hardening";
+    withinControl = [
+      "Putting on your training shoes and stepping up to the bar",
+      "Executing the first repetition with strict tempo",
+      "Starting the boxing round timer and touching gloves",
+    ];
+    outsideControl = [
+      "Feeling 100% enthusiastic beforehand (motivation is irrelevant)",
+      "Daily friction or residual work stress",
+    ];
+    tacticalActionDirective = "Start 3m round timer now. Throw 50 straight jabs without stopping.";
+    inversionExercise = "Visualize yourself 1 hour from now: Conquered workout (+750 XP) vs skipped session shame.";
+  } else if (
+    d.includes("overwhelm") ||
+    d.includes("dba") ||
+    d.includes("doctoral") ||
+    d.includes("client") ||
+    d.includes("work")
+  ) {
+    quote = AUTHENTICATED_STOIC_QUOTES.find((q) => q.category === "focus") || AUTHENTICATED_STOIC_QUOTES[3];
+    verdictTitle =
+      tone === "grill_me"
+        ? "Socratic Probe: Action by Action Assembly"
+        : tone === "direct_centurion"
+        ? "Centurion Tactical Command: Single Objective Focus"
+        : "Marcus Aurelius: The Assembly of Life";
+    withinControl = [
+      "The single 25-minute deep work block in front of you",
+      "Closing browser tabs and muting notifications",
+      "Writing one coherent paragraph of literature review",
+    ];
+    outsideControl = [
+      "The entire 80,000-word doctoral dissertation all at once",
+      "How fast clients respond to consulting proposals",
+    ];
+    tacticalActionDirective = "Set timer for 25 minutes. Write 1 single page without editing.";
+    inversionExercise = "Assemble your life action by action. No human accomplishes a monumental feat in a single leap.";
+  } else if (
+    d.includes("scale") ||
+    d.includes("weight") ||
+    d.includes("slow") ||
+    d.includes("plateau")
+  ) {
+    quote = AUTHENTICATED_STOIC_QUOTES.find((q) => q.author === "Seneca") || AUTHENTICATED_STOIC_QUOTES[2];
+    verdictTitle =
+      tone === "grill_me"
+        ? "Socratic Reality Check: Water Noise vs True Tissue Oxidation"
+        : tone === "direct_centurion"
+        ? "Centurion Telemetry: Trust the Caloric Mathematics"
+        : "Seneca on Groundless Anxiety";
+    withinControl = [
+      "Your 500–750 kcal daily deficit and 140g protein intake",
+      "Measuring 7-day moving averages instead of daily scale fluctuations",
+      "Continuing calisthenics overload to prevent muscle catabolism",
+    ];
+    outsideControl = [
+      "Daily sodium water retention and digestive mass in transit",
+      "Day-to-day glycogen hydration levels",
+    ];
+    tacticalActionDirective = "Log tape waist measurement (31.0\" target) and review your 7-day rolling curve.";
+    inversionExercise = "We suffer more often in imagination than reality. Fat cannot resist thermodynamics.";
+  }
+
+  return {
+    tone,
+    dilemma,
+    verdictTitle,
+    withinControl,
+    outsideControl,
+    quote,
+    tacticalActionDirective,
+    inversionExercise,
+  };
+}
+

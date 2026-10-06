@@ -102,3 +102,64 @@ export function calculateLevelProgress(totalXp: number): LevelInfo {
 export function invertTransaction(earnedXp: number): number {
   return -1 * Math.abs(earnedXp);
 }
+
+export interface AttributeScores {
+  strength: number;
+  endurance: number;
+  discipline: number;
+  knowledge: number;
+  recovery: number;
+  rawXp: {
+    strength: number;
+    endurance: number;
+    discipline: number;
+    knowledge: number;
+    recovery: number;
+  };
+}
+
+export function calculateAttributeScores(
+  transactions: { attribute?: string; amount: number; isReversed?: boolean }[]
+): AttributeScores {
+  const rawXp = {
+    strength: 0,
+    endurance: 0,
+    discipline: 0,
+    knowledge: 0,
+    recovery: 0,
+  };
+
+  for (const tx of transactions) {
+    if (tx.isReversed) continue;
+    const attr = (tx.attribute || "").toLowerCase();
+    const amt = Math.max(0, tx.amount);
+    if (attr.includes("strength") || attr.includes("str")) {
+      rawXp.strength += amt;
+    } else if (attr.includes("endurance") || attr.includes("end")) {
+      rawXp.endurance += amt;
+    } else if (attr.includes("discipline") || attr.includes("dis")) {
+      rawXp.discipline += amt;
+    } else if (attr.includes("knowledge") || attr.includes("kno")) {
+      rawXp.knowledge += amt;
+    } else if (attr.includes("recovery") || attr.includes("rec")) {
+      rawXp.recovery += amt;
+    } else {
+      rawXp.discipline += Math.round(amt * 0.5);
+      rawXp.strength += Math.round(amt * 0.5);
+    }
+  }
+
+  const normalize = (xp: number, baseFloor: number = 0.45) => {
+    const earned = Math.min(0.55, (xp / 5000) * 0.55);
+    return Math.min(1.0, Number((baseFloor + earned).toFixed(2)));
+  };
+
+  return {
+    strength: normalize(rawXp.strength, 0.50),
+    endurance: normalize(rawXp.endurance, 0.45),
+    discipline: normalize(rawXp.discipline, 0.60),
+    knowledge: normalize(rawXp.knowledge, 0.55),
+    recovery: normalize(rawXp.recovery, 0.40),
+    rawXp,
+  };
+}

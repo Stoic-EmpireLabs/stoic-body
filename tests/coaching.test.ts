@@ -4,6 +4,8 @@ import {
   AUTHENTICATED_STOIC_QUOTES,
   getRandomQuote,
   generateCoachingDialogue,
+  resolveStoicOracleGuidance,
+  PRESET_INQUIRIES,
   CoachingContext,
   CoachingTone,
 } from "../src/lib/coaching";
@@ -59,3 +61,28 @@ test("Stoic Body — Multi-Tone Coaching Engine", () => {
   assert.ok(stoic.content.length > 30);
   assert.ok(stoic.quote.text.length > 10);
 });
+
+test("Stoic Body — Socratic Oracle Resolution & Dichotomy of Control", () => {
+  assert.ok(PRESET_INQUIRIES.length >= 5);
+
+  // Test Fasting Inquiry
+  const fastOracle = resolveStoicOracleGuidance("I want to break my fast early at hour 19", "grill_me");
+  assert.equal(fastOracle.tone, "grill_me");
+  assert.ok(fastOracle.verdictTitle.toLowerCase().includes("hunger") || fastOracle.verdictTitle.toLowerCase().includes("socratic"));
+  assert.ok(fastOracle.withinControl.length >= 2);
+  assert.ok(fastOracle.outsideControl.length >= 1);
+  assert.ok(fastOracle.tacticalActionDirective.length > 10);
+  assert.ok(fastOracle.inversionExercise.length > 10);
+
+  // Test Workout Friction Inquiry
+  const workoutOracle = resolveStoicOracleGuidance("Low energy before heavy leg squats", "direct_centurion");
+  assert.equal(workoutOracle.tone, "direct_centurion");
+  assert.ok(workoutOracle.withinControl.some((c) => c.toLowerCase().includes("shoes") || c.toLowerCase().includes("repetition")));
+  assert.ok(workoutOracle.tacticalActionDirective.includes("round") || workoutOracle.tacticalActionDirective.includes("jabs"));
+
+  // Test Overwhelm Inquiry
+  const dbaOracle = resolveStoicOracleGuidance("Overwhelmed by doctoral research and client deliverables", "philosophical_stoic");
+  assert.equal(dbaOracle.tone, "philosophical_stoic");
+  assert.ok(dbaOracle.withinControl.some((c) => c.toLowerCase().includes("deep work") || c.toLowerCase().includes("paragraph")));
+});
+

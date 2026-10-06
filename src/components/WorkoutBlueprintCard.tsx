@@ -5,7 +5,23 @@ import Image from "next/image";
 import { WORKOUT_BLUEPRINTS, WorkoutBlueprint, ExerciseBlueprint } from "@/lib/workout-blueprints";
 import { useStoic } from "@/context/StoicContext";
 import { fireBrilliantConfetti } from "@/lib/confetti";
-import { Dumbbell, Flame, CheckCircle2, ZoomIn, Sparkles, ChevronRight, Activity } from "lucide-react";
+import {
+  Dumbbell,
+  Flame,
+  CheckCircle2,
+  ZoomIn,
+  Sparkles,
+  ChevronRight,
+  Activity,
+  Timer,
+  Info,
+  ChevronDown,
+  ChevronUp,
+  X,
+  RotateCcw,
+  AlertTriangle,
+  ShieldCheck,
+} from "lucide-react";
 
 interface WorkoutBlueprintCardProps {
   initialSplit?: "push" | "pull" | "legs";
@@ -18,11 +34,25 @@ export default function WorkoutBlueprintCard({
   onOpenAIStudio,
   compact = false,
 }: WorkoutBlueprintCardProps) {
-  const { awardXp, playBellSound, playAnvilChime } = useStoic();
+  const { awardXp, playBellSound, playAnvilChime, playBoxingBell } = useStoic();
   const [activeSplit, setActiveSplit] = useState<"push" | "pull" | "legs">(initialSplit);
   const [completedSets, setCompletedSets] = useState<Record<string, boolean>>({});
   const [showFullSheet, setShowFullSheet] = useState(false);
   const [viewMode, setViewMode] = useState<"split" | "logger" | "poster">("split");
+  const [expandedCueId, setExpandedCueId] = useState<string | null>(null);
+
+  // Tactical Rest Timer state
+  const [restTimer, setRestTimer] = useState<{
+    active: boolean;
+    secondsRemaining: number;
+    totalSeconds: number;
+    exerciseName: string;
+  }>({
+    active: false,
+    secondsRemaining: 0,
+    totalSeconds: 90,
+    exerciseName: "",
+  });
 
   const blueprint: WorkoutBlueprint = WORKOUT_BLUEPRINTS[activeSplit] || WORKOUT_BLUEPRINTS.push;
 
@@ -40,6 +70,25 @@ export default function WorkoutBlueprintCard({
     }
   }, [activeSplit]);
 
+  // Countdown interval for rest timer
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (restTimer.active && restTimer.secondsRemaining > 0) {
+      interval = setInterval(() => {
+        setRestTimer((prev) => {
+          if (prev.secondsRemaining <= 1) {
+            playBoxingBell();
+            return { ...prev, secondsRemaining: 0, active: false };
+          }
+          return { ...prev, secondsRemaining: prev.secondsRemaining - 1 };
+        });
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [restTimer.active, restTimer.secondsRemaining, playBoxingBell]);
+
   const toggleSet = (exerciseId: string, setIndex: number) => {
     const key = `${exerciseId}-s${setIndex}`;
     const nextState = { ...completedSets, [key]: !completedSets[key] };
@@ -50,6 +99,16 @@ export default function WorkoutBlueprintCard({
     if (!completedSets[key]) {
       awardXp(50, `Completed Set ${setIndex} of ${exerciseId}`, "Strength");
       playAnvilChime();
+
+      // Auto-trigger tactical rest timer
+      const currentEx = blueprint.exercises.find((e) => e.id === exerciseId);
+      const rest = currentEx?.formCues?.restSecs || 90;
+      setRestTimer({
+        active: true,
+        secondsRemaining: rest,
+        totalSeconds: rest,
+        exerciseName: currentEx?.name || exerciseId,
+      });
     }
   };
 
@@ -247,6 +306,20 @@ export default function WorkoutBlueprintCard({
                     ))}
                     {ex.notes && <span className="text-[11px] text-slate-400 ml-1 italic">&middot; {ex.notes}</span>}
                   </div>
+
+                  {/* Form Cues Trigger */}
+                  {ex.formCues && (
+                    <div className="pt-1">
+                      <button
+                        onClick={() => setExpandedCueId(expandedCueId === ex.id ? null : ex.id)}
+                        className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-amber-300 bg-amber-950/40 hover:bg-amber-900/60 border border-amber-500/30 px-2 py-0.5 rounded transition"
+                      >
+                        <Info className="w-3 h-3 text-amber-400" />
+                        <span>Tactical Form Cues</span>
+                        {expandedCueId === ex.id ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Set Pills */}
@@ -270,6 +343,57 @@ export default function WorkoutBlueprintCard({
                   })}
                 </div>
               </div>
+
+              {/* Expandable Form Cues & Biomechanics Drawer */}
+              {expandedCueId === ex.id && ex.formCues && (
+                <div className="mt-3 pt-3 border-t border-red-950/70 bg-black/60 p-3 rounded-lg space-y-2.5 text-xs font-mono">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div className="bg-[#161620] p-2.5 rounded border border-white/5 space-y-1">
+                      <span className="text-[10px] text-amber-400 font-bold uppercase flex items-center gap-1">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                        Setup & Scapular Lockout
+                      </span>
+                      <p className="text-[11px] text-slate-300 leading-relaxed">{ex.formCues.setup}</p>
+                    </div>
+
+                    <div className="bg-[#161620] p-2.5 rounded border border-white/5 space-y-1">
+                      <span className="text-[10px] text-amber-400 font-bold uppercase flex items-center gap-1">
+                        <Activity className="w-3.5 h-3.5 text-blue-400" />
+                        Cadence & Biomechanics
+                      </span>
+                      <p className="text-[11px] text-slate-300 leading-relaxed">{ex.formCues.execution}</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-red-950/30 p-2.5 rounded border border-red-500/30 flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-[10px] text-red-400 font-bold uppercase block">Fatal Flaw to Avoid</span>
+                      <p className="text-[11px] text-red-200 leading-relaxed">{ex.formCues.mistakeAvoid}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400 pt-1">
+                    <span className="flex items-center gap-1.5">
+                      <Timer className="w-3.5 h-3.5 text-amber-400" />
+                      Recommended Rest: <strong className="text-white">{ex.formCues.restSecs}s</strong>
+                    </span>
+                    <button
+                      onClick={() => {
+                        setRestTimer({
+                          active: true,
+                          secondsRemaining: ex.formCues!.restSecs,
+                          totalSeconds: ex.formCues!.restSecs,
+                          exerciseName: ex.name,
+                        });
+                      }}
+                      className="text-[10px] font-bold text-amber-400 hover:text-amber-300 underline"
+                    >
+                      Start {ex.formCues.restSecs}s Rest Interval &rarr;
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
@@ -323,6 +447,99 @@ export default function WorkoutBlueprintCard({
                 className="object-contain"
               />
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tactical Floating Rest Timer HUD */}
+      {restTimer.active && (
+        <div className="fixed bottom-4 right-4 sm:right-8 z-50 bg-[#0A0A10]/95 border-2 border-amber-500/80 rounded-2xl p-4 shadow-[0_12px_45px_rgba(0,0,0,0.9)] max-w-sm w-[90vw] backdrop-blur-xl animate-in slide-in-from-bottom duration-300">
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
+              <span className="text-xs font-mono font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Timer className="w-4 h-4 text-amber-400" />
+                Resting &bull; {restTimer.exerciseName}
+              </span>
+            </div>
+            <button
+              onClick={() => setRestTimer({ ...restTimer, active: false })}
+              className="text-slate-400 hover:text-white p-1 rounded hover:bg-white/10"
+              title="Dismiss Rest Timer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Countdown Display & Progress Bar */}
+          <div className="flex items-baseline justify-between mb-1.5">
+            <div className="text-3xl font-mono font-black text-white tracking-wider">
+              {Math.floor(restTimer.secondsRemaining / 60)
+                .toString()
+                .padStart(2, "0")}
+              :
+              {(restTimer.secondsRemaining % 60).toString().padStart(2, "0")}
+            </div>
+            <span className="text-xs font-mono text-slate-400">
+              Target: {restTimer.totalSeconds}s
+            </span>
+          </div>
+
+          <div className="w-full h-2 bg-black rounded-full overflow-hidden border border-amber-500/30 mb-3">
+            <div
+              className="h-full bg-gradient-to-r from-amber-500 to-red-500 transition-all duration-1000"
+              style={{
+                width: `${Math.max(0, Math.min(100, (restTimer.secondsRemaining / restTimer.totalSeconds) * 100))}%`,
+              }}
+            />
+          </div>
+
+          {/* Quick Adjust Buttons */}
+          <div className="flex items-center justify-between gap-1.5 font-mono text-xs">
+            <button
+              onClick={() =>
+                setRestTimer((p) => ({
+                  ...p,
+                  secondsRemaining: Math.max(0, p.secondsRemaining - 15),
+                }))
+              }
+              className="px-2.5 py-1 rounded bg-black/80 border border-white/10 hover:border-amber-400 text-slate-300 hover:text-white transition"
+            >
+              -15s
+            </button>
+            <button
+              onClick={() =>
+                setRestTimer((p) => ({
+                  ...p,
+                  secondsRemaining: p.secondsRemaining + 30,
+                  totalSeconds: Math.max(p.totalSeconds, p.secondsRemaining + 30),
+                }))
+              }
+              className="px-2.5 py-1 rounded bg-black/80 border border-white/10 hover:border-amber-400 text-slate-300 hover:text-white transition"
+            >
+              +30s
+            </button>
+            <button
+              onClick={() =>
+                setRestTimer((p) => ({
+                  ...p,
+                  secondsRemaining: p.secondsRemaining + 60,
+                  totalSeconds: Math.max(p.totalSeconds, p.secondsRemaining + 60),
+                }))
+              }
+              className="px-2.5 py-1 rounded bg-black/80 border border-white/10 hover:border-amber-400 text-slate-300 hover:text-white transition"
+            >
+              +60s
+            </button>
+            <button
+              onClick={() => {
+                playBoxingBell();
+                setRestTimer({ ...restTimer, active: false, secondsRemaining: 0 });
+              }}
+              className="px-3 py-1 rounded bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black font-bold uppercase transition shadow-md shadow-amber-950"
+            >
+              Ready
+            </button>
           </div>
         </div>
       )}

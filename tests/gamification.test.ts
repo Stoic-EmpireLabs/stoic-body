@@ -4,6 +4,7 @@ import {
   calculateTaskPoints,
   calculateLevelProgress,
   invertTransaction,
+  calculateAttributeScores,
   DifficultyTier,
 } from "../src/lib/gamification";
 
@@ -74,5 +75,26 @@ describe("Stoic Body — 5-Tier Gamification Engine", () => {
   test("anti-exploit inversion negates points symmetrically", () => {
     assert.equal(invertTransaction(750), -750);
     assert.equal(invertTransaction(125), -125);
+  });
+
+  test("calculates dynamic 5-axis RPG attribute scores accurately from transactions", () => {
+    const txs = [
+      { attribute: "Strength", amount: 2500 },
+      { attribute: "Endurance", amount: 1500 },
+      { attribute: "Discipline", amount: 4000 },
+      { attribute: "Knowledge", amount: 3000 },
+      { attribute: "Recovery", amount: 1200 },
+      { attribute: "Strength", amount: 500, isReversed: true }, // Should be ignored
+    ];
+    const scores = calculateAttributeScores(txs);
+    assert.equal(scores.rawXp.strength, 2500);
+    assert.equal(scores.rawXp.endurance, 1500);
+    assert.equal(scores.rawXp.discipline, 4000);
+    assert.equal(scores.rawXp.knowledge, 3000);
+    assert.equal(scores.rawXp.recovery, 1200);
+
+    // Scores should be between 0.4 and 1.0
+    assert.ok(scores.strength >= 0.50 && scores.strength <= 1.0);
+    assert.ok(scores.discipline > scores.recovery);
   });
 });
