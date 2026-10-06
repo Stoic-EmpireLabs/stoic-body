@@ -465,10 +465,17 @@ export default function QuestVault() {
                 ))}
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowForgeModal(false)}
+                  className="px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-slate-300 font-bold uppercase text-xs transition border border-white/10"
+                >
+                  Cancel
+                </button>
                 <button
                   type="submit"
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black font-bold uppercase transition shadow-lg shadow-amber-950"
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-black font-bold uppercase text-xs transition shadow-lg shadow-amber-950"
                 >
                   Save &amp; Forge Quest (+{newXp} XP Bounty)
                 </button>
