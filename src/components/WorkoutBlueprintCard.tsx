@@ -182,9 +182,11 @@ export default function WorkoutBlueprintCard({
             >
               <div className="relative aspect-[3/4] w-full">
                 <Image
+                  key={blueprint.id}
                   src={blueprint.sheetIllustrationUrl}
                   alt={blueprint.title}
                   fill
+                  priority
                   className="object-contain group-hover:scale-[1.02] transition duration-300"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition" />
@@ -314,6 +316,7 @@ export default function WorkoutBlueprintCard({
             </div>
             <div className="relative aspect-[3/4] max-h-[80vh] w-full">
               <Image
+                key={`modal-${blueprint.id}`}
                 src={blueprint.sheetIllustrationUrl}
                 alt={blueprint.title}
                 fill
