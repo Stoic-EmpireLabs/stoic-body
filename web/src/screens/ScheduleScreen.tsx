@@ -350,7 +350,12 @@ export const ScheduleScreen: React.FC = () => {
                                   </div>
                                   <div className="flex items-center justify-between text-[10px] text-neutral-400 font-mono mt-0.5">
                                     <span className="capitalize">{ex.primary}</span>
-                                    <span>3-4 Sets</span>
+                                    <span>
+                                      {(day.routine?.setsCount && day.routine.setsCount[exId]) || (day.routine?.plannedSets && day.routine.plannedSets[exId]?.length) || 3} Sets
+                                      {day.routine?.plannedSets && day.routine.plannedSets[exId]?.[0]
+                                        ? ` · ${day.routine.plannedSets[exId][0].reps}r`
+                                        : ''}
+                                    </span>
                                   </div>
                                 </div>
                               </div>

@@ -369,39 +369,53 @@ export function useGymStore() {
   };
 
   // Workout Session Engine
-  const startWorkoutFromExercises = (exerciseIds: string[], routineName?: string) => {
+  const startWorkoutFromExercises = (exerciseIds: string[], routineName?: string, routine?: Routine) => {
     const exercises: SessionExercise[] = exerciseIds
       .map((id) => {
         const ex = getExerciseById(id);
         if (!ex) return null;
         // Check for previous performance in sessions
         const previousSets = getPreviousPerformance(id);
-        const initialSets: SessionSet[] = [
-          {
-            id: `s-${Date.now()}-1`,
-            reps: previousSets[0]?.reps || 10,
-            weight: previousSets[0]?.weight || 20,
+        const planned = routine?.plannedSets?.[id];
+        let initialSets: SessionSet[];
+
+        if (planned && planned.length > 0) {
+          initialSets = planned.map((p, pIdx) => ({
+            id: `s-${Date.now()}-${pIdx + 1}`,
+            reps: previousSets[pIdx]?.reps || p.reps,
+            weight: previousSets[pIdx]?.weight || p.weight,
             done: false,
-            kind: 'normal',
-            previous: previousSets[0],
-          },
-          {
-            id: `s-${Date.now()}-2`,
-            reps: previousSets[1]?.reps || 10,
-            weight: previousSets[1]?.weight || 20,
-            done: false,
-            kind: 'normal',
-            previous: previousSets[1],
-          },
-          {
-            id: `s-${Date.now()}-3`,
-            reps: previousSets[2]?.reps || 10,
-            weight: previousSets[2]?.weight || 20,
-            done: false,
-            kind: 'normal',
-            previous: previousSets[2],
-          },
-        ];
+            kind: p.kind || 'normal',
+            previous: previousSets[pIdx],
+          }));
+        } else {
+          initialSets = [
+            {
+              id: `s-${Date.now()}-1`,
+              reps: previousSets[0]?.reps || 10,
+              weight: previousSets[0]?.weight || 20,
+              done: false,
+              kind: 'normal',
+              previous: previousSets[0],
+            },
+            {
+              id: `s-${Date.now()}-2`,
+              reps: previousSets[1]?.reps || 10,
+              weight: previousSets[1]?.weight || 20,
+              done: false,
+              kind: 'normal',
+              previous: previousSets[1],
+            },
+            {
+              id: `s-${Date.now()}-3`,
+              reps: previousSets[2]?.reps || 10,
+              weight: previousSets[2]?.weight || 20,
+              done: false,
+              kind: 'normal',
+              previous: previousSets[2],
+            },
+          ];
+        }
 
         return {
           id: `se-${Date.now()}-${id}`,
@@ -422,6 +436,7 @@ export function useGymStore() {
       restEndsAt: null,
       restTotalSeconds: globalState.settings.defaultRestSec,
       routineName,
+      routineId: routine?.id,
     };
 
     globalState.route = 'session';
@@ -445,7 +460,7 @@ export function useGymStore() {
   const startWorkoutFromRoutine = (routineId: string) => {
     const routine = globalState.routines.find((r) => r.id === routineId);
     if (!routine) return;
-    startWorkoutFromExercises(routine.exerciseIds, routine.name);
+    startWorkoutFromExercises(routine.exerciseIds, routine.name, routine);
   };
 
   const addExerciseToCurrentSession = (exerciseId: string) => {
@@ -1247,7 +1262,7 @@ export function useGymStore() {
         if (a.date !== b.date) return a.date.localeCompare(b.date);
         return a.time.localeCompare(b.time);
       });
-      notify();
+      saveToStorage();
       return generated;
     }
     return dayEvents.sort((a, b) => a.time.localeCompare(b.time));

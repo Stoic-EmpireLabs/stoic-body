@@ -7,6 +7,7 @@ import type {
   Settings,
   CoachPersonality,
   OnboardingAnswers,
+  SetKind,
 } from '../types';
 import { getLocalDateString } from '../data/defaultSchedule';
 
@@ -109,6 +110,134 @@ export const DAY_NAMES: Record<number, { short: string; full: string }> = {
   6: { short: 'Sat', full: 'Saturday' },
   7: { short: 'Sun', full: 'Sunday' },
 };
+
+// Physiological Set & Rep Scheme Calculator based on athlete gender, experience & workout goal
+export function buildCalibratedRoutineSets(
+  exerciseIds: string[],
+  allExercises: Exercise[],
+  workoutKind: string,
+  experience: 'recruit' | 'intermediate' | 'veteran',
+  isFemale: boolean,
+  equipment: string
+): {
+  plannedSets: Record<string, { reps: number; weight: number; kind: SetKind }[]>;
+  setsCount: Record<string, number>;
+} {
+  const plannedSets: Record<string, { reps: number; weight: number; kind: SetKind }[]> = {};
+  const setsCount: Record<string, number> = {};
+
+  const baseSetCount = experience === 'veteran' ? 4 : 3;
+
+  exerciseIds.forEach((exId, idx) => {
+    const ex = allExercises.find((e) => e.id === exId);
+    const primary = (ex?.primary || '').toLowerCase();
+    const name = (ex?.name || '').toLowerCase();
+    const isCore =
+      primary === 'abdomen' ||
+      primary === 'obliques' ||
+      name.includes('plank') ||
+      name.includes('raise') ||
+      name.includes('bug') ||
+      name.includes('twist') ||
+      idx === exerciseIds.length - 1;
+
+    let targetReps = 10;
+    let targetWeight = 20;
+    let numSets = baseSetCount;
+
+    if (equipment === 'bodyweight') {
+      if (isCore) {
+        targetReps = name.includes('plank') ? 60 : 25;
+        targetWeight = 0;
+      } else if (name.includes('pull-up') || name.includes('chin-up')) {
+        targetReps = isFemale ? 6 : 10;
+        targetWeight = 0;
+      } else if (name.includes('push-up')) {
+        targetReps = isFemale ? 12 : 20;
+        targetWeight = 0;
+      } else if (name.includes('dip')) {
+        targetReps = isFemale ? 8 : 15;
+        targetWeight = 0;
+      } else {
+        targetReps = 20;
+        targetWeight = 0;
+      }
+    } else if (isCore) {
+      targetReps = name.includes('plank') ? 45 : 20;
+      targetWeight = 0;
+      numSets = 3;
+    } else if (workoutKind === 'strength') {
+      targetReps = 5;
+      numSets = experience === 'recruit' ? 3 : 4;
+      if (primary === 'chest') targetWeight = isFemale ? 30 : 65;
+      else if (primary === 'glutes' || primary === 'quads') targetWeight = isFemale ? 45 : 85;
+      else if (primary === 'back') targetWeight = isFemale ? 35 : 75;
+      else if (primary === 'shoulders') targetWeight = isFemale ? 14 : 45;
+      else targetWeight = isFemale ? 12 : 25;
+    } else if (workoutKind === 'glute_sculpt') {
+      if (name.includes('thrust') || name.includes('bridge')) {
+        targetReps = 12;
+        targetWeight = isFemale ? 45 : 70;
+        numSets = 4;
+      } else if (name.includes('kickback')) {
+        targetReps = 15;
+        targetWeight = isFemale ? 12 : 18;
+        numSets = 3;
+      } else if (name.includes('romanian') || name.includes('rdl') || name.includes('deadlift')) {
+        targetReps = 10;
+        targetWeight = isFemale ? 35 : 60;
+        numSets = 4;
+      } else if (name.includes('squat') || name.includes('lunge')) {
+        targetReps = 12;
+        targetWeight = isFemale ? 10 : 20;
+        numSets = 3;
+      } else {
+        targetReps = 15;
+        targetWeight = isFemale ? 8 : 18;
+      }
+    } else if (workoutKind === 'toning') {
+      targetReps = 15;
+      numSets = 3;
+      if (primary === 'glutes' || primary === 'quads') targetWeight = isFemale ? 25 : 45;
+      else if (primary === 'chest' || primary === 'back') targetWeight = isFemale ? 20 : 40;
+      else targetWeight = isFemale ? 8 : 16;
+    } else if (workoutKind === 'combat') {
+      numSets = 4;
+      if (name.includes('pull-up') || name.includes('chin-up')) {
+        targetReps = 12;
+        targetWeight = 0;
+      } else if (name.includes('push-up')) {
+        targetReps = 25;
+        targetWeight = 0;
+      } else if (name.includes('dip')) {
+        targetReps = 15;
+        targetWeight = 0;
+      } else {
+        targetReps = 15;
+        targetWeight = 25;
+      }
+    } else {
+      targetReps = 10;
+      if (primary === 'chest' || primary === 'back') targetWeight = isFemale ? 25 : 55;
+      else if (primary === 'glutes' || primary === 'quads') targetWeight = isFemale ? 35 : 70;
+      else targetWeight = isFemale ? 10 : 22;
+    }
+
+    const sets: { reps: number; weight: number; kind: SetKind }[] = [];
+    for (let s = 1; s <= numSets; s++) {
+      sets.push({
+        reps: targetReps,
+        weight: targetWeight,
+        kind: 'normal',
+      });
+    }
+
+    plannedSets[exId] = sets;
+    setsCount[exId] = numSets;
+  });
+
+  return { plannedSets, setsCount };
+}
 
 export function generateCustomPlan(
   answers: OnboardingAnswers,
@@ -238,12 +367,15 @@ export function generateCustomPlan(
       ].filter(Boolean).slice(0, baseExerciseCount) as string[];
       appendAbsFinisher(r1Ex, used1, 0);
 
+      const { plannedSets: p1, setsCount: c1 } = buildCalibratedRoutineSets(r1Ex, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
       routines.push({
         id: 'routine-glute-hypertrophy',
         name: workoutKind === 'toning' ? 'Lower Body Tone & Glute Activation' : 'Glute Hypertrophy & Hip Thrust Anchor',
         group: 'Empress Periodization',
         color: femalePrimaryColor,
         exerciseIds: r1Ex,
+        setsCount: c1,
+        plannedSets: p1,
       });
 
       // Routine 2: Hourglass Torso & Posture Sculpt
@@ -257,12 +389,15 @@ export function generateCustomPlan(
       ].filter(Boolean).slice(0, baseExerciseCount) as string[];
       appendAbsFinisher(r2Ex, used2, 1);
 
+      const { plannedSets: p2, setsCount: c2 } = buildCalibratedRoutineSets(r2Ex, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
       routines.push({
         id: 'routine-upper-posture',
         name: 'Hourglass Torso & Posture Sculpt',
         group: 'Empress Periodization',
         color: femaleAccent1,
         exerciseIds: r2Ex,
+        setsCount: c2,
+        plannedSets: p2,
       });
 
       // Routine 3: Posterior Chain & Hamstring Curve
@@ -275,12 +410,15 @@ export function generateCustomPlan(
       ].filter(Boolean).slice(0, baseExerciseCount) as string[];
       appendAbsFinisher(r3Ex, used3, 2);
 
+      const { plannedSets: p3, setsCount: c3 } = buildCalibratedRoutineSets(r3Ex, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
       routines.push({
         id: 'routine-lower-posterior',
         name: 'Posterior Chain & Hamstring Curve',
         group: 'Empress Periodization',
         color: femaleAccent2,
         exerciseIds: r3Ex,
+        setsCount: c3,
+        plannedSets: p3,
       });
 
       // Routine 4: Pelvic Floor Stability & Glute Finisher
@@ -293,12 +431,15 @@ export function generateCustomPlan(
       ].filter(Boolean).slice(0, baseExerciseCount) as string[];
       appendAbsFinisher(r4Ex, used4, 3);
 
+      const { plannedSets: p4, setsCount: c4 } = buildCalibratedRoutineSets(r4Ex, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
       routines.push({
         id: 'routine-core-glute-burnout',
         name: 'Pelvic Stability & Waistline Sculpt',
         group: 'Empress Periodization',
         color: femaleAccent3,
         exerciseIds: r4Ex,
+        setsCount: c4,
+        plannedSets: p4,
       });
 
       // Routine 5: Full Body Metabolic Toning (if 5+ days)
@@ -312,12 +453,15 @@ export function generateCustomPlan(
         ].filter(Boolean).slice(0, baseExerciseCount) as string[];
         appendAbsFinisher(r5Ex, used5, 4);
 
+        const { plannedSets: p5, setsCount: c5 } = buildCalibratedRoutineSets(r5Ex, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
         routines.push({
           id: 'routine-fullbody-metabolic',
           name: 'Empress Full Body Metabolic Tone',
           group: 'Empress Periodization',
           color: '#C490D1',
           exerciseIds: r5Ex,
+          setsCount: c5,
+          plannedSets: p5,
         });
       }
 
@@ -332,12 +476,15 @@ export function generateCustomPlan(
         ].filter(Boolean).slice(0, baseExerciseCount) as string[];
         appendAbsFinisher(r6Ex, used6, 5);
 
+        const { plannedSets: p6, setsCount: c6 } = buildCalibratedRoutineSets(r6Ex, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
         routines.push({
           id: 'routine-delts-arms-sculpt',
           name: 'Delts, Arms & Calves Poise',
           group: 'Empress Periodization',
           color: '#E0A899',
           exerciseIds: r6Ex,
+          setsCount: c6,
+          plannedSets: p6,
         });
       }
     } else {
@@ -351,12 +498,15 @@ export function generateCustomPlan(
       ].filter(Boolean).slice(0, baseExerciseCount) as string[];
       appendAbsFinisher(rA, usedA, 0);
 
+      const { plannedSets: pA, setsCount: cA } = buildCalibratedRoutineSets(rA, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
       routines.push({
         id: 'routine-female-full-a',
         name: 'Full Body Alignment & Core Sculpt',
         group: 'Aurelia Protocols',
         color: femalePrimaryColor,
         exerciseIds: rA,
+        setsCount: cA,
+        plannedSets: pA,
       });
 
       const usedB = new Set<string>();
@@ -368,12 +518,15 @@ export function generateCustomPlan(
       ].filter(Boolean).slice(0, baseExerciseCount) as string[];
       appendAbsFinisher(rB, usedB, 1);
 
+      const { plannedSets: pB, setsCount: cB } = buildCalibratedRoutineSets(rB, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
       routines.push({
         id: 'routine-female-full-b',
         name: 'Posterior Hypertrophy & Delt Poise',
         group: 'Aurelia Protocols',
         color: femaleAccent1,
         exerciseIds: rB,
+        setsCount: cB,
+        plannedSets: pB,
       });
 
       const usedC = new Set<string>();
@@ -385,12 +538,15 @@ export function generateCustomPlan(
       ].filter(Boolean).slice(0, baseExerciseCount) as string[];
       appendAbsFinisher(rC, usedC, 2);
 
+      const { plannedSets: pC, setsCount: cC } = buildCalibratedRoutineSets(rC, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
       routines.push({
         id: 'routine-female-full-c',
         name: 'Glute Burnout & Transverse Core',
         group: 'Aurelia Protocols',
         color: femaleAccent2,
         exerciseIds: rC,
+        setsCount: cC,
+        plannedSets: pC,
       });
 
       if (frequency >= 4) {
@@ -402,12 +558,15 @@ export function generateCustomPlan(
         ].filter(Boolean).slice(0, baseExerciseCount) as string[];
         appendAbsFinisher(rD, usedD, 3);
 
+        const { plannedSets: pD, setsCount: cD } = buildCalibratedRoutineSets(rD, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
         routines.push({
           id: 'routine-female-full-d',
           name: 'Pelvic Floor Stability & Mobility Reset',
           group: 'Aurelia Protocols',
           color: femaleAccent3,
           exerciseIds: rD,
+          setsCount: cD,
+          plannedSets: pD,
         });
       }
     }
@@ -427,12 +586,15 @@ export function generateCustomPlan(
     ].filter(Boolean).slice(0, baseExerciseCount) as string[];
     appendAbsFinisher(rm1Ex, usedM1, 0);
 
+    const { plannedSets: pm1, setsCount: cm1 } = buildCalibratedRoutineSets(rm1Ex, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
     routines.push({
       id: 'routine-tactical-push',
       name: workoutKind === 'toning' ? 'Push Definition & Core Toning' : 'Tactical Push & Upper Armor',
       group: 'Spartan Combat Splits',
       color: malePrimaryColor,
       exerciseIds: rm1Ex,
+      setsCount: cm1,
+      plannedSets: pm1,
     });
 
     // Routine 2: Combat Pull & Heavy Lat Overload
@@ -446,12 +608,15 @@ export function generateCustomPlan(
     ].filter(Boolean).slice(0, baseExerciseCount) as string[];
     appendAbsFinisher(rm2Ex, usedM2, 1);
 
+    const { plannedSets: pm2, setsCount: cm2 } = buildCalibratedRoutineSets(rm2Ex, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
     routines.push({
       id: 'routine-combat-pull',
       name: 'Combat Pull & Posterior Chain Density',
       group: 'Spartan Combat Splits',
       color: maleAccent1,
       exerciseIds: rm2Ex,
+      setsCount: cm2,
+      plannedSets: pm2,
     });
 
     // Routine 3: Armor-Plated Legs & Explosive Drive
@@ -464,12 +629,15 @@ export function generateCustomPlan(
     ].filter(Boolean).slice(0, baseExerciseCount) as string[];
     appendAbsFinisher(rm3Ex, usedM3, 2);
 
+    const { plannedSets: pm3, setsCount: cm3 } = buildCalibratedRoutineSets(rm3Ex, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
     routines.push({
       id: 'routine-spartan-legs',
       name: 'Armor-Plated Legs & Compound Drive',
       group: 'Spartan Combat Splits',
       color: maleAccent2,
       exerciseIds: rm3Ex,
+      setsCount: cm3,
+      plannedSets: pm3,
     });
 
     // Routine 4: Tactical Calisthenics & Mission Grit (if 4+ days)
@@ -483,12 +651,15 @@ export function generateCustomPlan(
       ].filter(Boolean).slice(0, baseExerciseCount) as string[];
       appendAbsFinisher(rm4Ex, usedM4, 3);
 
+      const { plannedSets: pm4, setsCount: cm4 } = buildCalibratedRoutineSets(rm4Ex, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
       routines.push({
         id: 'routine-tactical-grit',
         name: 'USMC Calisthenics & Core Stamina',
         group: 'Spartan Combat Splits',
         color: maleAccent3,
         exerciseIds: rm4Ex,
+        setsCount: cm4,
+        plannedSets: pm4,
       });
     }
 
@@ -503,12 +674,15 @@ export function generateCustomPlan(
       ].filter(Boolean).slice(0, baseExerciseCount) as string[];
       appendAbsFinisher(rm5Ex, usedM5, 4);
 
+      const { plannedSets: pm5, setsCount: cm5 } = buildCalibratedRoutineSets(rm5Ex, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
       routines.push({
         id: 'routine-shoulder-arm-density',
         name: 'Overhead Power & Arm Density Finisher',
         group: 'Spartan Combat Splits',
         color: '#E07A5F',
         exerciseIds: rm5Ex,
+        setsCount: cm5,
+        plannedSets: pm5,
       });
     }
 
@@ -523,15 +697,34 @@ export function generateCustomPlan(
       ].filter(Boolean).slice(0, baseExerciseCount) as string[];
       appendAbsFinisher(rm6Ex, usedM6, 5);
 
+      const { plannedSets: pm6, setsCount: cm6 } = buildCalibratedRoutineSets(rm6Ex, allBuiltinExercises, workoutKind, experience, isFemale, equipment);
       routines.push({
         id: 'routine-compound-carry-overload',
         name: 'Deadlift Power & Structural Integrity',
         group: 'Spartan Combat Splits',
         color: '#D9A184',
         exerciseIds: rm6Ex,
+        setsCount: cm6,
+        plannedSets: pm6,
       });
     }
   }
+
+  // -------------------------------------------------------------
+  // POPULATE CALIBRATED SETS & REPS FOR EACH ROUTINE
+  // -------------------------------------------------------------
+  routines.forEach((routine) => {
+    const { plannedSets, setsCount } = buildCalibratedRoutineSets(
+      routine.exerciseIds,
+      allBuiltinExercises,
+      workoutKind,
+      experience,
+      isFemale,
+      equipment
+    );
+    routine.plannedSets = plannedSets;
+    routine.setsCount = setsCount;
+  });
 
   // -------------------------------------------------------------
   // WEEKLY PLAN MAPPING ONTO EXACT SELECTED DAYS (1=Mon .. 7=Sun)
