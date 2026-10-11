@@ -1,11 +1,11 @@
 import React from 'react';
 import { useGymStore } from '../store/useGymStore';
-import { Flame, Dumbbell, BarChart3, Library, PlayCircle } from 'lucide-react';
+import { Flame, Calendar, Dumbbell, BarChart3, Library, PlayCircle } from 'lucide-react';
 
 export const BottomNav: React.FC = () => {
   const { route, setRoute, pushRoute, session } = useGymStore();
 
-  const isMainTab = ['home', 'train', 'progress', 'exercises'].includes(route);
+  const isMainTab = ['home', 'schedule', 'train', 'progress', 'exercises'].includes(route);
 
   return (
     <>
@@ -31,15 +31,25 @@ export const BottomNav: React.FC = () => {
 
       {/* Main Bottom Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-30 bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-[#262626] pb-safe">
-        <div className="max-w-md mx-auto flex items-center justify-around h-16 px-2">
+        <div className="max-w-md mx-auto flex items-center justify-around h-16 px-1">
           <button
             onClick={() => setRoute('home')}
-            className={`flex flex-col items-center justify-center w-16 py-1 transition-all ${
+            className={`flex flex-col items-center justify-center w-14 py-1 transition-all ${
               route === 'home' ? 'text-[#D9A184] scale-105' : 'text-neutral-500 hover:text-neutral-300'
             }`}
           >
             <Flame className={`w-5 h-5 ${route === 'home' ? 'fill-current' : ''}`} />
             <span className="text-[10px] font-bold mt-1 tracking-tight">Today</span>
+          </button>
+
+          <button
+            onClick={() => setRoute('schedule')}
+            className={`flex flex-col items-center justify-center w-14 py-1 transition-all ${
+              route === 'schedule' ? 'text-[#D9A184] scale-105' : 'text-neutral-500 hover:text-neutral-300'
+            }`}
+          >
+            <Calendar className={`w-5 h-5 ${route === 'schedule' ? 'stroke-[2.5]' : ''}`} />
+            <span className="text-[10px] font-bold mt-1 tracking-tight">Schedule</span>
           </button>
 
           <button
