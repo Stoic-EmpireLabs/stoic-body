@@ -149,6 +149,7 @@ export interface Settings {
   soundEnabled: boolean;
   defaultRestSec: number;
   heatTone: 'ember' | 'green' | 'blue' | 'mono' | 'rose';
+  cursorAuraEnabled?: boolean;
   language: string;
   coachPersonality: CoachPersonality;
   gender?: 'male' | 'female';

@@ -268,6 +268,66 @@ export const SettingsScreen: React.FC = () => {
         </div>
       </div>
 
+      {/* Accent Tone & Cursor Interaction */}
+      <div className="bg-[#181818] border border-[#282828] rounded-2xl p-4 space-y-3">
+        <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-wider">
+          Accent Tone & Cursor Interaction
+        </h3>
+        <p className="text-[11px] text-neutral-400">
+          Personalize interface highlights, buttons, and mouse hover effects.
+        </p>
+
+        {/* Heat Tone Selection */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-1">
+          {[
+            { id: 'rose', label: 'Rose Gold', hex: '#E0A899' },
+            { id: 'ember', label: 'Spartan Amber', hex: '#D9A184' },
+            { id: 'green', label: 'Sage Green', hex: '#8FA377' },
+            { id: 'blue', label: 'Slate Blue', hex: '#7FA8C9' },
+            { id: 'mono', label: 'Apple Silver', hex: '#E5E5E5' },
+          ].map((tone) => {
+            const isSelected = settings.heatTone === tone.id;
+            return (
+              <button
+                key={tone.id}
+                onClick={() => updateSettings({ heatTone: tone.id as any })}
+                className={`p-3 rounded-xl border text-center transition-all flex flex-col items-center gap-1.5 ${
+                  isSelected
+                    ? 'border-white bg-[#222] text-white shadow-md'
+                    : 'border-[#2E2E2E] bg-[#141414] text-neutral-400 hover:text-white'
+                }`}
+              >
+                <div
+                  className="w-5 h-5 rounded-full border border-white/20 shadow-sm"
+                  style={{ backgroundColor: tone.hex }}
+                />
+                <span className="text-xs font-bold">{tone.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Cursor Glow Toggle */}
+        <div className="flex items-center justify-between py-2 pt-3 border-t border-[#242424]">
+          <div>
+            <span className="text-xs font-bold text-white block">Mouse Ambient Spotlight</span>
+            <span className="text-[11px] text-neutral-500">
+              Zero-lag spotlight matching your accent tone (Turn off for 100% clean Apple feel)
+            </span>
+          </div>
+          <button
+            onClick={() => updateSettings({ cursorAuraEnabled: !settings.cursorAuraEnabled })}
+            className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${
+              settings.cursorAuraEnabled
+                ? 'bg-[#D9A184] text-[#140D09] border-[#D9A184]'
+                : 'bg-[#141414] text-neutral-400 border-[#2E2E2E]'
+            }`}
+          >
+            {settings.cursorAuraEnabled ? 'Enabled' : 'Disabled (Clean)'}
+          </button>
+        </div>
+      </div>
+
       {/* Units & Audio */}
       <div className="bg-[#181818] border border-[#282828] rounded-2xl p-4 space-y-3">
         <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-wider">
