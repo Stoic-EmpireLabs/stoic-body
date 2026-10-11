@@ -171,7 +171,7 @@ export const SettingsScreen: React.FC = () => {
           Offline Privacy & Data Portability
         </h3>
         <p className="text-xs text-neutral-400 leading-relaxed">
-          Open-GYM has no cloud tracking, no cookies, and no third-party servers. Your data is your own.
+          Stoic Body has no cloud tracking, no cookies, and no third-party servers. Your data is your own.
         </p>
 
         <div className="grid grid-cols-2 gap-2 pt-1">
@@ -225,7 +225,7 @@ export const SettingsScreen: React.FC = () => {
       >
         <div className="flex items-center gap-2">
           <Info className="w-4 h-4 text-[#D9A184]" />
-          <span>About Open-GYM & Credits</span>
+          <span>About Stoic Body & Credits</span>
         </div>
         <span className="text-neutral-500 font-mono">v1.3.0 →</span>
       </div>

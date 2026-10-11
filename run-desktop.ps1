@@ -1,12 +1,12 @@
 <#
 .SYNOPSIS
-    Stoic Body / Open-GYM — Workstation Launcher
+    Stoic Body — Workstation Launcher
 .DESCRIPTION
-    Launches the authentic Open-GYM application locally in Google Chrome (stoic1712 profile).
+    Launches the Stoic Body application locally in Google Chrome (stoic1712 profile).
 #>
 
 Write-Host "===========================================================" -ForegroundColor DarkCyan
-Write-Host "  OPEN-GYM / STOIC BODY — WORKSTATION EDITION             " -ForegroundColor Cyan
+Write-Host "  STOIC BODY — WORKSTATION EDITION                         " -ForegroundColor Cyan
 Write-Host "  Offline, Ad-Free Gym & Workout Companion                " -ForegroundColor Gray
 Write-Host "===========================================================" -ForegroundColor DarkCyan
 

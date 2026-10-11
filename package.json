@@ -2,7 +2,7 @@
   "name": "stoic-body",
   "private": true,
   "version": "1.3.2",
-  "description": "Open-GYM — An offline, ad-free gym & workout companion",
+  "description": "Stoic Body — An offline, ad-free gym & workout companion",
   "scripts": {
     "dev": "npm --prefix web run dev",
     "build": "npm --prefix web run build",

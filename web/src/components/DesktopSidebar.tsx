@@ -57,7 +57,7 @@ export const DesktopSidebar: React.FC = () => {
           <div className="w-10 h-10 rounded-2xl bg-[#1C1A18] border border-[#332E2A] p-1.5 flex items-center justify-center shadow-lg group-hover:border-[#D9A184]/50 transition-colors">
             <img
               src={getAssetUrl('assets/icon/ic_1024.png')}
-              alt="Open-GYM"
+              alt="Stoic Body"
               className="w-full h-full object-contain rounded-xl"
               onError={(e) => {
                 (e.target as HTMLElement).style.display = 'none';
@@ -66,7 +66,7 @@ export const DesktopSidebar: React.FC = () => {
           </div>
           <div>
             <h1 className="font-black text-lg text-white tracking-tight flex items-center gap-1.5">
-              Open<span className="text-[#D9A184]">-GYM</span>
+              Stoic <span className="text-[#D9A184]">Body</span>
             </h1>
             <p className="text-[11px] font-semibold text-neutral-400">Lift. Log it. Grow.</p>
           </div>
@@ -153,7 +153,7 @@ export const DesktopSidebar: React.FC = () => {
           onClick={() => pushRoute('about')}
           className="w-full py-1 text-center text-[11px] text-neutral-500 hover:text-neutral-400 font-medium flex items-center justify-center gap-1"
         >
-          <Info className="w-3.5 h-3.5" /> Open-GYM v1.3.0 · Offline & Ad-Free
+          <Info className="w-3.5 h-3.5" /> Stoic Body v1.3.0 · Offline & Ad-Free
         </button>
       </div>
     </aside>

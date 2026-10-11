@@ -30,7 +30,7 @@ export const DesktopTopBar: React.FC = () => {
     notes: 'Gym Journal & Notes',
     profile: 'Athlete Profile',
     settings: 'Settings & Privacy',
-    about: 'About Open-GYM',
+    about: 'About Stoic Body',
   };
 
   const todayDateStr = new Date().toLocaleDateString('en-US', {
@@ -43,7 +43,7 @@ export const DesktopTopBar: React.FC = () => {
     <header className="h-16 border-b border-[#242220] bg-[#121110]/95 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20 select-none">
       <div className="flex items-center gap-3">
         <h2 className="text-base font-black text-white tracking-tight">
-          {routeTitles[route] || 'Open-GYM'}
+          {routeTitles[route] || 'Stoic Body'}
         </h2>
         <span className="hidden sm:inline-block text-neutral-600 font-mono text-xs">/</span>
         <span className="hidden sm:flex items-center gap-1.5 text-xs text-neutral-400 font-medium">

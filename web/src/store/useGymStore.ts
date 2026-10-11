@@ -102,7 +102,7 @@ const defaultState: GymState = {
   notes: [
     {
       id: 'note-1',
-      title: 'Welcome to Open-GYM',
+      title: 'Welcome to Stoic Body',
       content: 'Your training log is stored 100% locally in your browser. Tap the muscle map on the Train tab to build your first session!',
       date: new Date().toISOString(),
     },
@@ -792,7 +792,7 @@ export function useGymStore() {
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(globalState, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `open-gym-backup-${new Date().toISOString().slice(0, 10)}.json`);
+    downloadAnchor.setAttribute('download', `stoic-body-backup-${new Date().toISOString().slice(0, 10)}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();

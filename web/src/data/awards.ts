@@ -7,7 +7,7 @@ export interface Award {
 }
 
 export const AWARDS: Award[] = [
-  { id: 'firstStep', name: 'First Step', desc: 'Welcome to Open-GYM! App set up.', category: 'milestone', target: 1 },
+  { id: 'firstStep', name: 'First Step', desc: 'Welcome to Stoic Body! App set up.', category: 'milestone', target: 1 },
   { id: 'firstWorkout', name: 'First Blood', desc: 'Completed your very first workout.', category: 'workouts', target: 1 },
   { id: 'firstRoutine', name: 'Architect', desc: 'Created your first custom routine.', category: 'milestone', target: 1 },
   { id: 'firstRecord', name: 'Record Breaker', desc: 'Set your first Personal Record (PR).', category: 'milestone', target: 1 },

@@ -9,7 +9,7 @@
   }
 }
 
-/* Subtle dot-matrix background as seen in official Open-GYM screenshots */
+/* Subtle dot-matrix background */
 .dot-bg {
   background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px);
   background-size: 22px 22px;

@@ -136,7 +136,7 @@ export function App() {
       {/* Floating Rest Countdown Banner */}
       <RestTimerBanner />
 
-      {/* Signature Open-GYM Fluid Liquid Notch Toast */}
+      {/* Signature Stoic Body Fluid Liquid Notch Toast */}
       <LiquidNotch toast={currentToast} onDismiss={dismissLatestAward} />
     </div>
   );

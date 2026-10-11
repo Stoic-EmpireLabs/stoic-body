@@ -47,8 +47,8 @@ try {
   await page.goto('http://localhost:4173', { waitUntil: 'networkidle', timeout: 15000 });
 
   // 1. Home / Today Screen
-  console.log('Capturing opengym-pure-home.png...');
-  await page.screenshot({ path: path.join(artifactDir, 'opengym-pure-home.png'), fullPage: false });
+  console.log('Capturing stoic-body-home.png...');
+  await page.screenshot({ path: path.join(artifactDir, 'stoic-body-home.png'), fullPage: false });
 
   // 2. Anatomical Map / Train Screen
   console.log('Navigating to Anatomical Map (Train)...');
@@ -56,7 +56,7 @@ try {
   if (await trainBtn.isVisible()) {
     await trainBtn.click();
     await page.waitForTimeout(1000);
-    await page.screenshot({ path: path.join(artifactDir, 'opengym-pure-train.png'), fullPage: false });
+    await page.screenshot({ path: path.join(artifactDir, 'stoic-body-train.png'), fullPage: false });
   }
 
   // 3. Exercise Library
@@ -65,7 +65,7 @@ try {
   if (await exerciseBtn.isVisible()) {
     await exerciseBtn.click();
     await page.waitForTimeout(1000);
-    await page.screenshot({ path: path.join(artifactDir, 'opengym-pure-exercises.png'), fullPage: false });
+    await page.screenshot({ path: path.join(artifactDir, 'stoic-body-exercises.png'), fullPage: false });
   }
 
   // 4. Routines & Splits
@@ -74,7 +74,7 @@ try {
   if (await routinesBtn.isVisible()) {
     await routinesBtn.click();
     await page.waitForTimeout(1000);
-    await page.screenshot({ path: path.join(artifactDir, 'opengym-pure-routines.png'), fullPage: false });
+    await page.screenshot({ path: path.join(artifactDir, 'stoic-body-routines.png'), fullPage: false });
   }
 
   // 5. Gym Calculators / Tools
@@ -83,7 +83,7 @@ try {
   if (await toolsBtn.isVisible()) {
     await toolsBtn.click();
     await page.waitForTimeout(1000);
-    await page.screenshot({ path: path.join(artifactDir, 'opengym-pure-tools.png'), fullPage: false });
+    await page.screenshot({ path: path.join(artifactDir, 'stoic-body-tools.png'), fullPage: false });
   }
 
   // 6. Settings & Privacy
@@ -92,7 +92,16 @@ try {
   if (await settingsBtn.isVisible()) {
     await settingsBtn.click();
     await page.waitForTimeout(1000);
-    await page.screenshot({ path: path.join(artifactDir, 'opengym-pure-settings.png'), fullPage: false });
+    await page.screenshot({ path: path.join(artifactDir, 'stoic-body-settings.png'), fullPage: false });
+  }
+
+  // 7. About Stoic Body
+  console.log('Navigating to About Stoic Body...');
+  const aboutBtn = page.locator('text=About Stoic Body').first();
+  if (await aboutBtn.isVisible()) {
+    await aboutBtn.click();
+    await page.waitForTimeout(1000);
+    await page.screenshot({ path: path.join(artifactDir, 'stoic-body-about.png'), fullPage: false });
   }
 
   console.log('[4/4] ALL SCREENSHOTS SUCCESSFULLY CAPTURED!');

@@ -30,14 +30,14 @@ export const Header: React.FC<HeaderProps> = ({ title, showBack }) => {
             <div className="flex items-center gap-2">
               <img
                 src={getAssetUrl('assets/icon/ic_1024.png')}
-                alt="Open-GYM"
+                alt="Stoic Body"
                 className="w-7 h-7 rounded-lg shadow"
                 onError={(e) => {
                   (e.target as HTMLElement).style.display = 'none';
                 }}
               />
               <span className="font-extrabold tracking-tight text-white text-lg">
-                Open<span className="text-[#D9A184]">-GYM</span>
+                Stoic <span className="text-[#D9A184]">Body</span>
               </span>
             </div>
           )}

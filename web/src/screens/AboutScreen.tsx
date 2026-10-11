@@ -16,21 +16,21 @@ export const AboutScreen: React.FC = () => {
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
-        <h2 className="text-xl font-black text-white tracking-tight">About Open-GYM</h2>
+        <h2 className="text-xl font-black text-white tracking-tight">About Stoic Body</h2>
       </div>
 
       {/* Hero Badge */}
       <div className="bg-[#181818] border border-[#282828] rounded-3xl p-6 text-center shadow-xl space-y-3">
         <img
           src={getAssetUrl('assets/icon/ic_1024.png')}
-          alt="Open-GYM"
+          alt="Stoic Body"
           className="w-16 h-16 rounded-2xl mx-auto shadow-lg shadow-black/80"
           onError={(e) => {
             (e.target as HTMLElement).style.display = 'none';
           }}
         />
         <div>
-          <h3 className="text-2xl font-black text-white tracking-tight">Open-GYM</h3>
+          <h3 className="text-2xl font-black text-white tracking-tight">Stoic Body</h3>
           <p className="text-xs text-[#D9A184] font-bold mt-0.5">Lift. Log it. Grow.</p>
         </div>
         <p className="text-xs text-neutral-400 leading-relaxed max-w-xs mx-auto">
@@ -79,12 +79,12 @@ export const AboutScreen: React.FC = () => {
         <div className="flex justify-between items-center py-1">
           <span className="text-neutral-400">GitHub Repository</span>
           <a
-            href="https://github.com/smartworldarafath/Open-GYM"
+            href="https://github.com/Stoic-EmpireLabs/stoic-body"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#D9A184] font-bold flex items-center gap-1 hover:underline"
           >
-            smartworldarafath/Open-GYM <ExternalLink className="w-3 h-3" />
+            Stoic-EmpireLabs/stoic-body <ExternalLink className="w-3 h-3" />
           </a>
         </div>
       </div>
