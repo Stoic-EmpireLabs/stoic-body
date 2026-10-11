@@ -13,6 +13,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { ExerciseArt } from '../components/ExerciseArt';
+import { QuoteCard } from '../components/QuoteCard';
 
 export const HomeScreen: React.FC = () => {
   const {
@@ -186,6 +187,9 @@ export const HomeScreen: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Daily Stoic & Marine Discipline Wisdom Card */}
+      <QuoteCard />
 
       {/* Second Row: "This Week" Stats & Activity Heatmap */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">

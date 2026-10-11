@@ -15,12 +15,26 @@ import {
   Weight,
   Sparkles,
   ChevronRight,
+  Users,
+  Shield,
 } from 'lucide-react';
 import { getAssetUrl } from '../utils/assets';
+import { AthleteSwitcherModal } from '../components/AthleteSwitcherModal';
 
 export const ProfileScreen: React.FC = () => {
-  const { profile, sessions, unlockedAwards, getStreak, settings, pushRoute, updateProfile } = useGymStore();
+  const {
+    profile,
+    sessions,
+    unlockedAwards,
+    getStreak,
+    settings,
+    pushRoute,
+    updateProfile,
+    coachPersonality,
+    activeProfileId,
+  } = useGymStore();
 
+  const [showAthleteModal, setShowAthleteModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(profile.name || 'Athlete');
   const [bio, setBio] = useState(profile.bio || 'Lift. Log it. Grow.');
@@ -67,25 +81,44 @@ export const ProfileScreen: React.FC = () => {
               </div>
             </div>
 
-            <button
-              onClick={() => setIsEditing(!isEditing)}
-              className="self-start sm:self-auto px-4 py-2 rounded-xl bg-[#262422] hover:bg-[#33302C] text-neutral-200 border border-[#3E3A35] font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95"
-            >
-              <Edit3 className="w-3.5 h-3.5 text-[#D9A184]" />
-              {isEditing ? 'Cancel' : 'Edit profile'}
-            </button>
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              <button
+                onClick={() => setShowAthleteModal(true)}
+                className="px-3.5 py-2 rounded-xl bg-[#1C1A18] hover:bg-[#25221F] text-neutral-200 border border-[#2E2A26] font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95"
+              >
+                <Users className="w-3.5 h-3.5 text-[#D9A184]" />
+                Switch Athlete
+              </button>
+              <button
+                onClick={() => setIsEditing(!isEditing)}
+                className="px-3.5 py-2 rounded-xl bg-[#262422] hover:bg-[#33302C] text-neutral-200 border border-[#3E3A35] font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95"
+              >
+                <Edit3 className="w-3.5 h-3.5 text-[#D9A184]" />
+                {isEditing ? 'Cancel' : 'Edit profile'}
+              </button>
+            </div>
           </div>
 
           {!isEditing ? (
             <div className="space-y-2">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-2xl font-black text-white tracking-tight">{profile.name}</h2>
                 <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center text-[10px] text-white">
                   ✓
                 </div>
+                {profile.serviceBranch && (
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-red-950/40 text-red-400 border border-red-900/40">
+                    {profile.serviceBranch}
+                  </span>
+                )}
+                {profile.callsign && (
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#201D1A] text-[#D9A184] border border-[#3E3832]">
+                    Callsign: {profile.callsign}
+                  </span>
+                )}
               </div>
               <p className="text-xs text-neutral-400 font-medium">
-                @{profile.name.toLowerCase().replace(/\s+/g, '')} • {profile.targetWeightKg} kg target
+                @{profile.name.toLowerCase().replace(/\s+/g, '')} • {profile.targetWeightKg} kg target • Persona: <span className="text-white capitalize">{coachPersonality}</span>
               </p>
 
               {/* Level Badge */}
@@ -236,6 +269,11 @@ export const ProfileScreen: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <AthleteSwitcherModal
+        isOpen={showAthleteModal}
+        onClose={() => setShowAthleteModal(false)}
+      />
     </div>
   );
 };

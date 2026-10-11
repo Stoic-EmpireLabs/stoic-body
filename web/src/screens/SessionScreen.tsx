@@ -39,6 +39,8 @@ export const SessionScreen: React.FC = () => {
     discardWorkout,
     setRoute,
     settings,
+    currentQuote,
+    coachPersonality,
   } = useGymStore();
 
   const [completedSummary, setCompletedSummary] = useState<LoggedSession | null>(null);
@@ -111,6 +113,16 @@ export const SessionScreen: React.FC = () => {
             {completedSummary.routineName || 'Training Session'} •{' '}
             {new Date(completedSummary.date).toLocaleDateString()}
           </p>
+        </div>
+
+        {/* Victory Discipline Creed */}
+        <div className="bg-[#1C1A18] border border-[#2B2724] rounded-2xl p-4 max-w-lg mx-auto text-center space-y-1">
+          <p className="text-xs sm:text-sm font-bold text-white italic">
+            "{currentQuote?.text || 'Pain is weakness leaving the body.'}"
+          </p>
+          <span className="text-[10px] font-black text-[#D9A184] uppercase tracking-wider block">
+            — {currentQuote?.author} ({coachPersonality === 'marine' ? 'USMC Combat Creed' : 'Stoic Principle'})
+          </span>
         </div>
 
         {/* Celebration Summary Card */}
@@ -380,6 +392,16 @@ export const SessionScreen: React.FC = () => {
                       {totalSetsDone}/{totalSetsPlanned}
                     </span>
                   </div>
+                </div>
+
+                {/* Stoic / Marine Focus Cue */}
+                <div className="pt-2.5 border-t border-[#282522] text-center">
+                  <p className="text-[11px] text-neutral-300 italic font-semibold line-clamp-2 px-1">
+                    "{currentQuote?.text || 'Pain is weakness leaving the body.'}"
+                  </p>
+                  <span className="text-[9px] text-[#D9A184] font-black uppercase tracking-wider block mt-0.5">
+                    — {currentQuote?.author}
+                  </span>
                 </div>
               </div>
             </div>

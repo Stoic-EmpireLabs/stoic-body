@@ -27,6 +27,7 @@ import { Sparkles, X } from 'lucide-react';
 import { getAssetUrl } from './utils/assets';
 import { FluidCanvas } from './components/FluidCanvas';
 import { LiquidNotch, type NotchToastRequest } from './components/LiquidNotch';
+import { OnboardingModal } from './components/OnboardingModal';
 
 export function App() {
   const {
@@ -138,6 +139,9 @@ export function App() {
 
       {/* Signature Stoic Body Fluid Liquid Notch Toast */}
       <LiquidNotch toast={currentToast} onDismiss={dismissLatestAward} />
+
+      {/* Stoic Body Onboarding Assessment Questionnaire */}
+      <OnboardingModal />
     </div>
   );
 }

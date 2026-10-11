@@ -18,7 +18,11 @@ import type {
   SetKind,
   SessionExercise,
   SessionSet,
+  CoachPersonality,
+  OnboardingAnswers,
+  AthleteAccount,
 } from '../types';
+import { getRandomQuote, type StoicQuote } from '../data/stoicQuotes';
 
 export const allBuiltinExercises: Exercise[] = allExercisesData as Exercise[];
 
@@ -64,7 +68,41 @@ interface GymState {
   settings: Settings;
   unlockedAwards: string[];
   latestAwardUnlocked: string | null;
+  coachPersonality: CoachPersonality;
+  activeProfileId: string;
+  athleteAccounts: AthleteAccount[];
+  onboardingDone: boolean;
+  showOnboarding: boolean;
+  onboardingAnswers: OnboardingAnswers | null;
+  currentQuote: StoicQuote;
 }
+
+const defaultAthleteAccounts: AthleteAccount[] = [
+  {
+    id: 'stoic1712',
+    name: 'Stoic 1712',
+    callsign: 'Gunny',
+    role: 'USMC Marine Veteran',
+    personality: 'marine',
+    createdDate: new Date().toISOString(),
+  },
+  {
+    id: 'aurelius',
+    name: 'Marcus Aurelius',
+    callsign: 'Imperator',
+    role: 'Stoic Practitioner',
+    personality: 'stoic',
+    createdDate: new Date().toISOString(),
+  },
+  {
+    id: 'coach-prime',
+    name: 'Coach Vanguard',
+    callsign: 'Apex',
+    role: 'Hypertrophy Specialist',
+    personality: 'coach',
+    createdDate: new Date().toISOString(),
+  },
+];
 
 const defaultRoutines: Routine[] = defaultPrograms.slice(0, 3).map((p, idx) => ({
   id: `routine-${p.id}`,
@@ -108,12 +146,14 @@ const defaultState: GymState = {
     },
   ],
   profile: {
-    name: 'Athlete',
-    bio: 'Lift. Log it. Grow.',
-    heightCm: 178,
-    targetWeightKg: 78,
+    name: 'Stoic 1712',
+    bio: 'USMC Veteran · Semper Fidelis · Lift. Log it. Grow.',
+    heightCm: 180,
+    targetWeightKg: 84,
     gender: 'male',
-    activityLevel: 'moderate',
+    activityLevel: 'athlete',
+    callsign: 'Gunny',
+    serviceBranch: 'USMC',
   },
   settings: {
     theme: 'dark',
@@ -122,9 +162,24 @@ const defaultState: GymState = {
     defaultRestSec: 90,
     heatTone: 'ember',
     language: 'en',
+    coachPersonality: 'marine',
+    activeProfileId: 'stoic1712',
+    onboardingCompleted: true,
   },
   unlockedAwards: ['firstStep'],
   latestAwardUnlocked: null,
+  coachPersonality: 'marine',
+  activeProfileId: 'stoic1712',
+  athleteAccounts: defaultAthleteAccounts,
+  onboardingDone: true,
+  showOnboarding: false,
+  onboardingAnswers: {
+    focus: 'combat',
+    experience: 'veteran',
+    equipment: 'full_gym',
+    personality: 'marine',
+  },
+  currentQuote: getRandomQuote('marine'),
 };
 
 let globalState: GymState = defaultState;
@@ -150,6 +205,11 @@ function saveToStorage() {
       settings: globalState.settings,
       unlockedAwards: globalState.unlockedAwards,
       session: globalState.session,
+      coachPersonality: globalState.coachPersonality,
+      activeProfileId: globalState.activeProfileId,
+      athleteAccounts: globalState.athleteAccounts,
+      onboardingDone: globalState.onboardingDone,
+      onboardingAnswers: globalState.onboardingAnswers,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
   } catch (err) {
@@ -162,6 +222,7 @@ function loadFromStorage() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
+      const personality = parsed.coachPersonality || parsed.settings?.coachPersonality || 'marine';
       globalState = {
         ...defaultState,
         ...parsed,
@@ -169,6 +230,12 @@ function loadFromStorage() {
         routeStack: [],
         settings: { ...defaultState.settings, ...(parsed.settings || {}) },
         profile: { ...defaultState.profile, ...(parsed.profile || {}) },
+        coachPersonality: personality,
+        activeProfileId: parsed.activeProfileId || parsed.settings?.activeProfileId || 'stoic1712',
+        athleteAccounts: parsed.athleteAccounts || defaultAthleteAccounts,
+        onboardingDone: parsed.onboardingDone ?? true,
+        showOnboarding: false,
+        currentQuote: getRandomQuote(personality),
       };
     }
   } catch (e) {
@@ -833,6 +900,85 @@ export function useGymStore() {
     notify();
   };
 
+  const setCoachPersonality = (personality: CoachPersonality) => {
+    globalState.coachPersonality = personality;
+    globalState.settings.coachPersonality = personality;
+    globalState.currentQuote = getRandomQuote(personality);
+    sound.playTick(globalState.settings.soundEnabled);
+    notify();
+  };
+
+  const switchAthlete = (athleteId: string) => {
+    const acc = globalState.athleteAccounts.find((a) => a.id === athleteId);
+    if (!acc) return;
+    globalState.activeProfileId = acc.id;
+    globalState.settings.activeProfileId = acc.id;
+    globalState.coachPersonality = acc.personality;
+    globalState.settings.coachPersonality = acc.personality;
+    globalState.profile = {
+      ...globalState.profile,
+      name: acc.name,
+      callsign: acc.callsign,
+      serviceBranch: acc.personality === 'marine' ? 'USMC' : 'Civilian',
+      bio:
+        acc.personality === 'marine'
+          ? 'USMC Veteran · Semper Fidelis · Lift. Log it. Grow.'
+          : acc.personality === 'stoic'
+          ? 'Stoic Practitioner · Master of Self · Lift. Log it. Grow.'
+          : 'High Performance Athlete · Lift. Log it. Grow.',
+    };
+    globalState.currentQuote = getRandomQuote(acc.personality);
+    sound.playBeepBell();
+    notify();
+  };
+
+  const saveAthlete = (account: AthleteAccount) => {
+    const existingIdx = globalState.athleteAccounts.findIndex((a) => a.id === account.id);
+    if (existingIdx >= 0) {
+      globalState.athleteAccounts[existingIdx] = account;
+    } else {
+      globalState.athleteAccounts = [...globalState.athleteAccounts, account];
+    }
+    notify();
+  };
+
+  const openOnboarding = () => {
+    globalState.showOnboarding = true;
+    notify();
+  };
+
+  const dismissOnboarding = () => {
+    globalState.showOnboarding = false;
+    notify();
+  };
+
+  const completeOnboarding = (answers: OnboardingAnswers) => {
+    globalState.onboardingAnswers = answers;
+    globalState.onboardingDone = true;
+    globalState.showOnboarding = false;
+    globalState.coachPersonality = answers.personality;
+    globalState.settings.coachPersonality = answers.personality;
+    globalState.settings.onboardingCompleted = true;
+    globalState.currentQuote = getRandomQuote(answers.personality);
+
+    if (answers.personality === 'marine') {
+      globalState.profile = {
+        ...globalState.profile,
+        serviceBranch: 'USMC',
+        callsign: globalState.profile.callsign || 'Gunny',
+        bio: 'USMC Combat Conditioning · Semper Fidelis · Lift. Log it. Grow.',
+      };
+    }
+    sound.playCheer(globalState.settings.soundEnabled);
+    notify();
+  };
+
+  const shuffleQuote = () => {
+    globalState.currentQuote = getRandomQuote(globalState.coachPersonality);
+    sound.playTick(globalState.settings.soundEnabled);
+    notify();
+  };
+
   return {
     ...state,
     allExercises,
@@ -879,6 +1025,13 @@ export function useGymStore() {
     exportDataJSON,
     importDataJSON,
     resetAllData,
+    setCoachPersonality,
+    switchAthlete,
+    saveAthlete,
+    openOnboarding,
+    dismissOnboarding,
+    completeOnboarding,
+    shuffleQuote,
     dismissLatestAward: () => {
       globalState.latestAwardUnlocked = null;
       notify();

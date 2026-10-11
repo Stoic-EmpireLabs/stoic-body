@@ -103,6 +103,24 @@ export interface GymNote {
   date: string;
 }
 
+export type CoachPersonality = 'marine' | 'stoic' | 'coach';
+
+export interface OnboardingAnswers {
+  focus: 'combat' | 'hypertrophy' | 'strength' | 'athletic';
+  experience: 'recruit' | 'intermediate' | 'veteran';
+  equipment: 'full_gym' | 'barbell_home' | 'dumbbells' | 'bodyweight';
+  personality: CoachPersonality;
+}
+
+export interface AthleteAccount {
+  id: string;
+  name: string;
+  callsign: string;
+  role: string;
+  personality: CoachPersonality;
+  createdDate: string;
+}
+
 export interface Profile {
   name: string;
   bio: string;
@@ -110,6 +128,8 @@ export interface Profile {
   targetWeightKg: number;
   gender: 'male' | 'female';
   activityLevel: 'sedentary' | 'light' | 'moderate' | 'heavy' | 'athlete';
+  callsign?: string;
+  serviceBranch?: string;
 }
 
 export interface Settings {
@@ -119,6 +139,9 @@ export interface Settings {
   defaultRestSec: number;
   heatTone: 'ember' | 'green' | 'blue' | 'mono';
   language: string;
+  coachPersonality: CoachPersonality;
+  activeProfileId: string;
+  onboardingCompleted: boolean;
 }
 
 export const MUSCLES = [

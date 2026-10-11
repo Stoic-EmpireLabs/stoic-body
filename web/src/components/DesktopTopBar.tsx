@@ -12,9 +12,23 @@ import {
   Layers,
 } from 'lucide-react';
 import { LiquidDockSelector } from './LiquidDockSelector';
+import { AthleteSwitcherModal } from './AthleteSwitcherModal';
+import { Shield, Compass, User } from 'lucide-react';
 
 export const DesktopTopBar: React.FC = () => {
-  const { route, settings, updateSettings, session, pushRoute, startEmptyWorkout } = useGymStore();
+  const {
+    route,
+    settings,
+    updateSettings,
+    session,
+    pushRoute,
+    startEmptyWorkout,
+    profile,
+    coachPersonality,
+    activeProfileId,
+  } = useGymStore();
+
+  const [showAthleteModal, setShowAthleteModal] = React.useState(false);
 
   const routeTitles: Record<string, string> = {
     home: 'Today Dashboard',
@@ -39,31 +53,56 @@ export const DesktopTopBar: React.FC = () => {
     day: 'numeric',
   });
 
-  return (
-    <header className="h-16 border-b border-[#242220] bg-[#121110]/95 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20 select-none">
-      <div className="flex items-center gap-3">
-        <h2 className="text-base font-black text-white tracking-tight">
-          {routeTitles[route] || 'Stoic Body'}
-        </h2>
-        <span className="hidden sm:inline-block text-neutral-600 font-mono text-xs">/</span>
-        <span className="hidden sm:flex items-center gap-1.5 text-xs text-neutral-400 font-medium">
-          <Calendar className="w-3.5 h-3.5 text-[#D9A184]" />
-          {todayDateStr}
-        </span>
-      </div>
+  const personalityIcon =
+    coachPersonality === 'marine' ? (
+      <Shield className="w-3.5 h-3.5 text-red-400" />
+    ) : coachPersonality === 'stoic' ? (
+      <Compass className="w-3.5 h-3.5 text-[#D9A184]" />
+    ) : (
+      <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+    );
 
-      <div className="flex items-center gap-3">
-        {/* Liquid Unit Switcher Pill */}
-        <div className="w-28">
-          <LiquidDockSelector<'kg' | 'lb'>
-            items={[
-              { id: 'kg', label: 'KG' },
-              { id: 'lb', label: 'LB' },
-            ]}
-            selected={settings.units}
-            onSelect={(units) => updateSettings({ units })}
-          />
+  return (
+    <>
+      <header className="h-16 border-b border-[#242220] bg-[#121110]/95 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20 select-none">
+        <div className="flex items-center gap-3">
+          <h2 className="text-base font-black text-white tracking-tight">
+            {routeTitles[route] || 'Stoic Body'}
+          </h2>
+          <span className="hidden sm:inline-block text-neutral-600 font-mono text-xs">/</span>
+          <span className="hidden sm:flex items-center gap-1.5 text-xs text-neutral-400 font-medium">
+            <Calendar className="w-3.5 h-3.5 text-[#D9A184]" />
+            {todayDateStr}
+          </span>
         </div>
+
+        <div className="flex items-center gap-3">
+          {/* Athlete Profile Switcher Pill */}
+          <button
+            onClick={() => setShowAthleteModal(true)}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#1C1A18] hover:bg-[#25221F] border border-[#2E2A26] text-xs font-black text-white transition-all active:scale-95 shadow"
+            title="Switch Athlete Profile / Persona"
+          >
+            {personalityIcon}
+            <span className="font-mono text-[#D9A184] tracking-tight">
+              {activeProfileId === 'stoic1712' ? 'stoic1712' : profile.name}
+            </span>
+            <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-[#121110] text-neutral-400 font-bold border border-[#282624]">
+              {coachPersonality === 'marine' ? 'USMC' : coachPersonality}
+            </span>
+          </button>
+
+          {/* Liquid Unit Switcher Pill */}
+          <div className="w-28">
+            <LiquidDockSelector<'kg' | 'lb'>
+              items={[
+                { id: 'kg', label: 'KG' },
+                { id: 'lb', label: 'LB' },
+              ]}
+              selected={settings.units}
+              onSelect={(units) => updateSettings({ units })}
+            />
+          </div>
 
         {/* Sound Toggle */}
         <button
@@ -102,5 +141,10 @@ export const DesktopTopBar: React.FC = () => {
         )}
       </div>
     </header>
+    <AthleteSwitcherModal
+      isOpen={showAthleteModal}
+      onClose={() => setShowAthleteModal(false)}
+    />
+  </>
   );
 };
