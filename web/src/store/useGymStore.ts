@@ -217,6 +217,11 @@ export function useGymStore() {
     notify();
   };
 
+  const setActiveExerciseId = (id: string | null) => {
+    globalState.activeExerciseId = id;
+    notify();
+  };
+
   // Exercise getters
   const allExercises = [...allBuiltinExercises, ...globalState.customExercises];
 
@@ -717,7 +722,7 @@ export function useGymStore() {
       color,
       exerciseIds: [],
     };
-    globalState.routines.push(newRoutine);
+    globalState.routines = [...globalState.routines, newRoutine];
     checkAwards();
     notify();
     return id;
@@ -742,32 +747,41 @@ export function useGymStore() {
 
   // Bodyweight & Measures
   const addBodyweight = (kg: number) => {
-    globalState.bodyweight.unshift({
-      id: `bw-${Date.now()}`,
-      date: new Date().toISOString(),
-      kg,
-    });
+    globalState.bodyweight = [
+      {
+        id: `bw-${Date.now()}`,
+        date: new Date().toISOString(),
+        kg,
+      },
+      ...globalState.bodyweight,
+    ];
     notify();
   };
 
   const addBodyMeasure = (part: string, val: number) => {
-    globalState.measures.unshift({
-      id: `bm-${Date.now()}`,
-      date: new Date().toISOString(),
-      part,
-      val,
-    });
+    globalState.measures = [
+      {
+        id: `bm-${Date.now()}`,
+        date: new Date().toISOString(),
+        part,
+        val,
+      },
+      ...globalState.measures,
+    ];
     notify();
   };
 
   // Notes
   const addNote = (title: string, content: string) => {
-    globalState.notes.unshift({
-      id: `note-${Date.now()}`,
-      title,
-      content,
-      date: new Date().toISOString(),
-    });
+    globalState.notes = [
+      {
+        id: `note-${Date.now()}`,
+        title,
+        content,
+        date: new Date().toISOString(),
+      },
+      ...globalState.notes,
+    ];
     notify();
   };
 
@@ -826,6 +840,7 @@ export function useGymStore() {
     popRoute,
     setRoute,
     getExerciseById,
+    setActiveExerciseId,
     toggleFavorite,
     toggleMuscle,
     clearSelectedMuscles,

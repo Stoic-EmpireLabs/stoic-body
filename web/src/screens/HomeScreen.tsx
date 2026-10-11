@@ -26,6 +26,7 @@ export const HomeScreen: React.FC = () => {
     getStreak,
     getHeatmapDays,
     allExercises,
+    setActiveExerciseId,
   } = useGymStore();
 
   const streak = getStreak();
@@ -340,7 +341,7 @@ export const HomeScreen: React.FC = () => {
             <div
               key={ex.id}
               onClick={() => {
-                useGymStore.getState().activeExerciseId = ex.id;
+                setActiveExerciseId(ex.id);
                 pushRoute('exercise-detail');
               }}
               className="bg-[#161514] hover:bg-[#1E1C1A] border border-[#262422] hover:border-[#D9A184]/40 rounded-3xl p-3.5 cursor-pointer transition-all active:scale-98 flex flex-col justify-between shadow-md"

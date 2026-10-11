@@ -5,7 +5,7 @@ import { Search, Star, Plus, ChevronRight, Dumbbell, Filter } from 'lucide-react
 import type { Exercise } from '../types';
 
 export const ExercisesScreen: React.FC = () => {
-  const { allExercises, favorites, toggleFavorite, pushRoute } = useGymStore();
+  const { allExercises, favorites, toggleFavorite, pushRoute, setActiveExerciseId } = useGymStore();
 
   const [query, setQuery] = useState('');
   const [selectedMuscle, setSelectedMuscle] = useState<string>('all');
@@ -56,7 +56,7 @@ export const ExercisesScreen: React.FC = () => {
   });
 
   const handleOpenDetail = (id: string) => {
-    useGymStore.getState().activeExerciseId = id;
+    setActiveExerciseId(id);
     pushRoute('exercise-detail');
   };
 
