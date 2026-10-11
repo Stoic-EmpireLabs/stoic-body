@@ -31,6 +31,8 @@ export const ScheduleScreen: React.FC = () => {
     injectDayPlanTemplate,
     getEventsForDate,
     startEmptyWorkout,
+    startWorkoutFromRoutine,
+    routines,
     pushRoute,
   } = useGymStore();
 
@@ -376,8 +378,14 @@ export const ScheduleScreen: React.FC = () => {
                     {event.category === 'workout' && !event.completed && (
                       <button
                         onClick={() => {
-                          startEmptyWorkout();
-                          pushRoute('session');
+                          if (event.routineId && routines.some((r) => r.id === event.routineId)) {
+                            startWorkoutFromRoutine(event.routineId);
+                          } else if (routines.length > 0) {
+                            startWorkoutFromRoutine(routines[0].id);
+                          } else {
+                            startEmptyWorkout();
+                            pushRoute('session');
+                          }
                         }}
                         className="px-3 py-1.5 rounded-xl bg-[#D9A184] hover:bg-[#E5AC8F] text-[#140D09] font-black text-xs flex items-center gap-1.5 shadow active:scale-95 transition-all"
                       >

@@ -12,7 +12,6 @@ import {
   Layers,
 } from 'lucide-react';
 import { LiquidDockSelector } from './LiquidDockSelector';
-import { AthleteSwitcherModal } from './AthleteSwitcherModal';
 import { Shield, Compass, User } from 'lucide-react';
 
 export const DesktopTopBar: React.FC = () => {
@@ -26,9 +25,8 @@ export const DesktopTopBar: React.FC = () => {
     profile,
     coachPersonality,
     activeProfileId,
+    openLoginModal,
   } = useGymStore();
-
-  const [showAthleteModal, setShowAthleteModal] = React.useState(false);
 
   const routeTitles: Record<string, string> = {
     home: 'Today Dashboard',
@@ -67,8 +65,7 @@ export const DesktopTopBar: React.FC = () => {
     );
 
   return (
-    <>
-      <header className="h-16 border-b border-[#242220] bg-[#121110]/95 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20 select-none">
+    <header className="h-16 border-b border-[#242220] bg-[#121110]/95 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20 select-none">
         <div className="flex items-center gap-3">
           <h2 className="text-base font-black text-white tracking-tight">
             {routeTitles[route] || 'Stoic Body'}
@@ -83,13 +80,13 @@ export const DesktopTopBar: React.FC = () => {
         <div className="flex items-center gap-3">
           {/* Athlete Profile Switcher Pill */}
           <button
-            onClick={() => setShowAthleteModal(true)}
+            onClick={openLoginModal}
             className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#1C1A18] hover:bg-[#25221F] border border-[#2E2A26] text-xs font-black text-white transition-all active:scale-95 shadow"
-            title="Switch Athlete Profile / Persona"
+            title="Athlete Sign-In / Switch Profile"
           >
             {personalityIcon}
             <span className="font-mono text-[#D9A184] tracking-tight">
-              {activeProfileId === 'stoic1712' ? 'stoic1712' : profile.name}
+              {profile.name}
             </span>
             <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-[#121110] text-neutral-400 font-bold border border-[#282624]">
               {coachPersonality === 'marine' ? 'USMC' : coachPersonality}
@@ -145,10 +142,5 @@ export const DesktopTopBar: React.FC = () => {
         )}
       </div>
     </header>
-    <AthleteSwitcherModal
-      isOpen={showAthleteModal}
-      onClose={() => setShowAthleteModal(false)}
-    />
-  </>
   );
 };

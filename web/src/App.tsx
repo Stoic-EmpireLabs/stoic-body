@@ -30,6 +30,7 @@ import { getAssetUrl } from './utils/assets';
 import { FluidCanvas } from './components/FluidCanvas';
 import { LiquidNotch, type NotchToastRequest } from './components/LiquidNotch';
 import { OnboardingModal } from './components/OnboardingModal';
+import { LoginModal } from './components/LoginModal';
 
 export function App() {
   const {
@@ -148,6 +149,9 @@ export function App() {
 
       {/* Stoic Body Onboarding Assessment Questionnaire */}
       <OnboardingModal />
+
+      {/* Stoic Body Athlete Sanctuary Login & Access Portal */}
+      <LoginModal />
     </div>
   );
 }

@@ -9,7 +9,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ title, showBack }) => {
-  const { route, popRoute, pushRoute, getStreak, unlockedAwards } = useGymStore();
+  const { route, popRoute, pushRoute, getStreak, unlockedAwards, openLoginModal, profile } = useGymStore();
 
   const isRootTab = ['home', 'train', 'progress', 'exercises'].includes(route);
   const shouldShowBack = showBack ?? !isRootTab;
@@ -71,6 +71,15 @@ export const Header: React.FC<HeaderProps> = ({ title, showBack }) => {
             {unlockedAwards.length > 0 && (
               <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#D9A184] rounded-full ring-2 ring-[#0A0A0A]" />
             )}
+          </button>
+
+          {/* Athlete Profile / Sign-In */}
+          <button
+            onClick={openLoginModal}
+            className="p-2 rounded-xl bg-[#1C1C1C] border border-[#2B2B2B] hover:bg-[#262626] transition-all active:scale-95 text-[#D9A184]"
+            title={`Signed in as ${profile.name} · Tap to Switch Athlete`}
+          >
+            <User className="w-4 h-4" />
           </button>
 
           {/* Settings */}

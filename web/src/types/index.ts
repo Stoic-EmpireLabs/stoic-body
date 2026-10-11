@@ -106,9 +106,15 @@ export interface GymNote {
 export type CoachPersonality = 'marine' | 'stoic' | 'coach' | 'aurelia';
 
 export interface OnboardingAnswers {
-  focus: 'combat' | 'hypertrophy' | 'strength' | 'athletic';
+  gender: 'male' | 'female';
+  name?: string;
+  callsign?: string;
+  focus: 'combat' | 'hypertrophy' | 'strength' | 'athletic' | 'glute_waist' | 'pilates_tone';
   experience: 'recruit' | 'intermediate' | 'veteran';
   equipment: 'full_gym' | 'barbell_home' | 'dumbbells' | 'bodyweight';
+  frequency?: 3 | 4 | 5 | 6;
+  workoutTime?: string;
+  fasting?: '16_8' | '20_4' | 'omad' | 'standard';
   personality: CoachPersonality;
 }
 
@@ -141,9 +147,9 @@ export interface Settings {
   heatTone: 'ember' | 'green' | 'blue' | 'mono' | 'rose';
   language: string;
   coachPersonality: CoachPersonality;
+  gender?: 'male' | 'female';
   activeProfileId: string;
   onboardingCompleted: boolean;
-  gender?: 'male' | 'female';
 }
 
 export type EventCategory = 'workout' | 'meal' | 'task' | 'recovery' | 'sleep' | 'habit';

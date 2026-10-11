@@ -34,10 +34,11 @@ import {
   defaultNutritionTargets,
   getLocalDateString,
 } from '../data/defaultSchedule';
+import { generateCustomPlan } from '../utils/planGenerator';
 
 export const allBuiltinExercises: Exercise[] = allExercisesData as Exercise[];
 
-const STORAGE_KEY = 'gymmane_v1';
+const STORAGE_KEY = 'stoic_community_v1';
 
 export type RouteName =
   | 'home'
@@ -86,6 +87,7 @@ interface GymState {
   athleteAccounts: AthleteAccount[];
   onboardingDone: boolean;
   showOnboarding: boolean;
+  showLoginModal: boolean;
   onboardingAnswers: OnboardingAnswers | null;
   currentQuote: StoicQuote;
   scheduledEvents: ScheduledEvent[];
@@ -96,43 +98,42 @@ interface GymState {
 
 const defaultAthleteAccounts: AthleteAccount[] = [
   {
-    id: 'stoic1712',
-    name: 'Stoic 1712',
-    callsign: 'Gunny',
-    role: 'USMC Marine Veteran',
+    id: 'athlete-female',
+    name: 'Sophia',
+    callsign: 'Aurelia',
+    role: 'Empress / Female Athlete',
+    personality: 'aurelia',
+    gender: 'female',
+    createdDate: new Date().toISOString(),
+  },
+  {
+    id: 'athlete-male',
+    name: 'Marcus',
+    callsign: 'Spartan',
+    role: 'Spartan / Tactical Athlete',
     personality: 'marine',
-    createdDate: new Date().toISOString(),
-  },
-  {
-    id: 'aurelius',
-    name: 'Marcus Aurelius',
-    callsign: 'Imperator',
-    role: 'Stoic Practitioner',
-    personality: 'stoic',
-    createdDate: new Date().toISOString(),
-  },
-  {
-    id: 'coach-prime',
-    name: 'Coach Vanguard',
-    callsign: 'Apex',
-    role: 'Hypertrophy Specialist',
-    personality: 'coach',
+    gender: 'male',
     createdDate: new Date().toISOString(),
   },
 ];
 
-const defaultRoutines: Routine[] = defaultPrograms.slice(0, 3).map((p, idx) => ({
-  id: `routine-${p.id}`,
-  name: p.name,
-  group: 'Starter Plans',
-  color: idx === 0 ? '#D9A184' : idx === 1 ? '#8FA377' : '#7FA8C9',
-  exerciseIds: p.days[0].exercises
-    .map((e) => {
-      const match = allBuiltinExercises.find((b) => b.name.toLowerCase() === e.name.toLowerCase());
-      return match ? match.id : null;
-    })
-    .filter(Boolean) as string[],
-}));
+const defaultPlan = generateCustomPlan(
+  {
+    gender: 'female',
+    name: 'Sophia',
+    callsign: 'Aurelia',
+    focus: 'glute_waist',
+    experience: 'intermediate',
+    equipment: 'full_gym',
+    frequency: 4,
+    workoutTime: '07:30',
+    fasting: '16_8',
+    personality: 'aurelia',
+  },
+  allBuiltinExercises
+);
+
+const defaultRoutines: Routine[] = defaultPlan.routines;
 
 const defaultState: GymState = {
   route: 'home',
@@ -144,63 +145,66 @@ const defaultState: GymState = {
   activeToolId: null,
   session: null,
   sessions: [],
-  routines: defaultRoutines,
-  weeklyPlan: { 1: defaultRoutines[0]?.id || '', 3: defaultRoutines[0]?.id || '', 5: defaultRoutines[0]?.id || '' },
+  routines: defaultPlan.routines,
+  weeklyPlan: defaultPlan.weeklyPlan,
   favorites: {},
   customExercises: [],
-  bodyweight: [
-    { id: '1', date: new Date(Date.now() - 14 * 86400000).toISOString(), kg: 76.5 },
-    { id: '2', date: new Date(Date.now() - 7 * 86400000).toISOString(), kg: 76.0 },
-    { id: '3', date: new Date().toISOString(), kg: 75.8 },
-  ],
+  bodyweight: [],
   measures: [],
   notes: [
     {
-      id: 'note-1',
-      title: 'Welcome to Stoic Body',
-      content: 'Your training log is stored 100% locally in your browser. Tap the muscle map on the Train tab to build your first session!',
+      id: 'note-welcome',
+      title: 'Welcome to Your Private Sanctuary',
+      content: 'Your training log is stored 100% locally on your machine with zero cloud tracking. Tap Train to build your first session!',
       date: new Date().toISOString(),
     },
   ],
   profile: {
-    name: 'Stoic 1712',
-    bio: 'USMC Veteran · Semper Fidelis · Lift. Log it. Grow.',
-    heightCm: 180,
-    targetWeightKg: 84,
-    gender: 'male',
+    name: 'Sophia',
+    bio: 'Empress & Aurelia Discipline · Toned Strength & Poise',
+    heightCm: 168,
+    targetWeightKg: 62,
+    gender: 'female',
     activityLevel: 'athlete',
-    callsign: 'Gunny',
-    serviceBranch: 'USMC',
+    callsign: 'Aurelia',
   },
   settings: {
     theme: 'dark',
-    units: 'kg',
+    units: 'lb',
     soundEnabled: true,
     defaultRestSec: 90,
-    heatTone: 'ember',
+    heatTone: 'rose',
     language: 'en',
-    coachPersonality: 'marine',
-    activeProfileId: 'stoic1712',
-    onboardingCompleted: true,
+    coachPersonality: 'aurelia',
+    activeProfileId: 'athlete-female',
+    onboardingCompleted: false,
+    gender: 'female',
   },
-  unlockedAwards: ['firstStep'],
+  unlockedAwards: [],
   latestAwardUnlocked: null,
-  coachPersonality: 'marine',
-  activeProfileId: 'stoic1712',
+  coachPersonality: 'aurelia',
+  activeProfileId: 'athlete-female',
   athleteAccounts: defaultAthleteAccounts,
-  onboardingDone: true,
-  showOnboarding: false,
-    onboardingAnswers: {
-    focus: 'combat',
-    experience: 'veteran',
+  onboardingDone: false,
+  showOnboarding: true,
+  showLoginModal: false,
+  onboardingAnswers: {
+    gender: 'female',
+    name: 'Sophia',
+    callsign: 'Aurelia',
+    focus: 'glute_waist',
+    experience: 'intermediate',
     equipment: 'full_gym',
-    personality: 'marine',
+    frequency: 4,
+    workoutTime: '07:30',
+    personality: 'aurelia',
+    fasting: '16_8',
   },
-  currentQuote: getRandomQuote('marine'),
-  scheduledEvents: generateDefaultSchedule(14),
-  meals: defaultMealsToday,
-  nutritionTargets: defaultNutritionTargets,
-  waterMl: 2250,
+  currentQuote: getRandomQuote('aurelia'),
+  scheduledEvents: defaultPlan.scheduledEvents,
+  meals: [],
+  nutritionTargets: defaultPlan.nutritionTargets,
+  waterMl: 0,
 };
 
 let globalState: GymState = defaultState;
@@ -322,7 +326,7 @@ export function useGymStore() {
   const allExercises = [...allBuiltinExercises, ...globalState.customExercises];
 
   const getExerciseById = (id: string): Exercise | undefined => {
-    return allExercises.find((e) => e.id === id);
+    return allExercises.find((e) => e.id === id || e.art === id);
   };
 
   const toggleFavorite = (exerciseId: string) => {
@@ -1012,23 +1016,78 @@ export function useGymStore() {
   };
 
   const switchAthlete = (athleteId: string) => {
+    // 1. Snapshot current athlete state
+    const currentId = globalState.activeProfileId;
+    if (currentId) {
+      try {
+        const snapshot = {
+          sessions: globalState.sessions,
+          routines: globalState.routines,
+          weeklyPlan: globalState.weeklyPlan,
+          bodyweight: globalState.bodyweight,
+          measures: globalState.measures,
+          notes: globalState.notes,
+          profile: globalState.profile,
+          settings: globalState.settings,
+          scheduledEvents: globalState.scheduledEvents,
+          meals: globalState.meals,
+          nutritionTargets: globalState.nutritionTargets,
+          waterMl: globalState.waterMl,
+        };
+        localStorage.setItem(`stoic_community_athlete_data_${currentId}`, JSON.stringify(snapshot));
+      } catch (err) {
+        console.error('Failed to snapshot athlete data:', err);
+      }
+    }
+
     const acc = globalState.athleteAccounts.find((a) => a.id === athleteId);
     if (!acc) return;
+
     globalState.activeProfileId = acc.id;
     globalState.settings.activeProfileId = acc.id;
+
+    // 2. Restore saved data for this athlete if exists
+    try {
+      const savedRaw = localStorage.getItem(`stoic_community_athlete_data_${acc.id}`);
+      if (savedRaw) {
+        const saved = JSON.parse(savedRaw);
+        globalState.sessions = saved.sessions || [];
+        globalState.routines = saved.routines || defaultRoutines;
+        globalState.weeklyPlan = saved.weeklyPlan || globalState.weeklyPlan;
+        globalState.bodyweight = saved.bodyweight || [];
+        globalState.measures = saved.measures || [];
+        globalState.notes = saved.notes || [];
+        globalState.profile = saved.profile || globalState.profile;
+        globalState.settings = saved.settings || globalState.settings;
+        globalState.scheduledEvents = saved.scheduledEvents || generateDefaultSchedule(14);
+        globalState.meals = saved.meals || [];
+        globalState.nutritionTargets = saved.nutritionTargets || globalState.nutritionTargets;
+        globalState.waterMl = saved.waterMl || 0;
+        globalState.coachPersonality = acc.personality;
+        globalState.currentQuote = getRandomQuote(acc.personality);
+        sound.playBeepBell();
+        notify();
+        return;
+      }
+    } catch (err) {
+      console.error('Failed to load athlete snapshot:', err);
+    }
+
+    // Otherwise apply athlete defaults
     globalState.coachPersonality = acc.personality;
     globalState.settings.coachPersonality = acc.personality;
+    globalState.settings.gender = acc.gender || 'female';
     globalState.profile = {
       ...globalState.profile,
       name: acc.name,
       callsign: acc.callsign,
-      serviceBranch: acc.personality === 'marine' ? 'USMC' : 'Civilian',
+      gender: acc.gender || 'female',
       bio:
-        acc.personality === 'marine'
+        acc.personality === 'aurelia'
+          ? 'Empress & Aurelia Discipline · Toned Strength & Poise'
+          : acc.personality === 'marine'
           ? 'USMC Veteran · Semper Fidelis · Lift. Log it. Grow.'
-          : acc.personality === 'stoic'
-          ? 'Stoic Practitioner · Master of Self · Lift. Log it. Grow.'
-          : 'High Performance Athlete · Lift. Log it. Grow.',
+          : 'Stoic Practitioner · Master of Self · Lift. Log it. Grow.',
     };
     globalState.currentQuote = getRandomQuote(acc.personality);
     sound.playBeepBell();
@@ -1045,6 +1104,16 @@ export function useGymStore() {
     notify();
   };
 
+  const openLoginModal = () => {
+    globalState.showLoginModal = true;
+    notify();
+  };
+
+  const dismissLoginModal = () => {
+    globalState.showLoginModal = false;
+    notify();
+  };
+
   const openOnboarding = () => {
     globalState.showOnboarding = true;
     notify();
@@ -1056,22 +1125,68 @@ export function useGymStore() {
   };
 
   const completeOnboarding = (answers: OnboardingAnswers) => {
+    const plan = generateCustomPlan(answers, allBuiltinExercises);
+
     globalState.onboardingAnswers = answers;
     globalState.onboardingDone = true;
     globalState.showOnboarding = false;
-    globalState.coachPersonality = answers.personality;
-    globalState.settings.coachPersonality = answers.personality;
+    globalState.showLoginModal = false;
+    globalState.coachPersonality = plan.coachPersonality;
+    globalState.settings.coachPersonality = plan.coachPersonality;
     globalState.settings.onboardingCompleted = true;
-    globalState.currentQuote = getRandomQuote(answers.personality);
+    globalState.settings.gender = answers.gender;
+    globalState.settings.heatTone = answers.gender === 'female' ? 'rose' : 'ember';
+    globalState.profile = {
+      ...globalState.profile,
+      ...plan.profileUpdates,
+    };
+    globalState.routines = plan.routines;
+    globalState.weeklyPlan = plan.weeklyPlan;
+    globalState.scheduledEvents = plan.scheduledEvents;
+    globalState.nutritionTargets = plan.nutritionTargets;
+    globalState.currentQuote = getRandomQuote(plan.coachPersonality);
 
-    if (answers.personality === 'marine') {
-      globalState.profile = {
-        ...globalState.profile,
-        serviceBranch: 'USMC',
-        callsign: globalState.profile.callsign || 'Gunny',
-        bio: 'USMC Combat Conditioning · Semper Fidelis · Lift. Log it. Grow.',
-      };
+    // Save or update athlete account
+    const athleteId = globalState.activeProfileId || (answers.gender === 'female' ? 'athlete-female' : 'athlete-male');
+    const existingIdx = globalState.athleteAccounts.findIndex((a) => a.id === athleteId);
+    const updatedAccount: AthleteAccount = {
+      id: athleteId,
+      name: answers.name || (answers.gender === 'female' ? 'Sophia' : 'Marcus'),
+      callsign: answers.callsign || (answers.gender === 'female' ? 'Aurelia' : 'Spartan'),
+      role: answers.gender === 'female' ? 'Empress Athlete' : 'Tactical Athlete',
+      personality: plan.coachPersonality,
+      gender: answers.gender,
+      createdDate: new Date().toISOString(),
+    };
+
+    if (existingIdx >= 0) {
+      globalState.athleteAccounts[existingIdx] = updatedAccount;
+    } else {
+      globalState.athleteAccounts = [...globalState.athleteAccounts, updatedAccount];
     }
+    globalState.activeProfileId = athleteId;
+
+    // Snapshot state for this athlete account
+    try {
+      const snapshot = {
+        sessions: globalState.sessions,
+        routines: globalState.routines,
+        weeklyPlan: globalState.weeklyPlan,
+        bodyweight: globalState.bodyweight,
+        measures: globalState.measures,
+        notes: globalState.notes,
+        profile: globalState.profile,
+        settings: globalState.settings,
+        scheduledEvents: globalState.scheduledEvents,
+        meals: globalState.meals,
+        nutritionTargets: globalState.nutritionTargets,
+        waterMl: globalState.waterMl,
+      };
+      localStorage.setItem(`stoic_community_athlete_data_${athleteId}`, JSON.stringify(snapshot));
+    } catch (e) {
+      console.error('Failed to snapshot athlete data on onboarding completion:', e);
+    }
+
     sound.playCheer(globalState.settings.soundEnabled);
     notify();
   };
@@ -1434,6 +1549,8 @@ export function useGymStore() {
     setCoachPersonality,
     switchAthlete,
     saveAthlete,
+    openLoginModal,
+    dismissLoginModal,
     openOnboarding,
     dismissOnboarding,
     completeOnboarding,
@@ -1457,4 +1574,20 @@ export function useGymStore() {
 }
 
 useGymStore.getState = () => globalState;
+
+if (typeof window !== 'undefined') {
+  (window as any).gymStore = {
+    getState: () => globalState,
+    setRoute: (r: any) => { globalState.routeStack = []; globalState.route = r; notify(); },
+    pushRoute: (r: any) => { globalState.routeStack.push(globalState.route); globalState.route = r; notify(); },
+    setActiveExerciseId: (id: any) => { globalState.activeExerciseId = id; notify(); },
+    setProfileGender: (g: 'male' | 'female') => {
+      globalState.profile.gender = g;
+      globalState.settings.gender = g;
+      globalState.coachPersonality = g === 'female' ? 'aurelia' : 'marine';
+      globalState.profile.callsign = g === 'female' ? 'Aurelia' : 'Spartan';
+      notify();
+    }
+  };
+}
 

@@ -19,7 +19,6 @@ import {
   Shield,
 } from 'lucide-react';
 import { getAssetUrl } from '../utils/assets';
-import { AthleteSwitcherModal } from '../components/AthleteSwitcherModal';
 
 export const ProfileScreen: React.FC = () => {
   const {
@@ -32,9 +31,10 @@ export const ProfileScreen: React.FC = () => {
     updateProfile,
     coachPersonality,
     activeProfileId,
+    openLoginModal,
+    openOnboarding,
   } = useGymStore();
 
-  const [showAthleteModal, setShowAthleteModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(profile.name || 'Athlete');
   const [bio, setBio] = useState(profile.bio || 'Lift. Log it. Grow.');
@@ -81,13 +81,20 @@ export const ProfileScreen: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 self-start sm:self-auto">
+            <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
               <button
-                onClick={() => setShowAthleteModal(true)}
+                onClick={openLoginModal}
                 className="px-3.5 py-2 rounded-xl bg-[#1C1A18] hover:bg-[#25221F] text-neutral-200 border border-[#2E2A26] font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95"
               >
                 <Users className="w-3.5 h-3.5 text-[#D9A184]" />
                 Switch Athlete
+              </button>
+              <button
+                onClick={openOnboarding}
+                className="px-3.5 py-2 rounded-xl bg-[#2C221C] hover:bg-[#382B24] text-[#D9A184] border border-[#D9A184]/40 font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow"
+              >
+                <Sparkles className="w-3.5 h-3.5 fill-current" />
+                Retake Assessment
               </button>
               <button
                 onClick={() => setIsEditing(!isEditing)}
@@ -269,11 +276,6 @@ export const ProfileScreen: React.FC = () => {
           </div>
         </div>
       </div>
-
-      <AthleteSwitcherModal
-        isOpen={showAthleteModal}
-        onClose={() => setShowAthleteModal(false)}
-      />
     </div>
   );
 };
