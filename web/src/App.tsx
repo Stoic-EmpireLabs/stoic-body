@@ -21,6 +21,8 @@ import { NotesScreen } from './screens/NotesScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { AboutScreen } from './screens/AboutScreen';
+import { ScheduleScreen } from './screens/ScheduleScreen';
+import { NutritionScreen } from './screens/NutritionScreen';
 
 import { AWARDS } from './data/awards';
 import { Sparkles, X } from 'lucide-react';
@@ -63,6 +65,10 @@ export function App() {
     switch (route) {
       case 'home':
         return <HomeScreen />;
+      case 'schedule':
+        return <ScheduleScreen />;
+      case 'nutrition':
+        return <NutritionScreen />;
       case 'train':
         return <TrainScreen />;
       case 'session':

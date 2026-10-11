@@ -11,9 +11,17 @@ import {
   Sparkles,
   TrendingUp,
   CheckCircle2,
+  Calendar,
+  Utensils,
+  Check,
+  Plus,
+  Droplets,
+  Clock,
+  ArrowRight,
 } from 'lucide-react';
 import { ExerciseArt } from '../components/ExerciseArt';
 import { QuoteCard } from '../components/QuoteCard';
+import { getLocalDateString } from '../data/defaultSchedule';
 
 export const HomeScreen: React.FC = () => {
   const {
@@ -24,10 +32,17 @@ export const HomeScreen: React.FC = () => {
     pushRoute,
     setRoute,
     startWorkoutFromRoutine,
+    startEmptyWorkout,
     getStreak,
     getHeatmapDays,
     allExercises,
     setActiveExerciseId,
+    scheduledEvents,
+    toggleScheduledEvent,
+    meals,
+    nutritionTargets,
+    waterMl,
+    addWater,
   } = useGymStore();
 
   const streak = getStreak();
@@ -60,6 +75,24 @@ export const HomeScreen: React.FC = () => {
   };
 
   const recommended = allExercises.slice(0, 8);
+
+  // Today's Mission Schedule & Tasks
+  const todayStr = getLocalDateString(new Date());
+  const todayEvents = (scheduledEvents || [])
+    .filter((e) => e.date === todayStr)
+    .sort((a, b) => a.time.localeCompare(b.time));
+
+  const completedEventsCount = todayEvents.filter((e) => e.completed).length;
+  const totalEventsCount = todayEvents.length;
+  const eventsProgressPct =
+    totalEventsCount > 0 ? Math.round((completedEventsCount / totalEventsCount) * 100) : 0;
+
+  // Today's Meals & Nutrition
+  const todayMeals = (meals || []).filter((m) => m.date === todayStr);
+  const consumedCalories = todayMeals.reduce((acc, m) => acc + m.calories, 0);
+  const consumedProtein = todayMeals.reduce((acc, m) => acc + m.protein, 0);
+  const consumedCarbs = todayMeals.reduce((acc, m) => acc + m.carbs, 0);
+  const consumedFat = todayMeals.reduce((acc, m) => acc + m.fat, 0);
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-20 animate-in fade-in duration-200">
@@ -190,6 +223,225 @@ export const HomeScreen: React.FC = () => {
 
       {/* Daily Stoic & Marine Discipline Wisdom Card */}
       <QuoteCard />
+
+      {/* Today Mission Timeline & Nutrition Snapshot */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* Left: Today's Mission Timeline */}
+        <div className="lg:col-span-7 bg-[#161514] border border-[#262422] rounded-[28px] p-6 shadow-xl flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-[#D9A184]/15 border border-[#D9A184]/30 flex items-center justify-center">
+                  <Calendar className="w-4 h-4 text-[#D9A184]" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-white uppercase tracking-wider">
+                    Today's Mission Timeline
+                  </h3>
+                  <p className="text-xs text-neutral-400">
+                    {completedEventsCount} of {totalEventsCount} milestones executed ({eventsProgressPct}%)
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setRoute('schedule')}
+                className="text-xs text-[#D9A184] hover:underline font-bold flex items-center gap-1 group"
+              >
+                14-Day Calendar <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+              </button>
+            </div>
+
+            {/* Progress bar */}
+            <div className="w-full bg-[#242220] h-1.5 rounded-full overflow-hidden mb-4">
+              <div
+                className="bg-[#D9A184] h-full transition-all duration-500 rounded-full"
+                style={{ width: `${eventsProgressPct}%` }}
+              />
+            </div>
+
+            {/* Event list */}
+            <div className="space-y-2.5">
+              {todayEvents.length === 0 ? (
+                <div className="p-6 text-center rounded-2xl bg-[#1C1A18] border border-[#242220]">
+                  <p className="text-sm text-neutral-400 mb-2">No mission events scheduled for today.</p>
+                  <button
+                    onClick={() => setRoute('schedule')}
+                    className="px-4 py-2 rounded-xl bg-[#262422] text-xs font-bold text-[#D9A184] hover:bg-[#322E2B]"
+                  >
+                    Open Schedule & Load Protocol
+                  </button>
+                </div>
+              ) : (
+                todayEvents.slice(0, 4).map((evt) => (
+                  <div
+                    key={evt.id}
+                    className={`flex items-center justify-between p-3 rounded-2xl border transition-all ${
+                      evt.completed
+                        ? 'bg-[#181615] border-[#22201E] opacity-60'
+                        : 'bg-[#1C1A18] border-[#262422] hover:border-[#38332E]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <button
+                        onClick={() => toggleScheduledEvent(evt.id)}
+                        className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors flex-shrink-0 ${
+                          evt.completed
+                            ? 'bg-[#D9A184] text-[#140D09]'
+                            : 'border border-[#3E3A35] hover:border-[#D9A184]'
+                        }`}
+                      >
+                        {evt.completed && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                      </button>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-xs font-black text-neutral-300">
+                            {evt.time}
+                          </span>
+                          <span
+                            className={`text-[9px] uppercase tracking-wider font-extrabold px-1.5 py-0.5 rounded-full border ${
+                              evt.category === 'workout'
+                                ? 'bg-[#D9A184]/15 text-[#D9A184] border-[#D9A184]/30'
+                                : evt.category === 'meal'
+                                ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                                : evt.category === 'task'
+                                ? 'bg-sky-500/15 text-sky-400 border-sky-500/30'
+                                : evt.category === 'sleep'
+                                ? 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30'
+                                : 'bg-purple-500/15 text-purple-400 border-purple-500/30'
+                            }`}
+                          >
+                            {evt.category}
+                          </span>
+                        </div>
+                        <p
+                          className={`text-xs font-bold truncate mt-0.5 ${
+                            evt.completed ? 'line-through text-neutral-500' : 'text-white'
+                          }`}
+                        >
+                          {evt.title}
+                        </p>
+                      </div>
+                    </div>
+
+                    {evt.category === 'workout' && !evt.completed && (
+                      <button
+                        onClick={() => {
+                          startEmptyWorkout();
+                          pushRoute('session');
+                        }}
+                        className="px-2.5 py-1 rounded-lg bg-[#D9A184]/20 hover:bg-[#D9A184] text-[#D9A184] hover:text-[#140D09] text-xs font-bold transition-colors ml-2 flex-shrink-0"
+                      >
+                        Start
+                      </button>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {todayEvents.length > 4 && (
+            <div className="pt-3 border-t border-[#242220] mt-3 flex items-center justify-between">
+              <span className="text-xs text-neutral-500 font-medium">
+                +{todayEvents.length - 4} more scheduled milestones today
+              </span>
+              <button
+                onClick={() => setRoute('schedule')}
+                className="text-xs text-[#D9A184] font-bold hover:underline"
+              >
+                View Full Timeline
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Right: Nutrition & Fasting Snapshot */}
+        <div className="lg:col-span-5 bg-[#161514] border border-[#262422] rounded-[28px] p-6 shadow-xl flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center">
+                  <Utensils className="w-4 h-4 text-emerald-400" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-white uppercase tracking-wider">
+                    Nutrition & Fasting
+                  </h3>
+                  <p className="text-xs text-neutral-400">
+                    {nutritionTargets.fastingProtocol || '23:1 OMAD Fasting Protocol'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setRoute('nutrition')}
+                className="text-xs text-[#D9A184] hover:underline font-bold flex items-center gap-1 group"
+              >
+                Food Ledger <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+              </button>
+            </div>
+
+            {/* Macro Bars */}
+            <div className="space-y-3 mb-5">
+              {/* Calories */}
+              <div className="bg-[#1C1A18] border border-[#262422] rounded-2xl p-3">
+                <div className="flex justify-between items-center text-xs mb-1.5">
+                  <span className="text-neutral-400 font-extrabold uppercase tracking-wider text-[10px]">
+                    ENERGY BALANCE
+                  </span>
+                  <span className="font-mono font-bold text-white">
+                    {consumedCalories} / <span className="text-neutral-500">{nutritionTargets.calories} kcal</span>
+                  </span>
+                </div>
+                <div className="w-full bg-[#242220] h-2 rounded-full overflow-hidden">
+                  <div
+                    className="bg-[#D9A184] h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${Math.min(100, Math.round((consumedCalories / (nutritionTargets.calories || 2000)) * 100))}%`,
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Protein & Carbs/Fat mini row */}
+              <div className="grid grid-cols-3 gap-2">
+                <div className="bg-[#1C1A18] border border-[#262422] rounded-2xl p-2.5">
+                  <span className="text-[10px] text-neutral-500 font-bold uppercase block mb-1">PROTEIN</span>
+                  <div className="font-mono text-sm font-black text-white">{consumedProtein}g</div>
+                  <span className="text-[10px] text-neutral-500 font-mono">/ {nutritionTargets.protein}g</span>
+                </div>
+                <div className="bg-[#1C1A18] border border-[#262422] rounded-2xl p-2.5">
+                  <span className="text-[10px] text-neutral-500 font-bold uppercase block mb-1">CARBS</span>
+                  <div className="font-mono text-sm font-black text-white">{consumedCarbs}g</div>
+                  <span className="text-[10px] text-neutral-500 font-mono">/ {nutritionTargets.carbs}g</span>
+                </div>
+                <div className="bg-[#1C1A18] border border-[#262422] rounded-2xl p-2.5">
+                  <span className="text-[10px] text-neutral-500 font-bold uppercase block mb-1">FATS</span>
+                  <div className="font-mono text-sm font-black text-white">{consumedFat}g</div>
+                  <span className="text-[10px] text-neutral-500 font-mono">/ {nutritionTargets.fat}g</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Hydration quick log */}
+          <div className="pt-3 border-t border-[#242220] flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Droplets className="w-4 h-4 text-sky-400" />
+              <div className="text-xs">
+                <span className="text-neutral-400">Hydration: </span>
+                <span className="font-mono font-bold text-white">{waterMl} ml</span>
+                <span className="text-neutral-500 text-[10px] font-mono"> / {nutritionTargets.waterMl} ml</span>
+              </div>
+            </div>
+            <button
+              onClick={() => addWater(250)}
+              className="px-2.5 py-1 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-sky-400 text-xs font-bold flex items-center gap-1 transition-all active:scale-95"
+            >
+              <Plus className="w-3 h-3" /> 250ml
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Second Row: "This Week" Stats & Activity Heatmap */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">

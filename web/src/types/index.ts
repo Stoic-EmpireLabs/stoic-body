@@ -144,6 +144,45 @@ export interface Settings {
   onboardingCompleted: boolean;
 }
 
+export type EventCategory = 'workout' | 'meal' | 'task' | 'recovery' | 'sleep' | 'habit';
+
+export interface ScheduledEvent {
+  id: string;
+  date: string; // YYYY-MM-DD
+  time: string; // HH:mm
+  durationMinutes: number;
+  title: string;
+  category: EventCategory;
+  tier?: 1 | 2 | 3 | 4 | 5;
+  citation?: string;
+  completed: boolean;
+  routineId?: string;
+  calories?: number;
+}
+
+export interface MealEntry {
+  id: string;
+  date: string; // YYYY-MM-DD
+  name: string;
+  calories: number;
+  protein: number; // grams
+  carbs: number; // grams
+  fat: number; // grams
+  sodiumMg?: number;
+  loggedAt?: string; // HH:mm
+}
+
+export interface NutritionTargets {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  waterMl: number;
+  fastingHours: number;
+  fastingProtocol: 'omad' | '16_8' | '20_4' | 'standard';
+  fastStartTime?: string; // HH:mm
+}
+
 export const MUSCLES = [
   { id: 'chest', label: 'Chest', view: 'front', group: 'Chest' },
   { id: 'shoulders', label: 'Shoulders', view: 'front', group: 'Shoulders' },

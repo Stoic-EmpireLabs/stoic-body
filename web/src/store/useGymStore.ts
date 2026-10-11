@@ -21,8 +21,18 @@ import type {
   CoachPersonality,
   OnboardingAnswers,
   AthleteAccount,
+  ScheduledEvent,
+  MealEntry,
+  NutritionTargets,
+  EventCategory,
 } from '../types';
 import { getRandomQuote, type StoicQuote } from '../data/stoicQuotes';
+import {
+  generateDefaultSchedule,
+  defaultMealsToday,
+  defaultNutritionTargets,
+  getLocalDateString,
+} from '../data/defaultSchedule';
 
 export const allBuiltinExercises: Exercise[] = allExercisesData as Exercise[];
 
@@ -30,6 +40,8 @@ const STORAGE_KEY = 'gymmane_v1';
 
 export type RouteName =
   | 'home'
+  | 'schedule'
+  | 'nutrition'
   | 'train'
   | 'session'
   | 'progress'
@@ -75,6 +87,10 @@ interface GymState {
   showOnboarding: boolean;
   onboardingAnswers: OnboardingAnswers | null;
   currentQuote: StoicQuote;
+  scheduledEvents: ScheduledEvent[];
+  meals: MealEntry[];
+  nutritionTargets: NutritionTargets;
+  waterMl: number;
 }
 
 const defaultAthleteAccounts: AthleteAccount[] = [
@@ -173,13 +189,17 @@ const defaultState: GymState = {
   athleteAccounts: defaultAthleteAccounts,
   onboardingDone: true,
   showOnboarding: false,
-  onboardingAnswers: {
+    onboardingAnswers: {
     focus: 'combat',
     experience: 'veteran',
     equipment: 'full_gym',
     personality: 'marine',
   },
   currentQuote: getRandomQuote('marine'),
+  scheduledEvents: generateDefaultSchedule(14),
+  meals: defaultMealsToday,
+  nutritionTargets: defaultNutritionTargets,
+  waterMl: 2250,
 };
 
 let globalState: GymState = defaultState;
@@ -210,6 +230,10 @@ function saveToStorage() {
       athleteAccounts: globalState.athleteAccounts,
       onboardingDone: globalState.onboardingDone,
       onboardingAnswers: globalState.onboardingAnswers,
+      scheduledEvents: globalState.scheduledEvents,
+      meals: globalState.meals,
+      nutritionTargets: globalState.nutritionTargets,
+      waterMl: globalState.waterMl,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
   } catch (err) {
@@ -236,6 +260,10 @@ function loadFromStorage() {
         onboardingDone: parsed.onboardingDone ?? true,
         showOnboarding: false,
         currentQuote: getRandomQuote(personality),
+        scheduledEvents: parsed.scheduledEvents && parsed.scheduledEvents.length > 0 ? parsed.scheduledEvents : defaultState.scheduledEvents,
+        meals: parsed.meals && parsed.meals.length > 0 ? parsed.meals : defaultState.meals,
+        nutritionTargets: { ...defaultState.nutritionTargets, ...(parsed.nutritionTargets || {}) },
+        waterMl: parsed.waterMl ?? defaultState.waterMl,
       };
     }
   } catch (e) {
@@ -979,6 +1007,295 @@ export function useGymStore() {
     notify();
   };
 
+  // Scheduling Actions
+  const addScheduledEvent = (event: Omit<ScheduledEvent, 'id'>) => {
+    const newEvent: ScheduledEvent = {
+      ...event,
+      id: `sched-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+    };
+    globalState.scheduledEvents = [...globalState.scheduledEvents, newEvent].sort((a, b) => {
+      if (a.date !== b.date) return a.date.localeCompare(b.date);
+      return a.time.localeCompare(b.time);
+    });
+    sound.playTick(globalState.settings.soundEnabled);
+    notify();
+  };
+
+  const updateScheduledEvent = (id: string, partial: Partial<ScheduledEvent>) => {
+    globalState.scheduledEvents = globalState.scheduledEvents.map((e) =>
+      e.id === id ? { ...e, ...partial } : e
+    );
+    notify();
+  };
+
+  const toggleScheduledEvent = (id: string) => {
+    globalState.scheduledEvents = globalState.scheduledEvents.map((e) => {
+      if (e.id === id) {
+        const next = !e.completed;
+        if (next) sound.playCheer(globalState.settings.soundEnabled);
+        return { ...e, completed: next };
+      }
+      return e;
+    });
+    notify();
+  };
+
+  const deleteScheduledEvent = (id: string) => {
+    globalState.scheduledEvents = globalState.scheduledEvents.filter((e) => e.id !== id);
+    notify();
+  };
+
+  // Nutrition Actions
+  const logMeal = (meal: Omit<MealEntry, 'id'>) => {
+    const newMeal: MealEntry = {
+      ...meal,
+      id: `meal-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      loggedAt: meal.loggedAt || new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }),
+    };
+    globalState.meals = [newMeal, ...globalState.meals];
+    sound.playCheer(globalState.settings.soundEnabled);
+    notify();
+  };
+
+  const removeMeal = (id: string) => {
+    globalState.meals = globalState.meals.filter((m) => m.id !== id);
+    notify();
+  };
+
+  const addWater = (ml: number) => {
+    globalState.waterMl = Math.max(0, globalState.waterMl + ml);
+    sound.playTick(globalState.settings.soundEnabled);
+    notify();
+  };
+
+  const resetWater = () => {
+    globalState.waterMl = 0;
+    notify();
+  };
+
+  const updateNutritionTargets = (targets: Partial<NutritionTargets>) => {
+    globalState.nutritionTargets = { ...globalState.nutritionTargets, ...targets };
+    notify();
+  };
+
+  const injectDayPlanTemplate = (
+    dateStr: string,
+    template: 'marine_tactical' | 'omad_conditioning' | 'hypertrophy_split'
+  ) => {
+    const nonDateEvents = globalState.scheduledEvents.filter((e) => e.date !== dateStr);
+    let templateEvents: ScheduledEvent[] = [];
+
+    if (template === 'marine_tactical') {
+      templateEvents = [
+        {
+          id: `sched-m1-${dateStr}`,
+          date: dateStr,
+          time: '05:30',
+          durationMinutes: 15,
+          title: 'Cellular Hydration: 24oz Filtered Water + Electrolyte Shield',
+          category: 'recovery',
+          tier: 1,
+          citation: 'Huberman Lab: Sodium-potassium cellular pump charging upon waking',
+          completed: false,
+        },
+        {
+          id: `sched-m2-${dateStr}`,
+          date: dateStr,
+          time: '06:00',
+          durationMinutes: 50,
+          title: 'USMC Combat Conditioning: Heavy Barbell Push & Pull-Up Overload',
+          category: 'workout',
+          tier: 3,
+          citation: 'MCO 6110.3A: Marine PFT/CFT maximal performance calibration',
+          completed: false,
+        },
+        {
+          id: `sched-m3-${dateStr}`,
+          date: dateStr,
+          time: '08:30',
+          durationMinutes: 40,
+          title: 'Zone 2 Tactical Ruck / Incline Walk (Fat Oxidation)',
+          category: 'workout',
+          tier: 2,
+          citation: 'San-Millán: Maximal mitochondrial lipid clearance',
+          completed: false,
+        },
+        {
+          id: `sched-m4-${dateStr}`,
+          date: dateStr,
+          time: '11:30',
+          durationMinutes: 60,
+          title: 'Tactical Deep Work: Single Mission Priority Block',
+          category: 'task',
+          tier: 2,
+          citation: 'Newport (2016): Zero distraction deep execution',
+          completed: false,
+        },
+        {
+          id: `sched-m5-${dateStr}`,
+          date: dateStr,
+          time: '17:30',
+          durationMinutes: 60,
+          title: '23:1 OMAD Meal: 140g Whole Protein + Jasmine Rice & Greens',
+          category: 'meal',
+          tier: 2,
+          citation: 'Phillips: High-protein bolus muscle protein synthesis preservation',
+          completed: false,
+          calories: 1400,
+        },
+        {
+          id: `sched-m6-${dateStr}`,
+          date: dateStr,
+          time: '21:30',
+          durationMinutes: 20,
+          title: 'Magnesium Glycinate & Sleep Wind-down Protocol',
+          category: 'recovery',
+          tier: 1,
+          citation: 'Walker: Non-REM slow-wave cellular regeneration',
+          completed: false,
+        },
+      ];
+    } else if (template === 'omad_conditioning') {
+      templateEvents = [
+        {
+          id: `sched-o1-${dateStr}`,
+          date: dateStr,
+          time: '06:00',
+          durationMinutes: 45,
+          title: 'Fasted Boxing & Interval Conditioning (6 Rounds)',
+          category: 'workout',
+          tier: 3,
+          citation: 'Tremblay EPOC: +14% post-exercise metabolic surge',
+          completed: false,
+        },
+        {
+          id: `sched-o2-${dateStr}`,
+          date: dateStr,
+          time: '09:00',
+          durationMinutes: 15,
+          title: 'Electrolyte Mineral Refresher & Green Tea',
+          category: 'recovery',
+          tier: 1,
+          citation: 'Maintains blood pressure and electrolyte balance in deep ketosis',
+          completed: false,
+        },
+        {
+          id: `sched-o3-${dateStr}`,
+          date: dateStr,
+          time: '12:00',
+          durationMinutes: 30,
+          title: 'Midday Sunlight & 2-Mile Aerobic Stroll',
+          category: 'recovery',
+          tier: 1,
+          citation: 'Circadian entrainment and glucose clearance',
+          completed: false,
+        },
+        {
+          id: `sched-o4-${dateStr}`,
+          date: dateStr,
+          time: '17:30',
+          durationMinutes: 60,
+          title: '23:1 OMAD Feast: Wild Salmon, Eggs & Sweet Potato',
+          category: 'meal',
+          tier: 2,
+          citation: 'Single nutrient-dense feeding window maximizes daily autophagy',
+          completed: false,
+          calories: 1550,
+        },
+        {
+          id: `sched-o5-${dateStr}`,
+          date: dateStr,
+          time: '21:30',
+          durationMinutes: 20,
+          title: 'Cold Bedroom Sleep Optimization (66°F)',
+          category: 'recovery',
+          tier: 1,
+          citation: 'Deep restorative core temperature drop',
+          completed: false,
+        },
+      ];
+    } else {
+      templateEvents = [
+        {
+          id: `sched-h1-${dateStr}`,
+          date: dateStr,
+          time: '06:30',
+          durationMinutes: 60,
+          title: 'Heavy Barbell Hypertrophy: 4-6 RIR Primary Lifts',
+          category: 'workout',
+          tier: 3,
+          citation: 'Schoenfeld: Progressive mechanical tension for muscle hypertrophy',
+          completed: false,
+        },
+        {
+          id: `sched-h2-${dateStr}`,
+          date: dateStr,
+          time: '08:00',
+          durationMinutes: 30,
+          title: 'Post-Workout Meal 1: Whey Isolate, Oats & Berries',
+          category: 'meal',
+          tier: 1,
+          citation: 'Aragon: Post-exercise amino acid hyper-perfusion',
+          completed: false,
+          calories: 550,
+        },
+        {
+          id: `sched-h3-${dateStr}`,
+          date: dateStr,
+          time: '12:30',
+          durationMinutes: 45,
+          title: 'Balanced High-Protein Meal 2: Chicken Breast & Rice',
+          category: 'meal',
+          tier: 1,
+          citation: 'Sustained 4-hour leucine elevation',
+          completed: false,
+          calories: 650,
+        },
+        {
+          id: `sched-h4-${dateStr}`,
+          date: dateStr,
+          time: '16:00',
+          durationMinutes: 20,
+          title: 'Joint Mobility & Shoulder Pre-hab Protocol',
+          category: 'recovery',
+          tier: 1,
+          citation: 'Cuff stabilization and rotator health',
+          completed: false,
+        },
+        {
+          id: `sched-h5-${dateStr}`,
+          date: dateStr,
+          time: '19:30',
+          durationMinutes: 45,
+          title: 'Dinner Meal 3: Grass-fed Beef, Broccoli & Olive Oil',
+          category: 'meal',
+          tier: 2,
+          citation: 'Micronutrient density and slow-digesting evening protein',
+          completed: false,
+          calories: 750,
+        },
+        {
+          id: `sched-h6-${dateStr}`,
+          date: dateStr,
+          time: '22:00',
+          durationMinutes: 15,
+          title: 'Sleep Wind-Down & Darkness Reset',
+          category: 'recovery',
+          tier: 1,
+          citation: 'Melatonin secretion facilitation',
+          completed: false,
+        },
+      ];
+    }
+
+    globalState.scheduledEvents = [...nonDateEvents, ...templateEvents].sort((a, b) => {
+      if (a.date !== b.date) return a.date.localeCompare(b.date);
+      return a.time.localeCompare(b.time);
+    });
+    sound.playBeepBell();
+    notify();
+  };
+
   return {
     ...state,
     allExercises,
@@ -1032,6 +1349,16 @@ export function useGymStore() {
     dismissOnboarding,
     completeOnboarding,
     shuffleQuote,
+    addScheduledEvent,
+    updateScheduledEvent,
+    toggleScheduledEvent,
+    deleteScheduledEvent,
+    logMeal,
+    removeMeal,
+    addWater,
+    resetWater,
+    updateNutritionTargets,
+    injectDayPlanTemplate,
     dismissLatestAward: () => {
       globalState.latestAwardUnlocked = null;
       notify();

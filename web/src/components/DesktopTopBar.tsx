@@ -32,6 +32,8 @@ export const DesktopTopBar: React.FC = () => {
 
   const routeTitles: Record<string, string> = {
     home: 'Today Dashboard',
+    schedule: 'Daily Schedule & Mission Planner',
+    nutrition: 'Nutrition & Macro Ledger',
     train: 'Choose Your Focus · Anatomical Map',
     session: 'Live Workout Session',
     progress: 'Progress & Analytics',
