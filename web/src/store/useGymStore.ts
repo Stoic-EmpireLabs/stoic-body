@@ -500,37 +500,72 @@ export function useGymStore() {
 
   const updateSet = (exerciseIndex: number, setIndex: number, partial: Partial<SessionSet>) => {
     if (!globalState.session) return;
-    const s = globalState.session.exercises[exerciseIndex]?.sets[setIndex];
-    if (!s) return;
+    const currentExercises = globalState.session.exercises;
+    if (!currentExercises[exerciseIndex] || !currentExercises[exerciseIndex].sets[setIndex]) return;
 
-    Object.assign(s, partial);
+    const newExercises = currentExercises.map((ex, exIdx) => {
+      if (exIdx !== exerciseIndex) return ex;
+      return {
+        ...ex,
+        sets: ex.sets.map((s, sIdx) => {
+          if (sIdx !== setIndex) return s;
+          return { ...s, ...partial };
+        }),
+      };
+    });
+
+    globalState.session = {
+      ...globalState.session,
+      exercises: newExercises,
+    };
     notify();
   };
 
   const toggleSetDone = (exerciseIndex: number, setIndex: number) => {
     if (!globalState.session) return;
-    const s = globalState.session.exercises[exerciseIndex]?.sets[setIndex];
-    if (!s) return;
+    const currentExercises = globalState.session.exercises;
+    const targetSet = currentExercises[exerciseIndex]?.sets[setIndex];
+    if (!targetSet) return;
 
-    const newDone = !s.done;
-    s.done = newDone;
+    const newDone = !targetSet.done;
+    const newExercises = currentExercises.map((ex, exIdx) => {
+      if (exIdx !== exerciseIndex) return ex;
+      return {
+        ...ex,
+        sets: ex.sets.map((s, sIdx) => {
+          if (sIdx !== setIndex) return s;
+          return { ...s, done: newDone };
+        }),
+      };
+    });
+
+    let restEndsAt = globalState.session.restEndsAt;
+    let restTotalSeconds = globalState.session.restTotalSeconds;
 
     if (newDone) {
-      sound.playTick(globalState.settings.soundEnabled);
-      // Start Rest Timer
-      const restSec = globalState.settings.defaultRestSec;
-      globalState.session.restEndsAt = Date.now() + restSec * 1000;
-      globalState.session.restTotalSeconds = restSec;
+      try {
+        sound.playTick(globalState.settings.soundEnabled);
+      } catch (_) {}
+      const restSec = globalState.settings.defaultRestSec || 60;
+      restEndsAt = Date.now() + restSec * 1000;
+      restTotalSeconds = restSec;
     } else {
-      globalState.session.restEndsAt = null;
+      restEndsAt = null;
     }
 
+    globalState.session = {
+      ...globalState.session,
+      exercises: newExercises,
+      restEndsAt,
+      restTotalSeconds,
+    };
     notify();
   };
 
   const addSetToExercise = (exerciseIndex: number) => {
     if (!globalState.session) return;
-    const ex = globalState.session.exercises[exerciseIndex];
+    const currentExercises = globalState.session.exercises;
+    const ex = currentExercises[exerciseIndex];
     if (!ex) return;
 
     const lastSet = ex.sets[ex.sets.length - 1];
@@ -542,35 +577,74 @@ export function useGymStore() {
       kind: lastSet?.kind || 'normal',
     };
 
-    ex.sets.push(newSet);
+    const newExercises = currentExercises.map((e, exIdx) => {
+      if (exIdx !== exerciseIndex) return e;
+      return {
+        ...e,
+        sets: [...e.sets, newSet],
+      };
+    });
+
+    globalState.session = {
+      ...globalState.session,
+      exercises: newExercises,
+    };
     notify();
   };
 
   const removeSetFromExercise = (exerciseIndex: number, setIndex: number) => {
     if (!globalState.session) return;
-    const ex = globalState.session.exercises[exerciseIndex];
+    const currentExercises = globalState.session.exercises;
+    const ex = currentExercises[exerciseIndex];
     if (!ex || ex.sets.length <= 1) return;
 
-    ex.sets.splice(setIndex, 1);
+    const newExercises = currentExercises.map((e, exIdx) => {
+      if (exIdx !== exerciseIndex) return e;
+      return {
+        ...e,
+        sets: e.sets.filter((_, sIdx) => sIdx !== setIndex),
+      };
+    });
+
+    globalState.session = {
+      ...globalState.session,
+      exercises: newExercises,
+    };
     notify();
   };
 
   const adjustRestTime = (secondsDelta: number) => {
-    if (!globalState.session || !globalState.session.restEndsAt) return;
-    globalState.session.restEndsAt += secondsDelta * 1000;
-    globalState.session.restTotalSeconds = Math.max(0, globalState.session.restTotalSeconds + secondsDelta);
+    if (!globalState.session) return;
+    const now = Date.now();
+    const currentEnd = globalState.session.restEndsAt && globalState.session.restEndsAt > now
+      ? globalState.session.restEndsAt
+      : now;
+    const newEnd = Math.max(now, currentEnd + secondsDelta * 1000);
+    const restTotal = Math.max(15, (globalState.session.restTotalSeconds || 60) + secondsDelta);
+
+    globalState.session = {
+      ...globalState.session,
+      restEndsAt: newEnd > now ? newEnd : null,
+      restTotalSeconds: restTotal,
+    };
     notify();
   };
 
   const skipRestTimer = () => {
     if (!globalState.session) return;
-    globalState.session.restEndsAt = null;
+    globalState.session = {
+      ...globalState.session,
+      restEndsAt: null,
+    };
     notify();
   };
 
   const toggleSessionPause = () => {
     if (!globalState.session) return;
-    globalState.session.isPaused = !globalState.session.isPaused;
+    globalState.session = {
+      ...globalState.session,
+      isPaused: !globalState.session.isPaused,
+    };
     notify();
   };
 

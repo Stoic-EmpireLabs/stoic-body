@@ -27,186 +27,149 @@ export function getMovementArchetype(slug: string = '', primaryMuscle?: string, 
   const p = (primaryMuscle || found?.primary || '').toLowerCase();
   const n = (name || found?.name || '').toLowerCase();
 
-  // 1. Deadlifts & Hamstring Hinges (Highest priority: RDLs, good-mornings, stiff-leg)
-  if (
-    s.includes('deadlift') ||
-    s.includes('rdl') ||
-    s.includes('good-morning') ||
-    s.includes('leg-curl') ||
-    n.includes('deadlift') ||
-    n.includes('rdl') ||
-    p === 'hamstrings'
-  ) {
-    return 'deadlift';
-  }
+  // High-Specificity Movement Pattern Matching
+  if (s.includes('knee-push-up') || n.includes('knee push')) return 'knee-push-up';
+  if (s === 'push-up' || s === 'pushup' || n === 'push-up' || n === 'push up') return 'push-up';
+  if (s.includes('goblet') || n.includes('goblet')) return 'goblet-squat';
+  if (s.includes('pulldown') || n.includes('pulldown')) return 'lat-pulldown';
+  if (s.includes('lateral-raise') || n.includes('lateral raise')) return 'lateral-raise';
+  if (s.includes('pushdown') || n.includes('pushdown')) return 'tricep-pushdown';
+  if (s.includes('hammer-curl') || n.includes('hammer curl')) return 'hammer-curl';
+  if (s.includes('bicep-curl') || s.includes('dumbbell-curl') || s.includes('barbell-curl') || n.includes('bicep curl') || n.includes('dumbbell curl') || n.includes('barbell curl')) return 'bicep-curl';
+  if (s.includes('rdl') || s.includes('romanian') || n.includes('rdl') || n.includes('romanian')) return 'romanian-deadlift';
+  if (s.includes('pull-up') || s.includes('chin-up') || n.includes('pull up') || n.includes('chin up')) return 'pull-up';
+  if (s.includes('bulgarian') || n.includes('bulgarian')) return 'bulgarian-split-squat';
+  if (s.includes('plank') || n.includes('plank')) return 'plank';
+  if (s.includes('lunge') || n.includes('lunge')) return 'walking-lunge';
+  if (s.includes('face-pull') || n.includes('face pull')) return 'face-pull';
+  if (s.includes('kickback') || n.includes('kickback')) return 'cable-kickback';
+  if (s.includes('hanging') || n.includes('hanging') || s.includes('leg-raise') || n.includes('leg raise')) return 'hanging-leg-raise';
+  if (s.includes('incline') || n.includes('incline')) return 'incline-dumbbell-press';
+  if (s.includes('leg-press') || n.includes('leg press') || s.includes('hack') || n.includes('hack')) return 'leg-press';
+  if (s.includes('leg-curl') || n.includes('leg curl') || s.includes('hamstring-curl') || n.includes('hamstring curl')) return 'leg-curl';
+  if (s.includes('fly') || n.includes('fly') || s.includes('pec-deck') || n.includes('pec deck')) return 'cable-fly';
+  if (s.includes('dead-bug') || s.includes('deadbug') || n.includes('dead bug') || n.includes('deadbug')) return 'dead-bug';
+  if (s.includes('hip-thrust') || s.includes('bridge') || n.includes('hip thrust') || n.includes('bridge')) return 'hip-thrust';
+  if (s.includes('dip') || n.includes('dip')) return 'dip';
+  if (s.includes('skull') || n.includes('skull')) return 'skull-crusher';
+  if (s.includes('leg-extension') || n.includes('leg extension')) return 'leg-extension';
+  if (s.includes('calf') || n.includes('calf') || p === 'calves') return 'standing-calf-raise';
+  if (s.includes('seated-row') || s.includes('cable-row') || n.includes('seated row') || n.includes('cable row')) return 'seated-cable-row';
+  if (s.includes('bench') || n.includes('bench')) return 'bench-press';
+  if (s.includes('row') || n.includes('row')) return 'barbell-row';
+  if (s.includes('overhead') || s.includes('military') || n.includes('overhead') || n.includes('military')) return 'overhead-press';
+  if (s.includes('deadlift') || n.includes('deadlift')) return 'deadlift';
+  if (s.includes('squat') || n.includes('squat')) return 'barbell-squat';
 
-  // 2. Lunges, Split Squats, Step-Ups
-  if (
-    s.includes('lunge') ||
-    s.includes('split-squat') ||
-    s.includes('step-up') ||
-    s.includes('curtsy') ||
-    n.includes('lunge') ||
-    n.includes('split squat') ||
-    n.includes('step up')
-  ) {
-    return 'lunge';
-  }
+  // Broader category fallbacks
+  if (p === 'hamstrings') return 'romanian-deadlift';
+  if (p === 'glutes') return 'hip-thrust';
+  if (p === 'quads') return 'barbell-squat';
+  if (p === 'chest') return 'bench-press';
+  if (p === 'shoulders') return 'overhead-press';
+  if (p === 'back') return 'lat-pulldown';
+  if (p === 'biceps') return 'bicep-curl';
+  if (p === 'triceps') return 'tricep-pushdown';
+  if (p === 'abdomen' || p === 'obliques') return 'plank';
+  if (p === 'calves') return 'standing-calf-raise';
+  if (p === 'trapezius') return 'barbell-row';
+  if (p === 'forearm') return 'hammer-curl';
 
-  // 3. Glutes & Hip Thrust / Abductors
-  if (
-    s.includes('hip-thrust') ||
-    s.includes('glute') ||
-    s.includes('kickback') ||
-    s.includes('bridge') ||
-    s.includes('abductor') ||
-    s.includes('frog') ||
-    n.includes('thrust') ||
-    n.includes('kickback') ||
-    p === 'glutes'
-  ) {
-    return 'hip-thrust';
-  }
-
-  // 4. Squats & Quad Hypertrophy
-  if (
-    s.includes('squat') ||
-    s.includes('leg-press') ||
-    s.includes('hack') ||
-    s.includes('wall-sit') ||
-    n.includes('squat') ||
-    p === 'quads'
-  ) {
-    return 'squat';
-  }
-
-  // Chest, Bench & Push-Ups
-  if (
-    s.includes('bench') ||
-    s.includes('push-up') ||
-    s.includes('chest') ||
-    s.includes('fly') ||
-    s.includes('crossover') ||
-    s.includes('dip') ||
-    p === 'chest'
-  ) {
-    return 'press';
-  }
-
-  // Shoulders & Overhead Presses
-  if (
-    s.includes('shoulder') ||
-    s.includes('overhead') ||
-    s.includes('lateral-raise') ||
-    s.includes('military') ||
-    s.includes('arnold') ||
-    s.includes('front-raise') ||
-    p === 'shoulders'
-  ) {
-    return 'shoulder';
-  }
-
-  // Pull-ups & Lat Pulldowns
-  if (
-    s.includes('pull-up') ||
-    s.includes('lat-pulldown') ||
-    s.includes('chin-up') ||
-    (p === 'back' && (s.includes('pull') || s.includes('lat')))
-  ) {
-    return 'pullup';
-  }
-
-  // Rows & Upper Back
-  if (
-    s.includes('row') ||
-    s.includes('face-pull') ||
-    s.includes('rear-delt') ||
-    p === 'back'
-  ) {
-    return 'row';
-  }
-
-  // Bicep Curls
-  if (s.includes('curl') || s.includes('bicep') || p === 'biceps') {
-    return 'curl';
-  }
-
-  // Triceps
-  if (
-    s.includes('tricep') ||
-    s.includes('pushdown') ||
-    s.includes('skullcrusher') ||
-    s.includes('extension') ||
-    p === 'triceps'
-  ) {
-    return 'tricep';
-  }
-
-  // Core & Abdominals
-  if (
-    s.includes('plank') ||
-    s.includes('crunch') ||
-    s.includes('ab') ||
-    s.includes('core') ||
-    s.includes('deadbug') ||
-    s.includes('hollow') ||
-    s.includes('twist') ||
-    s.includes('sit-up') ||
-    p === 'abdomen' ||
-    p === 'obliques'
-  ) {
-    return 'core';
-  }
-
-  // Calves
-  if (p === 'calves' || s.includes('calf')) {
-    return 'calf';
-  }
-
-  // Traps & Shrugs
-  if (p === 'trapezius' || s.includes('shrug')) {
-    return 'trap';
-  }
-
-  // Forearms
-  if (p === 'forearm' || s.includes('wrist')) {
-    return 'forearm';
-  }
-
-  return 'squat';
+  return 'barbell-squat';
 }
 
 export const archetypeImageMap: Record<string, string> = {
-  'squat': 'squat.jpg',
-  'hip-thrust': 'hip-thrust.jpg',
-  'press': 'press.jpg',
+  'knee-push-up': 'knee-push-up.jpg',
+  'push-up': 'push-up.jpg',
+  'goblet-squat': 'goblet-squat.jpg',
+  'lat-pulldown': 'lat-pulldown.jpg',
+  'lateral-raise': 'lateral-raise.jpg',
+  'tricep-pushdown': 'tricep-pushdown.jpg',
+  'bicep-curl': 'bicep-curl.jpg',
+  'romanian-deadlift': 'romanian-deadlift.jpg',
+  'pull-up': 'pull-up.jpg',
+  'plank': 'plank.jpg',
+  'walking-lunge': 'walking-lunge.jpg',
+  'bulgarian-split-squat': 'bulgarian-split-squat.jpg',
+  'overhead-press': 'overhead-press.jpg',
   'deadlift': 'deadlift.jpg',
-  'lunge': 'lunge.jpg',
-  'shoulder': 'shoulder.jpg',
-  'pullup': 'pullup.jpg',
-  'row': 'row.jpg',
-  'curl': 'curl.jpg',
-  'tricep': 'tricep.jpg',
-  'core': 'core.jpg',
-  'calf': 'calf.jpg',
-  'trap': 'row.jpg',
-  'forearm': 'curl.jpg',
-  'cardio': 'lunge.jpg',
+  'face-pull': 'face-pull.jpg',
+  'cable-kickback': 'cable-kickback.jpg',
+  'hanging-leg-raise': 'hanging-leg-raise.jpg',
+  'incline-dumbbell-press': 'incline-dumbbell-press.jpg',
+  'leg-press': 'leg-press.jpg',
+  'leg-curl': 'leg-curl.jpg',
+  'cable-fly': 'cable-fly.jpg',
+  'dead-bug': 'dead-bug.jpg',
+  'hip-thrust': 'hip-thrust.jpg',
+  'dip': 'dip.jpg',
+  'skull-crusher': 'skull-crusher.jpg',
+  'leg-extension': 'leg-extension.jpg',
+  'standing-calf-raise': 'standing-calf-raise.jpg',
+  'seated-cable-row': 'seated-cable-row.jpg',
+  'bench-press': 'bench-press.jpg',
+  'hammer-curl': 'hammer-curl.jpg',
+  'barbell-row': 'barbell-row.jpg',
+  'barbell-squat': 'barbell-squat.jpg',
+  // Legacy aliases
+  'squat': 'barbell-squat.jpg',
+  'lunge': 'walking-lunge.jpg',
+  'shoulder': 'overhead-press.jpg',
+  'pullup': 'pull-up.jpg',
+  'row': 'barbell-row.jpg',
+  'curl': 'bicep-curl.jpg',
+  'tricep': 'tricep-pushdown.jpg',
+  'core': 'plank.jpg',
+  'calf': 'standing-calf-raise.jpg',
+  'trap': 'barbell-row.jpg',
+  'forearm': 'hammer-curl.jpg',
+  'cardio': 'walking-lunge.jpg',
+  'press': 'bench-press.jpg',
 };
 
 export const archetypePositionMap: Record<string, string> = {
   'shoulder': 'center 15%',
+  'overhead-press': 'center 15%',
   'tricep': 'center 20%',
+  'tricep-pushdown': 'center 20%',
+  'lateral-raise': 'center 20%',
+  'face-pull': 'center 20%',
   'calf': 'center 80%',
+  'standing-calf-raise': 'center 80%',
   'deadlift': 'center 35%',
+  'romanian-deadlift': 'center 35%',
   'row': 'center 25%',
+  'barbell-row': 'center 25%',
+  'seated-cable-row': 'center 25%',
   'lunge': 'center 62%',
+  'walking-lunge': 'center 62%',
+  'bulgarian-split-squat': 'center 62%',
   'squat': 'center center',
+  'barbell-squat': 'center center',
+  'goblet-squat': 'center center',
+  'leg-press': 'center center',
+  'leg-curl': 'center center',
+  'leg-extension': 'center center',
   'hip-thrust': 'center center',
+  'cable-kickback': 'center center',
   'press': 'center center',
+  'bench-press': 'center center',
+  'incline-dumbbell-press': 'center center',
+  'cable-fly': 'center center',
+  'knee-push-up': 'center center',
+  'push-up': 'center center',
+  'dip': 'center center',
+  'skull-crusher': 'center center',
   'pullup': 'center center',
+  'pull-up': 'center center',
+  'lat-pulldown': 'center center',
   'curl': 'center center',
+  'bicep-curl': 'center center',
+  'hammer-curl': 'center center',
   'core': 'center center',
+  'plank': 'center center',
+  'dead-bug': 'center center',
+  'hanging-leg-raise': 'center center',
 };
 
 export const FemaleExerciseSVG: React.FC<FemaleArtProps> = ({
@@ -217,10 +180,21 @@ export const FemaleExerciseSVG: React.FC<FemaleArtProps> = ({
   primaryMuscle,
 }) => {
   const archetype = getMovementArchetype(slug, primaryMuscle, exerciseName);
+  const [useFallback, setUseFallback] = useState(false);
   const [imgError, setImgError] = useState(false);
-  const imageFileName = archetypeImageMap[archetype] || 'squat.jpg';
-  const imageUrl = getAssetUrl(`assets/female-3d/${imageFileName}`);
+
+  const fallbackFileName = archetypeImageMap[archetype] || 'squat.jpg';
+  const targetFileName = !useFallback && slug ? `${slug}.jpg` : fallbackFileName;
+  const imageUrl = getAssetUrl(`assets/female-3d/${targetFileName}`);
   const focalPosition = archetypePositionMap[archetype] || 'center center';
+
+  const handleImageError = () => {
+    if (!useFallback && slug) {
+      setUseFallback(true);
+    } else {
+      setImgError(true);
+    }
+  };
 
   if (!imgError) {
     return (
@@ -228,7 +202,7 @@ export const FemaleExerciseSVG: React.FC<FemaleArtProps> = ({
         <img
           src={imageUrl}
           alt={exerciseName || archetype}
-          onError={() => setImgError(true)}
+          onError={handleImageError}
           style={{ objectPosition: focalPosition }}
           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
           loading="lazy"
