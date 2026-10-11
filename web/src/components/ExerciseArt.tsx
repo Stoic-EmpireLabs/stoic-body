@@ -110,11 +110,11 @@ export const ExerciseArt: React.FC<ExerciseArtProps> = ({
     <div
       style={{ height }}
       className={`w-full bg-[#141214] rounded-2xl flex items-center justify-center border border-[#262024] overflow-hidden relative ${
-        isCompactThumbnail ? 'p-1' : 'p-2.5 rounded-3xl'
+        isFemale ? 'p-0' : isCompactThumbnail ? 'p-1' : 'p-2.5 rounded-3xl'
       } ${className}`}
     >
       {isFemale ? (
-        // FEMALE ATHLETIC VISUAL ENGINE - Clean, centered vector art without any overlay clutter
+        // FEMALE ATHLETIC VISUAL ENGINE - 3D Anatomical female model with glowing muscle highlights
         <FemaleExerciseSVG
           slug={slug}
           accentColor={accentColor}

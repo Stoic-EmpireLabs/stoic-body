@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import allExercisesData from '../data/exercises.json';
+import { getAssetUrl } from '../utils/assets';
 
 interface FemaleArtProps {
   slug?: string;
@@ -26,7 +27,33 @@ export function getMovementArchetype(slug: string = '', primaryMuscle?: string, 
   const p = (primaryMuscle || found?.primary || '').toLowerCase();
   const n = (name || found?.name || '').toLowerCase();
 
-  // Glutes & Hip Thrust / Abductors
+  // 1. Deadlifts & Hamstring Hinges (Highest priority: RDLs, good-mornings, stiff-leg)
+  if (
+    s.includes('deadlift') ||
+    s.includes('rdl') ||
+    s.includes('good-morning') ||
+    s.includes('leg-curl') ||
+    n.includes('deadlift') ||
+    n.includes('rdl') ||
+    p === 'hamstrings'
+  ) {
+    return 'deadlift';
+  }
+
+  // 2. Lunges, Split Squats, Step-Ups
+  if (
+    s.includes('lunge') ||
+    s.includes('split-squat') ||
+    s.includes('step-up') ||
+    s.includes('curtsy') ||
+    n.includes('lunge') ||
+    n.includes('split squat') ||
+    n.includes('step up')
+  ) {
+    return 'lunge';
+  }
+
+  // 3. Glutes & Hip Thrust / Abductors
   if (
     s.includes('hip-thrust') ||
     s.includes('glute') ||
@@ -34,42 +61,23 @@ export function getMovementArchetype(slug: string = '', primaryMuscle?: string, 
     s.includes('bridge') ||
     s.includes('abductor') ||
     s.includes('frog') ||
+    n.includes('thrust') ||
+    n.includes('kickback') ||
     p === 'glutes'
   ) {
     return 'hip-thrust';
   }
 
-  // Squats & Quad Hypertrophy
+  // 4. Squats & Quad Hypertrophy
   if (
     s.includes('squat') ||
     s.includes('leg-press') ||
     s.includes('hack') ||
     s.includes('wall-sit') ||
+    n.includes('squat') ||
     p === 'quads'
   ) {
     return 'squat';
-  }
-
-  // Lunges & Split Squats
-  if (
-    s.includes('lunge') ||
-    s.includes('split-squat') ||
-    s.includes('step-up') ||
-    s.includes('curtsy')
-  ) {
-    return 'lunge';
-  }
-
-  // Deadlifts & Hamstring Hinges
-  if (
-    s.includes('deadlift') ||
-    s.includes('rdl') ||
-    s.includes('good-morning') ||
-    s.includes('hamstring') ||
-    s.includes('leg-curl') ||
-    p === 'hamstrings'
-  ) {
-    return 'deadlift';
   }
 
   // Chest, Bench & Push-Ups
@@ -165,8 +173,41 @@ export function getMovementArchetype(slug: string = '', primaryMuscle?: string, 
     return 'forearm';
   }
 
-  return 'cardio';
+  return 'squat';
 }
+
+export const archetypeImageMap: Record<string, string> = {
+  'squat': 'squat.jpg',
+  'hip-thrust': 'hip-thrust.jpg',
+  'press': 'press.jpg',
+  'deadlift': 'deadlift.jpg',
+  'lunge': 'lunge.jpg',
+  'shoulder': 'shoulder.jpg',
+  'pullup': 'pullup.jpg',
+  'row': 'row.jpg',
+  'curl': 'curl.jpg',
+  'tricep': 'tricep.jpg',
+  'core': 'core.jpg',
+  'calf': 'calf.jpg',
+  'trap': 'row.jpg',
+  'forearm': 'curl.jpg',
+  'cardio': 'lunge.jpg',
+};
+
+export const archetypePositionMap: Record<string, string> = {
+  'shoulder': 'center 15%',
+  'tricep': 'center 20%',
+  'calf': 'center 80%',
+  'deadlift': 'center 35%',
+  'row': 'center 25%',
+  'lunge': 'center 62%',
+  'squat': 'center center',
+  'hip-thrust': 'center center',
+  'press': 'center center',
+  'pullup': 'center center',
+  'curl': 'center center',
+  'core': 'center center',
+};
 
 export const FemaleExerciseSVG: React.FC<FemaleArtProps> = ({
   slug = '',
@@ -176,6 +217,27 @@ export const FemaleExerciseSVG: React.FC<FemaleArtProps> = ({
   primaryMuscle,
 }) => {
   const archetype = getMovementArchetype(slug, primaryMuscle, exerciseName);
+  const [imgError, setImgError] = useState(false);
+  const imageFileName = archetypeImageMap[archetype] || 'squat.jpg';
+  const imageUrl = getAssetUrl(`assets/female-3d/${imageFileName}`);
+  const focalPosition = archetypePositionMap[archetype] || 'center center';
+
+  if (!imgError) {
+    return (
+      <div className={`w-full h-full relative overflow-hidden flex items-center justify-center bg-[#0d0b0d] group ${className}`}>
+        <img
+          src={imageUrl}
+          alt={exerciseName || archetype}
+          onError={() => setImgError(true)}
+          style={{ objectPosition: focalPosition }}
+          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
+          loading="lazy"
+        />
+        {/* Subtle obsidian cinematic vignette */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+      </div>
+    );
+  }
 
   return (
     <div className={`w-full h-full flex flex-col items-center justify-center relative select-none ${className}`}>
