@@ -31,8 +31,9 @@ export const AthleteSwitcherModal: React.FC<Props> = ({ isOpen, onClose }) => {
       id: `athlete-${Date.now()}`,
       name: newName.trim(),
       callsign: newCallsign.trim() || 'Warrior',
-      role: newPersonality === 'marine' ? 'USMC Conditioning' : newPersonality === 'stoic' ? 'Stoic Athlete' : 'Performance Lifter',
+      role: newPersonality === 'marine' ? 'USMC Conditioning' : newPersonality === 'stoic' ? 'Stoic Athlete' : newPersonality === 'aurelia' ? 'Empress Performance' : 'Performance Lifter',
       personality: newPersonality,
+      gender: newPersonality === 'aurelia' ? 'female' : 'male',
       createdDate: new Date().toISOString(),
     };
 
@@ -48,6 +49,7 @@ export const AthleteSwitcherModal: React.FC<Props> = ({ isOpen, onClose }) => {
     marine: <Shield className="w-4 h-4 text-red-400" />,
     stoic: <Compass className="w-4 h-4 text-[#D9A184]" />,
     coach: <Sparkles className="w-4 h-4 text-emerald-400" />,
+    aurelia: <Sparkles className="w-4 h-4 text-rose-400" />,
   };
 
   return (
@@ -170,6 +172,7 @@ export const AthleteSwitcherModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 onChange={(e) => setNewPersonality(e.target.value as CoachPersonality)}
                 className="w-full bg-[#121110] border border-[#2B2826] rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none focus:border-[#D9A184]"
               >
+                <option value="aurelia">Empress Aurelia (Female Athletic Wisdom)</option>
                 <option value="marine">Marine Combat Conditioning (USMC)</option>
                 <option value="stoic">Classical Stoic (Marcus Aurelius)</option>
                 <option value="coach">High-Performance Specialist</option>

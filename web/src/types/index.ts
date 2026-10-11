@@ -103,7 +103,7 @@ export interface GymNote {
   date: string;
 }
 
-export type CoachPersonality = 'marine' | 'stoic' | 'coach';
+export type CoachPersonality = 'marine' | 'stoic' | 'coach' | 'aurelia';
 
 export interface OnboardingAnswers {
   focus: 'combat' | 'hypertrophy' | 'strength' | 'athletic';
@@ -118,6 +118,7 @@ export interface AthleteAccount {
   callsign: string;
   role: string;
   personality: CoachPersonality;
+  gender?: 'male' | 'female';
   createdDate: string;
 }
 
@@ -137,11 +138,12 @@ export interface Settings {
   units: 'kg' | 'lb';
   soundEnabled: boolean;
   defaultRestSec: number;
-  heatTone: 'ember' | 'green' | 'blue' | 'mono';
+  heatTone: 'ember' | 'green' | 'blue' | 'mono' | 'rose';
   language: string;
   coachPersonality: CoachPersonality;
   activeProfileId: string;
   onboardingCompleted: boolean;
+  gender?: 'male' | 'female';
 }
 
 export type EventCategory = 'workout' | 'meal' | 'task' | 'recovery' | 'sleep' | 'habit';

@@ -3,7 +3,7 @@ export interface StoicQuote {
   text: string;
   author: string;
   source?: string;
-  personality: 'marine' | 'stoic' | 'coach';
+  personality: 'marine' | 'stoic' | 'coach' | 'aurelia';
 }
 
 export const STOIC_QUOTES: StoicQuote[] = [
@@ -100,9 +100,9 @@ export const STOIC_QUOTES: StoicQuote[] = [
   },
   {
     id: 'stoic-3',
-    text: 'Waste no more time arguing what a good man should be. Be one.',
+    text: 'You have power over your mind - not outside events. Realize this, and you will find strength.',
     author: 'Marcus Aurelius',
-    source: 'Meditations, Book X',
+    source: 'Meditations',
     personality: 'stoic',
   },
   {
@@ -114,45 +114,119 @@ export const STOIC_QUOTES: StoicQuote[] = [
   },
   {
     id: 'stoic-5',
-    text: 'You have power over your mind, not outside events. Realize this, and you will find strength.',
+    text: 'Waste no more time arguing about what a good person should be. Be one.',
     author: 'Marcus Aurelius',
-    source: 'Meditations, Book XII',
+    source: 'Meditations, Book X',
     personality: 'stoic',
   },
   {
     id: 'stoic-6',
+    text: 'If you want to improve, be content to be thought foolish and stupid.',
+    author: 'Epictetus',
+    source: 'Enchiridion',
+    personality: 'stoic',
+  },
+  {
+    id: 'stoic-7',
+    text: 'He who fears death will never do anything worthy of a man who is alive.',
+    author: 'Seneca',
+    source: 'Moral Essays',
+    personality: 'stoic',
+  },
+  {
+    id: 'stoic-8',
+    text: 'Dwell on the beauty of life. Watch the stars, and see yourself running with them.',
+    author: 'Marcus Aurelius',
+    source: 'Meditations',
+    personality: 'stoic',
+  },
+  {
+    id: 'stoic-9',
     text: 'First say to yourself what you would be; and then do what you have to do.',
     author: 'Epictetus',
     source: 'Discourses, Book III',
     personality: 'stoic',
   },
   {
-    id: 'stoic-7',
-    text: 'Difficulties strengthen the mind, as labor does the body.',
-    author: 'Seneca',
-    source: 'On Providence',
-    personality: 'stoic',
-  },
-  {
-    id: 'stoic-8',
-    text: 'How long are you going to wait before you demand the best for yourself?',
-    author: 'Epictetus',
-    source: 'Enchiridion',
-    personality: 'stoic',
-  },
-  {
-    id: 'stoic-9',
-    text: 'At dawn, when you have trouble getting out of bed, tell yourself: I have to go to work as a human being.',
-    author: 'Marcus Aurelius',
-    source: 'Meditations, Book V',
-    personality: 'stoic',
-  },
-  {
     id: 'stoic-10',
-    text: 'A gem cannot be polished without friction, nor a man perfected without trials.',
+    text: 'A gem cannot be polished without friction, nor a spirit perfected without trials.',
     author: 'Seneca',
     source: 'Moral Epistles',
     personality: 'stoic',
+  },
+
+  // -------------------------------------------------------------
+  // AURELIA & EMPRESS (Female Leadership, Sovereignty & Discipline)
+  // -------------------------------------------------------------
+  {
+    id: 'aurelia-1',
+    text: 'Reserve your right to think, for even to think wrongly is better than not to think at all.',
+    author: 'Hypatia of Alexandria',
+    source: 'Hellenistic Philosophy',
+    personality: 'aurelia',
+  },
+  {
+    id: 'aurelia-2',
+    text: 'I will not be triumphed over. Sovereignty is forged in iron discipline and calm resolve.',
+    author: 'Cleopatra VII Philopator',
+    source: 'Alexandrian Records',
+    personality: 'aurelia',
+  },
+  {
+    id: 'aurelia-3',
+    text: 'Courage is not the absence of fear, but the mastery of it. Stand tall when others falter.',
+    author: 'Artemisia of Caria',
+    source: 'Naval Commander, 480 BC',
+    personality: 'aurelia',
+  },
+  {
+    id: 'aurelia-4',
+    text: 'Let us strive for what is ours with unrelenting will. The body endures what the mind commands.',
+    author: 'Boudicca',
+    source: 'Warrior Queen of the Iceni',
+    personality: 'aurelia',
+  },
+  {
+    id: 'aurelia-5',
+    text: 'The triumph can’t be had without the struggle. I run not just to finish, but to set the standard.',
+    author: 'Wilma Rudolph',
+    source: 'Olympic Gold Champion',
+    personality: 'aurelia',
+  },
+  {
+    id: 'aurelia-6',
+    text: 'Only disciplined women rule their own destiny and refuse to ask permission for greatness.',
+    author: 'Queen Gorgo of Sparta',
+    source: 'Spartan Axioms',
+    personality: 'aurelia',
+  },
+  {
+    id: 'aurelia-7',
+    text: 'You gain strength, courage, and confidence by every experience in which you really stop to look fear in the face.',
+    author: 'Eleanor Roosevelt',
+    source: 'Leadership Discourses',
+    personality: 'aurelia',
+  },
+  {
+    id: 'aurelia-8',
+    text: 'Acknowledge the fear, but execute the maneuver anyway. Standards never bend.',
+    author: 'Capt. Vernice Armour',
+    source: 'USMC Combat Aviator',
+    personality: 'aurelia',
+  },
+  {
+    id: 'aurelia-9',
+    text: 'I am not afraid of storms, for I am learning how to sail my ship.',
+    author: 'Louisa May Alcott',
+    source: 'Literary Works',
+    personality: 'aurelia',
+  },
+  {
+    id: 'aurelia-10',
+    text: 'Champions aren’t made in gyms. Champions are made from something they have deep inside them: a desire, a dream, a vision.',
+    author: 'Billie Jean King',
+    source: 'Athletic Excellence',
+    personality: 'aurelia',
   },
 
   // -------------------------------------------------------------
@@ -195,7 +269,7 @@ export const STOIC_QUOTES: StoicQuote[] = [
   },
 ];
 
-export function getRandomQuote(personality?: 'marine' | 'stoic' | 'coach'): StoicQuote {
+export function getRandomQuote(personality?: 'marine' | 'stoic' | 'coach' | 'aurelia'): StoicQuote {
   const pool = personality
     ? STOIC_QUOTES.filter((q) => q.personality === personality)
     : STOIC_QUOTES;
