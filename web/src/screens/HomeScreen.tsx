@@ -39,6 +39,7 @@ export const HomeScreen: React.FC = () => {
     setActiveExerciseId,
     scheduledEvents,
     toggleScheduledEvent,
+    getEventsForDate,
     meals,
     nutritionTargets,
     waterMl,
@@ -78,9 +79,7 @@ export const HomeScreen: React.FC = () => {
 
   // Today's Mission Schedule & Tasks
   const todayStr = getLocalDateString(new Date());
-  const todayEvents = (scheduledEvents || [])
-    .filter((e) => e.date === todayStr)
-    .sort((a, b) => a.time.localeCompare(b.time));
+  const todayEvents = getEventsForDate(todayStr);
 
   const completedEventsCount = todayEvents.filter((e) => e.completed).length;
   const totalEventsCount = todayEvents.length;

@@ -7,124 +7,134 @@ export function getLocalDateString(d: Date = new Date()): string {
   return `${year}-${month}-${day}`;
 }
 
-export function generateDefaultSchedule(daysAhead: number = 14): ScheduledEvent[] {
+export function generateEventsForDate(dateStr: string): ScheduledEvent[] {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const d = new Date(year, month - 1, day);
+  const dayOfWeek = d.getDay(); // 0 = Sun, 1 = Mon ... 6 = Sat
+  const isToday = dateStr === getLocalDateString();
+  const events: ScheduledEvent[] = [];
+
+  // 05:30 Morning Cellular Hydration & Electrolytes
+  events.push({
+    id: `sched-hydro-${dateStr}`,
+    date: dateStr,
+    time: '05:30',
+    durationMinutes: 15,
+    title: 'Cellular Hydration: 24oz Filtered Water + Mineral Electrolyte Shield',
+    category: 'recovery',
+    tier: 1,
+    citation: 'Huberman Lab: Sodium-potassium cellular pump charging upon waking',
+    completed: isToday,
+  });
+
+  // 06:00 Physical Workout (Varies by split)
+  if (dayOfWeek === 1 || dayOfWeek === 3 || dayOfWeek === 5) {
+    // Mon/Wed/Fri: Full Body / Combat Conditioning
+    events.push({
+      id: `sched-workout-${dateStr}`,
+      date: dateStr,
+      time: '06:00',
+      durationMinutes: 50,
+      title: 'USMC Combat Conditioning: Heavy Barbell Push, Pull-ups & Core Tension',
+      category: 'workout',
+      tier: 3,
+      citation: 'Schoenfeld (2017): 10-20 weekly direct sets near failure for maximal hypertrophic density',
+      completed: isToday,
+    });
+  } else if (dayOfWeek === 2 || dayOfWeek === 4) {
+    // Tue/Thu: Boxing & Conditioning Intervals
+    events.push({
+      id: `sched-workout-${dateStr}`,
+      date: dateStr,
+      time: '06:00',
+      durationMinutes: 45,
+      title: 'High-Gravity Boxing Intervals: 6 x 3-Min Heavy Bag Rounds (1m Rest)',
+      category: 'workout',
+      tier: 3,
+      citation: 'Tremblay EPOC: +14% post-exercise resting metabolic rate elevation for 14 hours',
+      completed: false,
+    });
+  } else if (dayOfWeek === 6) {
+    // Sat: Zone 2 Ruck / Incline Walk
+    events.push({
+      id: `sched-workout-${dateStr}`,
+      date: dateStr,
+      time: '07:30',
+      durationMinutes: 45,
+      title: 'Tactical Ruck / 12% Incline Treadmill Walk (Zone 2 Aerobic Engine)',
+      category: 'workout',
+      tier: 2,
+      citation: 'San-Millán & Brooks (2020): Maximal mitochondrial lipid oxidation rate',
+      completed: false,
+    });
+  } else {
+    // Sun: Active Rest & Recovery
+    events.push({
+      id: `sched-workout-${dateStr}`,
+      date: dateStr,
+      time: '08:00',
+      durationMinutes: 30,
+      title: 'Sovereign CNS Deload Walk & Full Body Mobility Reset',
+      category: 'recovery',
+      tier: 1,
+      citation: 'Proactive fatigue management prevents systemic overtraining and joint inflammation',
+      completed: false,
+    });
+  }
+
+  // 11:30 Deep Focus Work & Mission Execution (Mon-Fri)
+  if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+    events.push({
+      id: `sched-task-${dateStr}`,
+      date: dateStr,
+      time: '11:30',
+      durationMinutes: 60,
+      title: 'Tactical Deep Work: Uninterrupted Cognitive Execution Block',
+      category: 'task',
+      tier: 2,
+      citation: 'Newport (2016): High-gravity concentration block with zero notifications',
+      completed: false,
+    });
+  }
+
+  // 17:30 Evening 23:1 OMAD Single Feeding Window
+  events.push({
+    id: `sched-meal-${dateStr}`,
+    date: dateStr,
+    time: '17:30',
+    durationMinutes: 60,
+    title: '23:1 OMAD Feeding Window: Wild Salmon, Jasmine Rice, Greens & Lemon Chia',
+    category: 'meal',
+    tier: 2,
+    citation: 'Morton et al. (2018): 140g protein bolus optimization & systemic autophagy surge',
+    completed: false,
+    calories: 1450,
+  });
+
+  // 21:30 Magnesium & Sleep Protocol
+  events.push({
+    id: `sched-sleep-${dateStr}`,
+    date: dateStr,
+    time: '21:30',
+    durationMinutes: 20,
+    title: 'Sleep Architecture Protocol: Magnesium Glycinate, Zero Blue Light & Cold Room',
+    category: 'recovery',
+    tier: 1,
+    citation: 'Walker (2017): Stage 4 slow-wave sleep growth hormone surge for tissue repair',
+    completed: false,
+  });
+
+  return events;
+}
+
+export function generateDefaultSchedule(daysAhead: number = 30): ScheduledEvent[] {
   const events: ScheduledEvent[] = [];
   const now = new Date();
 
   for (let i = 0; i < daysAhead; i++) {
     const d = new Date(now.getTime() + i * 86400000);
     const dateStr = getLocalDateString(d);
-    const dayOfWeek = d.getDay(); // 0 = Sun, 1 = Mon ... 6 = Sat
-
-    // 05:30 Morning Cellular Hydration & Electrolytes
-    events.push({
-      id: `sched-hydro-${dateStr}`,
-      date: dateStr,
-      time: '05:30',
-      durationMinutes: 15,
-      title: 'Cellular Hydration: 24oz Filtered Water + Mineral Electrolyte Shield',
-      category: 'recovery',
-      tier: 1,
-      citation: 'Huberman Lab: Sodium-potassium cellular pump charging upon waking',
-      completed: i === 0,
-    });
-
-    // 06:00 Physical Workout (Varies by split)
-    if (dayOfWeek === 1 || dayOfWeek === 3 || dayOfWeek === 5) {
-      // Mon/Wed/Fri: Full Body / Combat Conditioning
-      events.push({
-        id: `sched-workout-${dateStr}`,
-        date: dateStr,
-        time: '06:00',
-        durationMinutes: 50,
-        title: 'USMC Combat Conditioning: Heavy Barbell Push, Pull-ups & Core Tension',
-        category: 'workout',
-        tier: 3,
-        citation: 'Schoenfeld (2017): 10-20 weekly direct sets near failure for maximal hypertrophic density',
-        completed: i === 0,
-      });
-    } else if (dayOfWeek === 2 || dayOfWeek === 4) {
-      // Tue/Thu: Boxing & Conditioning Intervals
-      events.push({
-        id: `sched-workout-${dateStr}`,
-        date: dateStr,
-        time: '06:00',
-        durationMinutes: 45,
-        title: 'High-Gravity Boxing Intervals: 6 x 3-Min Heavy Bag Rounds (1m Rest)',
-        category: 'workout',
-        tier: 3,
-        citation: 'Tremblay EPOC: +14% post-exercise resting metabolic rate elevation for 14 hours',
-        completed: false,
-      });
-    } else if (dayOfWeek === 6) {
-      // Sat: Zone 2 Ruck / Incline Walk
-      events.push({
-        id: `sched-workout-${dateStr}`,
-        date: dateStr,
-        time: '07:30',
-        durationMinutes: 45,
-        title: 'Tactical Ruck / 12% Incline Treadmill Walk (Zone 2 Aerobic Engine)',
-        category: 'workout',
-        tier: 2,
-        citation: 'San-Millán & Brooks (2020): Maximal mitochondrial lipid oxidation rate',
-        completed: false,
-      });
-    } else {
-      // Sun: Active Rest & Recovery
-      events.push({
-        id: `sched-workout-${dateStr}`,
-        date: dateStr,
-        time: '08:00',
-        durationMinutes: 30,
-        title: 'Sovereign CNS Deload Walk & Full Body Mobility Reset',
-        category: 'recovery',
-        tier: 1,
-        citation: 'Proactive fatigue management prevents systemic overtraining and joint inflammation',
-        completed: false,
-      });
-    }
-
-    // 11:30 Deep Focus Work & Mission Execution
-    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-      events.push({
-        id: `sched-task-${dateStr}`,
-        date: dateStr,
-        time: '11:30',
-        durationMinutes: 60,
-        title: 'Tactical Deep Work: Uninterrupted Cognitive Execution Block',
-        category: 'task',
-        tier: 2,
-        citation: 'Newport (2016): High-gravity concentration block with zero notifications',
-        completed: false,
-      });
-    }
-
-    // 17:30 Evening 23:1 OMAD Single Feeding Window
-    events.push({
-      id: `sched-meal-${dateStr}`,
-      date: dateStr,
-      time: '17:30',
-      durationMinutes: 60,
-      title: '23:1 OMAD Feeding Window: Wild Salmon, Jasmine Rice, Greens & Lemon Chia',
-      category: 'meal',
-      tier: 2,
-      citation: 'Morton et al. (2018): 140g protein bolus optimization & systemic autophagy surge',
-      completed: false,
-      calories: 1450,
-    });
-
-    // 21:30 Magnesium & Sleep Protocol
-    events.push({
-      id: `sched-sleep-${dateStr}`,
-      date: dateStr,
-      time: '21:30',
-      durationMinutes: 20,
-      title: 'Sleep Architecture Protocol: Magnesium Glycinate, Zero Blue Light & Cold Room',
-      category: 'recovery',
-      tier: 1,
-      citation: 'Walker (2017): Stage 4 slow-wave sleep growth hormone surge for tissue repair',
-      completed: false,
-    });
+    events.push(...generateEventsForDate(dateStr));
   }
 
   return events;

@@ -29,6 +29,7 @@ export const ScheduleScreen: React.FC = () => {
     toggleScheduledEvent,
     deleteScheduledEvent,
     injectDayPlanTemplate,
+    getEventsForDate,
     startEmptyWorkout,
     pushRoute,
   } = useGymStore();
@@ -56,13 +57,11 @@ export const ScheduleScreen: React.FC = () => {
       dayName: d.toLocaleDateString('en-US', { weekday: 'short' }),
       isToday: dateStr === getLocalDateString(),
       isSelected: dateStr === selectedDate,
-      hasEvents: scheduledEvents.some((e) => e.date === dateStr),
+      hasEvents: true,
     };
   });
 
-  const selectedDateEvents = scheduledEvents
-    .filter((e) => e.date === selectedDate)
-    .sort((a, b) => a.time.localeCompare(b.time));
+  const selectedDateEvents = getEventsForDate(selectedDate);
 
   const totalEvents = selectedDateEvents.length;
   const completedEvents = selectedDateEvents.filter((e) => e.completed).length;

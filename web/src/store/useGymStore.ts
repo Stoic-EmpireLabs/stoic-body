@@ -29,6 +29,7 @@ import type {
 import { getRandomQuote, type StoicQuote } from '../data/stoicQuotes';
 import {
   generateDefaultSchedule,
+  generateEventsForDate,
   defaultMealsToday,
   defaultNutritionTargets,
   getLocalDateString,
@@ -1045,6 +1046,20 @@ export function useGymStore() {
     notify();
   };
 
+  const getEventsForDate = (dateStr: string): ScheduledEvent[] => {
+    let dayEvents = globalState.scheduledEvents.filter((e) => e.date === dateStr);
+    if (dayEvents.length === 0) {
+      const generated = generateEventsForDate(dateStr);
+      globalState.scheduledEvents = [...globalState.scheduledEvents, ...generated].sort((a, b) => {
+        if (a.date !== b.date) return a.date.localeCompare(b.date);
+        return a.time.localeCompare(b.time);
+      });
+      notify();
+      return generated;
+    }
+    return dayEvents.sort((a, b) => a.time.localeCompare(b.time));
+  };
+
   // Nutrition Actions
   const logMeal = (meal: Omit<MealEntry, 'id'>) => {
     const newMeal: MealEntry = {
@@ -1359,6 +1374,7 @@ export function useGymStore() {
     resetWater,
     updateNutritionTargets,
     injectDayPlanTemplate,
+    getEventsForDate,
     dismissLatestAward: () => {
       globalState.latestAwardUnlocked = null;
       notify();
