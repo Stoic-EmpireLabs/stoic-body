@@ -564,12 +564,6 @@ export const FemaleExerciseSVG: React.FC<FemaleArtProps> = ({
           </g>
         )}
       </svg>
-
-      {/* Subtle Aesthetic Archetype Pill */}
-      <div className="absolute bottom-2 left-3 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#141214]/80 backdrop-blur-sm border border-[#2B2428] text-[9px] font-mono text-neutral-400">
-        <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: accentColor }} />
-        <span className="uppercase tracking-wider font-bold">Female Silhouette · {archetype}</span>
-      </div>
     </div>
   );
 };
