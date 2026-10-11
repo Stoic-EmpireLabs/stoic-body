@@ -14,10 +14,14 @@ export interface PlanSummary {
   splitName: string;
   routineCount: number;
   daysScheduled: number;
+  selectedDaysText: string;
+  workoutTimeText: string;
+  durationText: string;
   primaryFocusTitle: string;
   equipmentTitle: string;
   nutritionTitle: string;
   macrosSummary: string;
+  activeAddons: string[];
 }
 
 export interface GeneratedPlan {
@@ -95,6 +99,17 @@ function pickExercise(
   return null;
 }
 
+// Day name helper: 1=Mon .. 7=Sun
+export const DAY_NAMES: Record<number, { short: string; full: string }> = {
+  1: { short: 'Mon', full: 'Monday' },
+  2: { short: 'Tue', full: 'Tuesday' },
+  3: { short: 'Wed', full: 'Wednesday' },
+  4: { short: 'Thu', full: 'Thursday' },
+  5: { short: 'Fri', full: 'Friday' },
+  6: { short: 'Sat', full: 'Saturday' },
+  7: { short: 'Sun', full: 'Sunday' },
+};
+
 export function generateCustomPlan(
   answers: OnboardingAnswers,
   allBuiltinExercises: Exercise[]
@@ -102,18 +117,101 @@ export function generateCustomPlan(
   const isFemale = answers.gender === 'female';
   const equipment = answers.equipment || 'full_gym';
   const experience = answers.experience || 'intermediate';
-  const frequency = (answers.frequency || (isFemale ? 4 : 4)) as 3 | 4 | 5 | 6;
   const workoutTime = answers.workoutTime || (isFemale ? '07:30' : '06:00');
+  const workoutDuration = answers.workoutDuration || 45; // 30, 45, 60, 75
   const fasting = answers.fasting || (isFemale ? '16_8' : 'omad');
   const personality = answers.personality || (isFemale ? 'aurelia' : 'marine');
 
+  // Workout Kind Resolution
+  let workoutKind = answers.workoutKind;
+  if (!workoutKind) {
+    if (answers.focus === 'glute_waist') workoutKind = 'glute_sculpt';
+    else if (answers.focus === 'pilates_tone') workoutKind = 'toning';
+    else if (answers.focus === 'combat') workoutKind = 'combat';
+    else if (answers.focus === 'hypertrophy') workoutKind = 'hypertrophy';
+    else if (answers.focus === 'strength') workoutKind = 'strength';
+    else workoutKind = isFemale ? 'toning' : 'combat';
+  }
+
+  // Target Emphasis Add-ons (e.g. Abs & Core Toning, Glutes, Posture, Arms)
+  const targetEmphasis = answers.targetEmphasis || (isFemale ? ['abs_core', 'glutes'] : ['abs_core']);
+  const hasAbsCoreAddon = targetEmphasis.includes('abs_core') || workoutKind === 'toning';
+  const hasGluteAddon = targetEmphasis.includes('glutes') || workoutKind === 'glute_sculpt';
+  const hasPostureAddon = targetEmphasis.includes('posture_waist');
+  const hasArmsAddon = targetEmphasis.includes('arms_shoulders');
+
+  // Exact Workout Days: [1, 2, 4, 5] (1=Mon .. 7=Sun)
+  let selectedDays = answers.selectedDays && answers.selectedDays.length > 0
+    ? [...answers.selectedDays].sort((a, b) => a - b)
+    : [];
+
+  if (selectedDays.length === 0) {
+    const freq = answers.frequency || 4;
+    if (freq === 1) selectedDays = [1];
+    else if (freq === 2) selectedDays = [1, 4];
+    else if (freq === 3) selectedDays = [1, 3, 5];
+    else if (freq === 5) selectedDays = [1, 2, 3, 4, 5];
+    else if (freq === 6) selectedDays = [1, 2, 3, 4, 5, 6];
+    else if (freq === 7) selectedDays = [1, 2, 3, 4, 5, 6, 7];
+    else selectedDays = [1, 2, 4, 5]; // Default 4 days: Mon, Tue, Thu, Fri
+  }
+
+  const frequency = selectedDays.length;
+
   const pool = filterByEquipment(allBuiltinExercises, equipment);
-  const targetExerciseCount = experience === 'veteran' ? 6 : experience === 'intermediate' ? 5 : 4;
+
+  // Calibrate base exercise count by session duration & experience
+  let baseExerciseCount = 4;
+  if (workoutDuration <= 30) {
+    baseExerciseCount = experience === 'recruit' ? 3 : 4;
+  } else if (workoutDuration <= 45) {
+    baseExerciseCount = experience === 'veteran' ? 5 : 4;
+  } else if (workoutDuration <= 60) {
+    baseExerciseCount = experience === 'veteran' ? 6 : 5;
+  } else {
+    // 75 min
+    baseExerciseCount = experience === 'recruit' ? 5 : 6;
+  }
+
+  // Dynamic Core / Abs finisher pool by equipment
+  const coreExercisePool = [
+    'hanging-leg-raise',
+    'hanging-knee-raise',
+    'dead-bug',
+    'plank',
+    'weighted-front-plank',
+    'cable-woodchopper',
+    'russian-twist',
+    'side-plank',
+    'ab-wheel-rollout',
+    'mountain-climber',
+    'hollow-body-hold',
+  ];
+
+  // Helper to append a unique abs/core finisher if add-on is active
+  const appendAbsFinisher = (exerciseList: string[], usedSet: Set<string>, routineIndex: number) => {
+    if (!hasAbsCoreAddon) return;
+    // Rotate through core candidates
+    const candidateCoreId = pickExercise(
+      pool,
+      [
+        coreExercisePool[routineIndex % coreExercisePool.length],
+        coreExercisePool[(routineIndex + 3) % coreExercisePool.length],
+        'dead-bug',
+        'plank',
+      ],
+      'abdomen',
+      usedSet
+    );
+    if (candidateCoreId && !exerciseList.includes(candidateCoreId)) {
+      exerciseList.push(candidateCoreId);
+    }
+  };
 
   const routines: Routine[] = [];
   const weeklyPlan: Record<number, string> = {};
 
-  // Accent Colors
+  // Theme Colors
   const femalePrimaryColor = '#E0A899'; // Rose Gold
   const femaleAccent1 = '#8FA377'; // Sage
   const femaleAccent2 = '#7FA8C9'; // Soft Slate
@@ -125,30 +223,30 @@ export function generateCustomPlan(
   const maleAccent3 = '#8FA377'; // Olive Field
 
   // -------------------------------------------------------------
-  // FEMALE ROUTINE BLUEPRINTS
+  // FEMALE / EMPRESS ROUTINE BLUEPRINTS
   // -------------------------------------------------------------
   if (isFemale) {
-    if (answers.focus === 'glute_waist' || !answers.focus) {
-      // 1. Glute Hypertrophy & Hip Thrust Primary
+    if (workoutKind === 'glute_sculpt' || workoutKind === 'toning') {
+      // Routine 1: Glute Hypertrophy & Hip Thrust Anchor
       const used1 = new Set<string>();
       const r1Ex: string[] = [
         pickExercise(pool, ['hip-thrust', 'barbell-hip-thrust', 'dumbbell-hip-thrust', 'glute-bridge'], 'glutes', used1),
         pickExercise(pool, ['wQ2c4XD', 'romanian-deadlift', 'barbell-romanian-deadlift', 'dumbbell-romanian-deadlift'], 'glutes', used1),
         pickExercise(pool, ['qx4fgX7', 'split-squat', 'dumbbell-single-leg-split-squat', 'bulgarian-split-squat'], 'quads', used1),
         pickExercise(pool, ['HEJ6DIX', 'cable-glute-kickback', 'cable-kickback', 'glute-kickback', 'banded-glute-kickback'], 'glutes', used1),
-        pickExercise(pool, ['dead-bug', 'deadbug', 'banded-dead-bug', 'plank'], 'abdomen', used1),
         pickExercise(pool, ['standing-calf-raise', '8ozhUIZ', 'calf-raise'], 'calves', used1),
-      ].filter(Boolean).slice(0, targetExerciseCount) as string[];
+      ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+      appendAbsFinisher(r1Ex, used1, 0);
 
       routines.push({
         id: 'routine-glute-hypertrophy',
-        name: 'Glute Hypertrophy & Hip Thrust Primary',
+        name: workoutKind === 'toning' ? 'Lower Body Tone & Glute Activation' : 'Glute Hypertrophy & Hip Thrust Anchor',
         group: 'Empress Periodization',
         color: femalePrimaryColor,
         exerciseIds: r1Ex,
       });
 
-      // 2. Upper Torso & Posture Definition (Hourglass V-Taper)
+      // Routine 2: Hourglass Torso & Posture Sculpt
       const used2 = new Set<string>();
       const r2Ex: string[] = [
         pickExercise(pool, ['close-grip-lat-pulldown', 'lat-pulldown', 'wide-grip-lat-pulldown', 'pull-up'], 'back', used2),
@@ -156,8 +254,8 @@ export function generateCustomPlan(
         pickExercise(pool, ['face-pull', 'banded-face-pull', 'cable-face-pull'], 'shoulders', used2),
         pickExercise(pool, ['ns0SIbU', 'incline-dumbbell-press', 'dumbbell-incline-bench-press', '3TZduzM'], 'chest', used2),
         pickExercise(pool, ['DsgkuIt', 'lateral-raise', 'dumbbell-lateral-raise', 'goJ6ezq'], 'shoulders', used2),
-        pickExercise(pool, ['scapular-push-up', 'push-up', 'knee-push-up'], 'chest', used2),
-      ].filter(Boolean).slice(0, targetExerciseCount) as string[];
+      ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+      appendAbsFinisher(r2Ex, used2, 1);
 
       routines.push({
         id: 'routine-upper-posture',
@@ -167,16 +265,15 @@ export function generateCustomPlan(
         exerciseIds: r2Ex,
       });
 
-      // 3. Lower Posterior & Hamstring Curve
+      // Routine 3: Posterior Chain & Hamstring Curve
       const used3 = new Set<string>();
       const r3Ex: string[] = [
         pickExercise(pool, ['KgI0tqW', 'sumo-deadlift', 'barbell-sumo-deadlift', 'ila4NZS', 'deadlift'], 'glutes', used3),
         pickExercise(pool, ['yn8yg1r', 'goblet-squat', 'dumbbell-goblet-squat', 'barbell-squat', 'qXTaZnJ'], 'quads', used3),
         pickExercise(pool, ['leg-press', 'leg-extension', 'dumbbell-lunge', 'walking-lunge'], 'quads', used3),
         pickExercise(pool, ['zHEpuuc', 'leg-curl', 'cable-assisted-inverse-leg-curl', 'hamstring-curl'], 'hamstrings', used3),
-        pickExercise(pool, ['standing-calf-raise', '8ozhUIZ'], 'calves', used3),
-        pickExercise(pool, ['plank', 'side-plank'], 'abdomen', used3),
-      ].filter(Boolean).slice(0, targetExerciseCount) as string[];
+      ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+      appendAbsFinisher(r3Ex, used3, 2);
 
       routines.push({
         id: 'routine-lower-posterior',
@@ -186,25 +283,25 @@ export function generateCustomPlan(
         exerciseIds: r3Ex,
       });
 
-      // 4. Core, Pelvic Stability & Glute Burnout
+      // Routine 4: Pelvic Floor Stability & Glute Finisher
       const used4 = new Set<string>();
       const r4Ex: string[] = [
         pickExercise(pool, ['hip-thrust', 'dumbbell-hip-thrust', 'glute-bridge'], 'glutes', used4),
-        pickExercise(pool, ['hanging-leg-raise', 'hanging-knee-raise', 'dead-bug'], 'abdomen', used4),
-        pickExercise(pool, ['cable-woodchopper', 'russian-twist', 'plank'], 'abdomen', used4),
         pickExercise(pool, ['walking-lunge', 'dumbbell-lunge', 'split-squat'], 'quads', used4),
         pickExercise(pool, ['cable-kickback', 'banded-hip-thrust'], 'glutes', used4),
-      ].filter(Boolean).slice(0, targetExerciseCount) as string[];
+        pickExercise(pool, ['standing-calf-raise', '8ozhUIZ'], 'calves', used4),
+      ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+      appendAbsFinisher(r4Ex, used4, 3);
 
       routines.push({
         id: 'routine-core-glute-burnout',
-        name: 'Pelvic Floor Stability & Glute Finisher',
+        name: 'Pelvic Stability & Waistline Sculpt',
         group: 'Empress Periodization',
         color: femaleAccent3,
         exerciseIds: r4Ex,
       });
 
-      // 5. Full Body Toned Conditioning (if 5+ days)
+      // Routine 5: Full Body Metabolic Toning (if 5+ days)
       if (frequency >= 5) {
         const used5 = new Set<string>();
         const r5Ex: string[] = [
@@ -212,19 +309,19 @@ export function generateCustomPlan(
           pickExercise(pool, ['push-up', 'knee-push-up', 'I4hDWkc'], 'chest', used5),
           pickExercise(pool, ['dumbbell-bench-press', 'SpYC0Kp'], 'chest', used5),
           pickExercise(pool, ['dumbbell-hammer-curl', 'slDvUAU'], 'biceps', used5),
-          pickExercise(pool, ['plank', 'dead-bug'], 'abdomen', used5),
-        ].filter(Boolean).slice(0, targetExerciseCount) as string[];
+        ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+        appendAbsFinisher(r5Ex, used5, 4);
 
         routines.push({
           id: 'routine-fullbody-metabolic',
-          name: 'Empress Full Body Metabolic Sculpt',
+          name: 'Empress Full Body Metabolic Tone',
           group: 'Empress Periodization',
           color: '#C490D1',
           exerciseIds: r5Ex,
         });
       }
 
-      // 6. Delts, Arms & Calves Hyper-Pump (if 6 days)
+      // Routine 6: Delts & Upper Symmetry (if 6+ days)
       if (frequency >= 6) {
         const used6 = new Set<string>();
         const r6Ex: string[] = [
@@ -232,77 +329,85 @@ export function generateCustomPlan(
           pickExercise(pool, ['face-pull', 'banded-face-pull'], 'shoulders', used6),
           pickExercise(pool, ['bicep-curl', '25GPyDY'], 'biceps', used6),
           pickExercise(pool, ['standing-calf-raise', '8ozhUIZ'], 'calves', used6),
-          pickExercise(pool, ['plank', 'dead-bug'], 'abdomen', used6),
-        ].filter(Boolean).slice(0, targetExerciseCount) as string[];
+        ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+        appendAbsFinisher(r6Ex, used6, 5);
 
         routines.push({
           id: 'routine-delts-arms-sculpt',
-          name: 'Delts, Triceps & Calves High-Tension Pump',
+          name: 'Delts, Arms & Calves Poise',
           group: 'Empress Periodization',
           color: '#E0A899',
           exerciseIds: r6Ex,
         });
       }
     } else {
-      // General Athletic / Toning for Female
+      // General Female Strength / Athletic
       const usedA = new Set<string>();
+      const rA: string[] = [
+        pickExercise(pool, ['hip-thrust', 'dumbbell-hip-thrust'], 'glutes', usedA),
+        pickExercise(pool, ['lat-pulldown', 'pull-up'], 'back', usedA),
+        pickExercise(pool, ['dumbbell-bench-press', 'push-up'], 'chest', usedA),
+        pickExercise(pool, ['standing-calf-raise'], 'calves', usedA),
+      ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+      appendAbsFinisher(rA, usedA, 0);
+
       routines.push({
         id: 'routine-female-full-a',
         name: 'Full Body Alignment & Core Sculpt',
         group: 'Aurelia Protocols',
         color: femalePrimaryColor,
-        exerciseIds: [
-          pickExercise(pool, ['hip-thrust', 'dumbbell-hip-thrust'], 'glutes', usedA),
-          pickExercise(pool, ['lat-pulldown', 'pull-up'], 'back', usedA),
-          pickExercise(pool, ['dumbbell-bench-press', 'push-up'], 'chest', usedA),
-          pickExercise(pool, ['dead-bug', 'plank'], 'abdomen', usedA),
-          pickExercise(pool, ['standing-calf-raise'], 'calves', usedA),
-        ].filter(Boolean).slice(0, targetExerciseCount) as string[],
+        exerciseIds: rA,
       });
 
       const usedB = new Set<string>();
+      const rB: string[] = [
+        pickExercise(pool, ['romanian-deadlift', 'sumo-deadlift'], 'glutes', usedB),
+        pickExercise(pool, ['standing-dumbbell-press', 'overhead-press'], 'shoulders', usedB),
+        pickExercise(pool, ['split-squat', 'walking-lunge'], 'quads', usedB),
+        pickExercise(pool, ['face-pull', 'lateral-raise'], 'shoulders', usedB),
+      ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+      appendAbsFinisher(rB, usedB, 1);
+
       routines.push({
         id: 'routine-female-full-b',
         name: 'Posterior Hypertrophy & Delt Poise',
         group: 'Aurelia Protocols',
         color: femaleAccent1,
-        exerciseIds: [
-          pickExercise(pool, ['romanian-deadlift', 'sumo-deadlift'], 'glutes', usedB),
-          pickExercise(pool, ['standing-dumbbell-press', 'overhead-press'], 'shoulders', usedB),
-          pickExercise(pool, ['split-squat', 'walking-lunge'], 'quads', usedB),
-          pickExercise(pool, ['face-pull', 'lateral-raise'], 'shoulders', usedB),
-          pickExercise(pool, ['hanging-leg-raise', 'plank'], 'abdomen', usedB),
-        ].filter(Boolean).slice(0, targetExerciseCount) as string[],
+        exerciseIds: rB,
       });
 
       const usedC = new Set<string>();
+      const rC: string[] = [
+        pickExercise(pool, ['barbell-hip-thrust', 'cable-kickback'], 'glutes', usedC),
+        pickExercise(pool, ['goblet-squat', 'barbell-squat'], 'quads', usedC),
+        pickExercise(pool, ['incline-dumbbell-press', 'push-up'], 'chest', usedC),
+        pickExercise(pool, ['standing-calf-raise'], 'calves', usedC),
+      ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+      appendAbsFinisher(rC, usedC, 2);
+
       routines.push({
         id: 'routine-female-full-c',
         name: 'Glute Burnout & Transverse Core',
         group: 'Aurelia Protocols',
         color: femaleAccent2,
-        exerciseIds: [
-          pickExercise(pool, ['barbell-hip-thrust', 'cable-kickback'], 'glutes', usedC),
-          pickExercise(pool, ['goblet-squat', 'barbell-squat'], 'quads', usedC),
-          pickExercise(pool, ['incline-dumbbell-press', 'push-up'], 'chest', usedC),
-          pickExercise(pool, ['cable-woodchopper', 'dead-bug'], 'abdomen', usedC),
-          pickExercise(pool, ['standing-calf-raise'], 'calves', usedC),
-        ].filter(Boolean).slice(0, targetExerciseCount) as string[],
+        exerciseIds: rC,
       });
 
       if (frequency >= 4) {
         const usedD = new Set<string>();
+        const rD: string[] = [
+          pickExercise(pool, ['glute-bridge', 'hip-thrust'], 'glutes', usedD),
+          pickExercise(pool, ['scapular-push-up', 'face-pull'], 'back', usedD),
+          pickExercise(pool, ['walking-lunge'], 'quads', usedD),
+        ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+        appendAbsFinisher(rD, usedD, 3);
+
         routines.push({
           id: 'routine-female-full-d',
           name: 'Pelvic Floor Stability & Mobility Reset',
           group: 'Aurelia Protocols',
           color: femaleAccent3,
-          exerciseIds: [
-            pickExercise(pool, ['glute-bridge', 'hip-thrust'], 'glutes', usedD),
-            pickExercise(pool, ['scapular-push-up', 'face-pull'], 'back', usedD),
-            pickExercise(pool, ['dead-bug', 'plank'], 'abdomen', usedD),
-            pickExercise(pool, ['walking-lunge'], 'quads', usedD),
-          ].filter(Boolean).slice(0, targetExerciseCount) as string[],
+          exerciseIds: rD,
         });
       }
     }
@@ -310,7 +415,7 @@ export function generateCustomPlan(
     // -------------------------------------------------------------
     // MALE / SPARTAN ROUTINE BLUEPRINTS
     // -------------------------------------------------------------
-    // 1. Tactical Push & Heavy Chest Armor
+    // Routine 1: Tactical Push & Upper Armor
     const usedM1 = new Set<string>();
     const rm1Ex: string[] = [
       pickExercise(pool, ['EIeI8Vf', 'bench-press', 'barbell-bench-press', 'SpYC0Kp', 'dumbbell-bench-press'], 'chest', usedM1),
@@ -319,17 +424,18 @@ export function generateCustomPlan(
       pickExercise(pool, ['9WTm7dq', 'chest-dip', 'dip', 'X6C6i5Y'], 'chest', usedM1),
       pickExercise(pool, ['DsgkuIt', 'lateral-raise', 'dumbbell-lateral-raise'], 'shoulders', usedM1),
       pickExercise(pool, ['tricep-pushdown', 'skull-crusher'], 'triceps', usedM1),
-    ].filter(Boolean).slice(0, targetExerciseCount) as string[];
+    ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+    appendAbsFinisher(rm1Ex, usedM1, 0);
 
     routines.push({
       id: 'routine-tactical-push',
-      name: 'Tactical Push & Upper Armor',
+      name: workoutKind === 'toning' ? 'Push Definition & Core Toning' : 'Tactical Push & Upper Armor',
       group: 'Spartan Combat Splits',
       color: malePrimaryColor,
       exerciseIds: rm1Ex,
     });
 
-    // 2. Combat Pull & Heavy Lat Overload
+    // Routine 2: Combat Pull & Heavy Lat Overload
     const usedM2 = new Set<string>();
     const rm2Ex: string[] = [
       pickExercise(pool, ['lBDjFxJ', 'pull-up', 'weighted-pull-up', 'close-grip-lat-pulldown'], 'back', usedM2),
@@ -337,26 +443,26 @@ export function generateCustomPlan(
       pickExercise(pool, ['ila4NZS', 'deadlift', 'barbell-deadlift', 'wQ2c4XD'], 'glutes', usedM2),
       pickExercise(pool, ['face-pull', 'banded-face-pull', 'cable-face-pull'], 'shoulders', usedM2),
       pickExercise(pool, ['slDvUAU', 'hammer-curl', 'dumbbell-hammer-curl', '25GPyDY'], 'biceps', usedM2),
-      pickExercise(pool, ['VBAWRPG', 'plank', 'weighted-front-plank'], 'abdomen', usedM2),
-    ].filter(Boolean).slice(0, targetExerciseCount) as string[];
+    ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+    appendAbsFinisher(rm2Ex, usedM2, 1);
 
     routines.push({
       id: 'routine-combat-pull',
-      name: 'Combat Pull & Heavy Posterior Overload',
+      name: 'Combat Pull & Posterior Chain Density',
       group: 'Spartan Combat Splits',
       color: maleAccent1,
       exerciseIds: rm2Ex,
     });
 
-    // 3. Armor-Plated Legs & Explosive Drive
+    // Routine 3: Armor-Plated Legs & Explosive Drive
     const usedM3 = new Set<string>();
     const rm3Ex: string[] = [
       pickExercise(pool, ['qXTaZnJ', 'squat', 'barbell-full-squat', 'zG0zs85', 'front-squat', 'yn8yg1r'], 'glutes', usedM3),
       pickExercise(pool, ['wQ2c4XD', 'romanian-deadlift', 'sumo-deadlift'], 'glutes', usedM3),
       pickExercise(pool, ['qx4fgX7', 'split-squat', 'walking-lunge', 'leg-press'], 'quads', usedM3),
       pickExercise(pool, ['standing-calf-raise', '8ozhUIZ'], 'calves', usedM3),
-      pickExercise(pool, ['hanging-leg-raise', 'dead-bug', 'plank'], 'abdomen', usedM3),
-    ].filter(Boolean).slice(0, targetExerciseCount) as string[];
+    ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+    appendAbsFinisher(rm3Ex, usedM3, 2);
 
     routines.push({
       id: 'routine-spartan-legs',
@@ -366,27 +472,27 @@ export function generateCustomPlan(
       exerciseIds: rm3Ex,
     });
 
-    // 4. Tactical Calisthenics & Mission Grit (if 4+ days)
+    // Routine 4: Tactical Calisthenics & Mission Grit (if 4+ days)
     if (frequency >= 4) {
       const usedM4 = new Set<string>();
       const rm4Ex: string[] = [
         pickExercise(pool, ['I4hDWkc', 'push-up', 'archer-push-up', 'deep-push-up'], 'chest', usedM4),
         pickExercise(pool, ['lBDjFxJ', 'pull-up', 'chin-up'], 'back', usedM4),
         pickExercise(pool, ['9WTm7dq', 'dip', 'chest-dip'], 'chest', usedM4),
-        pickExercise(pool, ['hanging-leg-raise', 'hanging-knee-raise'], 'abdomen', usedM4),
         pickExercise(pool, ['walking-lunge', 'bodyweight-squat'], 'quads', usedM4),
-      ].filter(Boolean).slice(0, targetExerciseCount) as string[];
+      ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+      appendAbsFinisher(rm4Ex, usedM4, 3);
 
       routines.push({
         id: 'routine-tactical-grit',
-        name: 'USMC Calisthenics & Tactical Grit',
+        name: 'USMC Calisthenics & Core Stamina',
         group: 'Spartan Combat Splits',
         color: maleAccent3,
         exerciseIds: rm4Ex,
       });
     }
 
-    // 5. Heavy Overhead Press & Arm Density (if 5+ days)
+    // Routine 5: Overhead Power & Arm Density (if 5+ days)
     if (frequency >= 5) {
       const usedM5 = new Set<string>();
       const rm5Ex: string[] = [
@@ -394,8 +500,8 @@ export function generateCustomPlan(
         pickExercise(pool, ['slDvUAU', 'hammer-curl', 'bicep-curl'], 'biceps', usedM5),
         pickExercise(pool, ['tricep-pushdown', 'skull-crusher'], 'triceps', usedM5),
         pickExercise(pool, ['lateral-raise', 'DsgkuIt'], 'shoulders', usedM5),
-        pickExercise(pool, ['plank', 'dead-bug'], 'abdomen', usedM5),
-      ].filter(Boolean).slice(0, targetExerciseCount) as string[];
+      ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+      appendAbsFinisher(rm5Ex, usedM5, 4);
 
       routines.push({
         id: 'routine-shoulder-arm-density',
@@ -406,7 +512,7 @@ export function generateCustomPlan(
       });
     }
 
-    // 6. Heavy Compound Deadlift & Carry Overload (if 6 days)
+    // Routine 6: Compound Carry & Structural Overload (if 6+ days)
     if (frequency >= 6) {
       const usedM6 = new Set<string>();
       const rm6Ex: string[] = [
@@ -414,8 +520,8 @@ export function generateCustomPlan(
         pickExercise(pool, ['barbell-row', 'inverted-row'], 'back', usedM6),
         pickExercise(pool, ['goblet-squat', 'front-squat'], 'quads', usedM6),
         pickExercise(pool, ['standing-calf-raise'], 'calves', usedM6),
-        pickExercise(pool, ['plank', 'hanging-leg-raise'], 'abdomen', usedM6),
-      ].filter(Boolean).slice(0, targetExerciseCount) as string[];
+      ].filter(Boolean).slice(0, baseExerciseCount) as string[];
+      appendAbsFinisher(rm6Ex, usedM6, 5);
 
       routines.push({
         id: 'routine-compound-carry-overload',
@@ -428,31 +534,14 @@ export function generateCustomPlan(
   }
 
   // -------------------------------------------------------------
-  // WEEKLY PLAN MAPPING (1 = Mon .. 7 = Sun)
+  // WEEKLY PLAN MAPPING ONTO EXACT SELECTED DAYS (1=Mon .. 7=Sun)
   // -------------------------------------------------------------
-  if (frequency === 3) {
-    weeklyPlan[1] = routines[0]?.id || '';
-    weeklyPlan[3] = routines[1]?.id || '';
-    weeklyPlan[5] = routines[2]?.id || '';
-  } else if (frequency === 4) {
-    weeklyPlan[1] = routines[0]?.id || '';
-    weeklyPlan[2] = routines[1]?.id || '';
-    weeklyPlan[4] = routines[2]?.id || '';
-    weeklyPlan[5] = routines[3]?.id || (routines[0]?.id || '');
-  } else if (frequency === 5) {
-    weeklyPlan[1] = routines[0]?.id || '';
-    weeklyPlan[2] = routines[1]?.id || '';
-    weeklyPlan[3] = routines[2]?.id || '';
-    weeklyPlan[4] = routines[3]?.id || '';
-    weeklyPlan[5] = routines[4]?.id || '';
-  } else if (frequency === 6) {
-    weeklyPlan[1] = routines[0]?.id || '';
-    weeklyPlan[2] = routines[1]?.id || '';
-    weeklyPlan[3] = routines[2]?.id || '';
-    weeklyPlan[4] = routines[3]?.id || '';
-    weeklyPlan[5] = routines[4]?.id || '';
-    weeklyPlan[6] = routines[5]?.id || (routines[0]?.id || '');
-  }
+  selectedDays.forEach((dayNumber, index) => {
+    const routine = routines[index % routines.length];
+    if (routine) {
+      weeklyPlan[dayNumber] = routine.id;
+    }
+  });
 
   // -------------------------------------------------------------
   // NUTRITION & MACRO TARGETS CALCULATION
@@ -466,24 +555,24 @@ export function generateCustomPlan(
   let fastStartTime = '20:00';
 
   if (isFemale) {
-    if (answers.focus === 'glute_waist') {
-      calories = 1950;
+    if (workoutKind === 'toning') {
+      calories = 1750;
       protein = 135;
+      carbs = 160;
+      fat = 50;
+      waterMl = 2800;
+    } else if (workoutKind === 'glute_sculpt') {
+      calories = 1950;
+      protein = 140;
       carbs = 200;
       fat = 55;
-      waterMl = 2800;
-    } else if (answers.focus === 'pilates_tone') {
-      calories = 1750;
-      protein = 125;
-      carbs = 165;
-      fat = 50;
-      waterMl = 2600;
-    } else if (answers.focus === 'strength') {
+      waterMl = 3000;
+    } else if (workoutKind === 'strength') {
       calories = 2100;
       protein = 145;
       carbs = 225;
       fat = 60;
-      waterMl = 3000;
+      waterMl = 3200;
     } else {
       calories = 1850;
       protein = 130;
@@ -507,28 +596,34 @@ export function generateCustomPlan(
     }
   } else {
     // Male
-    if (answers.focus === 'combat') {
-      calories = 2600;
+    if (workoutKind === 'toning') {
+      calories = 2250;
       protein = 200;
-      carbs = 250;
-      fat = 70;
+      carbs = 210;
+      fat = 60;
       waterMl = 3600;
-    } else if (answers.focus === 'hypertrophy') {
-      calories = 2750;
+    } else if (workoutKind === 'combat') {
+      calories = 2650;
       protein = 210;
-      carbs = 285;
-      fat = 75;
+      carbs = 260;
+      fat = 70;
       waterMl = 3800;
-    } else if (answers.focus === 'strength') {
-      calories = 2900;
+    } else if (workoutKind === 'hypertrophy') {
+      calories = 2800;
       protein = 215;
-      carbs = 310;
-      fat = 80;
+      carbs = 290;
+      fat = 75;
       waterMl = 4000;
+    } else if (workoutKind === 'strength') {
+      calories = 2950;
+      protein = 220;
+      carbs = 315;
+      fat = 80;
+      waterMl = 4200;
     } else {
-      calories = 2450;
-      protein = 190;
-      carbs = 230;
+      calories = 2500;
+      protein = 195;
+      carbs = 240;
       fat = 65;
       waterMl = 3500;
     }
@@ -548,6 +643,11 @@ export function generateCustomPlan(
     }
   }
 
+  // Adjust hydration for longer sessions
+  if (workoutDuration >= 60) {
+    waterMl += 400;
+  }
+
   const nutritionTargets: NutritionTargets = {
     calories,
     protein,
@@ -560,7 +660,7 @@ export function generateCustomPlan(
   };
 
   // -------------------------------------------------------------
-  // 14-DAY CALENDAR SCHEDULE GENERATION
+  // 14-DAY CALENDAR SCHEDULE GENERATION (MAPPED TO EXACT DAYS)
   // -------------------------------------------------------------
   const scheduledEvents: ScheduledEvent[] = [];
   const today = new Date();
@@ -586,24 +686,25 @@ export function generateCustomPlan(
     });
 
     // 2. Physical Workout vs Active Recovery
+    const isWorkoutDay = selectedDays.includes(dayOfWeek);
     const assignedRoutineId = weeklyPlan[dayOfWeek];
-    if (assignedRoutineId) {
+
+    if (isWorkoutDay && assignedRoutineId) {
       const routine = routines.find((r) => r.id === assignedRoutineId);
-      const routineName = routine ? routine.name : 'Targeted Split';
-      const duration = experience === 'veteran' ? 60 : experience === 'intermediate' ? 50 : 45;
+      const routineName = routine ? routine.name : 'Targeted Protocol';
 
       scheduledEvents.push({
         id: `sched-workout-${dateStr}`,
         date: dateStr,
         time: workoutTime,
-        durationMinutes: duration,
+        durationMinutes: workoutDuration,
         title: `${routineName} (${routine?.exerciseIds.length || 5} movements)`,
         category: 'workout',
         tier: 3,
         routineId: assignedRoutineId,
         citation: isFemale
-          ? 'Contreras & Schoenfeld (2020): High-tension gluteal muscle fiber recruitment'
-          : 'Schoenfeld (2017): Direct compound set density near mechanical failure',
+          ? 'Contreras & Schoenfeld: Progressive tension overload on target motor units'
+          : 'Schoenfeld: Direct compound set density near mechanical failure',
         completed: false,
       });
     } else {
@@ -618,7 +719,7 @@ export function generateCustomPlan(
           : 'CNS Parasympathetic Recovery Walk & Joint Mobility Reset',
         category: 'recovery',
         tier: 1,
-        citation: 'Proactive fatigue clearing prevents systemic inflammation and joint overload',
+        citation: 'Fatigue dissipation without systemic joint inflammation',
         completed: false,
       });
     }
@@ -729,30 +830,41 @@ export function generateCustomPlan(
   }
 
   // Summary object for UI confirmation screen
-  const focusLabels: Record<string, string> = {
-    glute_waist: 'Glute Hypertrophy & Waist Sculpt',
-    pilates_tone: 'Lean Toning & Core Posture',
-    athletic: 'Metabolic Conditioning & Functional Engine',
-    strength: 'Compound Iron Strength',
-    combat: 'USMC Combat Conditioning',
+  const kindLabels: Record<string, string> = {
+    toning: 'Lean Toning & Definition',
+    glute_sculpt: 'Glute & Posture Sculpt',
     hypertrophy: 'Muscle Hypertrophy & Density',
+    strength: 'Raw Compound Strength',
+    combat: 'USMC Combat Readiness',
   };
 
   const equipLabels: Record<string, string> = {
     full_gym: 'Full Commercial Gym',
     barbell_home: 'Iron Home Gym',
-    dumbbells: 'Dumbbells & Bench Only',
-    bodyweight: 'Bodyweight & Calisthenics Only',
+    dumbbells: 'Dumbbells & Bench',
+    bodyweight: 'Bodyweight & Mobility Only',
   };
 
+  const selectedDaysText = selectedDays.map((d) => DAY_NAMES[d]?.short || `Day ${d}`).join(', ');
+
+  const activeAddons: string[] = [];
+  if (hasAbsCoreAddon) activeAddons.push('Daily Abs & Core Finisher');
+  if (hasGluteAddon) activeAddons.push('Glute & Posterior Chain Priority');
+  if (hasPostureAddon) activeAddons.push('Posture & Hourglass V-Taper');
+  if (hasArmsAddon) activeAddons.push('Delts & Arm Density');
+
   const summary: PlanSummary = {
-    splitName: `${frequency}-Day ${isFemale ? 'Empress' : 'Spartan'} ${focusLabels[answers.focus] || 'Custom Protocol'}`,
+    splitName: `${frequency}-Day ${isFemale ? 'Empress' : 'Spartan'} ${kindLabels[workoutKind] || 'Adaptive System'}`,
     routineCount: routines.length,
     daysScheduled: 14,
-    primaryFocusTitle: focusLabels[answers.focus] || 'Full Body Optimization',
+    selectedDaysText: `${frequency} Days/Week (${selectedDaysText})`,
+    workoutTimeText: `${workoutTime} Daily`,
+    durationText: `${workoutDuration} min session`,
+    primaryFocusTitle: kindLabels[workoutKind] || 'Full Body Optimization',
     equipmentTitle: equipLabels[equipment] || 'Full Gym',
     nutritionTitle: `${fasting.toUpperCase().replace('_', ':')} Protocol · ${calories} kcal`,
     macrosSummary: `${protein}g Protein · ${carbs}g Carbs · ${fat}g Fat · ${(waterMl / 1000).toFixed(1)}L Water`,
+    activeAddons,
   };
 
   return {

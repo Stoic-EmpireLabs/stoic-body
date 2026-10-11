@@ -109,11 +109,15 @@ export interface OnboardingAnswers {
   gender: 'male' | 'female';
   name?: string;
   callsign?: string;
-  focus: 'combat' | 'hypertrophy' | 'strength' | 'athletic' | 'glute_waist' | 'pilates_tone';
+  focus?: 'combat' | 'hypertrophy' | 'strength' | 'athletic' | 'glute_waist' | 'pilates_tone';
+  workoutKind?: 'toning' | 'hypertrophy' | 'strength' | 'combat' | 'glute_sculpt';
   experience: 'recruit' | 'intermediate' | 'veteran';
   equipment: 'full_gym' | 'barbell_home' | 'dumbbells' | 'bodyweight';
-  frequency?: 3 | 4 | 5 | 6;
+  selectedDays?: number[]; // [1, 2, 4, 5] where 1=Mon .. 7=Sun
+  frequency?: number;
   workoutTime?: string;
+  workoutDuration?: number; // 30, 45, 60, 75
+  targetEmphasis?: string[]; // ['abs_core', 'glutes', 'posture_waist', 'arms_shoulders', 'calisthenics_burn']
   fasting?: '16_8' | '20_4' | 'omad' | 'standard';
   personality: CoachPersonality;
 }
