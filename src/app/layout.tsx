@@ -8,6 +8,7 @@ import LoginModal from "@/components/LoginModal";
 import InteractiveTour from "@/components/InteractiveTour";
 import HostGuideWidget from "@/components/HostGuideWidget";
 import PwaRegistrar from "@/components/PwaRegistrar";
+import OpenGymDock from "@/components/OpenGymDock";
 
 export const metadata: Metadata = {
   title: "Stoic Body — Discipline, Movement & Sovereign Life Game",
@@ -43,6 +44,7 @@ export default function RootLayout({
           <InteractiveTour />
           <HostGuideWidget />
           <PwaRegistrar />
+          <OpenGymDock />
         </StoicProvider>
       </body>
     </html>

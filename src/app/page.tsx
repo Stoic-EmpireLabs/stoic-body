@@ -9,6 +9,8 @@ import WorkoutBlueprintCard from "@/components/WorkoutBlueprintCard";
 import FieldNotebookDietCard from "@/components/FieldNotebookDietCard";
 import BiohackGuideModal from "@/components/BiohackGuideModal";
 import AIVisualStudioModal from "@/components/AIVisualStudioModal";
+import LiveSessionModal from "@/components/LiveSessionModal";
+import { ALL_EXERCISES } from "@/lib/exercise-catalog";
 
 interface AnchorItem {
   id: string;
@@ -88,6 +90,7 @@ export default function TodayCommandCenter() {
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
   const [isBiohacksOpen, setIsBiohacksOpen] = useState(false);
   const [isAIStudioOpen, setIsAIStudioOpen] = useState(false);
+  const [isLiveSessionOpen, setIsLiveSessionOpen] = useState(false);
   const [customTitle, setCustomTitle] = useState("");
   const [customSubtitle, setCustomSubtitle] = useState("");
   const [customTier, setCustomTier] = useState<DifficultyTier>(DifficultyTier.Routine);
@@ -183,6 +186,67 @@ export default function TodayCommandCenter() {
 
       {/* 2026 SOVEREIGN RECOMP LIVE GOAL COUNTDOWN & ROADMAP */}
       <GoalCountdownHero />
+
+      {/* OPEN-GYM ACTIVE TRAINING HERO & HEATMAP */}
+      <section className="bg-gradient-to-br from-zinc-900 via-zinc-950 to-black border border-white/10 ring-1 ring-amber-500/20 rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                OPEN-GYM ACTIVE ENGINE
+              </span>
+              <span className="text-xs font-mono text-zinc-400 flex items-center gap-1">
+                <span>🔥</span> {streakDays}-DAY DISCIPLINE STREAK
+              </span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+              TODAY'S TACTICAL FOCUS: PUSH &amp; CALISTHENICS
+            </h2>
+            <p className="text-xs text-zinc-400 max-w-lg">
+              Bench Press &middot; Incline Dumbbell Press &middot; Overhand Pull-Ups &middot; Parallel Bar Dips &middot; Rest Ring Telemetry.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => setIsLiveSessionOpen(true)}
+              className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-mono font-bold text-xs shadow-lg shadow-amber-500/30 hover:brightness-110 active:scale-95 transition-all flex items-center gap-2"
+            >
+              <span>⚡</span> START LIVE TRACKER ▶
+            </button>
+            <Link
+              href="/training"
+              className="px-3.5 py-2.5 rounded-2xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/10 font-mono text-xs transition-all flex items-center gap-1.5"
+            >
+              <span>🎯</span> BODY MAP
+            </Link>
+          </div>
+        </div>
+
+        {/* 7-Day Consistency Mini-Heatmap */}
+        <div className="mt-5 pt-4 border-t border-white/5 flex items-center justify-between flex-wrap gap-2 text-xs font-mono">
+          <span className="text-[11px] text-zinc-500 uppercase tracking-wider">THIS WEEK'S CADENCE:</span>
+          <div className="flex items-center gap-2">
+            {["M", "T", "W", "T", "F", "S", "S"].map((day, i) => (
+              <div key={i} className="flex flex-col items-center gap-1">
+                <span className="text-[10px] text-zinc-500">{day}</span>
+                <span
+                  className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold ${
+                    i <= 4
+                      ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                      : "bg-zinc-900 text-zinc-600 border border-white/5"
+                  }`}
+                >
+                  {i <= 4 ? "✓" : "·"}
+                </span>
+              </div>
+            ))}
+          </div>
+          <Link href="/exercises" className="text-amber-400 hover:underline text-xs">
+            Browse 552 Catalog &rarr;
+          </Link>
+        </div>
+      </section>
 
       {/* MORNING ANCHOR (05:30 AM) */}
       <section id="tour-target-anchors" className="bg-gradient-to-b from-zinc-950/80 via-black/90 to-zinc-950/80 backdrop-blur-2xl border border-white/10 ring-1 ring-amber-500/20 rounded-2xl p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.8)] relative overflow-hidden transition-all hover:border-amber-500/40">
@@ -668,6 +732,13 @@ export default function TodayCommandCenter() {
       <BiohackGuideModal isOpen={isBiohacksOpen} onClose={() => setIsBiohacksOpen(false)} />
       <AIVisualStudioModal isOpen={isAIStudioOpen} onClose={() => setIsAIStudioOpen(false)} />
 
+      {/* OPEN-GYM LIVE SESSION TRACKER MODAL */}
+      <LiveSessionModal
+        isOpen={isLiveSessionOpen}
+        onClose={() => setIsLiveSessionOpen(false)}
+        initialExercises={ALL_EXERCISES.slice(0, 4)}
+        sessionTitle="Today's Tactical Live Session"
+      />
     </div>
   );
 }
