@@ -1,15 +1,14 @@
 <#
 .SYNOPSIS
-    Stoic Body — Workstation Founder Sovereign Edition Launcher
+    Stoic Body / Open-GYM — Workstation Launcher
 .DESCRIPTION
-    Launches Stoic Body locally in permanent Founder Sovereign Mode (100% free,
-    zero paywalls, zero external telemetry, native local SQLite persistence).
+    Launches the authentic Open-GYM application locally in Google Chrome (stoic1712 profile).
 #>
 
-Write-Host "===========================================================" -ForegroundColor DarkYellow
-Write-Host "  STOIC BODY — FOUNDER SOVEREIGN WORKSTATION EDITION       " -ForegroundColor Yellow
-Write-Host "  Classical Discipline &bull; Calisthenics &bull; Offline Persistent  " -ForegroundColor Gray
-Write-Host "===========================================================" -ForegroundColor DarkYellow
+Write-Host "===========================================================" -ForegroundColor DarkCyan
+Write-Host "  OPEN-GYM / STOIC BODY — WORKSTATION EDITION             " -ForegroundColor Cyan
+Write-Host "  Offline, Ad-Free Gym & Workout Companion                " -ForegroundColor Gray
+Write-Host "===========================================================" -ForegroundColor DarkCyan
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $ScriptDir
@@ -20,20 +19,19 @@ if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
-Write-Host "[1/3] Verifying Local SQLite Database Engine..." -ForegroundColor Cyan
-if (-not (Test-Path "$ScriptDir\data")) {
-    New-Item -ItemType Directory -Path "$ScriptDir\data" -Force | Out-Null
+Write-Host "[1/2] Checking Dependencies..." -ForegroundColor Cyan
+if (-not (Test-Path "$ScriptDir\web\node_modules")) {
+    Write-Host "Installing web dependencies..." -ForegroundColor Yellow
+    npm --prefix web install
 }
 
-Write-Host "[2/3] Checking Dependencies..." -ForegroundColor Cyan
-if (-not (Test-Path "$ScriptDir\node_modules")) {
-    Write-Host "Installing local dependencies..." -ForegroundColor Yellow
-    npm install
+Write-Host "[2/2] Launching Chrome (stoic1712 Default Profile)..." -ForegroundColor Green
+$chromePath = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+if (Test-Path $chromePath) {
+    Start-Process $chromePath -ArgumentList '--profile-directory="Default"', '--app=http://localhost:5173'
+} else {
+    Start-Process "http://localhost:5173"
 }
 
-Write-Host "[3/3] Launching Stoic Body Sovereign Workstation Server..." -ForegroundColor Green
-Write-Host "Opening browser at http://localhost:3000 ..." -ForegroundColor Yellow
-
-Start-Process "http://localhost:3000"
-
-npm run dev
+Write-Host "Starting Vite development server..." -ForegroundColor Yellow
+npm --prefix web run dev

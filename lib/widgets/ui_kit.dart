@@ -1,0 +1,1351 @@
+import 'dart:math' as math;
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
+
+import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
+import 'rolling_text.dart';
+import 'svg_icon.dart';
+
+class SoftCard extends StatelessWidget {
+  const SoftCard({
+    super.key,
+    required this.child,
+    this.padding = const EdgeInsets.all(20),
+    this.radius = 20,
+    this.borderColor,
+    this.color,
+    this.clip = false,
+  });
+
+  final Widget child;
+  final EdgeInsets padding;
+  final double radius;
+  final Color? borderColor;
+  final Color? color;
+  final bool clip;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    return Container(
+      padding: padding,
+      clipBehavior: clip ? Clip.antiAlias : Clip.none,
+      decoration: BoxDecoration(
+        color: color ?? gc.bgRaised,
+        border: Border.all(color: borderColor ?? gc.border),
+        borderRadius: BorderRadius.circular(radius),
+      ),
+      child: child,
+    );
+  }
+}
+
+EdgeInsets sheetPad(BuildContext context, {double bottom = 28}) =>
+    EdgeInsets.fromLTRB(20, 12, 20, bottom + MediaQuery.paddingOf(context).bottom);
+
+class SearchField extends StatelessWidget {
+  const SearchField({
+    super.key,
+    required this.controller,
+    required this.hint,
+    required this.onChanged,
+    this.color,
+  });
+
+  final TextEditingController controller;
+  final String hint;
+  final ValueChanged<String> onChanged;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    return Container(
+      height: 48,
+      padding: const EdgeInsets.only(left: 16, right: 6),
+      decoration: BoxDecoration(
+        color: color ?? gc.bgRaised,
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: Row(children: [
+        SvgPathIcon(Ic.search, size: 16, color: gc.textSecondary),
+        const SizedBox(width: 10),
+        Expanded(
+          child: TextField(
+            controller: controller,
+            onChanged: onChanged,
+            style: AppTheme.f(14, weight: FontWeight.w500, color: gc.text),
+            cursorColor: gc.accent,
+            decoration: InputDecoration(
+              isCollapsed: true,
+              border: InputBorder.none,
+              hintText: hint,
+              hintStyle: AppTheme.f(14, weight: FontWeight.w500, color: gc.textSecondary),
+            ),
+          ),
+        ),
+        ValueListenableBuilder<TextEditingValue>(
+          valueListenable: controller,
+          builder: (context, value, _) => value.text.isEmpty
+              ? const SizedBox(width: 10)
+              : Semantics(
+                  button: true,
+                  label: MaterialLocalizations.of(context).deleteButtonTooltip,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      controller.clear();
+                      onChanged('');
+                    },
+                    child: SizedBox(
+                      width: 40,
+                      height: 48,
+                      child: Center(
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(color: gc.bgRaised2, shape: BoxShape.circle),
+                          child: Center(child: SvgPathIcon(Ic.close, size: 10, color: gc.textSecondary)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+        ),
+      ]),
+    );
+  }
+}
+
+class TinySwitch extends StatelessWidget {
+  const TinySwitch({super.key, required this.on});
+
+  final bool on;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 140),
+      width: 44,
+      height: 26,
+      padding: const EdgeInsets.all(3),
+      alignment: on ? Alignment.centerRight : Alignment.centerLeft,
+      decoration: BoxDecoration(
+        color: on ? gc.ember : gc.bgRaised2,
+        borderRadius: BorderRadius.circular(100),
+        border: Border.all(color: on ? gc.ember : gc.border),
+      ),
+      child: Container(
+        width: 20,
+        height: 20,
+        decoration: BoxDecoration(
+          color: on ? gc.onEmber : gc.textTertiary,
+          shape: BoxShape.circle,
+        ),
+      ),
+    );
+  }
+}
+
+class Pressable extends StatefulWidget {
+  const Pressable({super.key, required this.child, required this.onTap, this.scale = 0.965, this.onLongPress});
+
+  final Widget child;
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
+  final double scale;
+
+  @override
+  State<Pressable> createState() => _PressableState();
+}
+
+class _PressableState extends State<Pressable> {
+  bool _down = false;
+
+  void _set(bool v) {
+    if (_down != v && mounted) setState(() => _down = v);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: widget.onTap,
+      onLongPress: widget.onLongPress,
+      onTapDown: widget.onTap == null ? null : (_) => _set(true),
+      onTapUp: (_) => _set(false),
+      onTapCancel: () => _set(false),
+      child: AnimatedScale(
+        scale: _down ? widget.scale : 1,
+        duration: Duration(milliseconds: _down ? 90 : 260),
+        curve: _down ? Curves.easeOut : Curves.easeOutBack,
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+class GhostButton extends StatelessWidget {
+  const GhostButton({super.key, required this.label, required this.icon, required this.onTap});
+
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    return Pressable(
+      onTap: onTap,
+      child: Container(
+        height: 46,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: context.gc.bgRaised2,
+          borderRadius: BorderRadius.circular(100),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: gc.ember),
+            const SizedBox(width: 8),
+            Text(titleCase(label),
+                style: AppTheme.f(13.5, weight: FontWeight.w700, color: gc.text)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SheetHandle extends StatelessWidget {
+  const SheetHandle({super.key, this.color, this.margin});
+
+  final Color? color;
+  final EdgeInsets? margin;
+
+  @override
+  Widget build(BuildContext context) => Center(
+        child: Container(
+          width: 40,
+          height: 4,
+          margin: margin,
+          decoration: BoxDecoration(
+            color: color ?? context.gc.bgRaised2,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+      );
+}
+
+class SheetTitle extends StatelessWidget {
+  const SheetTitle(this.text, {super.key, this.subtitle});
+
+  final String text;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(text, textAlign: TextAlign.center, style: AppTheme.f(17, weight: FontWeight.w700, color: gc.text)),
+        if (subtitle != null) ...[
+          const SizedBox(height: 4),
+          Text(subtitle!,
+              textAlign: TextAlign.center,
+              style: AppTheme.f(12, weight: FontWeight.w500, color: gc.textSecondary, height: 1.35)),
+        ],
+      ],
+    );
+  }
+}
+
+class OptionItem {
+  const OptionItem(
+    this.label, {
+    required this.onTap,
+    this.icon,
+    this.leading,
+    this.detail,
+    this.selected = false,
+    this.danger = false,
+  });
+
+  final String label;
+  final VoidCallback onTap;
+  final IconData? icon;
+  final Widget? leading;
+  final String? detail;
+  final bool selected;
+  final bool danger;
+}
+
+class OptionGroup extends StatelessWidget {
+  const OptionGroup(this.items, {super.key, this.scroll = false});
+
+  final List<OptionItem> items;
+  final bool scroll;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    final divider = Divider(height: 1, thickness: 1, indent: 16, endIndent: 16, color: gc.border);
+    final Widget body = scroll
+        ? ListView.separated(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            itemCount: items.length,
+            separatorBuilder: (_, _) => divider,
+            itemBuilder: (_, i) => _OptionRow(items[i]),
+          )
+        : Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var i = 0; i < items.length; i++) ...[
+                if (i > 0) divider,
+                _OptionRow(items[i]),
+              ],
+            ],
+          );
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(18),
+      child: ColoredBox(color: gc.bgRaised2, child: body),
+    );
+  }
+}
+
+class _OptionRow extends StatelessWidget {
+  const _OptionRow(this.o);
+
+  final OptionItem o;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    final tone = o.danger ? gc.danger : (o.selected ? gc.ember : gc.text);
+    return Semantics(
+      button: true,
+      selected: o.selected,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: o.onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 50),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: o.detail == null ? 0 : 11),
+            child: Row(children: [
+              if (o.leading != null) ...[
+                o.leading!,
+                const SizedBox(width: 12),
+              ] else if (o.icon != null) ...[
+                Icon(o.icon, size: 19, color: o.danger ? gc.danger : (o.selected ? gc.ember : gc.textSecondary)),
+                const SizedBox(width: 14),
+              ],
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(o.label,
+                        style: AppTheme.f(14.5,
+                            weight: o.selected ? FontWeight.w800 : FontWeight.w600, color: tone)),
+                    if (o.detail != null) ...[
+                      const SizedBox(height: 2),
+                      Text(o.detail!,
+                          style: AppTheme.f(12, weight: FontWeight.w500, color: gc.textSecondary, height: 1.3)),
+                    ],
+                  ],
+                ),
+              ),
+              if (o.selected) ...[
+                const SizedBox(width: 10),
+                Icon(PhosphorIconsFill.checkCircle, size: 18, color: gc.ember),
+              ],
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RoundAction extends StatelessWidget {
+  const RoundAction({
+    super.key,
+    required this.child,
+    required this.onTap,
+    this.label,
+    this.size = 36,
+    this.filled = false,
+    this.glass = false,
+  });
+
+  final Widget child;
+  final VoidCallback onTap;
+  final String? label;
+  final double size;
+  final bool filled;
+  final bool glass;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    final dark = gc.bg.computeLuminance() < 0.5;
+
+    Widget visual;
+    if (glass) {
+      visual = ClipOval(
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+          child: Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              color: filled
+                  ? gc.ember.withValues(alpha: dark ? 0.45 : 0.6)
+                  : gc.bgRaised.withValues(alpha: dark ? 0.38 : 0.55),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white.withValues(alpha: dark ? 0.22 : 0.50),
+                width: 0.9,
+              ),
+            ),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.white.withValues(alpha: dark ? 0.16 : 0.35),
+                    Colors.white.withValues(alpha: 0.0),
+                  ],
+                  stops: const [0, 0.7],
+                ),
+              ),
+              child: Center(child: child),
+            ),
+          ),
+        ),
+      );
+    } else {
+      visual = Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: filled ? gc.ember : gc.bgRaised,
+          shape: BoxShape.circle,
+          border: Border.all(color: filled ? gc.ember : gc.border),
+        ),
+        child: Center(child: child),
+      );
+    }
+
+    final button = Pressable(
+      onTap: onTap,
+      scale: 0.9,
+      child: visual,
+    );
+    return label == null ? button : Semantics(button: true, label: label, child: button);
+  }
+}
+
+class RoundBtn extends StatelessWidget {
+  const RoundBtn({super.key, required this.icon, required this.onTap, this.iconColor});
+  final List<IconPath> icon;
+  final VoidCallback onTap;
+  final Color? iconColor;
+
+  @override
+  Widget build(BuildContext context) => RoundAction(
+        onTap: onTap,
+        child: SvgPathIcon(icon, size: 16, color: iconColor ?? context.gc.text),
+      );
+}
+
+class ScreenHeader extends StatelessWidget {
+  const ScreenHeader({
+    super.key,
+    required this.title,
+    required this.onBack,
+    this.subtitle,
+    this.titleSize = 20,
+    this.titleSpacing = 2,
+    this.actions = const [],
+  });
+
+  final String title;
+  final VoidCallback onBack;
+  final String? subtitle;
+  final double titleSize;
+  final double titleSpacing;
+  final List<Widget> actions;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    return Row(
+      children: [
+        RoundBtn(icon: Ic.chevronLeft, onTap: onBack),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ScreenTitle(title, size: titleSize, spacing: titleSpacing),
+              if (subtitle != null) ...[
+                const SizedBox(height: 2),
+                Text(subtitle!,
+                    style: AppTheme.f(12.5,
+                        weight: FontWeight.w500, color: gc.textSecondary)),
+              ],
+            ],
+          ),
+        ),
+        ...actions,
+      ],
+    );
+  }
+}
+
+String sentenceCase(String s) {
+  if (s.isEmpty || s != s.toUpperCase() || s == s.toLowerCase()) return s;
+  return s[0] + s.substring(1).toLowerCase();
+}
+
+String titleCase(String s) {
+  if (s.isEmpty || s != s.toUpperCase()) return s;
+  if (s.length <= 4 && !s.contains(' ')) return s;
+  if (RegExp(r'[0-9]').hasMatch(s)) return s;
+  return s[0] + s.substring(1).toLowerCase();
+}
+
+class ScreenTitle extends StatelessWidget {
+  const ScreenTitle(this.text, {super.key, this.size = 22, this.spacing = 2});
+  final String text;
+  final double size;
+  final double spacing;
+  @override
+  Widget build(BuildContext context) =>
+      Text(titleCase(text),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: AppTheme.f(size, weight: FontWeight.w800, color: context.gc.text));
+}
+
+class Kicker extends StatelessWidget {
+  const Kicker(this.text, {super.key, required this.color, this.size = 12, this.spacing = 3});
+  final String text;
+  final Color color;
+  final double size;
+  final double spacing;
+  @override
+  Widget build(BuildContext context) =>
+      Text(text, style: AppTheme.f(size, weight: FontWeight.w600, color: color, letterSpacing: spacing));
+}
+
+class StepperControl extends StatelessWidget {
+  const StepperControl({
+    super.key,
+    required this.value,
+    required this.onDec,
+    required this.onInc,
+    this.onEdit,
+    this.minWidth = 70,
+    this.btnSize = 30,
+    this.gap = 14,
+    this.fontSize = 16,
+    this.btnRadius = 8,
+  });
+
+  final String value;
+  final VoidCallback onDec;
+  final VoidCallback onInc;
+  final VoidCallback? onEdit;
+  final double minWidth;
+  final double btnSize;
+  final double gap;
+  final double fontSize;
+  final double btnRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    Widget btn(String glyph, VoidCallback onTap) => GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: btnSize,
+            height: btnSize,
+            decoration: BoxDecoration(color: gc.bgRaised2, borderRadius: BorderRadius.circular(btnRadius)),
+            alignment: Alignment.center,
+            child: Text(glyph, style: TextStyle(color: gc.text, fontSize: fontSize + 2, height: 1, fontWeight: FontWeight.w500)),
+          ),
+        );
+    Widget label = Container(
+      constraints: BoxConstraints(minWidth: minWidth),
+      alignment: Alignment.center,
+      child: RollingText(value, style: AppTheme.f(fontSize, weight: FontWeight.w700, color: gc.text)),
+    );
+    if (onEdit != null) {
+      label = GestureDetector(behavior: HitTestBehavior.opaque, onTap: onEdit, child: label);
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        btn('–', onDec),
+        SizedBox(width: gap),
+        label,
+        SizedBox(width: gap),
+        btn('+', onInc),
+      ],
+    );
+  }
+}
+
+class ToolRow extends StatelessWidget {
+  const ToolRow({super.key, required this.label, required this.control});
+  final String label;
+  final Widget control;
+  @override
+  Widget build(BuildContext context) {
+    return SoftCard(
+      radius: 20,
+      borderColor: Colors.transparent,
+      padding: EdgeInsets.zero,
+      child: _line(context),
+    );
+  }
+
+  Widget _line(BuildContext context) {
+    final gc = context.gc;
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 56),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(child: Text(sentenceCase(label), style: AppTheme.f(14.5, weight: FontWeight.w500, color: gc.text))),
+            const SizedBox(width: 12),
+            control,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ToolGroup extends StatelessWidget {
+  const ToolGroup(this.rows, {super.key});
+
+  final List<ToolRow> rows;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: ColoredBox(
+        color: gc.bgRaised,
+        child: Column(children: [
+          for (var i = 0; i < rows.length; i++) ...[
+            if (i > 0) Divider(height: 1, thickness: 1, indent: 16, endIndent: 16, color: gc.border),
+            rows[i]._line(context),
+          ],
+        ]),
+      ),
+    );
+  }
+}
+
+class SegOption {
+  const SegOption(this.label, this.selected, this.onTap);
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+}
+
+class SegToggle extends StatefulWidget {
+  const SegToggle(
+    this.options, {
+    super.key,
+    this.hPad = 14,
+    this.vPad = 7,
+    this.fontSize = 12,
+    this.isExpanded = false,
+    this.glass = false,
+  });
+
+  final List<SegOption> options;
+  final double hPad;
+  final double vPad;
+  final double fontSize;
+  final bool isExpanded;
+  final bool glass;
+
+  @override
+  State<SegToggle> createState() => _SegToggleState();
+}
+
+class _SegToggleState extends State<SegToggle> with SingleTickerProviderStateMixin {
+  late final AnimationController _move =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 320), value: 1.0);
+  int _lastIdx = 0;
+  double _fromX = 0;
+  double _shownX = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    final idx = widget.options.indexWhere((o) => o.selected);
+    _lastIdx = idx >= 0 ? idx : 0;
+  }
+
+  @override
+  void didUpdateWidget(SegToggle oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final idx = widget.options.indexWhere((o) => o.selected);
+    final currentIdx = idx >= 0 ? idx : 0;
+    if (currentIdx != _lastIdx) {
+      _fromX = _shownX;
+      _lastIdx = currentIdx;
+      _move.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _move.dispose();
+    super.dispose();
+  }
+
+  static double _lerp(double a, double b, double t) => a + (b - a) * t;
+
+  Widget _wrapContainer(BuildContext context, GymColors gc, Widget inner, {double? width}) {
+    final dark = gc.bg.computeLuminance() < 0.5;
+    if (widget.glass) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(100),
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+          child: Container(
+            width: width,
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: dark ? Colors.white.withValues(alpha: 0.10) : Colors.white.withValues(alpha: 0.30),
+              borderRadius: BorderRadius.circular(100),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: dark ? 0.25 : 0.60),
+                width: 1.0,
+              ),
+            ),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.white.withValues(alpha: dark ? 0.22 : 0.45),
+                    Colors.transparent,
+                  ],
+                  stops: const [0, 0.5],
+                ),
+              ),
+              child: inner,
+            ),
+          ),
+        ),
+      );
+    }
+    return Container(
+      width: width,
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(color: gc.bgRaised2, borderRadius: BorderRadius.circular(100)),
+      child: inner,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.options.isEmpty) return const SizedBox.shrink();
+    final gc = context.gc;
+    final dark = gc.bg.computeLuminance() < 0.5;
+    final selIdx = widget.options.indexWhere((o) => o.selected);
+    final activeIdx = selIdx >= 0 ? selIdx : 0;
+
+    if (widget.isExpanded) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final totalW = constraints.maxWidth;
+          final tabW = (totalW - 6) / widget.options.length;
+
+          return _wrapContainer(
+            context,
+            gc,
+            SizedBox(
+              width: totalW,
+              child: AnimatedBuilder(
+                animation: _move,
+                builder: (context, _) {
+                  final t = _move.value;
+                  final to = activeIdx * tabW;
+                  final right = to >= _fromX;
+                  final lead = Curves.easeOutCubic.transform(t);
+                  final trail = Curves.easeInOutCubic.transform(t);
+                  final l = _lerp(_fromX, to, right ? trail : lead);
+                  final r = _lerp(_fromX + tabW, to + tabW, right ? lead : trail);
+                  final squash = 1 - 0.12 * (1 - (2 * t - 1).abs()) * (to == _fromX ? 0 : 1);
+                  _shownX = (to == _fromX) ? to : l;
+
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned(
+                        left: l,
+                        width: (r - l).clamp(tabW * 0.8, tabW * 2.5),
+                        top: 2 * (1 - squash),
+                        bottom: 2 * (1 - squash),
+                        child: RepaintBoundary(
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: widget.glass
+                                  ? (dark ? Colors.white.withValues(alpha: 0.22) : Colors.white)
+                                  : gc.ember,
+                              borderRadius: BorderRadius.circular(100),
+                              border: widget.glass && !dark
+                                  ? Border.all(color: Colors.black.withValues(alpha: 0.04), width: 0.5)
+                                  : null,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: widget.glass ? 0.10 : 0.14),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          for (int i = 0; i < widget.options.length; i++)
+                            Expanded(
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  if (!widget.options[i].selected) {
+                                    HapticFeedback.selectionClick();
+                                  }
+                                  widget.options[i].onTap();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: widget.hPad, vertical: widget.vPad),
+                                  alignment: Alignment.center,
+                                  child: AnimatedDefaultTextStyle(
+                                    duration: const Duration(milliseconds: 200),
+                                    curve: Curves.easeOut,
+                                    style: AppTheme.f(
+                                      widget.fontSize,
+                                      weight: FontWeight.w600,
+                                      color: widget.options[i].selected
+                                          ? (widget.glass ? (dark ? Colors.white : gc.text) : gc.onEmber)
+                                          : gc.textSecondary,
+                                    ),
+                                    child: Text(
+                                      widget.options[i].label,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    double maxTextW = 0;
+    for (final o in widget.options) {
+      final tp = TextPainter(
+        text: TextSpan(text: o.label, style: AppTheme.f(widget.fontSize, weight: FontWeight.w600)),
+        textDirection: TextDirection.ltr,
+        maxLines: 1,
+      )..layout();
+      if (tp.width > maxTextW) maxTextW = tp.width;
+    }
+    final tabW = math.max(maxTextW + widget.hPad * 2, 40.0);
+
+    return _wrapContainer(
+      context,
+      gc,
+      SizedBox(
+        width: tabW * widget.options.length,
+        child: AnimatedBuilder(
+          animation: _move,
+          builder: (context, _) {
+            final t = _move.value;
+            final to = activeIdx * tabW;
+            final right = to >= _fromX;
+            final lead = Curves.easeOutCubic.transform(t);
+            final trail = Curves.easeInOutCubic.transform(t);
+            final l = _lerp(_fromX, to, right ? trail : lead);
+            final r = _lerp(_fromX + tabW, to + tabW, right ? lead : trail);
+            final squash = 1 - 0.12 * (1 - (2 * t - 1).abs()) * (to == _fromX ? 0 : 1);
+            _shownX = (to == _fromX) ? to : l;
+
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  left: l,
+                  width: (r - l).clamp(tabW * 0.8, tabW * 2.5),
+                  top: 2 * (1 - squash),
+                  bottom: 2 * (1 - squash),
+                  child: RepaintBoundary(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: widget.glass
+                            ? (dark ? Colors.white.withValues(alpha: 0.22) : Colors.white)
+                            : gc.ember,
+                        borderRadius: BorderRadius.circular(100),
+                        border: widget.glass && !dark
+                            ? Border.all(color: Colors.black.withValues(alpha: 0.04), width: 0.5)
+                            : null,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: widget.glass ? 0.10 : 0.14),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (int i = 0; i < widget.options.length; i++)
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          if (!widget.options[i].selected) {
+                            HapticFeedback.selectionClick();
+                          }
+                          widget.options[i].onTap();
+                        },
+                        child: SizedBox(
+                          width: tabW,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: widget.hPad, vertical: widget.vPad),
+                            alignment: Alignment.center,
+                            child: AnimatedDefaultTextStyle(
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.easeOut,
+                              style: AppTheme.f(
+                                widget.fontSize,
+                                weight: FontWeight.w600,
+                                color: widget.options[i].selected
+                                    ? (widget.glass ? (dark ? Colors.white : gc.text) : gc.onEmber)
+                                    : gc.textSecondary,
+                              ),
+                              child: Text(
+                                widget.options[i].label,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class LiquidDockSelector<T> extends StatefulWidget {
+  const LiquidDockSelector({
+    super.key,
+    required this.items,
+    required this.selected,
+    required this.onSelect,
+    required this.builder,
+    this.slotWidth = 38.0,
+    this.slotHeight = 38.0,
+    this.pillColor,
+    this.pillRadius = 100,
+    this.glass = false,
+  });
+
+  final List<T> items;
+  final T selected;
+  final ValueChanged<T> onSelect;
+  final Widget Function(BuildContext context, T item, bool isSelected) builder;
+  final double slotWidth;
+  final double slotHeight;
+  final Color? pillColor;
+  final double pillRadius;
+  final bool glass;
+
+  @override
+  State<LiquidDockSelector<T>> createState() => _LiquidDockSelectorState<T>();
+}
+
+class _LiquidDockSelectorState<T> extends State<LiquidDockSelector<T>>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _move =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 320), value: 1.0);
+  int _lastIdx = 0;
+  double _fromX = 0;
+  double _shownX = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    final idx = widget.items.indexOf(widget.selected);
+    _lastIdx = idx >= 0 ? idx : 0;
+    _fromX = _lastIdx * widget.slotWidth;
+    _shownX = _fromX;
+  }
+
+  @override
+  void didUpdateWidget(LiquidDockSelector<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final idx = widget.items.indexOf(widget.selected);
+    final currentIdx = idx >= 0 ? idx : 0;
+    if (currentIdx != _lastIdx) {
+      _fromX = _shownX;
+      _lastIdx = currentIdx;
+      _move.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _move.dispose();
+    super.dispose();
+  }
+
+  static double _lerp(double a, double b, double t) => a + (b - a) * t;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    final dark = gc.bg.computeLuminance() < 0.5;
+    final selIdx = widget.items.indexOf(widget.selected);
+    final activeIdx = selIdx >= 0 ? selIdx : 0;
+    final pillBg = widget.pillColor ??
+        (widget.glass
+            ? (dark ? Colors.white.withValues(alpha: 0.22) : Colors.white)
+            : gc.emberSoft);
+
+    final dockInner = SizedBox(
+      width: widget.slotWidth * widget.items.length,
+      height: widget.slotHeight,
+      child: AnimatedBuilder(
+        animation: _move,
+        builder: (context, _) {
+          final t = _move.value;
+          final to = activeIdx * widget.slotWidth;
+          final right = to >= _fromX;
+          final lead = Curves.easeOutCubic.transform(t);
+          final trail = Curves.easeInOutCubic.transform(t);
+          final l = _lerp(_fromX, to, right ? trail : lead);
+          final r = _lerp(_fromX + widget.slotWidth, to + widget.slotWidth, right ? lead : trail);
+          final squash = 1 - 0.14 * (1 - (2 * t - 1).abs()) * (to == _fromX ? 0 : 1);
+          _shownX = (to == _fromX) ? to : l;
+
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                left: l,
+                width: (r - l).clamp(widget.slotWidth * 0.8, widget.slotWidth * 2.5),
+                top: 2 + 2 * (1 - squash),
+                bottom: 2 + 2 * (1 - squash),
+                child: RepaintBoundary(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: pillBg,
+                      borderRadius: BorderRadius.circular(widget.pillRadius),
+                      border: widget.glass && !dark
+                          ? Border.all(color: Colors.black.withValues(alpha: 0.04), width: 0.5)
+                          : null,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: widget.glass ? 0.10 : 0.12),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final item in widget.items)
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        if (widget.selected != item) {
+                          HapticFeedback.selectionClick();
+                          widget.onSelect(item);
+                        }
+                      },
+                      child: SizedBox(
+                        width: widget.slotWidth,
+                        height: widget.slotHeight,
+                        child: Center(
+                          child: widget.builder(context, item, widget.selected == item),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    if (widget.glass) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(widget.pillRadius),
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+          child: Container(
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: dark ? Colors.white.withValues(alpha: 0.10) : Colors.white.withValues(alpha: 0.30),
+              borderRadius: BorderRadius.circular(widget.pillRadius),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: dark ? 0.25 : 0.60),
+                width: 1.0,
+              ),
+            ),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(widget.pillRadius),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.white.withValues(alpha: dark ? 0.22 : 0.45),
+                    Colors.transparent,
+                  ],
+                  stops: const [0, 0.5],
+                ),
+              ),
+              child: dockInner,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(color: gc.bgRaised2, borderRadius: BorderRadius.circular(widget.pillRadius)),
+      child: dockInner,
+    );
+  }
+}
+
+class DashedRail extends StatelessWidget {
+  const DashedRail({super.key, required this.color, this.dash = 4, this.gap = 5, this.thickness = 1.6});
+
+  final Color color;
+  final double dash;
+  final double gap;
+  final double thickness;
+
+  @override
+  Widget build(BuildContext context) => Center(
+        child: SizedBox(
+          width: thickness,
+          child: CustomPaint(
+            size: Size.infinite,
+            painter: _DashPainter(color, dash, gap, thickness),
+          ),
+        ),
+      );
+}
+
+class _DashPainter extends CustomPainter {
+  _DashPainter(this.color, this.dash, this.gap, this.thickness);
+  final Color color;
+  final double dash, gap, thickness;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final p = Paint()
+      ..color = color
+      ..strokeWidth = thickness
+      ..strokeCap = StrokeCap.round;
+    for (double y = 0; y < size.height; y += dash + gap) {
+      canvas.drawLine(
+        Offset(size.width / 2, y),
+        Offset(size.width / 2, math.min(y + dash, size.height)),
+        p,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DashPainter o) => o.color != color || o.dash != dash || o.gap != gap;
+}
+
+class Pill extends StatelessWidget {
+  const Pill({
+    super.key,
+    required this.label,
+    required this.bg,
+    required this.fg,
+    required this.onTap,
+    this.hPad = 14,
+    this.vPad = 8,
+    this.fontSize = 13,
+  });
+  final String label;
+  final Color bg;
+  final Color fg;
+  final VoidCallback onTap;
+  final double hPad;
+  final double vPad;
+  final double fontSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return Pressable(
+      onTap: onTap,
+      scale: 0.94,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
+        decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(100)),
+        child: Text(titleCase(label),
+            style: AppTheme.f(fontSize, weight: FontWeight.w600, color: fg)),
+      ),
+    );
+  }
+}
+
+class PrimaryButton extends StatelessWidget {
+  const PrimaryButton({
+    super.key,
+    required this.label,
+    required this.onTap,
+    this.bg,
+    this.fg,
+    this.height = 56,
+    this.icon,
+    this.glass = false,
+  });
+  final String label;
+  final VoidCallback onTap;
+  final Color? bg;
+  final Color? fg;
+  final double height;
+  final List<IconPath>? icon;
+  final bool glass;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    final dark = gc.bg.computeLuminance() < 0.5;
+    final f = fg ?? (glass ? Colors.white : gc.onEmber);
+
+    final row = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (icon != null) ...[
+          SvgPathIcon(icon!, size: 15, color: f),
+          const SizedBox(width: 9),
+        ],
+        Flexible(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(titleCase(label),
+                maxLines: 1,
+                style: AppTheme.f(15.5, weight: FontWeight.w700, color: f, letterSpacing: 0.2)),
+          ),
+        ),
+      ],
+    );
+
+    if (glass) {
+      return Pressable(
+        onTap: onTap,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+            child: Container(
+              width: double.infinity,
+              height: height,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: (bg ?? gc.ember).withValues(alpha: dark ? 0.42 : 0.55),
+                borderRadius: BorderRadius.circular(100),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: dark ? 0.32 : 0.60),
+                  width: 1.0,
+                ),
+              ),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.white.withValues(alpha: dark ? 0.25 : 0.45),
+                      Colors.white.withValues(alpha: 0.0),
+                    ],
+                    stops: const [0, 0.7],
+                  ),
+                ),
+                child: row,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Pressable(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        height: height,
+        decoration: BoxDecoration(color: bg ?? gc.ember, borderRadius: BorderRadius.circular(100)),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: row,
+      ),
+    );
+  }
+}

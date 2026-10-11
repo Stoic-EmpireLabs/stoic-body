@@ -1,0 +1,147 @@
+name: Build & Release
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag / version, e.g. v1.0.0'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+# Pinned Flutter version. F-Droid extracts this exact value from the recipe so
+# its build matches upstream. Defined once here and reused by both jobs.
+env:
+  FLUTTER_VERSION: '3.41.9'
+
+jobs:
+  build:
+    name: Build split APKs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Show versions
+        run: flutter --version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Test
+        run: flutter test
+
+      # Build universal and ABI split APKs
+      - name: Build APKs
+        run: |
+          flutter build apk --release
+          flutter build apk --release --split-per-abi
+
+      - name: Rename APKs
+        run: |
+          cd build/app/outputs/flutter-apk
+          cp app-release.apk               Open-GYM-universal.apk || true
+          cp app-arm64-v8a-release.apk     Open-GYM-arm64-v8a.apk || true
+          cp app-armeabi-v7a-release.apk   Open-GYM-armeabi-v7a.apk || true
+          cp app-x86_64-release.apk        Open-GYM-x86_64.apk || true
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: open-gym-apks
+          path: build/app/outputs/flutter-apk/Open-GYM-*.apk
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+
+    env:
+      PUB_CACHE: ${{ github.workspace }}/.pub-cache
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get --enforce-lockfile
+
+      - name: Patch jni build-id
+        run: sed -i -e 's/-Wl,/-Wl,--build-id=none,/' "$PUB_CACHE"/hosted/pub.dev/jni-*/src/CMakeLists.txt
+
+      - name: Set up signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > android/app/gymmane-release.jks
+            cat > android/key.properties <<EOF
+          storePassword=$KEYSTORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=gymmane-release.jks
+          EOF
+          fi
+
+      - name: Build APKs
+        run: |
+          flutter build apk --release --split-debug-info=build/symbols
+          flutter build apk --release --split-per-abi --split-debug-info=build/symbols
+
+      - name: Rename APKs
+        run: |
+          cd build/app/outputs/flutter-apk
+          cp app-release.apk               Open-GYM-universal.apk || true
+          cp app-arm64-v8a-release.apk     Open-GYM-arm64-v8a.apk || true
+          cp app-armeabi-v7a-release.apk   Open-GYM-armeabi-v7a.apk || true
+          cp app-x86_64-release.apk        Open-GYM-x86_64.apk || true
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: Open-GYM ${{ inputs.tag }}
+          files: |
+            build/app/outputs/flutter-apk/Open-GYM-universal.apk
+            build/app/outputs/flutter-apk/Open-GYM-arm64-v8a.apk
+            build/app/outputs/flutter-apk/Open-GYM-armeabi-v7a.apk
+            build/app/outputs/flutter-apk/Open-GYM-x86_64.apk

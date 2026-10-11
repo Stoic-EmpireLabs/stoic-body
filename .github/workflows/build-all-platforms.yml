@@ -1,0 +1,247 @@
+name: Build & Release Multiplatform
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag / version (e.g. v1.3.2)'
+        required: true
+        default: 'v1.3.2'
+        type: string
+      platform:
+        description: 'Platform to build (all, macos, windows, ios, android, linux)'
+        required: false
+        default: 'all'
+        type: string
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+env:
+  TAG_NAME: ${{ inputs.tag || github.ref_name }}
+
+jobs:
+  build-android:
+    name: Build Android APKs
+    if: ${{ !inputs.platform || inputs.platform == 'all' || inputs.platform == 'android' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Universal & Split APKs
+        run: |
+          flutter build apk --release --android-skip-build-dependency-validation
+          flutter build apk --release --split-per-abi --android-skip-build-dependency-validation
+
+      - name: Rename & Upload APKs to GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd build/app/outputs/flutter-apk
+          cp app-release.apk Open-GYM-universal.apk
+          cp app-arm64-v8a-release.apk Open-GYM-arm64-v8a.apk
+          cp app-armeabi-v7a-release.apk Open-GYM-armeabi-v7a.apk
+          cp app-x86_64-release.apk Open-GYM-x86_64.apk
+          gh release upload "${{ env.TAG_NAME }}" Open-GYM-*.apk --clobber
+
+  build-ios:
+    name: Build iOS Application (iPhone & iPad)
+    if: ${{ !inputs.platform || inputs.platform == 'all' || inputs.platform == 'ios' }}
+    runs-on: macos-14
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Select Xcode 16
+        run: |
+          if [ -d "/Applications/Xcode_16.2.app" ]; then
+            sudo xcode-select -s /Applications/Xcode_16.2.app
+          elif [ -d "/Applications/Xcode_16.1.app" ]; then
+            sudo xcode-select -s /Applications/Xcode_16.1.app
+          elif [ -d "/Applications/Xcode_16.0.app" ]; then
+            sudo xcode-select -s /Applications/Xcode_16.0.app
+          fi
+          xcodebuild -version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS Application (iPhone & iPad)
+        run: |
+          flutter build ios --release --no-codesign
+          mkdir -p build/ios/ipa/Payload
+          cp -r build/ios/iphoneos/Runner.app build/ios/ipa/Payload/
+          cd build/ios/ipa
+          zip -r -9 Open-GYM-iOS-v1.3.2.ipa Payload
+
+      - name: Upload iOS IPA to GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ env.TAG_NAME }}" build/ios/ipa/Open-GYM-iOS-v1.3.2.ipa --clobber
+
+  build-macos:
+    name: Build macOS Application (MacBook)
+    if: ${{ !inputs.platform || inputs.platform == 'all' || inputs.platform == 'macos' }}
+    runs-on: macos-14
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Select Xcode 16
+        run: |
+          if [ -d "/Applications/Xcode_16.2.app" ]; then
+            sudo xcode-select -s /Applications/Xcode_16.2.app
+          elif [ -d "/Applications/Xcode_16.1.app" ]; then
+            sudo xcode-select -s /Applications/Xcode_16.1.app
+          elif [ -d "/Applications/Xcode_16.0.app" ]; then
+            sudo xcode-select -s /Applications/Xcode_16.0.app
+          fi
+          xcodebuild -version
+
+      - name: Install dependencies & Patch plugins
+        run: |
+          flutter pub get
+          python3 -c "
+          import glob, os
+          count = 0
+          for ext in ('*.h', '*.m'):
+              for path in glob.glob(os.path.expanduser('~/.pub-cache/hosted/pub.dev/video_player_avfoundation*/**/' + ext), recursive=True):
+                  with open(path, 'r', encoding='utf-8', errors='ignore') as f:
+                      content = f.read()
+                  if '#import <TargetConditionals.h>' not in content:
+                      with open(path, 'w', encoding='utf-8') as f:
+                          f.write('#import <TargetConditionals.h>\n' + content)
+                      count += 1
+          print(f'Successfully patched {count} video_player_avfoundation files with TargetConditionals.h')
+          "
+
+      - name: Clean CocoaPods integration if any
+        run: |
+          cd macos
+          rm -rf Podfile Podfile.lock Pods
+          pod deintegrate 2>/dev/null || true
+          cd ..
+
+      - name: Build macOS Application & Package DMG
+        run: |
+          flutter build macos --release
+          mkdir -p dist/dmg
+          if [ -d "build/macos/Build/Products/Release/Open GYM.app" ]; then
+            cp -r "build/macos/Build/Products/Release/Open GYM.app" dist/dmg/
+          elif [ -d "build/macos/Build/Products/Release/Runner.app" ]; then
+            cp -r "build/macos/Build/Products/Release/Runner.app" "dist/dmg/Open GYM.app"
+          else
+            echo "Listing release folder:"
+            ls -la build/macos/Build/Products/Release/
+            exit 1
+          fi
+          ln -s /Applications dist/dmg/Applications
+          hdiutil create -volname "Open-GYM" -srcfolder dist/dmg -ov -format UDZO Open-GYM-macOS-v1.3.2.dmg
+
+      - name: Upload macOS DMG to GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ env.TAG_NAME }}" Open-GYM-macOS-v1.3.2.dmg --clobber
+
+  build-windows:
+    name: Build Windows Application (EXE Installer)
+    if: ${{ !inputs.platform || inputs.platform == 'all' || inputs.platform == 'windows' }}
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Windows Application
+        run: flutter build windows --release
+
+      - name: Build Windows Standalone EXE Installer
+        shell: pwsh
+        run: |
+          if (-not (Get-Command iscc -ErrorAction SilentlyContinue) -and -not (Test-Path "C:\Program Files (x86)\Inno Setup 6\ISCC.exe")) {
+            choco install innosetup -y
+          }
+          $isccPath = if (Test-Path "C:\Program Files (x86)\Inno Setup 6\ISCC.exe") { "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" } else { "iscc" }
+          & $isccPath windows/installer/installer.iss
+          Get-ChildItem windows/installer/Output
+
+      - name: Upload Windows EXE Installer to GitHub Release
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ env.TAG_NAME }}" windows\installer\Output\Open-GYM-Windows-x64-v1.3.2.exe --clobber
+
+  build-linux:
+    name: Build Linux Application
+    if: ${{ !inputs.platform || inputs.platform == 'all' || inputs.platform == 'linux' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Linux Application
+        run: flutter build linux --release
+
+      - name: Package & Upload Linux Bundle to GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd build/linux/x64/release/bundle
+          tar -czvf Open-GYM-Linux-x64-v1.3.2.tar.gz *
+          gh release upload "${{ env.TAG_NAME }}" Open-GYM-Linux-x64-v1.3.2.tar.gz --clobber

@@ -1,0 +1,418 @@
+import 'dart:math' as math;
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
+
+import '../state/fit_state.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
+import 'routine_folder.dart';
+import 'ui_kit.dart';
+
+class HomeFolder extends StatelessWidget {
+  const HomeFolder({
+    super.key,
+    required this.title,
+    required this.detail,
+    required this.peek,
+    required this.onTap,
+  });
+
+  final String title;
+  final String detail;
+  final Widget peek;
+  final VoidCallback onTap;
+
+  static const height = 150.0;
+  static const _front = 60.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    final dark = gc.bg.computeLuminance() < 0.5;
+    return Semantics(
+      button: true,
+      label: '$title, $detail',
+      child: Pressable(
+        onTap: onTap,
+        scale: 0.96,
+        child: SizedBox(
+          height: height,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(
+                top: 26,
+                child: CustomPaint(
+                  painter: _BackPainter(Color.lerp(gc.bgRaised, gc.bg, dark ? 0.45 : 0.6)!),
+                ),
+              ),
+              Positioned(left: 10, right: 10, top: 16, height: 100, child: peek),
+              Positioned.fill(
+                top: _front,
+                child: ClipPath(
+                  clipper: const _FolderClipper(tabLeft: true),
+                  child: BackdropFilter(
+                    filter: ui.ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                    child: CustomPaint(
+                      painter: _FrontPainter(
+                        top: Colors.white.withValues(alpha: dark ? 0.20 : 0.38),
+                        bottom: Colors.white.withValues(alpha: dark ? 0.08 : 0.18),
+                        edge: Colors.white.withValues(alpha: dark ? 0.50 : 0.80),
+                        shadow: Colors.black.withValues(alpha: dark ? 0.25 : 0.06),
+                        dark: dark,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(13, 24, 10, 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Text(title,
+                                  maxLines: 1,
+                                  style: AppTheme.f(15.5, weight: FontWeight.w800, color: gc.text)),
+                            ),
+                            const Spacer(),
+                            Text(detail,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTheme.f(11, weight: FontWeight.w600, color: gc.textSecondary)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FolderClipper extends CustomClipper<Path> {
+  const _FolderClipper({required this.tabLeft});
+  final bool tabLeft;
+
+  @override
+  Path getClip(Size size) => _folderPath(size, tabLeft: tabLeft);
+
+  @override
+  bool shouldReclip(_FolderClipper oldClipper) => oldClipper.tabLeft != tabLeft;
+}
+
+Path _folderPath(Size s, {required bool tabLeft, double tab = 12}) {
+  const r = 16.0;
+  final w = s.width, h = s.height;
+  final split = w * 0.48;
+  final p = Path();
+  if (tabLeft) {
+    p
+      ..moveTo(0, r)
+      ..quadraticBezierTo(0, 0, r, 0)
+      ..lineTo(split - 10, 0)
+      ..cubicTo(split + 2, 0, split + 4, tab, split + 18, tab)
+      ..lineTo(w - r, tab)
+      ..quadraticBezierTo(w, tab, w, tab + r);
+  } else {
+    p
+      ..moveTo(0, tab + r)
+      ..quadraticBezierTo(0, tab, r, tab)
+      ..lineTo(w - split - 18, tab)
+      ..cubicTo(w - split - 4, tab, w - split - 2, 0, w - split + 10, 0)
+      ..lineTo(w - r, 0)
+      ..quadraticBezierTo(w, 0, w, r);
+  }
+  return p
+    ..lineTo(w, h - r - 2)
+    ..quadraticBezierTo(w, h, w - r - 2, h)
+    ..lineTo(r + 2, h)
+    ..quadraticBezierTo(0, h, 0, h - r - 2)
+    ..close();
+}
+
+class _BackPainter extends CustomPainter {
+  _BackPainter(this.color);
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawPath(_folderPath(size, tabLeft: false, tab: 10), Paint()..color = color);
+  }
+
+  @override
+  bool shouldRepaint(_BackPainter o) => o.color != color;
+}
+
+class _FrontPainter extends CustomPainter {
+  _FrontPainter({
+    required this.top,
+    required this.bottom,
+    required this.edge,
+    required this.shadow,
+    required this.dark,
+  });
+  final Color top;
+  final Color bottom;
+  final Color edge;
+  final Color shadow;
+  final bool dark;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = _folderPath(size, tabLeft: true);
+    canvas.drawShadow(path.shift(const Offset(0, -4)), shadow, 8, true);
+
+    // 1. Base translucent frosted tint
+    canvas.drawPath(
+      path,
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [top, bottom],
+        ).createShader(Offset.zero & size),
+    );
+
+    // 2. Top Meniscus curvature sheen (Fresnel reflection)
+    canvas.drawPath(
+      path,
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.white.withValues(alpha: dark ? 0.25 : 0.50),
+            Colors.white.withValues(alpha: dark ? 0.05 : 0.12),
+            Colors.transparent,
+          ],
+          stops: const [0.0, 0.35, 0.75],
+        ).createShader(Offset.zero & size),
+    );
+
+    // 3. Dual Blinn-Phong directional specular rim stroke
+    canvas.drawPath(
+      path,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.15
+        ..shader = LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withValues(alpha: dark ? 0.55 : 0.80),
+            Colors.white.withValues(alpha: dark ? 0.18 : 0.35),
+            Colors.white.withValues(alpha: dark ? 0.06 : 0.12),
+            Colors.white.withValues(alpha: dark ? 0.25 : 0.45),
+          ],
+          stops: const [0.0, 0.30, 0.70, 1.0],
+        ).createShader(Offset.zero & size),
+    );
+  }
+
+  @override
+  bool shouldRepaint(_FrontPainter o) =>
+      o.top != top || o.bottom != bottom || o.edge != edge || o.shadow != shadow || o.dark != dark;
+}
+
+class _Fan extends StatelessWidget {
+  const _Fan({required this.children, required this.width, required this.height, this.spread = 1});
+
+  final List<Widget> children;
+  final double width;
+  final double height;
+  final double spread;
+
+  static const _turns = [-0.12, 0.09, -0.02];
+  static const _dx = [-0.2, 0.2, 0.0];
+  static const _dy = [10.0, 7.0, 0.0];
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, box) {
+        final n = math.min(children.length, 3);
+        final order = n == 3 ? [0, 1, 2] : n == 2 ? [0, 1] : [2];
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            for (var k = 0; k < n; k++)
+              Positioned(
+                left: (box.maxWidth - width) / 2 + _dx[order[k]] * spread * box.maxWidth,
+                top: _dy[order[k]],
+                width: width,
+                height: height,
+                child: Transform.rotate(angle: _turns[order[k]], child: children[k]),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class RoutinesPeek extends StatelessWidget {
+  const RoutinesPeek({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    final dark = gc.bg.computeLuminance() < 0.5;
+    final hues = [for (final r in fit.routines.take(3)) folderHue(r)];
+    final colors = hues.isEmpty ? kFolderHues.take(3).toList() : hues;
+    return _Fan(
+      width: 60,
+      height: 75,
+      children: [
+        for (final c in colors.reversed)
+          _Sheet(color: Color.lerp(c, Colors.black, dark ? 0.12 : 0)!, ink: Color.lerp(c, Colors.black, 0.45)!),
+      ],
+    );
+  }
+}
+
+class _Sheet extends StatelessWidget {
+  const _Sheet({required this.color, required this.ink});
+
+  final Color color;
+  final Color ink;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(9, 9, 12, 0),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(9),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.18), blurRadius: 6, offset: const Offset(0, 2))],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final f in const [1.0, 0.7, 0.85, 0.5, 0.45]) ...[
+            FractionallySizedBox(
+              widthFactor: f,
+              child: Container(
+                height: 3,
+                decoration: BoxDecoration(color: ink.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2)),
+              ),
+            ),
+            const SizedBox(height: 5),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class ToolsPeek extends StatelessWidget {
+  const ToolsPeek({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    final dark = gc.bg.computeLuminance() < 0.5;
+    final base = Color.lerp(gc.bgRaised2, Colors.white, dark ? 0.1 : 0)!;
+    return _Fan(
+      width: 46,
+      height: 75,
+      spread: 1.4,
+      children: [
+        for (final (icon, tint) in [
+          (PhosphorIconsBold.fire, gc.accent),
+          (PhosphorIconsBold.circlesThree, gc.brass),
+          (PhosphorIconsBold.barbell, gc.text),
+        ])
+          Container(
+            alignment: Alignment.topCenter,
+            padding: const EdgeInsets.only(top: 9),
+            decoration: BoxDecoration(
+              color: Color.lerp(base, tint, dark ? 0.16 : 0.12),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.white.withValues(alpha: dark ? 0.06 : 0)),
+              boxShadow: [
+                BoxShadow(color: Colors.black.withValues(alpha: dark ? 0.35 : 0.1), blurRadius: 6, offset: const Offset(0, 2)),
+              ],
+            ),
+            child: Icon(icon, size: 19, color: tint),
+          ),
+      ],
+    );
+  }
+}
+
+class NotesPeek extends StatelessWidget {
+  const NotesPeek({super.key});
+
+  static const _paper = [Color(0xFFF2D680), Color(0xFFF3C7B1), Color(0xFFA8C99E)];
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    final dark = gc.bg.computeLuminance() < 0.5;
+    return _Fan(
+      width: 48,
+      height: 75,
+      children: [
+        for (final c in _paper)
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(8, 13, 9, 0),
+                  decoration: BoxDecoration(
+                    color: Color.lerp(c, Colors.black, dark ? 0.08 : 0),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(3),
+                      topRight: Radius.circular(3),
+                      bottomLeft: Radius.circular(3),
+                      bottomRight: Radius.circular(12),
+                    ),
+                    boxShadow: [
+                      BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 5, offset: const Offset(0, 2)),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final f in const [1.0, 0.8, 0.65, 0.5, 0.4]) ...[
+                        FractionallySizedBox(
+                          widthFactor: f,
+                          child: Container(
+                            height: 2.5,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.22),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                top: -5,
+                left: 14,
+                right: 14,
+                height: 10,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.45),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+}
