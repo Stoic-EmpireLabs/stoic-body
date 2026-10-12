@@ -32,6 +32,18 @@ test.describe('20-Question Precision Protocol Assessment', () => {
 
     // Question 5: Physical Biometrics
     await expect(page.locator('text=Current physical biometrics')).toBeVisible();
+    const heightInput = page.locator('input[placeholder="168"]');
+    await heightInput.fill('');
+    expect(await heightInput.inputValue()).toBe('');
+    await heightInput.fill('172');
+    expect(await heightInput.inputValue()).toBe('172');
+
+    const weightInput = page.locator('input[placeholder="62"]');
+    await weightInput.fill('');
+    expect(await weightInput.inputValue()).toBe('');
+    await weightInput.fill('64');
+    expect(await weightInput.inputValue()).toBe('64');
+
     await page.click('button:has-text("Next Step")');
 
     // Question 6: Body Fat & Composition Goal

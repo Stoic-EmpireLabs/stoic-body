@@ -6,9 +6,9 @@ export const MeasuresScreen: React.FC = () => {
   const { bodyweight, addBodyweight, measures, addBodyMeasure, settings } = useGymStore();
 
   const [activeTab, setActiveTab] = useState<'weight' | 'girth'>('weight');
-  const [newWeight, setNewWeight] = useState(76.5);
+  const [newWeight, setNewWeight] = useState<string | number>(76.5);
   const [selectedPart, setSelectedPart] = useState('waist');
-  const [newMeasureVal, setNewMeasureVal] = useState(82);
+  const [newMeasureVal, setNewMeasureVal] = useState<string | number>(82);
 
   const parts = [
     { id: 'waist', label: 'Waist' },
@@ -23,14 +23,16 @@ export const MeasuresScreen: React.FC = () => {
 
   const handleAddWeight = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newWeight) return;
-    addBodyweight(newWeight);
+    const val = Number(newWeight);
+    if (!val || val <= 0) return;
+    addBodyweight(val);
   };
 
   const handleAddMeasure = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMeasureVal) return;
-    addBodyMeasure(selectedPart, newMeasureVal);
+    const val = Number(newMeasureVal);
+    if (!val || val <= 0) return;
+    addBodyMeasure(selectedPart, val);
   };
 
   const latestWeight = bodyweight[0]?.kg || 75;
@@ -98,7 +100,7 @@ export const MeasuresScreen: React.FC = () => {
               type="number"
               step="0.1"
               value={newWeight}
-              onChange={(e) => setNewWeight(parseFloat(e.target.value) || 0)}
+              onChange={(e) => setNewWeight(e.target.value === '' ? '' : parseFloat(e.target.value))}
               className="bg-[#121212] border border-[#2B2B2B] rounded-xl px-3 py-2 text-white font-bold text-sm flex-1 focus:outline-none focus:border-[#D9A184]"
               placeholder={`Weight in ${settings.units}`}
             />
@@ -160,7 +162,8 @@ export const MeasuresScreen: React.FC = () => {
                   type="number"
                   step="0.5"
                   value={newMeasureVal}
-                  onChange={(e) => setNewMeasureVal(parseFloat(e.target.value) || 0)}
+                  onChange={(e) => setNewMeasureVal(e.target.value === '' ? '' : parseFloat(e.target.value))}
+                  placeholder="82"
                   className="w-full bg-[#121212] border border-[#2B2B2B] rounded-xl px-3 py-2 text-sm text-white font-bold"
                 />
               </div>

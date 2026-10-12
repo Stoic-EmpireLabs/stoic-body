@@ -51,7 +51,7 @@ export const ScheduleScreen: React.FC = () => {
   // New Event Form State
   const [newTitle, setNewTitle] = useState('');
   const [newTime, setNewTime] = useState('06:00');
-  const [newDuration, setNewDuration] = useState(45);
+  const [newDuration, setNewDuration] = useState<string | number>(45);
   const [newCategory, setNewCategory] = useState<EventCategory>('workout');
   const [newCitation, setNewCitation] = useState('');
   const [newTier, setNewTier] = useState<1 | 2 | 3 | 4 | 5>(2);
@@ -120,7 +120,7 @@ export const ScheduleScreen: React.FC = () => {
     addScheduledEvent({
       date: selectedDate,
       time: newTime,
-      durationMinutes: Number(newDuration),
+      durationMinutes: Number(newDuration) || 45,
       title: newTitle.trim(),
       category: newCategory,
       citation: newCitation.trim() || undefined,
@@ -590,7 +590,8 @@ export const ScheduleScreen: React.FC = () => {
                   <input
                     type="number"
                     value={newDuration}
-                    onChange={(e) => setNewDuration(Number(e.target.value))}
+                    onChange={(e) => setNewDuration(e.target.value === '' ? '' : Number(e.target.value))}
+                    placeholder="45"
                     className="w-full bg-[#121110] border border-[#2A2724] rounded-xl px-3 py-2 text-sm text-white font-mono"
                   />
                 </div>
