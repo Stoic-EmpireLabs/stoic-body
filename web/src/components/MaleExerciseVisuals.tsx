@@ -50,7 +50,7 @@ export function getMaleMovementArchetype(slug: string = '', primaryMuscle?: stri
   if (s.includes('fly') || n.includes('fly') || s.includes('pec-deck') || n.includes('pec deck')) return 'bench-press';
   if (s.includes('dead-bug') || s.includes('deadbug') || n.includes('dead bug') || n.includes('deadbug')) return 'pull-up';
   if (s.includes('hip-thrust') || s.includes('bridge') || n.includes('hip thrust') || n.includes('bridge')) return 'walking-lunge';
-  if (s.includes('dip') || n.includes('dip')) return 'tricep-pushdown';
+  if (s.includes('dip') || n.includes('dip')) return 'chest-dip';
   if (s.includes('skull') || n.includes('skull')) return 'tricep-pushdown';
   if (s.includes('leg-extension') || n.includes('leg extension')) return 'barbell-squat';
   if (s.includes('calf') || n.includes('calf') || p === 'calves') return 'standing-calf-raise';
@@ -94,6 +94,11 @@ export const maleArchetypeImageMap: Record<string, string> = {
   'walking-lunge': 'walking-lunge.jpg',
   'pull-up': 'pull-up.jpg',
   'standing-calf-raise': 'standing-calf-raise.jpg',
+  'chest-dip': 'chest-dip.jpg',
+  'dip': 'chest-dip.jpg',
+  'tricep-dip': 'chest-dip.jpg',
+  'assisted-dip': 'chest-dip.jpg',
+  'weighted-dip': 'chest-dip.jpg',
   // Legacy aliases
   'squat': 'barbell-squat.jpg',
   'press': 'bench-press.jpg',
@@ -108,6 +113,8 @@ export const maleArchetypeImageMap: Record<string, string> = {
 };
 
 export const maleArchetypePositionMap: Record<string, string> = {
+  'chest-dip': 'center center',
+  'dip': 'center center',
   'overhead-press': 'center 15%',
   'shoulder': 'center 15%',
   'lat-pulldown': 'center 20%',

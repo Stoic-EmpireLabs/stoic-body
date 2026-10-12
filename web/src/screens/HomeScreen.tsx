@@ -86,6 +86,26 @@ export const HomeScreen: React.FC = () => {
   const eventsProgressPct =
     totalEventsCount > 0 ? Math.round((completedEventsCount / totalEventsCount) * 100) : 0;
 
+  const handleEventDirectNavigation = (evt: any) => {
+    if (evt.category === 'workout') {
+      if (session) {
+        setRoute('session');
+      } else if (todayRoutine) {
+        startWorkoutFromRoutine(todayRoutine.id);
+        pushRoute('session');
+      } else {
+        startEmptyWorkout();
+        pushRoute('session');
+      }
+    } else if (evt.category === 'meal') {
+      setRoute('nutrition');
+    } else if (evt.category === 'sleep' || evt.category === 'recovery' || evt.category === 'task') {
+      setRoute('schedule');
+    } else {
+      setRoute('schedule');
+    }
+  };
+
   // Today's Meals & Nutrition
   const todayMeals = (meals || []).filter((m) => m.date === todayStr);
   const consumedCalories = todayMeals.reduce((acc, m) => acc + m.calories, 0);
@@ -229,13 +249,18 @@ export const HomeScreen: React.FC = () => {
         <div className="lg:col-span-7 bg-[#161514] border border-[#262422] rounded-[28px] p-6 shadow-xl flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-[#D9A184]/15 border border-[#D9A184]/30 flex items-center justify-center">
+              <div
+                onClick={() => setRoute('schedule')}
+                className="flex items-center gap-2.5 cursor-pointer group"
+                title="Open Daily Schedule & 14-Day Calendar"
+              >
+                <div className="w-8 h-8 rounded-full bg-[#D9A184]/15 border border-[#D9A184]/30 flex items-center justify-center group-hover:bg-[#D9A184]/30 transition-colors">
                   <Calendar className="w-4 h-4 text-[#D9A184]" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-white uppercase tracking-wider">
+                  <h3 className="text-sm font-black text-white uppercase tracking-wider group-hover:text-[#D9A184] transition-colors flex items-center gap-1.5">
                     Today's Mission Timeline
+                    <ArrowRight className="w-3.5 h-3.5 text-[#D9A184] opacity-0 group-hover:opacity-100 transition-opacity" />
                   </h3>
                   <p className="text-xs text-neutral-400">
                     {completedEventsCount} of {totalEventsCount} milestones executed ({eventsProgressPct}%)
@@ -274,24 +299,41 @@ export const HomeScreen: React.FC = () => {
                 todayEvents.slice(0, 4).map((evt) => (
                   <div
                     key={evt.id}
-                    className={`flex items-center justify-between p-3 rounded-2xl border transition-all ${
+                    data-event-id={evt.id}
+                    data-event-category={evt.category}
+                    onClick={() => handleEventDirectNavigation(evt)}
+                    className={`flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer group select-none ${
                       evt.completed
-                        ? 'bg-[#181615] border-[#22201E] opacity-60'
-                        : 'bg-[#1C1A18] border-[#262422] hover:border-[#38332E]'
+                        ? 'bg-[#181615] border-[#22201E] opacity-60 hover:opacity-100 hover:border-[#38332E]'
+                        : 'bg-[#1C1A18] border-[#262422] hover:border-[#D9A184]/50 hover:bg-[#22201E]'
+                    }`}
+                    title={`Open ${
+                      evt.category === 'workout'
+                        ? 'Workout Session'
+                        : evt.category === 'meal'
+                        ? 'Meals & Nutrition'
+                        : evt.category === 'sleep'
+                        ? 'Sleep Protocol'
+                        : 'Daily Schedule'
                     }`}
                   >
-                    <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
                       <button
-                        onClick={() => toggleScheduledEvent(evt.id)}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleScheduledEvent(evt.id);
+                        }}
                         className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors flex-shrink-0 ${
                           evt.completed
                             ? 'bg-[#D9A184] text-[#140D09]'
                             : 'border border-[#3E3A35] hover:border-[#D9A184]'
                         }`}
+                        title={evt.completed ? 'Mark incomplete' : 'Mark completed'}
                       >
                         {evt.completed && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                       </button>
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <span className="font-mono text-xs font-black text-neutral-300">
                             {evt.time}
@@ -314,7 +356,9 @@ export const HomeScreen: React.FC = () => {
                         </div>
                         <p
                           className={`text-xs font-bold truncate mt-0.5 ${
-                            evt.completed ? 'line-through text-neutral-500' : 'text-white'
+                            evt.completed
+                              ? 'line-through text-neutral-500'
+                              : 'text-white group-hover:text-[#D9A184] transition-colors'
                           }`}
                         >
                           {evt.title}
@@ -322,17 +366,31 @@ export const HomeScreen: React.FC = () => {
                       </div>
                     </div>
 
-                    {evt.category === 'workout' && !evt.completed && (
-                      <button
-                        onClick={() => {
-                          startEmptyWorkout();
-                          pushRoute('session');
-                        }}
-                        className="px-2.5 py-1 rounded-lg bg-[#D9A184]/20 hover:bg-[#D9A184] text-[#D9A184] hover:text-[#140D09] text-xs font-bold transition-colors ml-2 flex-shrink-0"
-                      >
-                        Start
-                      </button>
-                    )}
+                    {/* Right Action Trigger */}
+                    <div className="flex items-center gap-1.5 ml-2 flex-shrink-0">
+                      {evt.category === 'workout' ? (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEventDirectNavigation(evt);
+                          }}
+                          className="px-2.5 py-1 rounded-lg bg-[#D9A184] text-[#140D09] hover:bg-white text-xs font-black transition-colors flex items-center gap-1 active:scale-95 shadow"
+                        >
+                          {session ? 'Resume' : 'Start'}
+                          <ArrowRight className="w-3 h-3" />
+                        </button>
+                      ) : evt.category === 'meal' ? (
+                        <span className="text-[10px] text-emerald-400/90 font-bold hidden sm:flex items-center gap-0.5 group-hover:underline">
+                          Meals <ArrowRight className="w-3 h-3" />
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-neutral-400 font-bold hidden sm:flex items-center gap-0.5 group-hover:underline">
+                          Plan <ArrowRight className="w-3 h-3" />
+                        </span>
+                      )}
+                      <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-white transition-colors sm:hidden" />
+                    </div>
                   </div>
                 ))
               )}
@@ -358,13 +416,18 @@ export const HomeScreen: React.FC = () => {
         <div className="lg:col-span-5 bg-[#161514] border border-[#262422] rounded-[28px] p-6 shadow-xl flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center">
+              <div
+                onClick={() => setRoute('nutrition')}
+                className="flex items-center gap-2.5 cursor-pointer group"
+                title="Open Meals & Nutrition Ledger"
+              >
+                <div className="w-8 h-8 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center group-hover:bg-emerald-500/30 transition-colors">
                   <Utensils className="w-4 h-4 text-emerald-400" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-white uppercase tracking-wider">
+                  <h3 className="text-sm font-black text-white uppercase tracking-wider group-hover:text-emerald-400 transition-colors flex items-center gap-1.5">
                     Nutrition & Fasting
+                    <ArrowRight className="w-3.5 h-3.5 text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </h3>
                   <p className="text-xs text-neutral-400">
                     {nutritionTargets.fastingProtocol || '23:1 OMAD Fasting Protocol'}
@@ -601,8 +664,14 @@ export const HomeScreen: React.FC = () => {
               }}
               className="bg-[#161514] hover:bg-[#1E1C1A] border border-[#262422] hover:border-[#D9A184]/40 rounded-3xl p-3.5 cursor-pointer transition-all active:scale-98 flex flex-col justify-between shadow-md"
             >
-              <div className="h-32 rounded-2xl overflow-hidden bg-[#100F0E] mb-3 flex items-center justify-center p-2">
-                <ExerciseArt slug={ex.art} height={120} loop={false} />
+              <div className="h-32 rounded-2xl overflow-hidden bg-[#100F0E] mb-3 flex items-center justify-center p-0">
+                <ExerciseArt
+                  slug={ex.art || ex.id}
+                  exerciseName={ex.name}
+                  primaryMuscle={ex.primary}
+                  height={128}
+                  loop={false}
+                />
               </div>
               <div>
                 <span className="text-[10px] font-extrabold text-[#D9A184] uppercase tracking-wider block">

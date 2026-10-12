@@ -80,3 +80,23 @@
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom, 16px);
 }
+
+/* Enhanced visible horizontal and vertical scrollbars */
+.visible-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.visible-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 9999px;
+}
+
+.visible-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(217, 161, 132, 0.4);
+  border-radius: 9999px;
+}
+
+.visible-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(217, 161, 132, 0.7);
+}

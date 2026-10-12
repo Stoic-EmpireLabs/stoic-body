@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useGymStore } from '../store/useGymStore';
 import { ExerciseArt } from '../components/ExerciseArt';
 import {
@@ -8,6 +8,7 @@ import {
   Trash2,
   Check,
   ChevronRight,
+  ChevronLeft,
   Clock,
   Dumbbell,
   Sparkles,
@@ -21,6 +22,7 @@ import confetti from 'canvas-confetti';
 import type { LoggedSession, SetKind } from '../types';
 
 export const SessionScreen: React.FC = () => {
+  const exerciseStripRef = useRef<HTMLDivElement>(null);
   const {
     session,
     tickSessionTimer,
@@ -84,6 +86,26 @@ export const SessionScreen: React.FC = () => {
     }
     return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
+
+  const scrollStrip = (direction: 'left' | 'right') => {
+    if (exerciseStripRef.current) {
+      const scrollAmount = 260;
+      exerciseStripRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  // Automatically scroll active exercise into center of view when navigating exercises
+  useEffect(() => {
+    if (exerciseStripRef.current && session?.currentExerciseIndex !== undefined) {
+      const child = exerciseStripRef.current.children[session.currentExerciseIndex] as HTMLElement;
+      if (child && typeof child.scrollIntoView === 'function') {
+        child.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  }, [session?.currentExerciseIndex]);
 
   const handleFinish = () => {
     const finished = finishWorkout();
@@ -261,39 +283,64 @@ export const SessionScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* Exercises Navigation Tabs Strip */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-        {session!.exercises.map((ex, idx) => {
-          const isCurrent = idx === session!.currentExerciseIndex;
-          const completedCount = ex.sets.filter((s) => s.done).length;
-          return (
-            <button
-              key={ex.id}
-              onClick={() => setCurrentExerciseIndex(idx)}
-              className={`px-4 py-2.5 rounded-2xl font-bold text-xs whitespace-nowrap transition-all flex items-center gap-2 ${
-                isCurrent
-                  ? 'bg-white text-[#140D09] shadow-lg font-black'
-                  : 'bg-[#161514] border border-[#262422] text-neutral-400 hover:text-white'
-              }`}
-            >
-              <span>{ex.name}</span>
-              <span
-                className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
-                  isCurrent ? 'bg-[#140D09]/15 text-[#140D09]' : 'bg-[#22201E] text-neutral-400'
+      {/* Exercises Navigation Tabs Strip with Left/Right Scroll Arrows & Auto-Centering */}
+      <div className="relative flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => scrollStrip('left')}
+          className="h-10 w-9 flex-shrink-0 flex items-center justify-center rounded-2xl bg-[#1C1A18] hover:bg-[#282522] border border-[#2B2724] text-neutral-300 hover:text-white transition-all shadow-md active:scale-95 z-10"
+          title="Scroll exercises left"
+          aria-label="Scroll exercises left"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+
+        <div
+          ref={exerciseStripRef}
+          className="flex-1 flex items-center gap-2 overflow-x-auto pb-2 pt-1 touch-pan-x overscroll-x-contain scroll-smooth visible-scrollbar"
+        >
+          {session!.exercises.map((ex, idx) => {
+            const isCurrent = idx === session!.currentExerciseIndex;
+            const completedCount = ex.sets.filter((s) => s.done).length;
+            return (
+              <button
+                key={ex.id}
+                onClick={() => setCurrentExerciseIndex(idx)}
+                className={`px-4 py-2.5 rounded-2xl font-bold text-xs whitespace-nowrap transition-all flex items-center gap-2 flex-shrink-0 ${
+                  isCurrent
+                    ? 'bg-white text-[#140D09] shadow-lg font-black scale-[1.02]'
+                    : 'bg-[#161514] border border-[#262422] text-neutral-400 hover:text-white hover:border-[#38332E]'
                 }`}
               >
-                {completedCount}/{ex.sets.length}
-              </span>
-            </button>
-          );
-        })}
+                <span>{ex.name}</span>
+                <span
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
+                    isCurrent ? 'bg-[#140D09]/15 text-[#140D09]' : 'bg-[#22201E] text-neutral-400'
+                  }`}
+                >
+                  {completedCount}/{ex.sets.length}
+                </span>
+              </button>
+            );
+          })}
+
+          <button
+            onClick={() => setShowAddExerciseModal(true)}
+            className="px-3 py-2 rounded-2xl bg-[#1C1A18] border border-dashed border-[#383430] text-neutral-400 hover:text-white flex items-center gap-1.5 text-xs font-bold whitespace-nowrap active:scale-95 transition-all flex-shrink-0"
+          >
+            <Plus className="w-4 h-4 text-[#D9A184]" />
+            Add Exercise
+          </button>
+        </div>
 
         <button
-          onClick={() => setShowAddExerciseModal(true)}
-          className="px-3 py-2 rounded-2xl bg-[#1C1A18] border border-dashed border-[#383430] text-neutral-400 hover:text-white flex items-center gap-1.5 text-xs font-bold whitespace-nowrap active:scale-95 transition-all"
+          type="button"
+          onClick={() => scrollStrip('right')}
+          className="h-10 w-9 flex-shrink-0 flex items-center justify-center rounded-2xl bg-[#1C1A18] hover:bg-[#282522] border border-[#2B2724] text-neutral-300 hover:text-white transition-all shadow-md active:scale-95 z-10"
+          title="Scroll exercises right"
+          aria-label="Scroll exercises right"
         >
-          <Plus className="w-4 h-4 text-[#D9A184]" />
-          Add Exercise
+          <ChevronRight className="w-4 h-4" />
         </button>
       </div>
 
@@ -318,11 +365,15 @@ export const SessionScreen: React.FC = () => {
               </div>
 
               {/* Vector Art Animation Loop */}
-              {fullExerciseDef?.art && (
-                <div className="h-56 rounded-2xl overflow-hidden bg-[#100F0E] flex items-center justify-center p-3 border border-[#22201E]">
-                  <ExerciseArt slug={fullExerciseDef.art} height={200} loop={true} />
-                </div>
-              )}
+              <div className="h-56 rounded-2xl overflow-hidden bg-[#100F0E] flex items-center justify-center p-0 border border-[#22201E]">
+                <ExerciseArt
+                  slug={fullExerciseDef?.art || currentExercise.exerciseId}
+                  exerciseName={currentExercise.name}
+                  primaryMuscle={currentExercise.primary}
+                  height={224}
+                  loop={true}
+                />
+              </div>
 
               {/* Rest Timer Banner (As seen in 04-session.png) */}
               <div className="bg-[#1C1A18] border border-[#2A2724] rounded-2xl p-4 space-y-3">
