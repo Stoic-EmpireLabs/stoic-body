@@ -217,8 +217,15 @@ export const LoginModal: React.FC = () => {
                   }`}
                 >
                   <div className="flex items-start justify-between mb-2">
-                    <div className="w-8 h-8 rounded-xl bg-[#1C161A] border border-[#E0A899]/30 flex items-center justify-center text-[#E0A899] text-sm font-black">
-                      ♀
+                    <div className="w-10 h-10 rounded-2xl bg-[#1C161A] border border-[#E0A899]/40 overflow-hidden flex items-center justify-center flex-shrink-0 shadow">
+                      <img
+                        src={getAssetUrl('assets/icon/user_wife.jpg')}
+                        alt="Sophia / Aurelia"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = 'none';
+                        }}
+                      />
                     </div>
                     {activeProfileId === 'athlete-female' ? (
                       <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-[#E0A899] text-[#140D09]">
@@ -235,7 +242,7 @@ export const LoginModal: React.FC = () => {
                       <span className="text-[10px] text-[#E0A899] font-mono font-bold">/ Aurelia</span>
                     </div>
                     <p className="text-[10px] text-neutral-400 mt-0.5 leading-snug">
-                      Female 3D library · Rose gold · Glutes & posture
+                      Her Authentic Portrait · Female 3D library · Rose gold · Glutes & posture
                     </p>
                   </div>
                 </div>
