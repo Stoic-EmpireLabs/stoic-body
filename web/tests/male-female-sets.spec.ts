@@ -100,8 +100,8 @@ test.describe('Male & Female Physiological Calibration & Planned Sets', () => {
     await athleteBtn.click();
     await page.waitForTimeout(400);
 
-    // Verify Stoic Arellano profile card is visible with custom portrait
-    const stoicCard = page.locator('text="Stoic Arellano"').first();
+    // Verify Stoic Arellano profile card is visible inside modal and click it
+    const stoicCard = page.locator('.fixed').locator('text="Stoic Arellano"').first();
     await expect(stoicCard).toBeVisible();
     await stoicCard.click();
     await page.waitForTimeout(600);

@@ -32,41 +32,47 @@ import type { OnboardingAnswers, CoachPersonality } from '../types';
 import { generateCustomPlan, DAY_NAMES } from '../utils/planGenerator';
 
 export const OnboardingModal: React.FC = () => {
-  const { showOnboarding, completeOnboarding, dismissOnboarding, profile } = useGymStore();
+  const {
+    showOnboarding,
+    completeOnboarding,
+    dismissOnboarding,
+    profile,
+    openLoginModal,
+  } = useGymStore();
 
   const [step, setStep] = useState<number>(1);
   const totalQuestions = 20;
   const reviewStep = 21;
 
   const [answers, setAnswers] = useState<OnboardingAnswers>({
-    gender: 'female',
-    name: 'Sophia',
-    callsign: 'Aurelia',
-    workoutKind: 'toning',
-    focus: 'glute_waist',
-    experience: 'intermediate',
-    age: 26,
-    heightCm: 168,
-    weightKg: 62,
-    targetWeightKg: 59,
+    gender: 'male',
+    name: 'Stoic Arellano',
+    callsign: 'Stoic',
+    workoutKind: 'combat',
+    focus: 'combat',
+    experience: 'veteran',
+    age: 28,
+    heightCm: 180,
+    weightKg: 82,
+    targetWeightKg: 80,
     bodyFat: 'athletic',
-    frequency: 4,
-    selectedDays: [1, 2, 4, 5], // Mon, Tue, Thu, Fri
-    workoutTime: '07:30',
-    workoutDuration: 45,
-    trainingSplit: 'glute_sculpt',
+    frequency: 5,
+    selectedDays: [1, 2, 3, 4, 5], // Mon, Tue, Wed, Thu, Fri
+    workoutTime: '06:00',
+    workoutDuration: 60,
+    trainingSplit: 'ppl',
     equipment: 'full_gym',
     jointLimitations: ['none'],
-    priorityMuscles: ['glutes', 'posture_waist'],
+    priorityMuscles: ['chest', 'back', 'quads'],
     absCoreProtocol: 'daily_5min',
     cardioProtocol: 'zone2_incline',
     dietType: 'omnivore',
-    fasting: '16_8',
-    calorieStrategy: 'moderate_cut',
-    hydrationLiters: 3.2,
+    fasting: 'omad',
+    calorieStrategy: 'maintenance',
+    hydrationLiters: 4.0,
     supplements: ['creatine', 'electrolytes'],
-    targetEmphasis: ['abs_core', 'glutes', 'posture_waist'],
-    personality: 'aurelia',
+    targetEmphasis: ['abs_core', 'arms_shoulders'],
+    personality: 'marine',
   });
 
   // Dynamically compute custom plan preview on the fly
@@ -83,8 +89,8 @@ export const OnboardingModal: React.FC = () => {
     setAnswers((prev) => ({
       ...prev,
       gender,
-      name: gender === 'female' ? 'Sophia' : 'Marcus',
-      callsign: gender === 'female' ? 'Aurelia' : 'Spartan',
+      name: gender === 'female' ? 'Sophia' : 'Stoic Arellano',
+      callsign: gender === 'female' ? 'Aurelia' : 'Stoic',
       workoutKind: gender === 'female' ? 'toning' : 'combat',
       focus: gender === 'female' ? 'glute_waist' : 'combat',
       trainingSplit: gender === 'female' ? 'glute_sculpt' : 'ppl',
@@ -94,7 +100,12 @@ export const OnboardingModal: React.FC = () => {
       weightKg: gender === 'female' ? 62 : 82,
       targetWeightKg: gender === 'female' ? 59 : 80,
       heightCm: gender === 'female' ? 168 : 180,
-      targetEmphasis: gender === 'female' ? ['abs_core', 'glutes', 'posture_waist'] : ['abs_core'],
+      targetEmphasis:
+        gender === 'female'
+          ? ['abs_core', 'glutes', 'posture_waist']
+          : ['abs_core', 'arms_shoulders'],
+      priorityMuscles:
+        gender === 'female' ? ['glutes', 'posture_waist'] : ['chest', 'back', 'quads'],
     }));
   };
 
@@ -348,6 +359,22 @@ export const OnboardingModal: React.FC = () => {
                     </p>
                   </div>
                 </div>
+              </div>
+
+              <div className="pt-2 text-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    dismissOnboarding();
+                    openLoginModal();
+                  }}
+                  className="text-xs font-mono text-neutral-400 hover:text-white transition-colors"
+                >
+                  Already have an athlete account?{' '}
+                  <span className="text-[#D9A184] font-bold underline underline-offset-4">
+                    Sign In to Profile Portal →
+                  </span>
+                </button>
               </div>
             </div>
           )}

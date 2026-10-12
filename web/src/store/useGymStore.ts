@@ -127,7 +127,24 @@ const defaultAthleteAccounts: AthleteAccount[] = [
   },
 ];
 
-const defaultPlan = generateCustomPlan(
+export const stoicDefaultPlan = generateCustomPlan(
+  {
+    gender: 'male',
+    name: 'Stoic Arellano',
+    callsign: 'Stoic',
+    focus: 'combat',
+    experience: 'veteran',
+    equipment: 'full_gym',
+    frequency: 5,
+    workoutTime: '06:00',
+    fasting: 'omad',
+    personality: 'marine',
+    targetEmphasis: ['abs_core', 'arms_shoulders'],
+  },
+  allBuiltinExercises
+);
+
+export const sophiaDefaultPlan = generateCustomPlan(
   {
     gender: 'female',
     name: 'Sophia',
@@ -139,11 +156,13 @@ const defaultPlan = generateCustomPlan(
     workoutTime: '07:30',
     fasting: '16_8',
     personality: 'aurelia',
+    targetEmphasis: ['abs_core', 'glutes', 'posture_waist'],
   },
   allBuiltinExercises
 );
 
-const defaultRoutines: Routine[] = defaultPlan.routines;
+const defaultPlan = stoicDefaultPlan;
+const defaultRoutines: Routine[] = stoicDefaultPlan.routines;
 
 const defaultState: GymState = {
   route: 'home',
@@ -155,8 +174,8 @@ const defaultState: GymState = {
   activeToolId: null,
   session: null,
   sessions: [],
-  routines: defaultPlan.routines,
-  weeklyPlan: defaultPlan.weeklyPlan,
+  routines: stoicDefaultPlan.routines,
+  weeklyPlan: stoicDefaultPlan.weeklyPlan,
   favorites: {},
   customExercises: [],
   bodyweight: [],
@@ -170,54 +189,54 @@ const defaultState: GymState = {
     },
   ],
   profile: {
-    name: 'Sophia',
-    bio: 'Empress & Aurelia Discipline · Toned Strength & Poise',
-    heightCm: 168,
-    targetWeightKg: 62,
-    gender: 'female',
+    name: 'Stoic Arellano',
+    bio: 'USMC Veteran · Spartan Conditioning · Master of Mind & Body',
+    heightCm: 180,
+    targetWeightKg: 82,
+    gender: 'male',
     activityLevel: 'athlete',
-    callsign: 'Aurelia',
+    callsign: 'Stoic',
   },
   settings: {
     theme: 'dark',
     units: 'lb',
     soundEnabled: true,
     defaultRestSec: 90,
-    heatTone: 'rose',
+    heatTone: 'ember',
     language: 'en',
-    coachPersonality: 'aurelia',
-    activeProfileId: 'athlete-female',
+    coachPersonality: 'marine',
+    activeProfileId: 'athlete-stoic',
     onboardingCompleted: false,
-    gender: 'female',
+    gender: 'male',
   },
   unlockedAwards: [],
   latestAwardUnlocked: null,
-  coachPersonality: 'aurelia',
-  activeProfileId: 'athlete-female',
+  coachPersonality: 'marine',
+  activeProfileId: 'athlete-stoic',
   athleteAccounts: defaultAthleteAccounts,
   onboardingDone: false,
   showOnboarding: true,
   showLoginModal: false,
   onboardingAnswers: {
-    gender: 'female',
-    name: 'Sophia',
-    callsign: 'Aurelia',
-    workoutKind: 'toning',
-    focus: 'glute_waist',
-    experience: 'intermediate',
+    gender: 'male',
+    name: 'Stoic Arellano',
+    callsign: 'Stoic',
+    workoutKind: 'combat',
+    focus: 'combat',
+    experience: 'veteran',
     equipment: 'full_gym',
-    selectedDays: [1, 2, 4, 5],
-    frequency: 4,
-    workoutTime: '07:30',
-    workoutDuration: 45,
-    targetEmphasis: ['abs_core', 'glutes', 'posture_waist'],
-    personality: 'aurelia',
-    fasting: '16_8',
+    selectedDays: [1, 2, 3, 4, 5],
+    frequency: 5,
+    workoutTime: '06:00',
+    workoutDuration: 60,
+    targetEmphasis: ['abs_core', 'arms_shoulders'],
+    personality: 'marine',
+    fasting: 'omad',
   },
-  currentQuote: getRandomQuote('aurelia'),
-  scheduledEvents: defaultPlan.scheduledEvents,
+  currentQuote: getRandomQuote('marine'),
+  scheduledEvents: stoicDefaultPlan.scheduledEvents,
   meals: [],
-  nutritionTargets: defaultPlan.nutritionTargets,
+  nutritionTargets: stoicDefaultPlan.nutritionTargets,
   waterMl: 0,
 };
 
@@ -266,6 +285,7 @@ function loadFromStorage() {
     if (raw) {
       const parsed = JSON.parse(raw);
       const personality = parsed.coachPersonality || parsed.settings?.coachPersonality || 'marine';
+      const activeId = parsed.activeProfileId || parsed.settings?.activeProfileId || 'athlete-stoic';
       globalState = {
         ...defaultState,
         ...parsed,
@@ -274,7 +294,7 @@ function loadFromStorage() {
         settings: { ...defaultState.settings, ...(parsed.settings || {}) },
         profile: { ...defaultState.profile, ...(parsed.profile || {}) },
         coachPersonality: personality,
-        activeProfileId: parsed.activeProfileId || parsed.settings?.activeProfileId || 'stoic1712',
+        activeProfileId: activeId,
         athleteAccounts: parsed.athleteAccounts || defaultAthleteAccounts,
         onboardingDone: parsed.onboardingDone ?? true,
         showOnboarding: false,
@@ -284,6 +304,52 @@ function loadFromStorage() {
         nutritionTargets: { ...defaultState.nutritionTargets, ...(parsed.nutritionTargets || {}) },
         waterMl: parsed.waterMl ?? defaultState.waterMl,
       };
+
+      // Athlete protocol separation and healing check
+      const isAthleteMale =
+        globalState.activeProfileId === 'athlete-stoic' ||
+        globalState.activeProfileId === 'athlete-male' ||
+        globalState.settings.gender === 'male' ||
+        globalState.profile.gender === 'male';
+
+      const hasFemaleRoutines = (globalState.routines || []).some(
+        (r) =>
+          r.name.toLowerCase().includes('glute') ||
+          r.name.toLowerCase().includes('hourglass') ||
+          r.id.includes('glute') ||
+          r.name.toLowerCase().includes('empress')
+      );
+
+      const hasMaleRoutines = (globalState.routines || []).some(
+        (r) =>
+          r.name.toLowerCase().includes('tactical push') ||
+          r.name.toLowerCase().includes('spartan') ||
+          r.name.toLowerCase().includes('combat pull')
+      );
+
+      if (isAthleteMale && hasFemaleRoutines) {
+        // Stoic is logged in, but has female glute routines from prior test session -> heal to male Spartan routines
+        globalState.routines = stoicDefaultPlan.routines;
+        globalState.weeklyPlan = stoicDefaultPlan.weeklyPlan;
+        globalState.scheduledEvents = stoicDefaultPlan.scheduledEvents;
+        globalState.nutritionTargets = stoicDefaultPlan.nutritionTargets;
+        globalState.settings.heatTone = 'ember';
+        globalState.settings.gender = 'male';
+        globalState.profile.gender = 'male';
+        globalState.settings.coachPersonality = 'marine';
+        globalState.coachPersonality = 'marine';
+      } else if (!isAthleteMale && hasMaleRoutines) {
+        // Female is logged in, but has male routines -> heal to female routines
+        globalState.routines = sophiaDefaultPlan.routines;
+        globalState.weeklyPlan = sophiaDefaultPlan.weeklyPlan;
+        globalState.scheduledEvents = sophiaDefaultPlan.scheduledEvents;
+        globalState.nutritionTargets = sophiaDefaultPlan.nutritionTargets;
+        globalState.settings.heatTone = 'rose';
+        globalState.settings.gender = 'female';
+        globalState.profile.gender = 'female';
+        globalState.settings.coachPersonality = 'aurelia';
+        globalState.coachPersonality = 'aurelia';
+      }
     }
   } catch (e) {
     console.error('Could not parse saved storage:', e);
@@ -1069,8 +1135,13 @@ export function useGymStore() {
       }
     }
 
-    const acc = globalState.athleteAccounts.find((a) => a.id === athleteId);
+    const acc =
+      globalState.athleteAccounts.find((a) => a.id === athleteId) ||
+      defaultAthleteAccounts.find((a) => a.id === athleteId);
     if (!acc) return;
+
+    const isMale = acc.gender === 'male' || acc.id === 'athlete-stoic' || acc.id === 'athlete-male';
+    const targetPlan = isMale ? stoicDefaultPlan : sophiaDefaultPlan;
 
     globalState.activeProfileId = acc.id;
     globalState.settings.activeProfileId = acc.id;
@@ -1080,17 +1151,49 @@ export function useGymStore() {
       const savedRaw = localStorage.getItem(`stoic_community_athlete_data_${acc.id}`);
       if (savedRaw) {
         const saved = JSON.parse(savedRaw);
+        const hasWrongGenderRoutines = isMale
+          ? (saved.routines || []).some(
+              (r: any) =>
+                r.name.toLowerCase().includes('glute') ||
+                r.name.toLowerCase().includes('hourglass') ||
+                r.id.includes('glute')
+            )
+          : (saved.routines || []).some(
+              (r: any) =>
+                r.name.toLowerCase().includes('tactical push') ||
+                r.name.toLowerCase().includes('spartan') ||
+                r.name.toLowerCase().includes('combat pull')
+            );
+
         globalState.sessions = saved.sessions || [];
-        globalState.routines = saved.routines || defaultRoutines;
-        globalState.weeklyPlan = saved.weeklyPlan || globalState.weeklyPlan;
+        globalState.routines =
+          !hasWrongGenderRoutines && saved.routines && saved.routines.length > 0
+            ? saved.routines
+            : targetPlan.routines;
+        globalState.weeklyPlan =
+          !hasWrongGenderRoutines && saved.weeklyPlan ? saved.weeklyPlan : targetPlan.weeklyPlan;
         globalState.bodyweight = saved.bodyweight || [];
         globalState.measures = saved.measures || [];
         globalState.notes = saved.notes || [];
-        globalState.profile = saved.profile || globalState.profile;
-        globalState.settings = saved.settings || globalState.settings;
-        globalState.scheduledEvents = saved.scheduledEvents || generateDefaultSchedule(14);
+        globalState.profile = {
+          ...(saved.profile || globalState.profile),
+          name: acc.name,
+          callsign: acc.callsign,
+          gender: isMale ? 'male' : 'female',
+        };
+        globalState.settings = {
+          ...(saved.settings || globalState.settings),
+          gender: isMale ? 'male' : 'female',
+          heatTone: isMale ? 'ember' : 'rose',
+          coachPersonality: acc.personality,
+          activeProfileId: acc.id,
+        };
+        globalState.scheduledEvents =
+          !hasWrongGenderRoutines && saved.scheduledEvents && saved.scheduledEvents.length > 0
+            ? saved.scheduledEvents
+            : targetPlan.scheduledEvents;
         globalState.meals = saved.meals || [];
-        globalState.nutritionTargets = saved.nutritionTargets || globalState.nutritionTargets;
+        globalState.nutritionTargets = saved.nutritionTargets || targetPlan.nutritionTargets;
         globalState.waterMl = saved.waterMl || 0;
         globalState.coachPersonality = acc.personality;
         globalState.currentQuote = getRandomQuote(acc.personality);
@@ -1102,21 +1205,23 @@ export function useGymStore() {
       console.error('Failed to load athlete snapshot:', err);
     }
 
-    // Otherwise apply athlete defaults
+    // Otherwise apply fresh calibrated athlete defaults
     globalState.coachPersonality = acc.personality;
     globalState.settings.coachPersonality = acc.personality;
-    globalState.settings.gender = acc.gender || 'female';
+    globalState.settings.gender = isMale ? 'male' : 'female';
+    globalState.settings.heatTone = isMale ? 'ember' : 'rose';
+    globalState.routines = targetPlan.routines;
+    globalState.weeklyPlan = targetPlan.weeklyPlan;
+    globalState.scheduledEvents = targetPlan.scheduledEvents;
+    globalState.nutritionTargets = targetPlan.nutritionTargets;
     globalState.profile = {
       ...globalState.profile,
       name: acc.name,
       callsign: acc.callsign,
-      gender: acc.gender || 'female',
-      bio:
-        acc.personality === 'aurelia'
-          ? 'Empress & Aurelia Discipline · Toned Strength & Poise'
-          : acc.personality === 'marine'
-          ? 'USMC Veteran · Semper Fidelis · Lift. Log it. Grow.'
-          : 'Stoic Practitioner · Master of Self · Lift. Log it. Grow.',
+      gender: isMale ? 'male' : 'female',
+      bio: isMale
+        ? 'USMC Veteran · Spartan Conditioning · Master of Mind & Body'
+        : 'Empress & Aurelia Discipline · Toned Strength & Poise',
     };
     globalState.currentQuote = getRandomQuote(acc.personality);
     sound.playBeepBell();
@@ -1154,6 +1259,7 @@ export function useGymStore() {
   };
 
   const completeOnboarding = (answers: OnboardingAnswers) => {
+    const isMale = answers.gender === 'male';
     const plan = generateCustomPlan(answers, allBuiltinExercises);
 
     globalState.onboardingAnswers = answers;
@@ -1164,10 +1270,13 @@ export function useGymStore() {
     globalState.settings.coachPersonality = plan.coachPersonality;
     globalState.settings.onboardingCompleted = true;
     globalState.settings.gender = answers.gender;
-    globalState.settings.heatTone = answers.gender === 'female' ? 'rose' : 'ember';
+    globalState.settings.heatTone = isMale ? 'ember' : 'rose';
     globalState.profile = {
       ...globalState.profile,
       ...plan.profileUpdates,
+      name: answers.name || (isMale ? 'Stoic Arellano' : 'Sophia'),
+      callsign: answers.callsign || (isMale ? 'Stoic' : 'Aurelia'),
+      gender: answers.gender,
     };
     globalState.routines = plan.routines;
     globalState.weeklyPlan = plan.weeklyPlan;
@@ -1175,14 +1284,17 @@ export function useGymStore() {
     globalState.nutritionTargets = plan.nutritionTargets;
     globalState.currentQuote = getRandomQuote(plan.coachPersonality);
 
-    // Save or update athlete account
-    const athleteId = globalState.activeProfileId || (answers.gender === 'female' ? 'athlete-female' : 'athlete-male');
+    // Dedicated account routing based on gender selection
+    const athleteId = isMale ? 'athlete-stoic' : 'athlete-female';
+    globalState.activeProfileId = athleteId;
+    globalState.settings.activeProfileId = athleteId;
+
     const existingIdx = globalState.athleteAccounts.findIndex((a) => a.id === athleteId);
     const updatedAccount: AthleteAccount = {
       id: athleteId,
-      name: answers.name || (answers.gender === 'female' ? 'Sophia' : 'Marcus'),
-      callsign: answers.callsign || (answers.gender === 'female' ? 'Aurelia' : 'Spartan'),
-      role: answers.gender === 'female' ? 'Empress Athlete' : 'Tactical Athlete',
+      name: answers.name || (isMale ? 'Stoic Arellano' : 'Sophia'),
+      callsign: answers.callsign || (isMale ? 'Stoic' : 'Aurelia'),
+      role: isMale ? 'Sovereign / Spartan Athlete' : 'Empress / Female Athlete',
       personality: plan.coachPersonality,
       gender: answers.gender,
       createdDate: new Date().toISOString(),
@@ -1193,7 +1305,6 @@ export function useGymStore() {
     } else {
       globalState.athleteAccounts = [...globalState.athleteAccounts, updatedAccount];
     }
-    globalState.activeProfileId = athleteId;
 
     // Snapshot state for this athlete account
     try {
@@ -1595,6 +1706,14 @@ export function useGymStore() {
     updateNutritionTargets,
     injectDayPlanTemplate,
     getEventsForDate,
+    selectGender: (gender: 'male' | 'female') => {
+      switchAthlete(gender === 'male' ? 'athlete-stoic' : 'athlete-female');
+    },
+    toggleGender: () => {
+      const isMale =
+        globalState.activeProfileId === 'athlete-stoic' || globalState.settings.gender === 'male';
+      switchAthlete(isMale ? 'athlete-female' : 'athlete-stoic');
+    },
     dismissLatestAward: () => {
       globalState.latestAwardUnlocked = null;
       notify();

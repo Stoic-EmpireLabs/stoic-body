@@ -9,7 +9,17 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ title, showBack }) => {
-  const { route, popRoute, pushRoute, getStreak, unlockedAwards, openLoginModal, profile } = useGymStore();
+  const {
+    route,
+    popRoute,
+    pushRoute,
+    getStreak,
+    unlockedAwards,
+    openLoginModal,
+    profile,
+    switchAthlete,
+    settings,
+  } = useGymStore();
 
   const isRootTab = ['home', 'train', 'progress', 'exercises'].includes(route);
   const shouldShowBack = showBack ?? !isRootTab;
@@ -72,6 +82,32 @@ export const Header: React.FC<HeaderProps> = ({ title, showBack }) => {
               <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#D9A184] rounded-full ring-2 ring-[#0A0A0A]" />
             )}
           </button>
+
+          {/* Quick Male / Female Toggle */}
+          <div className="flex items-center p-0.5 rounded-xl bg-[#171514] border border-[#2A2624]">
+            <button
+              onClick={() => switchAthlete('athlete-stoic')}
+              className={`px-2 py-1 rounded-lg text-xs font-black transition-all ${
+                profile?.gender === 'male' || settings?.gender === 'male'
+                  ? 'bg-[#2E241E] text-[#D9A184] border border-[#D9A184]/50 shadow-sm'
+                  : 'text-neutral-500 hover:text-neutral-300'
+              }`}
+              title="Switch to Stoic (Male Athlete)"
+            >
+              ♂
+            </button>
+            <button
+              onClick={() => switchAthlete('athlete-female')}
+              className={`px-2 py-1 rounded-lg text-xs font-black transition-all ${
+                profile?.gender === 'female' || settings?.gender === 'female'
+                  ? 'bg-[#2A1E24] text-[#E0A899] border border-[#E0A899]/50 shadow-sm'
+                  : 'text-neutral-500 hover:text-neutral-300'
+              }`}
+              title="Switch to Sophia (Female Athlete)"
+            >
+              ♀
+            </button>
+          </div>
 
           {/* Athlete Profile / Sign-In */}
           <button

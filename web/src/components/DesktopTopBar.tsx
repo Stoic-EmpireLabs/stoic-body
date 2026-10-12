@@ -26,6 +26,7 @@ export const DesktopTopBar: React.FC = () => {
     coachPersonality,
     activeProfileId,
     openLoginModal,
+    switchAthlete,
   } = useGymStore();
 
   const routeTitles: Record<string, string> = {
@@ -79,6 +80,34 @@ export const DesktopTopBar: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Direct Male / Female Switcher */}
+          <div className="flex items-center p-0.5 rounded-xl bg-[#171514] border border-[#2A2624]">
+            <button
+              onClick={() => switchAthlete('athlete-stoic')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black transition-all ${
+                activeProfileId === 'athlete-stoic' || (!activeProfileId?.includes('female') && settings.gender === 'male')
+                  ? 'bg-[#2E241E] text-[#D9A184] border border-[#D9A184]/50 shadow-sm'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+              title="Switch to Stoic (Male Athlete · Your Likeness & Heavy Compounds)"
+            >
+              <span className="font-bold">♂</span>
+              <span>Male (Stoic)</span>
+            </button>
+            <button
+              onClick={() => switchAthlete('athlete-female')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black transition-all ${
+                activeProfileId === 'athlete-female' || settings.gender === 'female'
+                  ? 'bg-[#2A1E24] text-[#E0A899] border border-[#E0A899]/50 shadow-sm'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+              title="Switch to Sophia (Female Athlete · Wife's Likeness & Glute Sculpt)"
+            >
+              <span className="font-bold">♀</span>
+              <span>Female (Sophia)</span>
+            </button>
+          </div>
+
           {/* Athlete Profile Switcher Pill */}
           <button
             onClick={openLoginModal}
