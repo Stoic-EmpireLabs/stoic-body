@@ -59,6 +59,7 @@ export type RouteName =
   | 'notes'
   | 'settings'
   | 'about'
+  | 'whiteboard'
   | 'profile';
 
 interface GymState {

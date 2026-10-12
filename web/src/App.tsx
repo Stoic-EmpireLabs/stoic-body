@@ -23,6 +23,7 @@ import { SettingsScreen } from './screens/SettingsScreen';
 import { AboutScreen } from './screens/AboutScreen';
 import { ScheduleScreen } from './screens/ScheduleScreen';
 import { NutritionScreen } from './screens/NutritionScreen';
+import { WhiteboardScreen } from './screens/WhiteboardScreen';
 
 import { AWARDS } from './data/awards';
 import { Sparkles, X } from 'lucide-react';
@@ -99,6 +100,8 @@ export function App() {
         return <SettingsScreen />;
       case 'about':
         return <AboutScreen />;
+      case 'whiteboard':
+        return <WhiteboardScreen />;
       default:
         return <HomeScreen />;
     }

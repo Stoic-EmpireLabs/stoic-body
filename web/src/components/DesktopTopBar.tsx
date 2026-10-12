@@ -45,6 +45,7 @@ export const DesktopTopBar: React.FC = () => {
     profile: 'Athlete Profile',
     settings: 'Settings & Privacy',
     about: 'About Stoic Body',
+    whiteboard: 'System Architecture & Neural Web',
   };
 
   const todayDateStr = new Date().toLocaleDateString('en-US', {

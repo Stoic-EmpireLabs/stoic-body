@@ -19,6 +19,7 @@ import {
   Info,
   Calendar,
   Utensils,
+  Share2,
 } from 'lucide-react';
 import { getAssetUrl } from '../utils/assets';
 
@@ -30,6 +31,7 @@ export const DesktopSidebar: React.FC = () => {
 
   const navItems: { id: RouteName; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: 'home', label: 'Today Dashboard', icon: Flame },
+    { id: 'whiteboard', label: 'Architecture Web', icon: Share2 },
     { id: 'schedule', label: 'Daily Schedule', icon: Calendar },
     { id: 'nutrition', label: 'Meals & Nutrition', icon: Utensils },
     { id: 'train', label: 'Anatomical Map', icon: Dumbbell },
