@@ -397,8 +397,12 @@ export const OnboardingModal: React.FC = () => {
                   </label>
                   <input
                     type="number"
-                    value={answers.age || 26}
-                    onChange={(e) => setAnswers({ ...answers, age: parseInt(e.target.value) || 26 })}
+                    value={answers.age !== undefined && answers.age !== null ? answers.age : ''}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setAnswers({ ...answers, age: v === '' ? undefined : parseInt(v, 10) });
+                    }}
+                    placeholder="26"
                     className="w-full bg-[#121012] border border-[#2B2428] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#E0A899] font-medium font-mono"
                   />
                 </div>
@@ -574,8 +578,12 @@ export const OnboardingModal: React.FC = () => {
                   </label>
                   <input
                     type="number"
-                    value={answers.heightCm || 168}
-                    onChange={(e) => setAnswers({ ...answers, heightCm: parseInt(e.target.value) || 168 })}
+                    value={answers.heightCm !== undefined && answers.heightCm !== null ? answers.heightCm : ''}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setAnswers({ ...answers, heightCm: v === '' ? undefined : parseInt(v, 10) });
+                    }}
+                    placeholder="168"
                     className="w-full bg-[#181618] border border-[#342C32] rounded-xl px-3 py-2 text-sm text-white font-mono"
                   />
                   <span className="text-[10px] text-neutral-500 font-mono mt-1 block">
@@ -590,8 +598,12 @@ export const OnboardingModal: React.FC = () => {
                   </label>
                   <input
                     type="number"
-                    value={answers.weightKg || 62}
-                    onChange={(e) => setAnswers({ ...answers, weightKg: parseInt(e.target.value) || 62 })}
+                    value={answers.weightKg !== undefined && answers.weightKg !== null ? answers.weightKg : ''}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setAnswers({ ...answers, weightKg: v === '' ? undefined : parseFloat(v) });
+                    }}
+                    placeholder="62"
                     className="w-full bg-[#181618] border border-[#342C32] rounded-xl px-3 py-2 text-sm text-white font-mono"
                   />
                   <span className="text-[10px] text-neutral-500 font-mono mt-1 block">
@@ -605,8 +617,12 @@ export const OnboardingModal: React.FC = () => {
                   </label>
                   <input
                     type="number"
-                    value={answers.targetWeightKg || 59}
-                    onChange={(e) => setAnswers({ ...answers, targetWeightKg: parseInt(e.target.value) || 59 })}
+                    value={answers.targetWeightKg !== undefined && answers.targetWeightKg !== null ? answers.targetWeightKg : ''}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setAnswers({ ...answers, targetWeightKg: v === '' ? undefined : parseFloat(v) });
+                    }}
+                    placeholder="59"
                     className="w-full bg-[#181618] border border-[#342C32] rounded-xl px-3 py-2 text-sm text-white font-mono"
                   />
                   <span className="text-[10px] text-neutral-500 font-mono mt-1 block">

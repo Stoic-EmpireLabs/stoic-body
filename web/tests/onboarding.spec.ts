@@ -14,6 +14,11 @@ test.describe('20-Question Precision Protocol Assessment', () => {
 
     // Question 2: Identity & Callsign
     await expect(page.locator('text=Athlete identity & callsign')).toBeVisible();
+    const ageInput = page.locator('input[type="number"]');
+    await ageInput.fill('');
+    expect(await ageInput.inputValue()).toBe('');
+    await ageInput.fill('32');
+    expect(await ageInput.inputValue()).toBe('32');
     await page.click('button:has-text("Next Step")');
 
     // Question 3: Primary Athletic Quest
