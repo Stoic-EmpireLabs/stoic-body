@@ -3,6 +3,7 @@ import { Dumbbell } from 'lucide-react';
 import { getAssetUrl } from '../utils/assets';
 import { useGymStore } from '../store/useGymStore';
 import { FemaleExerciseSVG } from './FemaleExerciseVisuals';
+import { MaleExerciseSVG } from './MaleExerciseVisuals';
 
 interface ExerciseArtProps {
   slug?: string;
@@ -109,9 +110,7 @@ export const ExerciseArt: React.FC<ExerciseArtProps> = ({
   return (
     <div
       style={{ height }}
-      className={`w-full bg-[#141214] rounded-2xl flex items-center justify-center border border-[#262024] overflow-hidden relative ${
-        isFemale ? 'p-0' : isCompactThumbnail ? 'p-1' : 'p-2.5 rounded-3xl'
-      } ${className}`}
+      className={`w-full bg-[#141214] rounded-2xl flex items-center justify-center border border-[#262024] overflow-hidden relative p-0 ${className}`}
     >
       {isFemale ? (
         // FEMALE ATHLETIC VISUAL ENGINE - 3D Anatomical female model with glowing muscle highlights
@@ -121,25 +120,14 @@ export const ExerciseArt: React.FC<ExerciseArtProps> = ({
           exerciseName={exerciseName}
           primaryMuscle={primaryMuscle}
         />
-      ) : frames.length === 0 || loading ? (
-        // LOADING / FALLBACK
-        <div className="flex flex-col items-center justify-center text-neutral-600">
-          <Dumbbell className="w-8 h-8 mb-1 opacity-40 animate-pulse text-[#D9A184]" />
-          {!isCompactThumbnail && (
-            <span className="text-[11px] font-mono tracking-wider uppercase opacity-40">
-              {loading ? 'Loading Motion...' : 'Exercise Visual'}
-            </span>
-          )}
-        </div>
       ) : (
-        // MALE VECTOR FRAMES
-        <svg
-          viewBox="-50 -50 600 600"
-          className="w-full h-full text-white fill-current transition-all duration-75"
-          style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.5))' }}
-        >
-          <path d={frames[frameIndex] || frames[0]} fillRule="evenodd" />
-        </svg>
+        // MALE ATHLETIC VISUAL ENGINE - 3D Anatomical male athlete with user's face and shoulder star tattoos
+        <MaleExerciseSVG
+          slug={slug}
+          accentColor={accentColor}
+          exerciseName={exerciseName}
+          primaryMuscle={primaryMuscle}
+        />
       )}
     </div>
   );

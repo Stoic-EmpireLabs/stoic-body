@@ -99,6 +99,15 @@ interface GymState {
 
 const defaultAthleteAccounts: AthleteAccount[] = [
   {
+    id: 'athlete-stoic',
+    name: 'Stoic Arellano',
+    callsign: 'Stoic',
+    role: 'Sovereign / Spartan Athlete',
+    personality: 'marine',
+    gender: 'male',
+    createdDate: new Date().toISOString(),
+  },
+  {
     id: 'athlete-female',
     name: 'Sophia',
     callsign: 'Aurelia',

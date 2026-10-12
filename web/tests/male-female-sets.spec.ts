@@ -82,4 +82,60 @@ test.describe('Male & Female Physiological Calibration & Planned Sets', () => {
       path: 'C:/Users/stoic/.gemini/antigravity/brain/958af3de-883f-4c46-95ab-6f08aeb8e3d0/proof-male-calibration-schedule.png',
     });
   });
+
+  test('Stoic Arellano profile loads custom male 3D renders with Stoic face and enables Start All Over', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForTimeout(500);
+
+    // Dismiss onboarding if shown
+    const skipBtn = page.locator('button:has-text("Skip")');
+    if (await skipBtn.isVisible()) {
+      await skipBtn.click();
+      await page.waitForTimeout(500);
+    }
+
+    // Open Athlete Login Switcher
+    const athleteBtn = page.locator('button[title="Athlete Sign-In / Switch Profile"]').first();
+    await expect(athleteBtn).toBeVisible();
+    await athleteBtn.click();
+    await page.waitForTimeout(400);
+
+    // Verify Stoic Arellano profile card is visible with custom portrait
+    const stoicCard = page.locator('text="Stoic Arellano"').first();
+    await expect(stoicCard).toBeVisible();
+    await stoicCard.click();
+    await page.waitForTimeout(600);
+
+    // Verify Schedule displays male 3D renders
+    await page.click('button:has-text("Schedule")');
+    await page.waitForTimeout(600);
+    const male3DImg = page.locator('img[src*="/assets/male-3d/"]').first();
+    await expect(male3DImg).toBeVisible();
+
+    // Take screenshot proof of Stoic Arellano male 3D visual schedule
+    await page.screenshot({
+      path: 'C:/Users/stoic/.gemini/antigravity/brain/958af3de-883f-4c46-95ab-6f08aeb8e3d0/proof-stoic-male-3d-schedule.png',
+    });
+
+    // Navigate to Settings
+    await page.click('button:has-text("Settings")');
+    await page.waitForTimeout(600);
+
+    // Verify "Start All Over · Take Fresh Intake Assessment" banner is visible
+    const startAllOverBanner = page.locator('text="Start All Over · Take Fresh Intake Assessment"');
+    await expect(startAllOverBanner).toBeVisible();
+
+    // Click "Start All Over"
+    await page.click('button:has-text("Start All Over")');
+    await page.waitForTimeout(600);
+
+    // Verify Onboarding Questionnaire opens to Step 1
+    await expect(page.locator('text=Choose your athlete profile and interface mode')).toBeVisible();
+
+    // Take screenshot proof of Onboarding launched from Start All Over
+    await page.screenshot({
+      path: 'C:/Users/stoic/.gemini/antigravity/brain/958af3de-883f-4c46-95ab-6f08aeb8e3d0/proof-start-all-over-onboarding.png',
+    });
+  });
 });
+

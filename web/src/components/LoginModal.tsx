@@ -17,6 +17,7 @@ import {
   Upload,
 } from 'lucide-react';
 import type { CoachPersonality, AthleteAccount } from '../types';
+import { getAssetUrl } from '../utils/assets';
 
 export const LoginModal: React.FC = () => {
   const {
@@ -162,70 +163,114 @@ export const LoginModal: React.FC = () => {
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {/* Aurelia Profile */}
+            <div className="space-y-3">
+              {/* Stoic Sovereign Profile (Flagship User) */}
               <div
-                onClick={() => handleSelectAthlete('athlete-female')}
-                className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between active:scale-98 relative ${
-                  activeProfileId === 'athlete-female'
-                    ? 'bg-[#261E22] border-[#E0A899] shadow-lg shadow-[#E0A899]/15'
-                    : 'bg-[#141214] border-[#262024] hover:border-[#3E343A]'
+                onClick={() => handleSelectAthlete('athlete-stoic')}
+                className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between active:scale-98 relative ${
+                  activeProfileId === 'athlete-stoic'
+                    ? 'bg-[#221C18] border-[#D9A184] shadow-xl shadow-[#D9A184]/20'
+                    : 'bg-[#141214] border-[#2E2826] hover:border-[#D9A184]/50'
                 }`}
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#1C161A] border border-[#E0A899]/30 flex items-center justify-center text-[#E0A899] text-base font-black">
-                    ♀
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-[#1C1A18] border border-[#D9A184]/40 overflow-hidden flex items-center justify-center flex-shrink-0 shadow">
+                    <img
+                      src={getAssetUrl('assets/icon/user_stoic.jpg')}
+                      alt="Stoic Arellano"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = 'none';
+                      }}
+                    />
                   </div>
-                  {activeProfileId === 'athlete-female' ? (
-                    <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-[#E0A899] text-[#140D09]">
-                      Active
-                    </span>
-                  ) : (
-                    <span className="text-[10px] text-neutral-500 font-mono">Sign In →</span>
-                  )}
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-black text-sm text-white">Stoic Arellano</span>
+                      <span className="text-[10px] text-[#D9A184] font-mono font-black">/ Sovereign</span>
+                    </div>
+                    <p className="text-[11px] text-neutral-300 mt-0.5 leading-snug">
+                      Your Likeness · 3D Male Anatomical Engine · Star Shoulder Tattoos · Spartan Conditioning
+                    </p>
+                  </div>
                 </div>
 
                 <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-black text-sm text-white">Sophia</span>
-                    <span className="text-[10px] text-[#E0A899] font-mono font-bold">/ Aurelia</span>
-                  </div>
-                  <p className="text-[11px] text-neutral-400 mt-1 leading-snug">
-                    Female 3D library · Rose gold aesthetic · Glute & posture periodization
-                  </p>
+                  {activeProfileId === 'athlete-stoic' ? (
+                    <span className="px-2.5 py-1 rounded-full text-[9px] font-black uppercase bg-[#D9A184] text-[#140D09]">
+                      Active
+                    </span>
+                  ) : (
+                    <span className="text-xs text-[#D9A184] font-bold font-mono">Sign In →</span>
+                  )}
                 </div>
               </div>
 
-              {/* Spartan Profile */}
-              <div
-                onClick={() => handleSelectAthlete('athlete-male')}
-                className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between active:scale-98 relative ${
-                  activeProfileId === 'athlete-male'
-                    ? 'bg-[#221C18] border-[#D9A184] shadow-lg shadow-[#D9A184]/15'
-                    : 'bg-[#141214] border-[#262024] hover:border-[#3E343A]'
-                }`}
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#1C1A18] border border-[#D9A184]/30 flex items-center justify-center text-[#D9A184] text-base font-black">
-                    ♂
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Aurelia Profile */}
+                <div
+                  onClick={() => handleSelectAthlete('athlete-female')}
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between active:scale-98 relative ${
+                    activeProfileId === 'athlete-female'
+                      ? 'bg-[#261E22] border-[#E0A899] shadow-lg shadow-[#E0A899]/15'
+                      : 'bg-[#141214] border-[#262024] hover:border-[#3E343A]'
+                  }`}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="w-8 h-8 rounded-xl bg-[#1C161A] border border-[#E0A899]/30 flex items-center justify-center text-[#E0A899] text-sm font-black">
+                      ♀
+                    </div>
+                    {activeProfileId === 'athlete-female' ? (
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-[#E0A899] text-[#140D09]">
+                        Active
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-neutral-500 font-mono">Sign In →</span>
+                    )}
                   </div>
-                  {activeProfileId === 'athlete-male' ? (
-                    <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-[#D9A184] text-[#140D09]">
-                      Active
-                    </span>
-                  ) : (
-                    <span className="text-[10px] text-neutral-500 font-mono">Sign In →</span>
-                  )}
+
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-black text-xs text-white">Sophia</span>
+                      <span className="text-[10px] text-[#E0A899] font-mono font-bold">/ Aurelia</span>
+                    </div>
+                    <p className="text-[10px] text-neutral-400 mt-0.5 leading-snug">
+                      Female 3D library · Rose gold · Glutes & posture
+                    </p>
+                  </div>
                 </div>
 
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-black text-sm text-white">Marcus</span>
-                    <span className="text-[10px] text-[#D9A184] font-mono font-bold">/ Spartan</span>
+                {/* Spartan Profile */}
+                <div
+                  onClick={() => handleSelectAthlete('athlete-male')}
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between active:scale-98 relative ${
+                    activeProfileId === 'athlete-male'
+                      ? 'bg-[#221C18] border-[#D9A184] shadow-lg shadow-[#D9A184]/15'
+                      : 'bg-[#141214] border-[#262024] hover:border-[#3E343A]'
+                  }`}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="w-8 h-8 rounded-xl bg-[#1C1A18] border border-[#D9A184]/30 flex items-center justify-center text-[#D9A184] text-sm font-black">
+                      ♂
+                    </div>
+                    {activeProfileId === 'athlete-male' ? (
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-[#D9A184] text-[#140D09]">
+                        Active
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-neutral-500 font-mono">Sign In →</span>
+                    )}
                   </div>
-                  <p className="text-[11px] text-neutral-400 mt-1 leading-snug">
-                    Male athletic wireframes · Ember aesthetic · Tactical combat conditioning
-                  </p>
+
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-black text-xs text-white">Marcus</span>
+                      <span className="text-[10px] text-[#D9A184] font-mono font-bold">/ Spartan</span>
+                    </div>
+                    <p className="text-[10px] text-neutral-400 mt-0.5 leading-snug">
+                      3D Male wireframes · Ember · USMC Combat
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

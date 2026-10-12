@@ -32,6 +32,7 @@ export const SettingsScreen: React.FC = () => {
     coachPersonality,
     setCoachPersonality,
     openOnboarding,
+    openLoginModal,
     onboardingAnswers,
     activeProfileId,
     profile,
@@ -95,6 +96,38 @@ export const SettingsScreen: React.FC = () => {
         <p className="text-xs text-neutral-400 mt-0.5">
           Customize coaching voice, assessment questions, appearance and local offline data
         </p>
+      </div>
+
+      {/* START OVER & FRESH ASSESSMENT HERO CARD */}
+      <div className="p-6 rounded-3xl bg-gradient-to-br from-[#241E1C] via-[#1C1817] to-[#121110] border-2 border-[#D9A184]/50 shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-[#D9A184]/20 text-[#D9A184] border border-[#D9A184]/40 font-mono">
+              FRESH PROTOCOL RESET
+            </span>
+            <span className="text-xs text-neutral-400 font-mono">20-Question Precision Engine</span>
+          </div>
+          <h3 className="text-lg sm:text-xl font-black text-white mt-1">Start All Over · Take Fresh Intake Assessment</h3>
+          <p className="text-xs text-neutral-300 mt-1 max-w-xl leading-relaxed">
+            Re-run the complete 20-question questionnaire from step 1. Calibrates male/female physiological splits, 3D anatomical workout renders with your likeness, sets & reps, and macro nutritional targets.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 sm:flex-col sm:items-end flex-shrink-0">
+          <button
+            onClick={() => openOnboarding()}
+            className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[#D9A184] hover:bg-[#E5AC8F] text-[#140D09] font-black text-xs flex items-center justify-center gap-2 shadow-xl active:scale-95 transition-all"
+          >
+            <RotateCcw className="w-4 h-4 stroke-[3]" />
+            Start All Over
+          </button>
+          <button
+            onClick={() => openLoginModal()}
+            className="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#201D1A] hover:bg-[#2A2622] border border-[#3E3832] text-xs font-bold text-[#D9A184] flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+          >
+            <Users className="w-3.5 h-3.5" />
+            Sanctuary Login
+          </button>
+        </div>
       </div>
 
       {/* Active Athlete Account Card */}
