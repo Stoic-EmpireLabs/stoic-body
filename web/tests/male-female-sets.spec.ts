@@ -12,32 +12,18 @@ test.describe('Male & Female Physiological Calibration & Planned Sets', () => {
     await page.click('text="Female / Empress"');
     await page.click('button:has-text("Next Step")');
 
-    // Step 2: Name & Experience
+    // Step 2: Name & Callsign
     await expect(page.locator('text=Athlete identity')).toBeVisible();
     await page.click('button:has-text("Next Step")');
 
     // Step 3: Workout Kind - select Lean Toning & Definition
     await expect(page.locator('text=What kind of workout do you want?')).toBeVisible();
     await page.click('text="Lean Toning & Definition"');
-    await page.click('button:has-text("Next Step")');
 
-    // Step 4: Add-ons - Abs & Core Finisher should be enabled
-    await expect(page.locator('text=Target emphasis & workout add-ons')).toBeVisible();
-    await page.click('button:has-text("Next Step")');
+    // Jump to synthesized review using Auto-Calculate
+    await page.click('button:has-text("Auto-Calculate")');
 
-    // Step 5: Days selection
-    await expect(page.locator('text=Which days do you want to workout?')).toBeVisible();
-    await page.click('button:has-text("Next Step")');
-
-    // Step 6: Preferred Time & Duration
-    await expect(page.locator('text=Workout time & session duration')).toBeVisible();
-    await page.click('button:has-text("Next Step")');
-
-    // Step 7: Equipment & Fasting
-    await expect(page.locator('text=Equipment access & fasting protocol')).toBeVisible();
-    await page.click('button:has-text("Next Step")');
-
-    // Step 8: Review & Launch
+    // Step 21: Review & Launch
     await expect(page.locator('text=Protocol Computation Complete')).toBeVisible();
     await expect(page.locator('text=Empress').first()).toBeVisible();
     await page.click('button:has-text("Launch Protocol & Enter Sanctuary")');

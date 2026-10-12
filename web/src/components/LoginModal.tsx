@@ -13,6 +13,8 @@ import {
   Check,
   Dumbbell,
   Calendar,
+  Download,
+  Upload,
 } from 'lucide-react';
 import type { CoachPersonality, AthleteAccount } from '../types';
 
@@ -74,6 +76,41 @@ export const LoginModal: React.FC = () => {
   const handleStartQuestionnaire = () => {
     dismissLoginModal();
     openOnboarding();
+  };
+
+  const handleExportData = () => {
+    try {
+      const data = localStorage.getItem('stoic_body_gym_state');
+      if (!data) return;
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `stoic-body-${profile?.name || 'athlete'}-protocol.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('Failed to export data:', e);
+    }
+  };
+
+  const handleImportData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const text = event.target?.result as string;
+        const parsed = JSON.parse(text);
+        if (parsed) {
+          localStorage.setItem('stoic_body_gym_state', text);
+          window.location.reload();
+        }
+      } catch (err) {
+        alert('Invalid protocol JSON file.');
+      }
+    };
+    reader.readAsText(file);
   };
 
   return (
@@ -246,7 +283,7 @@ export const LoginModal: React.FC = () => {
               Create New Athlete & Build Custom Protocol
             </h4>
             <p className="text-xs text-neutral-400 mt-1.5 leading-relaxed">
-              Take the 6-step assessment to automatically generate tailored workout routines, a weekly training split, a 14-day calendar schedule, and macro nutrition targets.
+              Take the 20-question precision assessment to automatically calibrate your 7-day and 14-day visual picture schedule, personalized workout routines, planned sets and reps, and macro diet targets.
             </p>
 
             <button
@@ -254,9 +291,40 @@ export const LoginModal: React.FC = () => {
               className="mt-4 w-full py-3 rounded-xl bg-[#D9A184] hover:bg-[#E5AC8F] text-[#140D09] font-black text-xs flex items-center justify-center gap-2 shadow-xl active:scale-98 transition-all"
             >
               <Dumbbell className="w-4 h-4 stroke-[2.5]" />
-              Start 6-Step Protocol Assessment
+              Start 20-Question Protocol Assessment
               <ArrowRight className="w-4 h-4 stroke-[3]" />
             </button>
+          </div>
+
+          {/* Client & GitHub Portability */}
+          <div className="p-4 rounded-2xl bg-[#141212] border border-[#24201F] space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-black uppercase text-neutral-400 tracking-wider">
+                Client Data & GitHub Sync
+              </span>
+              <span className="text-[9px] font-mono text-neutral-500">Offline JSON</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={handleExportData}
+                className="py-2.5 px-3 rounded-xl bg-[#1C1A18] hover:bg-[#25221F] border border-[#2E2A26] text-xs font-bold text-neutral-300 flex items-center justify-center gap-2 transition-all active:scale-98"
+                title="Download complete athlete JSON backup"
+              >
+                <Download className="w-3.5 h-3.5 text-[#D9A184]" />
+                Export Profile JSON
+              </button>
+              <label className="py-2.5 px-3 rounded-xl bg-[#1C1A18] hover:bg-[#25221F] border border-[#2E2A26] text-xs font-bold text-neutral-300 flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-98 text-center">
+                <Upload className="w-3.5 h-3.5 text-[#D9A184]" />
+                Import Profile JSON
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleImportData}
+                  className="hidden"
+                />
+              </label>
+            </div>
           </div>
 
           {/* Custom Name Sign-In Form (Toggleable) */}

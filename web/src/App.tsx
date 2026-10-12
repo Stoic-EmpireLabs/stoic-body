@@ -131,7 +131,7 @@ export function App() {
         </div>
 
         {/* Viewport for current active screen */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-28 lg:pb-8 overflow-y-auto overflow-x-hidden">
           {renderScreen()}
         </main>
 

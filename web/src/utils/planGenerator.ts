@@ -23,6 +23,10 @@ export interface PlanSummary {
   nutritionTitle: string;
   macrosSummary: string;
   activeAddons: string[];
+  jointSafeguards?: string[];
+  cardioTitle?: string;
+  dietPhilosophy?: string;
+  coachingVoice?: string;
 }
 
 export interface GeneratedPlan {
@@ -836,8 +840,28 @@ export function generateCustomPlan(
     }
   }
 
-  // Adjust hydration for longer sessions
-  if (workoutDuration >= 60) {
+  // Adjust calories if specific caloric strategy was chosen
+  if (answers.calorieStrategy) {
+    if (answers.calorieStrategy === 'aggressive_cut') calories = Math.round(calories * 0.85);
+    else if (answers.calorieStrategy === 'moderate_cut') calories = Math.round(calories * 0.92);
+    else if (answers.calorieStrategy === 'lean_bulk') calories = Math.round(calories * 1.10);
+    else if (answers.calorieStrategy === 'heavy_bulk') calories = Math.round(calories * 1.20);
+  }
+
+  // Adjust macros if specific diet type chosen
+  if (answers.dietType === 'keto') {
+    carbs = Math.round((calories * 0.05) / 4);
+    fat = Math.round((calories * 0.70) / 9);
+    protein = Math.round((calories * 0.25) / 4);
+  } else if (answers.dietType === 'high_protein') {
+    protein = Math.round(protein * 1.15);
+    carbs = Math.round(Math.max(80, (calories - (protein * 4) - (fat * 9)) / 4));
+  }
+
+  // Adjust hydration for custom target or longer sessions
+  if (answers.hydrationLiters) {
+    waterMl = answers.hydrationLiters * 1000;
+  } else if (workoutDuration >= 60) {
     waterMl += 400;
   }
 
@@ -1046,6 +1070,28 @@ export function generateCustomPlan(
   if (hasPostureAddon) activeAddons.push('Posture & Hourglass V-Taper');
   if (hasArmsAddon) activeAddons.push('Delts & Arm Density');
 
+  const jointSafeguards = (answers.jointLimitations || []).filter((j) => j !== 'none');
+  const cardioLabels: Record<string, string> = {
+    zone2_incline: 'Zone 2 Aerobic Ruck / Incline Walk (30m)',
+    hiit_sprints: 'HIIT Tabata High-Output Sprints',
+    jump_rope: 'Jump Rope Conditioning Rounds',
+    outdoor_run: 'Outdoor Road / Trail Run',
+    none: 'Compound Iron Focus (No Additional Cardio)',
+  };
+  const dietLabels: Record<string, string> = {
+    omnivore: 'Clean Omnivore Whole Foods',
+    high_protein: 'High-Protein / Low-Carb Shred',
+    keto: 'Ketogenic Metabolic Adaptation',
+    mediterranean: 'Mediterranean Anti-Inflammatory',
+    plant_based: 'Plant-Based High-Density Protein',
+  };
+  const voiceLabels: Record<string, string> = {
+    marine: 'USMC Staff Sgt. Stone · Unflinching Iron Discipline',
+    stoic: 'Marcus Aurelius · Sovereign Reflection & Virtue',
+    aurelia: 'Aurelia · Empress Poise & Majestic Fortitude',
+    coach: 'Coach Miller · High-Performance Science & Drive',
+  };
+
   const summary: PlanSummary = {
     splitName: `${frequency}-Day ${isFemale ? 'Empress' : 'Spartan'} ${kindLabels[workoutKind] || 'Adaptive System'}`,
     routineCount: routines.length,
@@ -1058,6 +1104,10 @@ export function generateCustomPlan(
     nutritionTitle: `${fasting.toUpperCase().replace('_', ':')} Protocol · ${calories} kcal`,
     macrosSummary: `${protein}g Protein · ${carbs}g Carbs · ${fat}g Fat · ${(waterMl / 1000).toFixed(1)}L Water`,
     activeAddons,
+    jointSafeguards,
+    cardioTitle: answers.cardioProtocol ? cardioLabels[answers.cardioProtocol] : undefined,
+    dietPhilosophy: answers.dietType ? dietLabels[answers.dietType] : undefined,
+    coachingVoice: voiceLabels[personality] || 'Stoic Body Adaptive Coach',
   };
 
   return {

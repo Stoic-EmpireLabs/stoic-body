@@ -112,13 +112,27 @@ export interface OnboardingAnswers {
   focus?: 'combat' | 'hypertrophy' | 'strength' | 'athletic' | 'glute_waist' | 'pilates_tone';
   workoutKind?: 'toning' | 'hypertrophy' | 'strength' | 'combat' | 'glute_sculpt';
   experience: 'recruit' | 'intermediate' | 'veteran';
-  equipment: 'full_gym' | 'barbell_home' | 'dumbbells' | 'bodyweight';
-  selectedDays?: number[]; // [1, 2, 4, 5] where 1=Mon .. 7=Sun
+  age?: number;
+  heightCm?: number;
+  weightKg?: number;
+  targetWeightKg?: number;
+  bodyFat?: 'lean' | 'athletic' | 'moderate' | 'full';
   frequency?: number;
+  selectedDays?: number[]; // [1, 2, 4, 5] where 1=Mon .. 7=Sun
   workoutTime?: string;
   workoutDuration?: number; // 30, 45, 60, 75
+  trainingSplit?: 'ppl' | 'upper_lower' | 'full_body' | 'arnold' | 'glute_sculpt';
+  equipment: 'full_gym' | 'barbell_home' | 'dumbbells' | 'bodyweight';
+  jointLimitations?: string[]; // ['knees', 'lower_back', 'shoulders', 'wrists', 'none']
+  priorityMuscles?: string[]; // ['glutes', 'chest', 'delts', 'back', 'quads', 'arms']
+  absCoreProtocol?: 'daily_5min' | 'tva_corset' | 'rotational' | 'compounds_only';
+  cardioProtocol?: 'zone2_incline' | 'hiit_sprints' | 'jump_rope' | 'outdoor_run' | 'none';
+  dietType?: 'omnivore' | 'high_protein' | 'keto' | 'mediterranean' | 'plant_based';
+  fasting?: '16_8' | '20_4' | 'omad' | '14_10' | 'standard';
+  calorieStrategy?: 'aggressive_cut' | 'moderate_cut' | 'maintenance' | 'lean_bulk' | 'heavy_bulk';
+  hydrationLiters?: number;
+  supplements?: string[]; // ['creatine', 'electrolytes', 'protein', 'caffeine', 'omega3', 'none']
   targetEmphasis?: string[]; // ['abs_core', 'glutes', 'posture_waist', 'arms_shoulders', 'calisthenics_burn']
-  fasting?: '16_8' | '20_4' | 'omad' | 'standard';
   personality: CoachPersonality;
 }
 
@@ -192,7 +206,7 @@ export interface NutritionTargets {
   fat: number;
   waterMl: number;
   fastingHours: number;
-  fastingProtocol: 'omad' | '16_8' | '20_4' | 'standard';
+  fastingProtocol: 'omad' | '16_8' | '20_4' | '14_10' | 'standard';
   fastStartTime?: string; // HH:mm
 }
 
