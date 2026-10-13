@@ -1,5 +1,13 @@
 export type SetKind = 'normal' | 'warmup' | 'drop' | 'failure' | 'restPause';
 
+export interface ExerciseVisualAsset {
+  startFrameUrl: string;
+  peakFrameUrl: string;
+  thumbnailUrl: string;
+  avatarType: 'male_cristofer' | 'female_wife';
+  biomechanicalVerificationStatus: 'verified' | 'flagged';
+}
+
 export interface Exercise {
   id: string;
   name: string;
@@ -11,6 +19,15 @@ export interface Exercise {
   steps: string[];
   mode?: string;
   isCustom?: boolean;
+  category?: string;
+  targetMuscle?: string;
+  visuals?: {
+    male: ExerciseVisualAsset;
+    female: ExerciseVisualAsset;
+  };
+  // legacy fallback support
+  imageUrl?: string;
+  animationUrl?: string;
 }
 
 export interface SessionSet {

@@ -666,6 +666,7 @@ export const HomeScreen: React.FC = () => {
             >
               <div className="h-32 rounded-2xl overflow-hidden bg-[#100F0E] mb-3 flex items-center justify-center p-0">
                 <ExerciseArt
+                  exerciseId={ex.id}
                   slug={ex.art || ex.id}
                   exerciseName={ex.name}
                   primaryMuscle={ex.primary}

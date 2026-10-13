@@ -24,9 +24,21 @@ export const ExerciseDetailModal: React.FC = () => {
     popRoute,
     pushRoute,
     settings,
+    profile,
+    coachPersonality,
   } = useGymStore();
 
   const exercise = activeExerciseId ? getExerciseById(activeExerciseId) : undefined;
+  
+  const defaultGender =
+    profile?.gender === 'female' ||
+    settings?.gender === 'female' ||
+    coachPersonality === 'aurelia'
+      ? 'female'
+      : 'male';
+
+  const [avatarView, setAvatarView] = React.useState<'male' | 'female'>(defaultGender);
+
   if (!exercise) return null;
 
   const isFav = favorites[exercise.id];
@@ -68,17 +80,49 @@ export const ExerciseDetailModal: React.FC = () => {
 
       {/* Hero Vector Art Card */}
       <div className="bg-[#181818] border border-[#2B2B2B] rounded-3xl p-4 shadow-xl flex flex-col items-center">
-        <div className="w-full h-56 rounded-2xl overflow-hidden bg-[#121212] mb-3">
+        {/* Interactive Dual-Avatar Toggle */}
+        <div className="w-full flex items-center justify-between bg-[#100F0E] border border-[#262422] p-1 rounded-2xl mb-3">
+          <button
+            type="button"
+            onClick={() => setAvatarView('male')}
+            className={`flex-1 py-1.5 px-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 ${
+              avatarView === 'male'
+                ? 'bg-[#D9A184] text-[#140D09] shadow-md font-black'
+                : 'text-neutral-400 hover:text-white'
+            }`}
+          >
+            <span>⚡ Male (Cristofer)</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setAvatarView('female')}
+            className={`flex-1 py-1.5 px-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 ${
+              avatarView === 'female'
+                ? 'bg-[#E0A899] text-[#140D09] shadow-md font-black'
+                : 'text-neutral-400 hover:text-white'
+            }`}
+          >
+            <span>🌸 Female (Wife)</span>
+          </button>
+        </div>
+
+        <div className="w-full h-56 rounded-2xl overflow-hidden bg-[#121212] mb-3 relative">
           <ExerciseArt
+            exerciseId={exercise.id}
             slug={exercise.art || exercise.id}
+            genderOverride={avatarView}
             exerciseName={exercise.name}
             primaryMuscle={exercise.primary}
             height={224}
             loop={true}
           />
+          {/* Biomechanical Verified Badge Overlay */}
+          <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-[#8FA377]/90 text-[#0E150B] backdrop-blur-md flex items-center gap-1 shadow">
+            <CheckCircle2 className="w-3 h-3 stroke-[2.5]" /> VERIFIED
+          </div>
         </div>
 
-        <div className="text-center">
+        <div className="text-center w-full">
           <h2 className="text-2xl font-black text-white tracking-tight">{exercise.name}</h2>
           <div className="flex items-center justify-center gap-2 mt-1.5 flex-wrap">
             <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#D9A184]/20 text-[#D9A184] border border-[#D9A184]/40">
@@ -90,6 +134,12 @@ export const ExerciseDetailModal: React.FC = () => {
             <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#262626] text-neutral-300">
               {exercise.difficulty}
             </span>
+          </div>
+
+          <div className="mt-2 text-[11px] font-mono text-neutral-400">
+            {avatarView === 'male'
+              ? 'Spartan Athlete · Cristofer Arellano · Ember Gold'
+              : 'Empress Athlete · Aurelia · Rose Gold'}
           </div>
         </div>
       </div>

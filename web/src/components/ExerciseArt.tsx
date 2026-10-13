@@ -1,132 +1,100 @@
-import React, { useEffect, useState } from 'react';
-import { Dumbbell } from 'lucide-react';
+import React, { useState } from 'react';
 import { getAssetUrl } from '../utils/assets';
 import { useGymStore } from '../store/useGymStore';
 import { FemaleExerciseSVG } from './FemaleExerciseVisuals';
 import { MaleExerciseSVG } from './MaleExerciseVisuals';
+import allExercisesData from '../data/exercises.json';
+import type { ExerciseVisualAsset } from '../types';
 
-interface ExerciseArtProps {
+export interface ExerciseArtProps {
   slug?: string;
+  exerciseId?: string;
+  genderOverride?: 'male' | 'female';
   className?: string;
   height?: number | string;
   loop?: boolean;
   exerciseName?: string;
   primaryMuscle?: string;
+  visuals?: {
+    male: ExerciseVisualAsset;
+    female: ExerciseVisualAsset;
+  };
 }
 
-const artCache = new Map<string, string[]>();
+const exerciseMapById = new Map<string, any>();
+const exerciseMapByArt = new Map<string, any>();
+const exerciseMapByName = new Map<string, any>();
+
+allExercisesData.forEach((e: any) => {
+  if (e.id) exerciseMapById.set(e.id, e);
+  if (e.art) exerciseMapByArt.set(e.art, e);
+  if (e.name) exerciseMapByName.set(e.name.toLowerCase(), e);
+});
 
 export const ExerciseArt: React.FC<ExerciseArtProps> = ({
   slug,
+  exerciseId,
+  genderOverride,
   className = '',
   height = 200,
-  loop = true,
   exerciseName,
   primaryMuscle,
+  visuals,
 }) => {
   const { profile, settings, coachPersonality } = useGymStore();
 
-  // Strict athlete gender resolution - no toggles, no overlapping pills
-  const isFemale =
+  const isFemaleDefault =
     profile?.gender === 'female' ||
     settings?.gender === 'female' ||
     coachPersonality === 'aurelia';
 
-  const [frames, setFrames] = useState<string[]>([]);
-  const [frameIndex, setFrameIndex] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const activeGender = genderOverride || (isFemaleDefault ? 'female' : 'male');
+  const [imgFailed, setImgFailed] = useState(false);
 
-  // Load male wireframe frames only if male mode is active
-  useEffect(() => {
-    if (!slug || isFemale) {
-      return;
-    }
+  // Find exercise definition
+  const ex =
+    (exerciseId ? exerciseMapById.get(exerciseId) : null) ||
+    (slug ? exerciseMapById.get(slug) || exerciseMapByArt.get(slug) : null) ||
+    (exerciseName ? exerciseMapByName.get(exerciseName.toLowerCase()) : null);
 
-    if (artCache.has(slug)) {
-      setFrames(artCache.get(slug)!);
-      setFrameIndex(0);
-      return;
-    }
+  const matchedId = ex?.id || exerciseId || slug;
+  const directVisualUrl = matchedId
+    ? getAssetUrl(`assets/exercises/${activeGender}/${matchedId}.webp`)
+    : null;
 
-    let isMounted = true;
-    setLoading(true);
-
-    fetch(getAssetUrl(`assets/art/${slug}.txt`))
-      .then((res) => {
-        if (!res.ok) throw new Error('Art not found');
-        return res.text();
-      })
-      .then((text) => {
-        if (!isMounted) return;
-        const validFrames = text
-          .split('\n')
-          .map((line) => line.trim())
-          .filter((line) => line.length > 0);
-
-        if (validFrames.length > 0) {
-          artCache.set(slug, validFrames);
-          setFrames(validFrames);
-          setFrameIndex(0);
-        }
-      })
-      .catch(() => {
-        if (isMounted) setFrames([]);
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [slug, isFemale]);
-
-  // Frame animation loop for male vector frames
-  useEffect(() => {
-    if (isFemale || !loop || frames.length <= 1) return;
-
-    const interval = setInterval(() => {
-      setFrameIndex((prev) => {
-        let next = prev + direction;
-        if (next >= frames.length) {
-          setDirection(-1);
-          next = frames.length - 2;
-        } else if (next < 0) {
-          setDirection(1);
-          next = 1;
-        }
-        return Math.max(0, Math.min(frames.length - 1, next));
-      });
-    }, 120);
-
-    return () => clearInterval(interval);
-  }, [loop, frames.length, direction, isFemale]);
-
-  const numHeight = typeof height === 'number' ? height : parseInt(height, 10) || 200;
-  const isCompactThumbnail = numHeight < 90;
-  const accentColor = isFemale ? '#E0A899' : '#D9A184';
+  const accentColor = activeGender === 'female' ? '#E0A899' : '#D9A184';
 
   return (
     <div
       style={{ height }}
-      className={`w-full bg-[#141214] rounded-2xl flex items-center justify-center border border-[#262024] overflow-hidden relative p-0 ${className}`}
+      className={`w-full bg-[#141214] rounded-2xl flex items-center justify-center border border-[#262024] overflow-hidden relative p-0 group ${className}`}
     >
-      {isFemale ? (
-        // FEMALE ATHLETIC VISUAL ENGINE - 3D Anatomical female model with glowing muscle highlights
+      {!imgFailed && directVisualUrl ? (
+        <div className="w-full h-full relative overflow-hidden flex items-center justify-center bg-[#0d0b0d]">
+          <img
+            key={`${activeGender}-${matchedId}`}
+            src={directVisualUrl}
+            alt={exerciseName || ex?.name || 'Exercise visual'}
+            onError={() => setImgFailed(true)}
+            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
+            loading="lazy"
+          />
+          {/* Subtle cinematic vignette */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+        </div>
+      ) : activeGender === 'female' ? (
         <FemaleExerciseSVG
-          slug={slug}
+          slug={slug || matchedId}
           accentColor={accentColor}
-          exerciseName={exerciseName}
-          primaryMuscle={primaryMuscle}
+          exerciseName={exerciseName || ex?.name}
+          primaryMuscle={primaryMuscle || ex?.primary}
         />
       ) : (
-        // MALE ATHLETIC VISUAL ENGINE - 3D Anatomical male athlete with user's face and shoulder star tattoos
         <MaleExerciseSVG
-          slug={slug}
+          slug={slug || matchedId}
           accentColor={accentColor}
-          exerciseName={exerciseName}
-          primaryMuscle={primaryMuscle}
+          exerciseName={exerciseName || ex?.name}
+          primaryMuscle={primaryMuscle || ex?.primary}
         />
       )}
     </div>

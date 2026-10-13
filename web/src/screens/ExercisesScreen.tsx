@@ -5,7 +5,25 @@ import { Search, Star, Plus, ChevronRight, Dumbbell, Filter } from 'lucide-react
 import type { Exercise } from '../types';
 
 export const ExercisesScreen: React.FC = () => {
-  const { allExercises, favorites, toggleFavorite, pushRoute, setActiveExerciseId } = useGymStore();
+  const {
+    allExercises,
+    favorites,
+    toggleFavorite,
+    pushRoute,
+    setActiveExerciseId,
+    profile,
+    settings,
+    coachPersonality,
+  } = useGymStore();
+
+  const defaultGender =
+    profile?.gender === 'female' ||
+    settings?.gender === 'female' ||
+    coachPersonality === 'aurelia'
+      ? 'female'
+      : 'male';
+
+  const [avatarView, setAvatarView] = useState<'male' | 'female'>(defaultGender);
 
   const [query, setQuery] = useState('');
   const [selectedMuscle, setSelectedMuscle] = useState<string>('all');
@@ -93,23 +111,51 @@ export const ExercisesScreen: React.FC = () => {
     <div className="max-w-6xl mx-auto space-y-6 pb-20 animate-in fade-in duration-200">
       {/* Top Header & Search (As seen in 06-library.png) */}
       <div className="bg-[#161514] border border-[#262422] rounded-[28px] p-6 shadow-xl space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
               Exercises
             </h2>
             <p className="text-xs text-neutral-400 mt-1">
-              552 exercises in your local catalog
+              552 exercises · Dual-Avatar Verified Visuals
             </p>
           </div>
 
-          <button
-            onClick={() => setShowAddCustomModal(true)}
-            className="w-10 h-10 rounded-full bg-[#262422] hover:bg-[#33302C] border border-[#3E3A35] text-white flex items-center justify-center active:scale-95 transition-all shadow"
-            title="Create Custom Exercise"
-          >
-            <Plus className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Dual-Avatar Interactive Toggle */}
+            <div className="flex items-center bg-[#100F0E] border border-[#282420] p-1 rounded-2xl shadow-inner">
+              <button
+                type="button"
+                onClick={() => setAvatarView('male')}
+                className={`py-1.5 px-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 ${
+                  avatarView === 'male'
+                    ? 'bg-[#D9A184] text-[#140D09] shadow-md font-black'
+                    : 'text-neutral-400 hover:text-white'
+                }`}
+              >
+                <span>⚡ Male (Cristofer)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setAvatarView('female')}
+                className={`py-1.5 px-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 ${
+                  avatarView === 'female'
+                    ? 'bg-[#E0A899] text-[#140D09] shadow-md font-black'
+                    : 'text-neutral-400 hover:text-white'
+                }`}
+              >
+                <span>🌸 Female (Wife)</span>
+              </button>
+            </div>
+
+            <button
+              onClick={() => setShowAddCustomModal(true)}
+              className="w-10 h-10 rounded-full bg-[#262422] hover:bg-[#33302C] border border-[#3E3A35] text-white flex items-center justify-center active:scale-95 transition-all shadow flex-shrink-0"
+              title="Create Custom Exercise"
+            >
+              <Plus className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Search Bar */}
@@ -173,9 +219,11 @@ export const ExercisesScreen: React.FC = () => {
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-12 h-12 rounded-xl bg-[#100F0E] overflow-hidden flex items-center justify-center flex-shrink-0 border border-[#201E1C]">
-                        {ex.art ? (
+                        {ex.art || ex.id ? (
                           <ExerciseArt
+                            exerciseId={ex.id}
                             slug={ex.art || ex.id}
+                            genderOverride={avatarView}
                             exerciseName={ex.name}
                             primaryMuscle={ex.primary}
                             height={48}

@@ -332,7 +332,8 @@ export const ScheduleScreen: React.FC = () => {
                                 {/* Exercise Illustration Thumbnail */}
                                 <div className="w-full h-16 sm:h-20 rounded-xl bg-[#0A090A] border border-[#1A181A] flex items-center justify-center overflow-hidden mb-2 relative">
                                   <ExerciseArt
-                                    slug={ex.art}
+                                    exerciseId={ex.id}
+                                    slug={ex.art || ex.id}
                                     exerciseName={ex.name}
                                     primaryMuscle={ex.primary}
                                     height={56}
@@ -534,7 +535,7 @@ export const ScheduleScreen: React.FC = () => {
                             className="p-2 rounded-xl bg-[#100E10] border border-[#201E20] flex items-center gap-2"
                           >
                             <div className="w-8 h-8 rounded-lg bg-[#0C0B0C] flex items-center justify-center overflow-hidden flex-shrink-0">
-                              <ExerciseArt slug={ex.art} exerciseName={ex.name} height={30} />
+                              <ExerciseArt exerciseId={ex.id} slug={ex.art || ex.id} exerciseName={ex.name} height={30} />
                             </div>
                             <span className="text-[11px] font-bold text-neutral-200 line-clamp-1">
                               {ex.name}

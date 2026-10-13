@@ -367,6 +367,7 @@ export const SessionScreen: React.FC = () => {
               {/* Vector Art Animation Loop */}
               <div className="h-56 rounded-2xl overflow-hidden bg-[#100F0E] flex items-center justify-center p-0 border border-[#22201E]">
                 <ExerciseArt
+                  exerciseId={currentExercise.exerciseId}
                   slug={fullExerciseDef?.art || currentExercise.exerciseId}
                   exerciseName={currentExercise.name}
                   primaryMuscle={currentExercise.primary}
